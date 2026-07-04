@@ -41,3 +41,16 @@ npm run preview   # serve the production build
 - **Content is pure data** (`src/content/rooms/*`): rooms, beats, choices, effects, field notes. The engine (`src/engine/*`) never hardcodes a room.
 - **Saves** are local (`localStorage`) behind an async, server-shaped `SaveStore` interface (`src/engine/saveStore.ts`) so a real backend can drop in later without touching game code.
 - Settings include reduced motion, high-contrast text, typewriter toggle, and a low-quality renderer tier.
+
+## Windows executable
+
+A standalone Windows build is published on the [Releases page](../../releases) as a portable `.exe` (no installer needed — just download and run). It's built automatically by GitHub Actions (`.github/workflows/release-windows.yml`) whenever a `v*` tag is pushed, wrapping the production web bundle in Electron.
+
+To trigger a new release build, push a tag:
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+You can also run the workflow manually from the Actions tab (`workflow_dispatch`).
