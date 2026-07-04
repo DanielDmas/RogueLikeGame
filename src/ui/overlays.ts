@@ -25,6 +25,13 @@ export function showTitle(ui: HTMLElement, profile: Profile): Promise<TitleActio
         'a journey of twenty rooms · every door is a question · the way back is through',
       ),
     );
+    const how = el('div', 'how-to-play');
+    how.innerHTML = `
+      <span><b>Click</b> a door, or press <b>1–3</b>, to choose your path</span>
+      <span><b>Click</b> the text, or press <b>Space</b>, to continue</span>
+      <span><b>Esc</b> to pause · hover a door to read its hint</span>
+    `;
+    o.append(how);
     const menu = el('div', 'title-menu');
     const done = (a: TitleAction) => {
       o.remove();
@@ -59,6 +66,7 @@ export function showSettings(ui: HTMLElement, settings: Settings): Promise<Setti
     const list = el('div', 'settings-list');
     const current = { ...settings };
     const rows: [keyof Settings, string][] = [
+      ['sound', 'Sound'],
       ['typewriter', 'Typewriter text'],
       ['reducedMotion', 'Reduced motion'],
       ['highContrast', 'High-contrast text'],

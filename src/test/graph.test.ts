@@ -4,6 +4,8 @@ import { allRooms } from '../content/rooms';
 import { ACT4_SEQUENCE, ACT_POOLS, GATES, PROLOGUE } from '../content/graph';
 import { applyEffects, newRun } from '../engine/gameState';
 import { completeRoom, makeRegistry, offeredDoors } from '../engine/storyEngine';
+import { endingIcons, roomIcons } from '../content/icons';
+import { endings } from '../content/endings';
 
 const registry = makeRegistry(allRooms);
 
@@ -140,6 +142,17 @@ describe('content lint', () => {
       const room = registry.get(id);
       expect(room.gate, `${id} must be a gate`).toBe(true);
       if (Number(act) < 4) expect(room.act).toBe(Number(act));
+    }
+  });
+
+  it('every room and every ending has a schematic icon', () => {
+    for (const room of allRooms) {
+      expect(roomIcons[room.id], `room ${room.id} missing an icon`).toBeDefined();
+      expect(roomIcons[room.id]).toContain('<svg');
+    }
+    for (const ending of endings) {
+      expect(endingIcons[ending.id], `ending ${ending.id} missing an icon`).toBeDefined();
+      expect(endingIcons[ending.id]).toContain('<svg');
     }
   });
 });

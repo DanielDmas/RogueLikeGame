@@ -1,5 +1,6 @@
 import type { FieldNote } from '../content/schema';
 import { el } from './dom';
+import { sound } from '../audio/soundEngine';
 
 /** Slides the philosophy reveal card up from the bottom; resolves on dismiss. */
 export function showFieldNote(ui: HTMLElement, note: FieldNote, label = 'Field Note'): Promise<void> {
@@ -17,6 +18,7 @@ export function showFieldNote(ui: HTMLElement, note: FieldNote, label = 'Field N
     card.append(close);
     ui.appendChild(card);
 
+    sound.noteOpen();
     requestAnimationFrame(() => requestAnimationFrame(() => card.classList.add('open')));
 
     const dismiss = () => {

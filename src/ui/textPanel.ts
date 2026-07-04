@@ -1,5 +1,6 @@
 import type { Beat, RunState } from '../content/schema';
 import { clear, el } from './dom';
+import { sound } from '../audio/soundEngine';
 
 const resolveBeat = (b: Beat, s: RunState) => (typeof b === 'function' ? b(s) : b);
 
@@ -21,13 +22,18 @@ export class TextPanel {
   async playBeats(
     beats: Beat[],
     state: RunState,
-    header?: { title: string; type?: string },
+    header?: { title: string; type?: string; icon?: string },
   ): Promise<void> {
     const texts = beats.map((b) => resolveBeat(b, state)).filter((t) => t.length > 0);
     if (texts.length === 0) return;
 
     const panel = el('div', 'text-panel fade-in');
     if (header) {
+      if (header.icon) {
+        const iconWrap = el('div', 'room-icon');
+        iconWrap.innerHTML = header.icon;
+        panel.appendChild(iconWrap);
+      }
       const h = el('div', 'room-title');
       h.append(el('span', undefined, header.title));
       if (header.type) h.append(el('span', 'room-type', header.type));
@@ -88,6 +94,7 @@ export class TextPanel {
           this.skipTyping = null;
           return;
         }
+        sound.advance();
         finish();
       };
       const onKey = (e: KeyboardEvent) => {

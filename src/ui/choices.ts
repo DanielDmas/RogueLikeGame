@@ -5,6 +5,7 @@ export interface DoorOption {
   id: string;
   hint: string;
   secret?: boolean;
+  icon?: string;
 }
 
 export class ChoicePanel {
@@ -54,6 +55,11 @@ export class ChoicePanel {
       const wrap = el('div', 'choices');
       doors.forEach((d, i) => {
         const card = el('button', `choice-card door${d.secret ? ' secret' : ''}`);
+        if (d.icon) {
+          const rune = el('span', 'door-rune');
+          rune.innerHTML = d.icon;
+          card.append(rune);
+        }
         card.append(el('span', 'num', d.secret ? '✦' : String(i + 1)));
         card.append(el('span', 'txt', d.hint));
         card.addEventListener('mouseenter', () => onHover(d.id));
@@ -67,6 +73,7 @@ export class ChoicePanel {
         });
         wrap.appendChild(card);
       });
+      wrap.appendChild(el('div', 'door-help', 'choose a path — click a door, or press its number'));
       this.mount(wrap, doors.length, (i) => {
         onHover(null);
         this.clear();

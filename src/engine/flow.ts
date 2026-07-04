@@ -20,6 +20,8 @@ import {
   showTitle,
 } from '../ui/overlays';
 import { el } from '../ui/dom';
+import { sound } from '../audio/soundEngine';
+import { endingIcons, iconFor } from '../content/icons';
 
 const PROFILE_ID = 'traveler';
 const registry = makeRegistry(allRooms);
@@ -56,7 +58,9 @@ export class Game {
       canvas,
       ui,
       {
-        onDoorHover: () => {},
+        onDoorHover: (id) => {
+          if (id) sound.hover();
+        },
         onDoorClick: (id) => this.doorClickThrough?.(id),
       },
       profile.settings.quality,
@@ -70,6 +74,7 @@ export class Game {
         this.openPause();
       }
     });
+    addEventListener('pointerdown', () => sound.primeOnGesture(), { once: true });
 
     this.applySettings();
   }
@@ -80,6 +85,7 @@ export class Game {
     document.body.classList.toggle('high-contrast', s.highContrast);
     this.text.setTypewriter(s.typewriter && !s.reducedMotion);
     this.director.setReducedMotion(s.reducedMotion);
+    sound.setEnabled(s.sound);
   }
 
   private async persist() {
@@ -110,6 +116,7 @@ export class Game {
   /** Entry point: title screen loop, then the run. */
   async start() {
     this.director.setTheme(0);
+    sound.setAct(0);
     for (;;) {
       const action = await showTitle(this.ui, this.profile);
       if (action === 'codex') {
@@ -135,6 +142,7 @@ export class Game {
       await this.fade(true);
       this.director.setTheme(theme);
       this.currentTheme = theme;
+      sound.setAct(theme);
       await this.fade(false);
       const intro = actIntros[this.state.act];
       if (intro && this.state.act > 0) {
@@ -165,13 +173,22 @@ export class Game {
       this.hud.setAct(ACT_NAMES[this.state.act]);
       this.hud.update(this.state.hearts, this.state.lucidity);
 
-      const specs = doors.map((r) => ({ id: r.id, hint: r.doorHint, secret: Boolean(r.secret) }));
+      const specs = doors.map((r) => ({
+        id: r.id,
+        hint: r.doorHint,
+        secret: Boolean(r.secret),
+        icon: iconFor(r.id),
+      }));
       this.director.showDoors(specs);
       this.text.showBark(usherDoorBark(this.state, this.profile.runsCompleted), this.state);
-      const picker = this.choices.pickDoor(specs, (id) => this.director.highlightDoor(id));
+      const picker = this.choices.pickDoor(specs, (id) => {
+        this.director.highlightDoor(id);
+        if (id) sound.hover();
+      });
       this.doorClickThrough = picker.chooseExternally;
       const roomId = await picker.promise;
       this.doorClickThrough = null;
+      sound.choice();
       this.text.hide();
 
       await this.director.walkThrough(roomId);
@@ -186,12 +203,16 @@ export class Game {
   }
 
   private async enterRoom(room: Room): Promise<void> {
+    const icon = iconFor(room.id);
     for (let i = 0; i < room.stages.length; i++) {
       const stage = room.stages[i];
-      await this.text.playBeats(stage.beats, this.state, { title: room.title, type: room.type });
+      await this.text.playBeats(stage.beats, this.state, { title: room.title, type: room.type, icon });
       const available = stage.choices.filter((c) => !c.available || c.available(this.state));
       const choice: Choice = await this.choices.pick(available, this.state);
+      sound.choice();
+      const heartsBefore = this.state.hearts;
       this.state = applyEffects(this.state, choice.effects);
+      if (this.state.hearts < heartsBefore) sound.heartLoss();
       this.state.transcript.push({
         roomId: room.id,
         stageIndex: i,
@@ -202,7 +223,7 @@ export class Game {
       if (room.id === 'last-message') {
         this.profile.lastMessage = choice.text.replace(/^“|”$/g, '');
       }
-      await this.text.playBeats(choice.outcome, this.state, { title: room.title, type: room.type });
+      await this.text.playBeats(choice.outcome, this.state, { title: room.title, type: room.type, icon });
       if (this.state.hearts <= 0) break;
     }
     this.text.hide();
@@ -225,10 +246,16 @@ export class Game {
     await this.fade(true);
     this.director.setTheme(5);
     this.currentTheme = 5;
+    sound.setAct(5);
     this.hud.hide();
     await this.fade(false);
+    sound.ending();
 
-    await this.text.playBeats(ending.beats, this.state, { title: ending.title, type: 'ENDING' });
+    await this.text.playBeats(ending.beats, this.state, {
+      title: ending.title,
+      type: 'ENDING',
+      icon: endingIcons[endingId],
+    });
     this.text.hide();
     if (ending.fieldNote) {
       await showFieldNote(this.ui, ending.fieldNote, 'Ending · Field Note');

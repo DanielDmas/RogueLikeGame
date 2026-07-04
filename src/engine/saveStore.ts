@@ -5,6 +5,7 @@ export interface Settings {
   reducedMotion: boolean;
   highContrast: boolean;
   quality: 'low' | 'high';
+  sound: boolean;
 }
 
 export interface Profile {
@@ -34,6 +35,7 @@ export function defaultProfile(): Profile {
         window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
       highContrast: false,
       quality: 'high',
+      sound: true,
     },
   };
 }
