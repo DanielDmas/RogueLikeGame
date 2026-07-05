@@ -14,7 +14,7 @@ export const junction: Room = {
         'A vast dark hall of celestial machinery — gears the size of moons, conveyor belts carrying small indifferent stars. Through the middle of it: tracks.',
         'A trolley is coming. It is painted municipal yellow and it is not slowing down, because slowing down is not in its job description.',
         'On the main track: five mannequins, tied down with what looks like red tape. Literal red tape. On the side track: one mannequin, likewise. The mannequins scream. The screaming is unconvincing.',
-        'USHER: (in a conductor’s cap, next to a large lever) Budget cuts. We used to use philosophers, but they kept unionizing. The scenario is standard: do nothing, it takes the five. Pull, it diverts and takes the one. I am required to ask you not to overthink it, and required to know you will.',
+        'Usher: The scenario is standard. Do nothing, and the five are taken. Pull, and it diverts — and takes the one instead. I am required to ask you not to overthink it. I am also required to know that you will.',
       ],
       choices: [
         {
@@ -24,7 +24,7 @@ export const junction: Room = {
           effects: { lucidity: 15, flags: ['pulled-lever'], axes: { reasonFeeling: -10 } },
           outcome: [
             'The lever moves with a bureaucratic click, as if stamping a form. The trolley leans into the side track and does what trolleys do. Five mannequins fall theatrically silent in relief; one falls silent otherwise.',
-            'USHER: Four lives saved, net, minus one clean conscience, gross. Standard exchange rate. Most people pull, by the way. It helps that it’s a lever — levers feel like paperwork.',
+            'Usher: Four lives, net — against one clean conscience, gross. Most people pull. It helps that it is a lever. A lever feels like paperwork; a body does not.',
           ],
         },
         {
@@ -34,7 +34,7 @@ export const junction: Room = {
           effects: { lucidity: 15, flags: ['kept-lever'], axes: { controlAcceptance: 8 } },
           outcome: [
             'You step back from the lever. The trolley continues along the track it was always on, and the hall is briefly very loud and then very quiet.',
-            'USHER: Interesting. Five gone, but none of them yours, is the theory. The trolley was the author; you declined a co-writing credit. There are entire journals about whether that distinction is profound or a laundering scheme. They do not cite each other.',
+            'Usher: Five gone, and none of them yours — that is the theory. The trolley was the author; you declined to co-sign it. Whole disciplines argue about whether that distinction is a profound moral fact or a laundering scheme. They do not read each other’s work.',
           ],
         },
         {
@@ -43,8 +43,8 @@ export const junction: Room = {
           hint: 'Decline the premise.',
           effects: { lucidity: -8, flags: ['refused-once'], axes: { controlAcceptance: -4 } },
           outcome: [
-            'USHER: (sighing, producing a clipboard) Of course they’re mannequins. You’re a partially dissolved self in a metaphysical processing facility. Everything here is a stand-in — including, at present, you.',
-            'USHER: The trolley isn’t asking whether the mannequins are real. It’s asking what you are. Refusing the question does answer it, you know. Just not flatteringly. The five, for the record, are gone.',
+            'Usher: Of course they are mannequins. You are a partially dissolved self in a processing facility built for exactly this kind of question. Everything here is a stand-in — including, at present, you.',
+            'Usher: The trolley was never asking whether the mannequins are real. It was asking what you are. Refusing the question answers it anyway — just not flatteringly. The five, for the record, are gone.',
           ],
         },
       ],
@@ -53,13 +53,13 @@ export const junction: Room = {
       beats: [
         'The hall rearranges itself with the sound of enormous filing. Now you stand on a footbridge over the track. The trolley — reset, remorseless — is coming again, toward five fresh mannequins.',
         'Beside you on the bridge stands a single enormous mannequin, heavy enough — the room makes this understood with vulgar clarity — to stop the trolley, if it happened to fall. If it were, say, pushed.',
-        'USHER: Same arithmetic as before. Five for one. The only difference is the interface. No lever this time. Just your hands, and a spine that has opinions.',
+        'Usher: The arithmetic is the same as before. Five for one. Only the interface has changed — no lever this time. Just your hands, and a body that has opinions about what hands are for.',
         (s) =>
           choseIn(s, 'junction', 'pull')
-            ? 'USHER: You pulled, last time. One for five, you said. Well — here is the same trade, closer to the skin. Let’s see if the mathematics survives the touch.'
+            ? 'Usher: You pulled, last time — one for five, you said. Here is the same trade, closer to the skin. Let us see whether the arithmetic survives the touch.'
             : choseIn(s, 'junction', 'no-pull')
-              ? 'USHER: You kept your hands clean at the lever. Curious to see if the bridge changes anything — it usually changes everything, which is itself the puzzle.'
-              : 'USHER: You called it stupid last time. The trolley has generously provided a second act. It’s very committed to the bit. Rather like me.',
+              ? 'Usher: You kept your hands from the lever. I am curious whether the bridge changes anything. It usually does. That it does is itself the puzzle.'
+              : 'Usher: You called it stupid, last time. The trolley has arranged a second act regardless. It is not interested in your opinion of the premise.',
       ],
       choices: [
         {
@@ -71,8 +71,8 @@ export const junction: Room = {
             'It is nothing like the lever. That is the finding. The trolley stops; five mannequins are saved; your hands file a formal complaint that will remain open indefinitely.',
             (s) =>
               choseIn(s, 'junction', 'pull')
-                ? 'USHER: Lever and bridge, both. Whatever else one says, the arithmetic in you goes all the way down. That is either integrity or a warning label; the journals are split.'
-                : 'USHER: No at the lever, yes on the bridge? Now that is a rare bird. You may want to sit with that one. Take a pamphlet.',
+                ? 'Usher: Lever and bridge, both. Whatever else is true, the arithmetic in you runs all the way down. Whether that is integrity or a warning label, I will leave to you.'
+                : 'Usher: No, at the lever. Yes, on the bridge. That is a rare position to hold. Sit with it a while — you may not have chosen it on purpose.',
           ],
         },
         {
@@ -84,8 +84,8 @@ export const junction: Room = {
             'Your hands stay on the railing. The trolley passes below, doing its municipal worst, and the enormous mannequin beside you continues its enormous existence, unaware of the entire seminar just held about its body.',
             (s) =>
               choseIn(s, 'junction', 'pull')
-                ? 'USHER: So: pull the lever, spare the push. Five for one at arm’s length, but not at hand’s length. Don’t look so caught out — that exact asymmetry has kept philosophy departments heated since 1976. The question is whether it’s wisdom in your spine or just squeamishness with tenure.'
-                : 'USHER: Consistent refusal. The trolley took ten mannequins across two experiments and your hands took none of them. There is a name for your position, and the name is contested, and you are standing in it very steadily.',
+                ? 'Usher: So — pull the lever, but spare the push. Five for one at arm’s length, not at hand’s length. That asymmetry has occupied philosophy departments for half a century. Whether it is wisdom in your spine or simply squeamishness, I could not say.'
+                : 'Usher: A consistent refusal. The trolley has taken ten, across two rooms, and your hands took none of them. There is a name for your position. It is contested. You hold it steadily.',
           ],
         },
         {
@@ -95,8 +95,8 @@ export const junction: Room = {
           effects: { hearts: -1, lucidity: 0, axes: { controlAcceptance: -6 } },
           available: (s) => hasFlag(s, 'refused-once'),
           outcome: [
-            'USHER: (quietly, and the machinery quiets with it) Twice, then.',
-            'USHER: Listen. The rooms are not asking you to enjoy them. They are asking you to be present in them. Every refusal is a small vote for staying dissolved — a little abstention from being anyone. The house tallies those. I’m sorry; I don’t make the rules on odd days.',
+            'Usher: Twice, then.',
+            'Usher: The rooms do not ask you to enjoy them. They ask you to be present in them. Every refusal is a small vote for staying dissolved — a quiet abstention from being anyone at all. That is tallied here, whether or not you meant it to be.',
             'Something in your chest goes quieter, one heart’s worth. The mannequins, mercifully, do not applaud.',
           ],
         },
@@ -107,7 +107,7 @@ export const junction: Room = {
           effects: { lucidity: -8, flags: ['refused-once'], axes: { controlAcceptance: -4 } },
           available: (s) => !hasFlag(s, 'refused-once'),
           outcome: [
-            'USHER: Noted, and honestly, on the bridge variant I hear that a lot — proximity has a smell. One refusal is contemplation. Two would be a policy. Choose your future refusals accordingly.',
+            'Usher: Noted. On the bridge, I hear that a great deal — proximity has its own smell. One refusal is contemplation. A second would be a policy. Choose accordingly, later.',
             'The trolley concludes its business without your signature. Whether that constitutes innocence is left, pointedly, as an exercise.',
           ],
         },
@@ -131,10 +131,10 @@ export const experienceMachine: Room = {
   stages: [
     {
       beats: [
-        'A warm alcove in the cold machinery, upholstered in a light that remembers summer. In the center: a pod, open, shaped exactly like relief.',
-        'A brass plaque, recently polished: EXPERIENCE MACHINE — MK. ∞. Below it, smaller: a perfect life, indistinguishable from real, guaranteed happy. Your brain will never know. That is the feature.',
-        'USHER: (dusting the plaque with genuine tenderness) Best product we offer. The simulations are flawless — love, meaning, small delicious problems that always resolve. Nobody who enters ever complains afterward.',
-        'USHER: Think carefully about why that sentence is the most frightening thing in this entire facility. I’ll wait. The pod will also wait. The pod is extremely good at waiting.',
+        'A machine offers you a life that will feel completely real, and reliably happy, forever. Once inside, you will not know it isn’t real. Would you step in?',
+        'A warm alcove in the cold machinery, upholstered in a light that remembers summer. In the center: a pod, open, shaped exactly like relief. A brass plaque, recently polished, reads: a perfect life, indistinguishable from real, guaranteed happy. Your brain will never know. That is the feature.',
+        'Usher: This is the best thing we offer. The simulations are flawless — love, meaning, small problems designed to resolve exactly when they should. Nobody who has entered has ever complained afterward.',
+        'Usher: Consider, for a moment, why that last sentence is the most frightening one in this entire facility. Take your time. The pod has all the time there is.',
       ],
       choices: [
         {
@@ -145,7 +145,7 @@ export const experienceMachine: Room = {
           outcome: [
             'The pod closes like a kind decision. And then — summers. A porch you own. Work that matters and finishes. Someone laughing at your third-best joke because they know the top two are coming.',
             'It is, in every measurable respect, the best stretch of existence you have ever had. You surface from it only because this facility, unlike the retail model, has a return policy.',
-            'USHER: (helping you out) Lovely, wasn’t it. Do notice the tense you just used — “wasn’t.” Everything in there conjugates that way, eventually. Even so: you now know what perfect feels like. Some travelers find that clarifying. Others find it a splinter. We’ll see which you are.',
+            'Usher: Lovely, wasn’t it. Notice the tense you just reached for — “wasn’t.” Everything in there ends up in the past tense, eventually. Still: you know now what perfect feels like. For some travelers that clarifies everything after. For others it lodges like a splinter. We will see which you are.',
           ],
         },
         {
@@ -155,7 +155,7 @@ export const experienceMachine: Room = {
           effects: { lucidity: 18, axes: { controlAcceptance: -8, reasonFeeling: -8 } },
           outcome: [
             'You step back. The pod does not sulk; perfection has excellent manners.',
-            'USHER: Interesting. You chose a reality that is, at this very moment, a burning metaphysical bureaucracy — over guaranteed bliss. Either you believe contact with the real is worth more than any amount of feeling good, or you simply don’t trust products with an infinity symbol in the model number. Both are defensible. One is philosophy and one is consumer protection.',
+            'Usher: You chose a reality that is, at this very moment, a burning bureaucracy of the metaphysical — over a guaranteed bliss. Either contact with the real is worth more to you than any amount of feeling good, or you simply do not trust a product this perfect. Both are defensible reasons. Only one of them is philosophy.',
           ],
         },
         {
@@ -166,7 +166,7 @@ export const experienceMachine: Room = {
           outcome: [
             'Five minutes, you say. The pod, which has heard this before, says nothing.',
             'Inside, five minutes lasts two years. Good years. When the lid opens you come out with the specific grief of a life that never happened — homesick for people who are still in there, being perfectly imaginary without you.',
-            'USHER: The trial is the whole product, friend. Nobody buys the machine. They buy the next five minutes, repeatedly, forever. You’re out, which puts you in rare company. Walk it off. The homesickness fades to a shimmer. The shimmer, I’m told, never quite does.',
+            'Usher: The trial is the whole product. Nobody buys the machine outright — they buy the next five minutes, over and over, forever. You are out, which puts you in rarer company than you know. The homesickness will fade to a shimmer. The shimmer, I am told, never quite leaves.',
           ],
         },
       ],
@@ -197,7 +197,7 @@ export const ship: Room = {
           s.memoryLost
             ? 'One plank they reach for is simply not there — a gap with scorched edges, where the photograph used to anchor something. The craftsmen confer, shrug, and fit a blank board in the space. The assembly in the corner has the same hole. It touches the gap at the same moment you do.'
             : 'The craftsmen work from a manifest, and the manifest, you notice, is a photograph album. Every plank has a picture. Every picture has a witness. The assembly in the corner is checking the album too, and nodding at the same pages.',
-        'USHER: (as foreman, hardhat over halo) Routine maintenance. Happens to everyone, continuously, from birth — we just run it slower out there so nobody makes a scene. Now then, the exit paperwork requires an answer: when both of you are finished — the maintained one and the reassembled one — which walks out of here as you?',
+        'Usher: Routine maintenance. It happens to everyone, continuously, from birth onward — we simply run it slower out there, so nobody makes a scene of it. Now: when both are finished, the maintained one and the reassembled one, which of them walks out of here as you?',
       ],
       choices: [
         {
@@ -206,7 +206,7 @@ export const ship: Room = {
           hint: 'The unbroken thread.',
           effects: { lucidity: 12, axes: { reasonFeeling: -8 } },
           outcome: [
-            'USHER: The classical position! Gradual replacement preserves the vessel; the pile in the corner is just very organized salvage. Aristotle would sign off. The corner is glaring at you, by the way, with your own eyes. It also considers itself the classical position.',
+            'Usher: The classical position. Gradual replacement preserves the vessel; the pile in the corner is simply organized salvage. The corner, I should mention, is glaring at you with your own eyes. It holds the same position about itself.',
           ],
         },
         {
@@ -215,7 +215,7 @@ export const ship: Room = {
           hint: 'The reassembled parts.',
           effects: { lucidity: 15, axes: { reasonFeeling: -12 } },
           outcome: [
-            'USHER: Hobbes’s favorite headache — if someone rebuilds the ship from the original planks, the “continuous” one suddenly looks like a well-documented impostor. You’ve just voted your own bench-self a replica. It heard you. This will be an awkward corridor.',
+            'Usher: Hobbes’s old headache. Rebuild the ship from the discarded planks, and the “continuous” one starts to look like a well-documented impostor. You have just voted your own bench-self a replica. It heard you say so. The corridor ahead will be an awkward one.',
           ],
         },
         {
@@ -225,7 +225,7 @@ export const ship: Room = {
           effects: { lucidity: 22, axes: { controlAcceptance: 8 } },
           outcome: [
             'The workshop goes still. Both of you — bench and corner — turn to look at you, the third, who just declared vacancy.',
-            'USHER: (removing hardhat, sincerely) Now that is the expensive answer. If the self is a story and not a substance, then nothing was lost on that bench — and nothing was ever safe, either. Most travelers can’t hold that thought for more than a corridor. The ones who can tend to leave here lighter. Lighter is not the same as happier. Usually it’s better.',
+            'Usher: That is the costly answer. If the self is a story and not a substance, nothing was lost on that bench — and nothing was ever safe there, either. Most travelers cannot hold that thought past this corridor. The ones who can tend to leave lighter. Lighter is not the same as happier. It is usually better.',
           ],
         },
         {
@@ -235,7 +235,7 @@ export const ship: Room = {
           effects: { lucidity: 6, axes: { controlAcceptance: -12 } },
           outcome: [
             'The craftsmen stop, kindly, the way nurses stop. The foreman consults the manifest.',
-            'USHER: “Exactly as you were.” As of when? This morning? The fire? Age nine? You’ve been the renovation the whole time, friend — there is no factory setting, only earlier construction sites. We can stand here not-replacing you as long as you like. The you doing the liking will keep changing anyway. It’s the one feature we’ve never managed to disable.',
+            'Usher: “Exactly as you were” — as of when? This morning? The fire? Nine years old? You have been the renovation the entire time, traveler; there is no factory setting, only earlier construction sites. We can stand here and replace nothing, for as long as you like. The one doing the liking will keep changing regardless. It is the one feature we have never found a way to disable.',
           ],
         },
       ],
@@ -260,7 +260,7 @@ export const casinoPascal: Room = {
       beats: [
         'A casino has been installed in the machinery, all brass and green felt, lit like a sermon. Every game is unattended except one.',
         'At the center table stands the Usher — horns polished, halo in a coat-check somewhere — dealing cards to nobody with tremendous professionalism.',
-        'USHER: (Devil mode, unmistakably enjoying it) One table, one wager, house classic. Bet that God exists. If He does: infinite payout — eternity, bliss, the works. If He doesn’t: you lose nothing. A finite stake against an infinite return. Mathematically, friend, you cannot afford NOT to bet. House rules.',
+        'Usher: One table. One wager. Bet that God exists. If He does, the payout is infinite — eternity, entire. If He does not, you lose nothing at all. A finite stake against an infinite return. Mathematically, you cannot afford not to bet.',
         'The chips are small and warm, and you realize each one is stamped with a year of your life. You appear to have a pocketful.',
       ],
       choices: [
@@ -271,8 +271,8 @@ export const casinoPascal: Room = {
           effects: { lucidity: 8, axes: { reasonFeeling: -4 } },
           outcome: [
             'You slide the chips across. The Usher makes them vanish with the smoothness of long practice.',
-            'USHER: Splendid. Now — small print. Which God did you just bet on? I ask because the vault has many windows, and a wager placed to hedge is visible from all of them. If He’s the sort who reads motives, you’ve just handed Him an actuarial table with your name on it. Faith as portfolio strategy. He may pay out. He may laugh. Historically, laughing is free.',
-            'USHER: (pocketing one chip) Handling fee. For the other guy. Which, tonight, is also me. Efficient, no?',
+            'Usher: Now, the small print. Which God did you just bet on? I ask because the vault has a great many windows, and a wager placed as a hedge is visible from every one of them. If He reads motives — and most of them are said to — you have just handed Him an actuarial table with your name at the top. He may pay out. He may simply laugh. Historically, laughing costs nothing.',
+            'Usher: A handling fee. For the house on the other side of the ledger — which, tonight, happens also to be me.',
           ],
         },
         {
@@ -282,7 +282,7 @@ export const casinoPascal: Room = {
           effects: { lucidity: 12, axes: { reasonFeeling: -6 } },
           outcome: [
             'You keep your chips. The Usher nods, unoffended — the house profits from refusals too, in ways the house declines to explain.',
-            'USHER: Fair. You can’t make yourself believe for money any more than you can fall in love for tax purposes. Pascal knew that, by the way — his actual advice was subtler: act as if, keep the pews warm, and let belief grow in like a habit. Whether that’s wisdom or self-hypnosis with incense is question two. Nobody stays for question two. They’re always off to question one at some other table.',
+            'Usher: Fair. You cannot make yourself believe for money, any more than you could love someone for the tax benefit. Pascal knew this — his real advice was subtler than the wager: act as if, and let belief arrive the way a habit does. Whether that is wisdom or a kind of self-persuasion, I will leave for you to decide elsewhere.',
           ],
         },
         {
@@ -292,8 +292,8 @@ export const casinoPascal: Room = {
           effects: { lucidity: 25, flags: ['sharp-gambler'], axes: { reasonFeeling: -8 } },
           outcome: [
             'The Usher stops shuffling. In the sudden quiet you can hear the casino recalculating you.',
-            'USHER: (slowly, with real pleasure) Ohh. There it is. The only question the table can’t cover. The wager pretends there are two outcomes — my God, or nothing. But seat a thousand gods, each with an infinite payout and mutually exclusive terms, and the mathematics jams: infinity divided by everything, times whatever the dealer isn’t telling you. The bet was never about God. It was about who got to design the menu.',
-            'USHER: House rule seventeen: anyone who audits the house drinks free. (produces something that steams) You’ve earned this. Don’t ask what’s in it. That’s question two.',
+            'Usher: There it is. The one question the table cannot cover. The wager pretends there are only two outcomes — this God, or none. Seat a thousand gods at the table instead, each with an infinite payout and terms that exclude all the others, and the arithmetic seizes entirely. The bet was never truly about God. It was about who was permitted to write the menu.',
+            'Usher: House rule: anyone who audits the house is owed something for it. (something warm changes hands) You have earned this much, at least.',
           ],
         },
         {
@@ -303,8 +303,8 @@ export const casinoPascal: Room = {
           effects: { lucidity: 10, axes: { selfOthers: -6 } },
           outcome: [
             'The Usher’s grin achieves structural significance.',
-            'USHER: A bet on the visible! I admire the epistemology and question the judgment. Yes, I’m demonstrably here — but think it through: if I exist, the other position gains considerable inferential support. You’ve bet on the doorman as evidence against the building.',
-            'USHER: Still. First traveler in an eon to bet on present company. (slides one chip back) Loyalty rate. Don’t spend it on anything eternal.',
+            'Usher: A bet on the visible. I admire the reasoning and question the judgment — yes, I am demonstrably here, but consider what follows: if I exist, the other position gains a great deal of support by implication. You have bet on the doorman as evidence against the house he works for.',
+            'Usher: Still — you are the first traveler in a long while to bet on present company. (one chip slides back across the felt) Call it a loyalty rate. I would not spend it on anything eternal.',
           ],
         },
       ],
@@ -331,7 +331,7 @@ export const omelas: Room = {
         'Through the door: a city in summer, mid-festival. Bells, races, bread you can smell from here. The happiness is not naive — you can feel that the citizens are intelligent, gentle, unashamed of joy. It is, visibly, the best place that has ever existed.',
         'And because this room believes in disclosure, you also know — the way one knows in dreams — about the basement.',
         'In a cellar under one of the beautiful buildings sits a child, in the dark, in filth, and the city’s whole shining arithmetic depends on it staying there. Everyone knows. Knowing is the tuition. Nothing can be done that would not collapse the sum: comfort the child, and the bells stop everywhere, forever.',
-        'USHER: (quietly, no jokes in stock) They all get shown the basement at a certain age. Most weep, go home, and learn to hear the bells again. Some walk out of the city and don’t come back. Nobody — I want to be precise — nobody has ever fixed it. The room isn’t offering you a fix either. It’s offering you a position.',
+        'Usher: They are all shown the basement, at a certain age. Most weep, go home, and learn to hear the bells again. Some walk out of the city and do not return. Nobody — I want to be precise about this — nobody has ever fixed it. This room does not offer you a fix either. It offers you a position.',
       ],
       choices: [
         {
@@ -352,7 +352,7 @@ export const omelas: Room = {
           outcome: [
             'You walk out through the beautiful gates while the festival is still audible, which is the hardest acoustic in existence.',
             'The road beyond is dark and unpromising and does not thank you. The child, you understand with each step, is still in the basement. Your leaving fed no one, freed no one, proved nothing to anybody — except to the only witness this place has established you carry everywhere.',
-            'USHER: (walking a while beside you) For the record, the ones who walk — nobody knows where they go. Le Guin herself declined to say. But they all walk like you’re walking now: like a person who has decided their soul is not for sale even when the sale would be painless. It’s not useful. It may still be necessary.',
+            'Usher: (walking beside you a while) For the record — nobody knows where the ones who walk end up. The one who first told this story declined to say. But they all walk the way you are walking now: like someone who has decided their soul is not for sale, even when the sale would be painless. It is not useful. It may still be necessary.',
           ],
         },
         {
@@ -389,8 +389,8 @@ export const courtOfUsher: Room = {
       beats: [
         'A courtroom assembled from the machinery — the judge’s bench is a decommissioned altar, the witness stand a confession booth turned inside out.',
         'The Usher occupies every position at once, with visible strain: prosecution (horns forward), defense (halo tilted sympathetically), and defendant (both, flickering).',
-        'USHER: (banging a gavel, then objecting to it) The case is existential and the docket is backed up eleven millennia, so we’ll be brief. You are the judge. Yes, you. The dissolved one. You’re the only party here without a conflict of interest, which tells you everything about this jurisdiction.',
-        'USHER: (as defendant, suddenly quiet and serious) Here is the charge I bring against myself. When I say a thing is good — is it good because I command it? Or do I command it because it is good? Choose carefully. My entire employment structure depends on your answer. Possibly also the concept of employment. Possibly the concept of concepts.',
+        'Usher: The case is existential, and I will keep this brief. You are the judge. Yes — you, the dissolved one. You are the only party in this room without a conflict of interest, which tells you a great deal about this particular court.',
+        'Usher: (quieter now, as the defendant) Here is the charge I bring against myself. When I call a thing good — is it good because I have commanded it? Or do I command it because it is already good? Choose carefully. A great deal rests on your answer. Possibly more than you would guess.',
       ],
       choices: [
         {
@@ -399,8 +399,8 @@ export const courtOfUsher: Room = {
           hint: 'Divine command, straight up.',
           effects: { lucidity: 8, axes: { controlAcceptance: 6 } },
           outcome: [
-            'USHER: (prosecution, delighted; defense, horrified) Then hear the sentence that follows: if I commanded cruelty tomorrow — the torture of innocents, on letterhead — it would thereby be GOOD. Same signature, same authority. “Good” would mean nothing but “ordered.”',
-            'USHER: You’ve made me omnipotent and made goodness arbitrary in a single ruling. Half of me is thrilled. The other half wants you to know that the half that’s thrilled is exactly the half you should be worried about.',
+            'Usher: Then hear what follows from it. If I commanded cruelty tomorrow — the suffering of the innocent, made official — it would, by your own ruling, be good. Same signature. Same authority. “Good” would mean nothing more than “ordered.”',
+            'Usher: You have made me absolute, and made goodness arbitrary, in a single ruling. Part of me finds that thrilling. That is precisely the part you should be worried about.',
           ],
         },
         {
@@ -409,8 +409,8 @@ export const courtOfUsher: Room = {
           hint: 'The standard stands above the throne.',
           effects: { lucidity: 15, axes: { reasonFeeling: -6 } },
           outcome: [
-            'USHER: (defense, relieved; prosecution, filing an appeal) So goodness exists independently, and I merely — enforce it. Announce it. Do the paperwork.',
-            'USHER: (both roles at once, staring at you) Then I’m middle management. The good is my employer, and worship is a category error — you should be worshipping the standard and sending ME a card at holidays. Do you know how long I’ve suspected this? Eleven millennia. It’s why I drink on even days. Which, before you ask, is also both days.',
+            'Usher: So goodness exists on its own, and I merely enforce it. Announce it. Do the paperwork of it.',
+            'Usher: Then I answer to something above me. The good is what I serve, and any reverence aimed at me instead of it has gone to the wrong party entirely. I have suspected as much for a very long time.',
           ],
         },
         {
@@ -421,7 +421,7 @@ export const courtOfUsher: Room = {
           outcome: [
             'The courtroom stops. Even the machinery leans in.',
             'You lay it out: horn one makes goodness arbitrary — mere decree. Horn two makes the divine redundant — a herald for a standard it didn’t author. But both horns assume “good” is a finished thing waiting to be located, above the throne or below it. Define what goodness IS — flourishing, love’s structure, the shape of a life that works — and the dilemma stops goring and starts describing: perhaps the divine and the good aren’t ranked, but identical, or entangled past separating.',
-            'USHER: (removing, slowly, both the horns and the halo, holding them in the same hand) Twenty-two thousand travelers. Four have done that. The other three are... well, you may meet one, depending on your route. (leaning close, quieter than the room) I’ll remember this. This place forgets everything eventually — every plank, every photograph. But I’ll remember this.',
+            'Usher: (setting down both the horns and the halo, for a moment, in the same hand) Very few travelers have said that to me. This place forgets nearly everything, eventually — every plank, every photograph. I do not think I will forget this.',
           ],
         },
         {
@@ -430,8 +430,8 @@ export const courtOfUsher: Room = {
           hint: 'The atheist gambit, in court.',
           effects: { lucidity: 10, axes: { reasonFeeling: -4 } },
           outcome: [
-            'USHER: (checking under the bench, patting himself down) Hm. The evidence is against you locally, but I take the point globally.',
-            'USHER: For what it’s worth, that IS a position with standing — it just relocates the problem instead of solving it. Strike the commander from the dilemma and the hard question remains, wearing different robes: is anything good, and says who? You’ve dismissed the defendant. The charge is still at large. (stamping a form) Motion noted. HR takes your position too, incidentally. It’s why our meetings are so short.',
+            'Usher: The evidence is against you, locally. But I take the point, globally.',
+            'Usher: For what it is worth, that is a position with real standing. It relocates the problem rather than solving it — strike the commander from the dilemma, and the hard question remains, wearing different robes: is anything good at all, and who says so? You have dismissed the defendant. The charge is still at large.',
           ],
         },
       ],
@@ -440,7 +440,7 @@ export const courtOfUsher: Room = {
   fieldNote: {
     title: 'The Euthyphro Dilemma',
     thinkers: 'Plato · divine command theory · natural law',
-    body: 'In Plato’s Euthyphro, Socrates corners a confident young man on the courthouse steps: is the pious loved by the gods because it is pious, or pious because they love it? Twenty-four centuries later the horns are still sharp. Take the first horn — good because commanded — and morality becomes arbitrary decree: had the commands been cruel, cruelty would be good, and “God is good” collapses into “God is God.” Take the second — commanded because good — and the standard of goodness stands above the divine, making the commander a messenger and the worship misdirected. Divine command theorists have spent lifetimes between the horns; the most durable escape, from Aquinas to modern natural-law thought, is to deny the premise that goodness and the divine nature are two things that could be ranked at all — the good is not decreed nor obeyed but constitutive, the grain of reality itself. Whether that dissolves the dilemma or merely renames it is, as the Usher would say, question two.',
+    body: 'In Plato’s Euthyphro, Socrates corners a confident young man on the courthouse steps: is the pious loved by the gods because it is pious, or pious because they love it? Twenty-four centuries later the horns are still sharp. Take the first horn — good because commanded — and morality becomes arbitrary decree: had the commands been cruel, cruelty would be good, and “God is good” collapses into “God is God.” Take the second — commanded because good — and the standard of goodness stands above the divine, making the commander a messenger and the worship misdirected. Divine command theorists have spent lifetimes between the horns; the most durable escape, from Aquinas to modern natural-law thought, is to deny the premise that goodness and the divine nature are two things that could be ranked at all — the good is not decreed nor obeyed but constitutive, the grain of reality itself. Whether that dissolves the dilemma or merely renames it is, as the Usher would say, a question for another room.',
   },
 };
 

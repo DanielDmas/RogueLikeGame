@@ -11,6 +11,13 @@ export interface Settings {
   language: 'en' | 'cs' | 'fa';
 }
 
+/** Cosmetic only — no mechanical effect. Empty name means "not chosen yet". */
+export interface Persona {
+  preset: string;
+  name: string;
+  blurb: string;
+}
+
 export interface Profile {
   /** in-progress run, if any */
   run: RunState | null;
@@ -22,6 +29,7 @@ export interface Profile {
   lastMessage: string | null;
   runsCompleted: number;
   settings: Settings;
+  persona: Persona;
 }
 
 export function defaultProfile(): Profile {
@@ -43,6 +51,7 @@ export function defaultProfile(): Profile {
       textVersion: 'v2',
       language: 'en',
     },
+    persona: { preset: '', name: '', blurb: '' },
   };
 }
 

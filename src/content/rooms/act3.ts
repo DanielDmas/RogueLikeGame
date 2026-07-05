@@ -20,7 +20,7 @@ export const teleporter: Room = {
             : choseIn(s, 'ship', 'neither')
               ? 'You remember the workshop — “me was never a thing that persists,” you said, to two of yourself. The booth has apparently read your file. It hums as if to say: prove it.'
               : 'Somewhere behind you, in a workshop that smelled of cedar, craftsmen are probably still arguing about planks. The booth is the same argument, restated with plumbing.',
-        'USHER: (leaning against the booth) I take it daily. Or someone does — the fellow who arrives has my memories and my grievances and files my reports, so the department has stopped asking. The gap doesn’t care about the metaphysics, by the way. The gap only cares that there’s no bridge.',
+        'Usher: I take it daily. Or someone does — the one who arrives has my memories and my grievances and files my reports, so nobody here asks anymore. The gap does not care about the metaphysics. The gap only cares that there is no bridge.',
       ],
       choices: [
         {
@@ -31,7 +31,7 @@ export const teleporter: Room = {
           outcome: [
             'The doors close. There is no pain, no light, no tunnel — there is only the sign on the far side, which reads: THANK YOU. And you remember reading the first sign, and you remember deciding, and you feel exactly like someone who walked through.',
             'Which is, of course, precisely what the sign said the copy would feel. You check your hands. They are very convincing. You are either the same person or the best evidence that “same person” was always a feeling wearing a fact’s clothes.',
-            'USHER: (already on the far side, or an Usher is) See? Painless. Whether anyone survived it is a question with no remaining witnesses. Welcome, either way. Both of you.',
+            'Usher: (already on the far side — or an Usher is) Painless, you see. Whether anyone survived it is a question with no remaining witness to answer it. Welcome, either way. Both of you.',
           ],
         },
         {
@@ -42,7 +42,7 @@ export const teleporter: Room = {
           outcome: [
             'You search. You search properly — the walls, the mirror-floor, the booth’s service hatch. The room watches you with the patience of something that has hosted this exact search many times.',
             'There are no stairs. There were never stairs. The room is honest about its one door, and the door is the booth. You stand at the gap a long while, and then — because forward is the only direction this place sells — you step in anyway, having gained nothing except the certainty that you exhausted the alternatives.',
-            'USHER: For what it’s worth, the searchers arrive on the far side identical to the trusters. But they arrive having fought, and some travelers need the receipt. You kept the thread as long as the thread existed. No one can do more than that. Whether anyone can do even that is the joke of the room.',
+            'Usher: For what it is worth — the ones who search arrive on the far side identical to the ones who simply trusted. But they arrive having fought for it, and some travelers need exactly that receipt. You kept the thread as long as the thread existed. No one can do more than that. Whether anyone can do even that much is the question this room was built to ask.',
           ],
         },
         {
@@ -53,7 +53,7 @@ export const teleporter: Room = {
           outcome: [
             'The booth, caught off guard, consults its own manual. Copy mode exists. Of course it exists — destruction was never technically necessary; it was a courtesy, to keep the numbers tidy.',
             'The far-you appears, checks its hands with your exact gesture, and looks across the gap at you. For one long moment you are both silent, because you both know: whatever you feel right now — this vertigo of being the original — the far one feels it too, symmetrically, and calls itself the original. There is no experiment either of you could run to settle it.',
-            'USHER: (applauding slowly) And THAT is the scalpel. If the copy is you when you’re destroyed, why isn’t it you when you’re not? Parfit found that fork forty years ago and it never stopped bleeding. (to the far one) He’ll take the booth now. (to you) You will, you know. There’s still no bridge, and now you’ve met the fellow who’ll finish your journey. Be kind to him. He’s had a strange day too.',
+            'Usher: And there is the scalpel, precisely. If the copy is you when you are destroyed, why is it not you when you are not? A philosopher found that fork a great many years ago, and it has never stopped bleeding. (to the far one) You will take the booth now. (to you) And so, in time, will you. There is still no bridge — only, now, the one who will finish your crossing for you. Be kind to him. He has had a strange day too.',
           ],
         },
       ],
@@ -79,7 +79,7 @@ export const editor: Room = {
         'A study, lamp-lit, the kind of quiet that has furniture in it. On the desk: a single manila folder with your name on it — your real one, the one you currently cannot remember, which the folder tactfully keeps face-down.',
         'Inside the folder is your worst memory. The room does not need to tell you which one. Your body has already told you: the shoulders first, then the stomach, then the weather of the face.',
         'Beside the folder, a red pen. The instructions are engraved on the pen itself, small: ONE STRIKE REMOVES IT. THE EVENT WILL HAVE STILL HAPPENED. YOU WILL SIMPLY NEVER HAVE BEEN THERE.',
-        'USHER: (in a librarian’s cardigan, shelving other people’s folders) No trick this time. The pen works. No monkey’s paw, no ironic sting hidden in clause nine. The only cost is the one printed on the tin: you, minus that. Take all the time you need. The lamp is patient and so, unusually, am I.',
+        'Usher: No trick, this time. The pen works exactly as described — no hidden clause, no ironic sting. The only cost is the one printed on the tin: you, minus that. Take whatever time you need. The lamp is patient. So, for once, am I.',
       ],
       choices: [
         {
@@ -90,7 +90,7 @@ export const editor: Room = {
           outcome: [
             'The pen is light. The line is short. The relief is immediate and enormous and real — this room does not cheat, and the weight lifts like a hand taken off your chest after years.',
             'And then, over the following corridors, you notice the edges of the hole. A certain kind of stranger’s grief you used to recognize on sight — now just weather on a face. A patience you had, hard-won from somewhere, now unfunded. The wound is gone. So is what the wound was holding up.',
-            'USHER: (gently, filing the folder’s empty jacket) No judgment. Genuinely. Some loads are load-bearing and some are just load, and not even I can always tell which from the outside. You made the call from inside. That was the only seat with a view.',
+            'Usher: No judgment. Genuinely. Some weight is load-bearing, and some is simply weight, and even I cannot always tell which from the outside. You made the call from the only seat that had a view of it.',
           ],
         },
         {
@@ -101,7 +101,7 @@ export const editor: Room = {
           outcome: [
             'You close the folder and slide it back across the desk, and the room accepts it with something like respect. The weight settles back where it always sat. It is not lighter. That was never the offer.',
             'But something has changed, minutely: you have now chosen it. The memory used to be something that happened to you. As of tonight it is something you carry on purpose — same stone, different grip.',
-            'USHER: For the record, that’s the difference between a scar and a wound. Same tissue. One of them is finished being written by someone else.',
+            'Usher: For the record — that is the difference between a scar and a wound. Same tissue. One of them has stopped being written by someone else.',
           ],
         },
         {
@@ -112,7 +112,7 @@ export const editor: Room = {
           outcome: [
             'You open the folder. Reading it is exactly as bad as you feared and slightly different than you remembered — the memory, it turns out, had been redacting itself for years, sanding the worst edge, sharpening a different one. The document is the uncut version. You read to the end. You did not know you could.',
             'And having read it, the pen looks different. Smaller. The memory is still terrible, but it is now terrible and witnessed — by the one witness whose testimony you can never lose. You leave it in the folder, unstruck. Not because it doesn’t hurt. Because it’s true, and you were there, and someone should have been.',
-            'USHER: (quietly) That’s the rarest one, you know. Most people choose between carrying and cutting. Almost nobody thinks to finally READ the thing. The pen’s been here eleven millennia. The chair you just sat in — that’s the actual instrument.',
+            'Usher: (quietly) That is the rarest choice. Most travelers choose between carrying it and cutting it out. Almost nobody thinks to finally read the thing. The pen has sat on this desk a very long time. The chair you just sat in was always the real instrument.',
           ],
         },
       ],
@@ -309,9 +309,9 @@ export const freeWill: Room = {
       beats: [
         'A waiting room again — bookending the first, but this one has a row of large friendly buttons along the wall: blue, red, green, and one unlabeled.',
         'Above the buttons, a screen. On the screen, a betting board. The Usher stands beside it with a bookmaker’s visor and an expression of unbearable serenity.',
-        'USHER: House game. Simple rules: you press any button you like, whenever you like, entirely of your own free will. I merely write down, in advance, which one you’ll press. (taps the board, where something is already written) I have never lost. I would apologize, but you were always going to hear me say that.',
+        'Usher: A simple game. Press any button you like, whenever you like, entirely of your own free will. I have already written down, in advance, which one you will press. I have never once lost. I would apologize for that, but you were always going to hear me say so.',
         'You reach — just to test it — and the BLUE button lights up, warmly, a full second before your hand commits. You had not decided yet. You would have sworn you had not decided yet.',
-        'USHER: (reading the board) “Blue, first, to test it.” (a bell rings somewhere, scoring the point) You’ll now feel briefly rebellious and consider the red one. Take your time. The board has already taken it.',
+        'Usher: (reading the board) “Blue, first — to test it.” You will now feel briefly rebellious, and consider the red one. Take your time with that. The board already has.',
       ],
       choices: [
         {
@@ -321,7 +321,7 @@ export const freeWill: Room = {
           effects: { lucidity: 12, axes: { controlAcceptance: -8 } },
           outcome: [
             'You slam red. The bell rings. The board, unfolded one line further, reads: “Red, defiantly, believing this disproves something.”',
-            'USHER: The rebellion was in the forecast, friend — rebellion is the most predictable weather you have. Determined systems love a defiance subroutine; it lets them feel like exceptions. (kindly) Don’t be embarrassed. The red button is the most-pressed button in this room by a wide margin. You are in the company of every interesting person I’ve met.',
+            'Usher: The rebellion was in the forecast, traveler — it is the most predictable weather you have. Every determined system seems to run a little defiance of its own; it is what lets it feel like an exception. Don’t be embarrassed. The red button is pressed more than any other in this room. You are in good company.',
           ],
         },
         {
@@ -331,7 +331,7 @@ export const freeWill: Room = {
           effects: { lucidity: 12, axes: { controlAcceptance: 4 } },
           outcome: [
             'You fold your arms. Minutes pass. The room is very good at minutes.',
-            'USHER: (turning the board around, where it has said, all along: “Will attempt not-pressing. Adorable. Est. duration: four minutes.”) Abstention is also a move, you see — the board covers the whole option space, including the pride of standing outside it. (the bell rings, apologetically) Four minutes almost exactly. You should be pleased; most people crack at two.',
+            'Usher: (turning the board around; it has read, all along, “will attempt not pressing — estimated duration, four minutes”) Abstention is also a move. The board accounts for the whole option space, including the pride of standing outside it. Four minutes, almost exactly. Most travelers crack at two.',
           ],
         },
         {
@@ -341,8 +341,8 @@ export const freeWill: Room = {
           effects: { lucidity: 25, axes: { controlAcceptance: 10 } },
           outcome: [
             'You press blue — the exact button the board named — not in surrender but with the deliberateness of a signature. The bell rings. It sounds, this once, less like scoring and more like agreement.',
-            'USHER: (taking off the visor) And there it is. The exit was never beating the board. The exit is noticing that “it was determined” and “I chose it” might be two descriptions of one event — the forecast and the weather, arguing over who made it rain. Your choosing IS part of the machinery; the machinery runs THROUGH the choosing, not around it.',
-            'USHER: (tearing the betting slip in half) I still won, technically. But you’re the first today to make winning feel beside the point, which is the only defeat available to me. The door’s open. It was always going to be.',
+            'Usher: There it is. The way out was never beating the board. It is noticing that “it was determined” and “I chose it” may be two descriptions of the same event — the forecast and the weather, arguing over which one made it rain. Your choosing is part of the machinery. The machinery runs through the choosing, not around it.',
+            'Usher: I still won, technically. But you are the first today to make the winning feel beside the point, which is the nearest thing to a defeat I am able to have. The door is open. It was always going to be.',
           ],
         },
         {
@@ -352,7 +352,7 @@ export const freeWill: Room = {
           effects: { lucidity: 15, axes: { reasonFeeling: 4 } },
           outcome: [
             'You press the unlabeled button. Somewhere deep in the facility, a kettle begins to boil.',
-            'USHER: That’s the tea button. (checking the board) Which — yes — is written here too: “Will choose mystery over meaning. Takes milk.” (a cup arrives on a small track, rattling with municipal dignity) The unlabeled option feels freest, doesn’t it? Do notice that a menu including “none of the above” is still a menu. Drink up. You chose it, and it was always coming, and it’s quite good tea. All three facts fit in one cup. That’s the entire lesson, actually, and cheaper than the seminar.',
+            'Usher: That is the tea button. It is written on the board too: “will choose mystery over meaning; takes milk.” The unlabeled option feels freest, doesn’t it. Notice, though, that a menu with “none of the above” printed on it is still a menu. Drink up. You chose it, and it was always coming, and it is quite good tea. All three of those are true at once. That is the whole lesson, and cheaper than a seminar.',
           ],
         },
       ],

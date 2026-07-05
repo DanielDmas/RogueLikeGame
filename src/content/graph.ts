@@ -1,4 +1,6 @@
 import type { ActId } from './schema';
+import { t } from './text/resolver';
+import { actNameKey } from './text/keys';
 
 /** Optional-room pools per act; the player completes OPTIONAL_PER_ACT of them, then the gate. */
 export const ACT_POOLS: Record<Exclude<ActId, 0 | 4>, string[]> = {
@@ -26,10 +28,15 @@ export const PROLOGUE = 'waiting-room';
  */
 export const OPTIONAL_PER_ACT: Record<1 | 2 | 3, number> = { 1: 3, 2: 3, 3: 2 };
 
-export const ACT_NAMES: Record<ActId, string> = {
+const ACT_NAMES_EN: Record<ActId, string> = {
   0: 'Prologue — The Waiting Room',
   1: 'Act I — The Shallows',
   2: 'Act II — The Machinery',
   3: 'Act III — The Mirror',
   4: 'Act IV — The Threshold',
 };
+
+/** Localized act name (same wording across text versions; translated per language). */
+export function actName(act: ActId): string {
+  return t(actNameKey(act), ACT_NAMES_EN[act]);
+}

@@ -8,12 +8,16 @@ import './styles.css';
 
 import { LocalSaveStore } from './engine/localSave';
 import { Game } from './engine/flow';
+import { setLocale } from './content/text';
+import { applyLocaleToDocument } from './ui/locale';
 
 async function boot() {
   const canvas = document.getElementById('scene') as HTMLCanvasElement;
   const ui = document.getElementById('ui') as HTMLElement;
   const store = new LocalSaveStore();
   const profile = await store.load('traveler');
+  setLocale(profile.settings.language, profile.settings.textVersion);
+  applyLocaleToDocument(profile.settings.language);
   const game = new Game(canvas, ui, profile, store);
   await game.start();
 }

@@ -1,5 +1,7 @@
 import type { Choice, RunState } from '../content/schema';
 import { el } from './dom';
+import { t } from '../content/text/resolver';
+import { roomChoiceTextKey, roomChoiceHintKey, uiKey } from '../content/text/keys';
 
 export interface DoorOption {
   id: string;
@@ -19,7 +21,7 @@ export class ChoicePanel {
   }
 
   /** Presents a room's choices; resolves with the chosen one. */
-  pick(choices: Choice[], state: RunState): Promise<Choice> {
+  pick(choices: Choice[], state: RunState, roomId: string): Promise<Choice> {
     void state;
     return new Promise((resolve) => {
       const wrap = el('div', 'choices');
@@ -27,8 +29,8 @@ export class ChoicePanel {
       choices.forEach((c, i) => {
         const card = el('button', 'choice-card');
         card.append(el('span', 'num', String(i + 1)));
-        card.append(el('span', 'txt', c.text));
-        if (c.hint) card.append(el('span', 'hint', c.hint));
+        card.append(el('span', 'txt', t(roomChoiceTextKey(roomId, c.id), c.text)));
+        if (c.hint) card.append(el('span', 'hint', t(roomChoiceHintKey(roomId, c.id), c.hint)));
         card.addEventListener('click', () => {
           this.clear();
           resolve(c);
@@ -77,7 +79,9 @@ export class ChoicePanel {
         });
         wrap.appendChild(card);
       });
-      wrap.appendChild(el('div', 'door-help', 'choose a path — click a door, or press its number'));
+      wrap.appendChild(
+        el('div', 'door-help', t(uiKey('doorHelp'), 'choose a path — click a door, or press its number')),
+      );
       this.mount(wrap, doors.length, (i) => {
         onHover(null);
         this.clear();

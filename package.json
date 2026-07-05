@@ -17,6 +17,7 @@
   "dependencies": {
     "@fontsource/inter": "^5.1.0",
     "@fontsource/spectral": "^5.1.0",
+    "@fontsource/vazirmatn": "^5.2.8",
     "three": "^0.170.0"
   },
   "devDependencies": {
@@ -41,7 +42,9 @@
       "target": [
         {
           "target": "portable",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "artifactName": "ANAMNESIS-${version}-win-x64.exe"

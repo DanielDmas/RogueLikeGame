@@ -1,8 +1,8 @@
 import type { Choice, Room, RunState } from '../content/schema';
 import { allRooms } from '../content/rooms';
 import { getEnding } from '../content/endings';
-import { ACT_NAMES } from '../content/graph';
-import { actIntros, usherDoorBark } from '../content/usher';
+import { actName } from '../content/graph';
+import { actIntroText, usherDoorBark } from '../content/usher';
 import { applyEffects, newRun } from './gameState';
 import { axisTriptych, evaluateEnding } from './endings';
 import { completeRoom, makeRegistry, offeredDoors } from './storyEngine';
@@ -13,15 +13,36 @@ import { TextPanel } from '../ui/textPanel';
 import { ChoicePanel } from '../ui/choices';
 import { showFieldNote } from '../ui/fieldNote';
 import {
+  showAbout,
   showCodex,
   showEndScreen,
   showPauseMenu,
+  showPersona,
   showSettings,
   showTitle,
 } from '../ui/overlays';
 import { el } from '../ui/dom';
 import { sound } from '../audio/soundEngine';
 import { endingIcons, iconFor } from '../content/icons';
+import { setLocale, t } from '../content/text';
+import {
+  roomTitleKey,
+  roomDoorHintKey,
+  roomTeaserKey,
+  roomBeatKey,
+  roomChoiceOutcomeKey,
+  roomNoteTitleKey,
+  roomNoteThinkersKey,
+  roomNoteBodyKey,
+  endingTitleKey,
+  endingEpitaphKey,
+  endingBeatKey,
+  endingNoteTitleKey,
+  endingNoteThinkersKey,
+  endingNoteBodyKey,
+  uiKey,
+} from '../content/text/keys';
+import { applyLocaleToDocument } from '../ui/locale';
 
 const PROFILE_ID = 'traveler';
 const registry = makeRegistry(allRooms);
@@ -87,6 +108,14 @@ export class Game {
     this.director.setReducedMotion(s.reducedMotion);
     sound.setMusicEnabled(s.music);
     sound.setSfxEnabled(s.sfx);
+    setLocale(s.language, s.textVersion);
+    applyLocaleToDocument(s.language);
+  }
+
+  /** `{name}` (and future tokens) available for interpolation into any displayed text. */
+  private tokens(): Record<string, string> {
+    const name = this.profile.persona.name.trim();
+    return { name: name || t(uiKey('travellerFallback'), 'traveller') };
   }
 
   private async persist() {
@@ -103,6 +132,11 @@ export class Game {
   private async openPause() {
     const action = await showPauseMenu(this.ui);
     if (action === 'codex') await showCodex(this.ui, this.profile);
+    if (action === 'persona') {
+      this.profile.persona = await showPersona(this.ui, this.profile.persona);
+      await this.persist();
+    }
+    if (action === 'about') await showAbout(this.ui);
     if (action === 'settings') {
       this.profile.settings = await showSettings(this.ui, this.profile.settings);
       this.applySettings();
@@ -122,11 +156,20 @@ export class Game {
       const action = await showTitle(this.ui, this.profile);
       if (action === 'codex') {
         await showCodex(this.ui, this.profile);
+      } else if (action === 'persona') {
+        this.profile.persona = await showPersona(this.ui, this.profile.persona);
+        await this.persist();
+      } else if (action === 'about') {
+        await showAbout(this.ui);
       } else if (action === 'settings') {
         this.profile.settings = await showSettings(this.ui, this.profile.settings);
         this.applySettings();
         await this.persist();
       } else {
+        if (action === 'new' && !this.profile.persona.name) {
+          this.profile.persona = await showPersona(this.ui, this.profile.persona);
+          await this.persist();
+        }
         this.state = action === 'continue' && this.profile.run ? this.profile.run : newRun();
         break;
       }
@@ -145,9 +188,9 @@ export class Game {
       this.currentTheme = theme;
       sound.setAct(theme);
       await this.fade(false);
-      const intro = actIntros[this.state.act];
+      const intro = actIntroText(this.state.act);
       if (intro && this.state.act > 0) {
-        await this.text.playBeats([intro], this.state, { title: ACT_NAMES[this.state.act] });
+        await this.text.playBeats([intro], this.state, { title: actName(this.state.act) }, { tokens: this.tokens() });
         this.text.hide();
       }
     }
@@ -161,7 +204,7 @@ export class Game {
       const pending = this.state.currentRoom;
       if (pending) {
         await this.syncTheme();
-        this.hud.setAct(ACT_NAMES[this.state.act]);
+        this.hud.setAct(actName(this.state.act));
         this.hud.update(this.state.hearts, this.state.lucidity);
         await this.enterRoom(registry.get(pending));
         continue;
@@ -171,18 +214,18 @@ export class Game {
       if (doors.length === 0) return this.playEnding(evaluateEnding(this.state));
 
       await this.syncTheme();
-      this.hud.setAct(ACT_NAMES[this.state.act]);
+      this.hud.setAct(actName(this.state.act));
       this.hud.update(this.state.hearts, this.state.lucidity);
 
       const specs = doors.map((r) => ({
         id: r.id,
-        hint: r.doorHint,
-        teaser: r.teaser,
+        hint: t(roomDoorHintKey(r.id), r.doorHint),
+        teaser: t(roomTeaserKey(r.id), r.teaser),
         secret: Boolean(r.secret),
         icon: iconFor(r.id),
       }));
       this.director.showDoors(specs);
-      this.text.showBark(usherDoorBark(this.state, this.profile.runsCompleted), this.state);
+      this.text.showBark(usherDoorBark(this.state, this.profile.runsCompleted), this.tokens());
       const picker = this.choices.pickDoor(specs, (id) => {
         this.director.highlightDoor(id);
         if (id) sound.hover();
@@ -206,11 +249,16 @@ export class Game {
 
   private async enterRoom(room: Room): Promise<void> {
     const icon = iconFor(room.id);
+    const title = t(roomTitleKey(room.id), room.title);
+    const tokens = this.tokens();
     for (let i = 0; i < room.stages.length; i++) {
       const stage = room.stages[i];
-      await this.text.playBeats(stage.beats, this.state, { title: room.title, type: room.type, icon });
+      await this.text.playBeats(stage.beats, this.state, { title, type: room.type, icon }, {
+        keyOf: (bi) => roomBeatKey(room.id, i, bi),
+        tokens,
+      });
       const available = stage.choices.filter((c) => !c.available || c.available(this.state));
-      const choice: Choice = await this.choices.pick(available, this.state);
+      const choice: Choice = await this.choices.pick(available, this.state, room.id);
       sound.choice();
       const heartsBefore = this.state.hearts;
       this.state = applyEffects(this.state, choice.effects);
@@ -225,13 +273,24 @@ export class Game {
       if (room.id === 'last-message') {
         this.profile.lastMessage = choice.text.replace(/^“|”$/g, '');
       }
-      await this.text.playBeats(choice.outcome, this.state, { title: room.title, type: room.type, icon });
+      await this.text.playBeats(choice.outcome, this.state, { title, type: room.type, icon }, {
+        keyOf: (bi) => roomChoiceOutcomeKey(room.id, choice.id, bi),
+        tokens,
+      });
       if (this.state.hearts <= 0) break;
     }
     this.text.hide();
 
     if (room.fieldNote) {
-      await showFieldNote(this.ui, room.fieldNote, `Field Note · ${room.type}`);
+      await showFieldNote(
+        this.ui,
+        {
+          title: t(roomNoteTitleKey(room.id), room.fieldNote.title),
+          thinkers: t(roomNoteThinkersKey(room.id), room.fieldNote.thinkers),
+          body: t(roomNoteBodyKey(room.id), room.fieldNote.body),
+        },
+        `${t(uiKey('fieldNoteHeader'), 'Field Note')} · ${room.type}`,
+      );
     }
     if (!this.profile.codexUnlocked.includes(room.id)) {
       this.profile.codexUnlocked.push(room.id);
@@ -241,7 +300,13 @@ export class Game {
   }
 
   private async playEnding(endingId: string): Promise<void> {
-    const ending = getEnding(endingId);
+    const raw = getEnding(endingId);
+    const tokens = this.tokens();
+    const ending = {
+      ...raw,
+      title: t(endingTitleKey(endingId), raw.title),
+      epitaph: t(endingEpitaphKey(endingId), raw.epitaph),
+    };
     this.director.hideDoors();
     this.choices.clear();
     this.text.hide();
@@ -253,21 +318,30 @@ export class Game {
     await this.fade(false);
     sound.ending();
 
-    await this.text.playBeats(ending.beats, this.state, {
-      title: ending.title,
-      type: 'ENDING',
-      icon: endingIcons[endingId],
-    });
+    await this.text.playBeats(
+      raw.beats,
+      this.state,
+      { title: ending.title, type: 'ENDING', icon: endingIcons[endingId] },
+      { keyOf: (bi) => endingBeatKey(endingId, bi), tokens },
+    );
     this.text.hide();
-    if (ending.fieldNote) {
-      await showFieldNote(this.ui, ending.fieldNote, 'Ending · Field Note');
+    if (raw.fieldNote) {
+      await showFieldNote(
+        this.ui,
+        {
+          title: t(endingNoteTitleKey(endingId), raw.fieldNote.title),
+          thinkers: t(endingNoteThinkersKey(endingId), raw.fieldNote.thinkers),
+          body: t(endingNoteBodyKey(endingId), raw.fieldNote.body),
+        },
+        `${t(uiKey('endingFieldNoteHeader'), 'Ending · Field Note')}`,
+      );
     }
 
     // persist meta-progression
     this.state.finished = true;
     this.state.endingId = endingId;
-    const endingKey = `ending:${endingId}`;
-    if (!this.profile.codexUnlocked.includes(endingKey)) this.profile.codexUnlocked.push(endingKey);
+    const endingCodexKey = `ending:${endingId}`;
+    if (!this.profile.codexUnlocked.includes(endingCodexKey)) this.profile.codexUnlocked.push(endingCodexKey);
     if (!this.profile.endingsSeen.includes(endingId)) this.profile.endingsSeen.push(endingId);
     this.profile.runsCompleted += 1;
     await this.persist();
@@ -275,11 +349,11 @@ export class Game {
     const recap = this.state.visited
       .map((id) => registry.get(id))
       .map((room) => ({
-        title: room.title,
+        title: t(roomTitleKey(room.id), room.title),
         thesis:
           room.id === 'last-message' && this.profile.lastMessage
             ? `“${this.profile.lastMessage}”`
-            : room.fieldNote?.title ?? '',
+            : t(roomNoteTitleKey(room.id), room.fieldNote?.title ?? ''),
       }));
 
     for (;;) {

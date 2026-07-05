@@ -14,9 +14,9 @@ export const prologue: Room = {
         'There are chairs. There is a clock with no hands. There is a window, and behind the window there is more window.',
         'You do not remember your name. You reach for it the way a tongue reaches for a missing tooth.',
         'Something happened. A breakdown, a trip, an accident, a death — the word keeps sliding off. Whatever it was, it took the rest of you with it, and filed the pieces away somewhere.',
-        'A shadow is sitting behind the reception desk, wearing a halo and a small pair of horns. One of them flickers, like a faulty sign.',
-        'USHER: Ah. You’re awake. Wonderful. Terrible. One of those.',
-        'USHER: Welcome to processing. You’ve been dissolved — happens to the best of you, and statistically speaking, to you. The pieces of whoever you were are stored in the rooms ahead. Walk through enough of them and you may cohere again. Or not. I’m legally required to say “or not.”',
+        'A shadow sits behind the reception desk, wearing a halo and a small pair of horns. One of the horns flickers, faintly, like a sign that has almost given out.',
+        'Usher: You are awake. That is either very good news, or the worst kind. I have stopped guessing which.',
+        'Usher: This is processing. You have been dissolved — it happens, eventually, to nearly everyone, and today it happened to you. What is left of you is kept in the rooms ahead. Walk through enough of them honestly, and you may come back together. Or you may not. I am required to say so.',
       ],
       choices: [
         {
@@ -25,8 +25,8 @@ export const prologue: Room = {
           hint: 'Orientation first.',
           effects: { lucidity: 10, axes: { reasonFeeling: -4 } },
           outcome: [
-            'USHER: Between. Behind. Under. Prepositions, mostly. The signage budget was cut in the fourth millennium.',
-            'USHER: What matters is the direction: forward, through the rooms. Each holds a situation. You choose. The choosing is what re-collects you — or finishes the dissolving. We keep score with hearts and with lucidity. Lose your grip entirely and, well. There are worse endings. There are also better ones.',
+            'Usher: Between. Behind. Beneath. The words for where this is are mostly prepositions — nothing so solid as a noun.',
+            'Usher: What matters is the direction: forward, through the rooms. Each one holds a situation; you choose your way through it, and the choosing is what puts you back together — or finishes taking you apart. We keep a rough account, in hearts, and in how clearly you see. Lose your grip completely and there are worse endings than that. There are better ones, too.',
           ],
         },
         {
@@ -35,8 +35,8 @@ export const prologue: Room = {
           hint: 'Know your bureaucrat.',
           effects: { lucidity: 10, axes: { reasonFeeling: 4 } },
           outcome: [
-            'USHER: God on odd days, the Devil on even ones. I will not be telling you what day it is. Frankly, after this many shifts, neither role remembers which is which. The pay is identical: nothing, eternally.',
-            'USHER: You’ll want the rules. Rooms hold situations; situations hold choices; choices hold you. Hearts are your grip on reality — you have three. Lucidity is how honestly you look at things. Both are being watched. By me. Officially.',
+            'Usher: God, on the odd days. The Devil, on the even ones. I won’t tell you which today is — after enough centuries in this post, even I have stopped being certain which role is which.',
+            'Usher: You will want the rules, so: rooms hold situations, situations hold choices, and choices hold you. Hearts are your grip on what is real — you have three. Lucidity is how honestly you are willing to look. I keep watch on both. That is, officially, my only real duty here.',
           ],
         },
         {
@@ -45,8 +45,8 @@ export const prologue: Room = {
           hint: 'Straight to the point.',
           effects: { lucidity: 10, axes: { controlAcceptance: -6 } },
           outcome: [
-            'USHER: Everyone does. That’s the good news: “back” exists. The bad news is the route. It runs through every piece of you we have on file — the kind decisions, the cowardly ones, the ones you never let yourself finish thinking.',
-            'USHER: You can’t skip them. Believe me, people have tried. There’s a man in Room 18 who’s been trying since the Bronze Age.',
+            'Usher: Everyone wants that. Here is the good news: back exists. Here is the rest of it — the road runs through every piece of you we hold on file. The kind decisions. The cowardly ones. The ones you never once let yourself finish thinking.',
+            'Usher: There is no shortcut through them. People have tried. Nobody has yet found one.',
           ],
         },
       ],

@@ -1,10 +1,12 @@
 import type { RunState } from './schema';
+import { t } from './text/resolver';
+import { usherBarkKey, actIntroKey } from './text/keys';
 
 /** One-line Usher commentary shown at the door-choosing moment. */
 export function usherDoorBark(s: RunState, runsCompleted: number): string {
   // Second-run winks take priority once per act
   if (runsCompleted > 0 && s.visited.length <= 1) {
-    return 'USHER: Back again? The lever’s where you left it. We don’t rearrange; the rooms find that gauche.';
+    return t(usherBarkKey('second-run'), 'Usher: You have returned. The lever is where you left it; we rearrange nothing here — permanence is the one luxury the facility affords.');
   }
 
   // Axis-reactive lines
@@ -12,39 +14,44 @@ export function usherDoorBark(s: RunState, runsCompleted: number): string {
   const candidates: string[] = [];
 
   if (reasonFeeling <= -30)
-    candidates.push('USHER: You’re running this place like an audit. Admirable. The rooms have noticed, and are preparing footnotes.');
+    candidates.push(t(usherBarkKey('reason-low'), 'Usher: You weigh each room like a ledger. The rooms have taken note, and adjusted their footnotes accordingly.'));
   if (reasonFeeling >= 30)
-    candidates.push('USHER: All heart, this one. The corridors are getting warmer around you. That’s not a metaphor; facilities respond.');
+    candidates.push(t(usherBarkKey('reason-high'), 'Usher: You feel everything here, plainly. The corridor is warmer for it. That is not a figure of speech.'));
   if (selfOthers <= -30)
-    candidates.push('USHER: You’ve been keeping yourself whole. Sensible. Do check, occasionally, what the whole is for.');
+    candidates.push(t(usherBarkKey('self-low'), 'Usher: You have kept yourself intact. A reasonable instinct. Ask, now and then, what the keeping is for.'));
   if (selfOthers >= 30)
-    candidates.push('USHER: Still giving pieces of yourself away, I see. Generous. The paperwork on you is getting thinner.');
+    candidates.push(t(usherBarkKey('self-high'), 'Usher: You keep giving yourself away. It becomes you — though there will be less of you to give, eventually.'));
   if (controlAcceptance <= -30)
-    candidates.push('USHER: You fight every room. I respect it. The rooms respect it. The rooms are also, I should mention, undefeated.');
+    candidates.push(t(usherBarkKey('control-low'), 'Usher: You resist every room you enter. I admire it. The rooms are unmoved by it.'));
   if (controlAcceptance >= 30)
-    candidates.push('USHER: You’ve gone soft in the water, traveler. Floating is a skill. So is knowing where the shore went.');
+    candidates.push(t(usherBarkKey('control-high'), 'Usher: You have stopped struggling in the water, traveler. Floating is its own skill. So is knowing where the shore went.'));
 
   if (s.hearts === 1)
-    candidates.push('USHER: One heart left. I’m contractually forbidden to be worried, so consider this an expression of contractual compliance.');
+    candidates.push(t(usherBarkKey('one-heart'), 'Usher: One heart remains. I am not permitted to worry. Consider this the nearest I come to it.'));
   if (s.lucidity >= 150)
-    candidates.push('USHER: You’re unusually lucid for this depth. Keep it. Lucidity is the only currency here the house can’t counterfeit.');
+    candidates.push(t(usherBarkKey('high-lucidity'), 'Usher: You see clearly, this far down. Clarity is the one thing here that cannot be counterfeited.'));
 
   if (candidates.length > 0) return candidates[s.visited.length % candidates.length];
 
   const generic = [
-    'USHER: Choose a door. They’re all yours, which is the part nobody believes until much later.',
-    'USHER: No pressure. The doors are patient. The fog, slightly less so.',
-    'USHER: I’d tell you which one I’d pick, but I picked all of them once, and look at me.',
-    'USHER: The hints above the doors are accurate, by the way. Misleading signage was banned after an incident in the ninth millennium.',
-    'USHER: Take your time. Time here is decorative.',
+    t(usherBarkKey('generic0'), 'Usher: Choose a door. Every one of them is yours — a fact most travelers don’t believe until long after.'),
+    t(usherBarkKey('generic1'), 'Usher: Take your time. The doors keep it better than you’d expect.'),
+    t(usherBarkKey('generic2'), 'Usher: I would tell you which I’d choose, but I have chosen all of them, once. Draw your own conclusions.'),
+    t(usherBarkKey('generic3'), 'Usher: The hints above each door are honest. We do not deal in false signs here.'),
+    t(usherBarkKey('generic4'), 'Usher: There is no hurry. Time, in this place, is ornamental.'),
   ];
   return generic[s.visited.length % generic.length];
 }
 
 /** Act transition announcements. */
-export const actIntros: Record<number, string> = {
-  1: 'The corridor ahead is lined with apartment doors, each leaking the warm light of homes that were never yours. Ordinary rooms. The ordinary ones go deepest.',
-  2: 'The corridor opens into machinery — gears the size of moons, conveyor belts of small indifferent stars. Here the old thought experiments are staged nightly, with a skeleton crew.',
-  3: 'The floor turns to black mirror. Dioramas of your own memories float in the dark, faces gently blurred. The facility calls this wing archival. It means: yours.',
-  4: 'The fog is thinning. Beyond it, unmistakably: dawn. Three doors remain, and then the Threshold. Everything from here on counts double, which — the Usher would note — everything always did.',
-};
+export function actIntroText(act: number): string | undefined {
+  const fallback: Record<number, string> = {
+    1: 'Ahead: a corridor of apartment doors, each leaking the warm light of homes that were never yours. The ordinary rooms, you will find, go deepest.',
+    2: 'The corridor gives way to machinery — gears the size of moons, and slow belts carrying small, indifferent stars. Here the old thought experiments are staged nightly, for a skeleton crew of one.',
+    3: 'The floor turns to black mirror. Your own memories hang in the dark like dioramas, their faces softened past recognition. The facility calls this wing archival. It means: yours.',
+    4: 'The fog thins. Beyond it, unmistakably, morning. Three doors remain, and then the threshold. What happens from here counts twice over — though the Usher would say it always did.',
+  };
+  const text = fallback[act];
+  if (!text) return undefined;
+  return t(actIntroKey(act), text);
+}

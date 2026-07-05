@@ -13,7 +13,7 @@ export const wallet: Room = {
         'A corridor of apartment doors, each leaking the warm light of homes that were never yours. On the floor mat of one of them: a wallet.',
         'Inside — cash. A lot of it, in the tired denominations of someone who counts. Folded around the bills, an eviction notice with a date that is soon, and an address forty minutes from anywhere.',
         'The corridor is empty. It has the particular emptiness of a place where you could do anything.',
-        'USHER: (from nowhere) No cameras down here. I checked. Well — none that count toward anything.',
+        'Usher: No cameras reach this corridor. I checked. None of them count for anything, which is rather the point of a test like this.',
       ],
       choices: [
         {
@@ -24,7 +24,7 @@ export const wallet: Room = {
           outcome: [
             'The walk is long and the stairs at the end are longer. The person who opens the door looks at the wallet, then at you, and their face does a thing you will keep.',
             'They do not offer a reward. That, somehow, is the reward — the transaction stayed clean.',
-            'USHER: Interesting. You did the expensive thing when the cheap thing was free. I’ve made a note. The note is a small drawing of you looking pleased with yourself. It’s quite good.',
+            'Usher: You did the costly thing when the free one was available. I have made a note of it. I make very few.',
           ],
         },
         {
@@ -35,7 +35,7 @@ export const wallet: Room = {
           outcome: [
             'You seal it, address it, and it leaves your hands. Reasonable. Complete. A decency with the shape of an errand.',
             'You will never see the face at the other end. You saved forty minutes and spent the face.',
-            'USHER: Correct and bloodless. My favorite genre of virtue. It files so neatly.',
+            'Usher: Correct, and bloodless. A virtue that files itself away so neatly — I have seen a great many of those.',
           ],
         },
         {
@@ -46,7 +46,7 @@ export const wallet: Room = {
           outcome: [
             'The argument assembles itself with beautiful speed: your time has value, anyone would, they’d want you to, it’s practically a service industry.',
             'Notice how good the argument is. Notice who hired it, and when — after the hand was already in the wallet.',
-            'USHER: Ah, the fee. The mind is a lawyer that bills the conscience by the hour. Yours writes lovely briefs.',
+            'Usher: The fee. The mind keeps a lawyer on retainer for exactly this moment, and yours argues well.',
           ],
         },
         {
@@ -57,7 +57,7 @@ export const wallet: Room = {
           outcome: [
             'It goes into your pocket with almost no sound. That is the strange part — how quiet it is, how the corridor does not change at all.',
             'Somewhere forty minutes from anywhere, a date arrives on schedule.',
-            'USHER: For the record, someone was watching. You were. That’s rather the design flaw of the whole arrangement — the witness is built in.',
+            'Usher: For the record: someone was watching. You were. That is not a flaw in the arrangement. It was always the point of it.',
           ],
         },
       ],
@@ -154,7 +154,7 @@ export const promotion: Room = {
         'An office at the hour when offices tell the truth: empty, humming, lit like an aquarium.',
         'On your screen, plain as arithmetic, is the mistake. Your closest friend made it — a decimal’s worth of catastrophe, six figures deep, buried in a report that ships tomorrow. Only you can see it. The audit lands at nine.',
         'You both went for the same promotion. If this surfaces with their name on it, the job is yours. You didn’t build the trap. You just happen to be standing beside its lever.',
-        'USHER: (from the vents) I love this floor. Fluorescent light is very honest. Everyone looks equally guilty under it.',
+        'Usher: I have always liked this floor, at this hour. Fluorescent light is an honest light — it makes everyone look equally guilty.',
       ],
       choices: [
         {
@@ -176,7 +176,7 @@ export const promotion: Room = {
           outcome: [
             'You close the file. Not your error, not your report, not your problem — a syllogism with a promotion at the bottom of it.',
             'The audit finds it. Of course it finds it. Your friend is escorted through the process politely, and the job lands on your desk like something a cat brought in.',
-            'USHER: Technically, you did nothing. That’s the beauty of “nothing” — it’s the only act with no fingerprints. On the outside.',
+            'Usher: Technically, you did nothing at all. Nothing is the one act that leaves no fingerprints — on the outside.',
           ],
         },
         {
@@ -198,7 +198,7 @@ export const promotion: Room = {
           outcome: [
             'Forty minutes of careful surgery and the mistake never existed. The report ships clean. The audit passes like weather.',
             'Your friend never learns what almost happened to them — which means they never learn, which means the next decimal is already loose somewhere, and now it has a guardian angel with your sleep schedule.',
-            'USHER: Kindness in secret, was it? Or control wearing kindness’s coat? Even I can’t always tell them apart, and I’ve had both jobs.',
+            'Usher: Kindness, in secret. Or control, in kindness’s coat. I confess I cannot always tell them apart myself, and I have held both positions.',
           ],
         },
       ],
@@ -224,7 +224,7 @@ export const beggarsMath: Room = {
         'A bus shelter in freezing rain. A man is folded into the corner of it, wet past the point where wet means anything, and he asks you — politely, precisely — for the price of a lunch.',
         'Your phone is in your hand. On the screen, by coincidence or by curriculum, is a charity page you were reading: verified, audited, cost-effective. The same lunch money, it says, buys anti-malarial nets. Statistically, over time, the arithmetic saves lives — actual, countable lives, far away.',
         'The man is three feet from you. The lives are three thousand miles away. The money is the same money.',
-        'USHER: (as a voice on the charity page’s chat widget) Hello! I’m the Helper. Both buttons are real. That’s the whole problem. How can I assist?',
+        'Usher: (a small voice, from the charity page’s chat window) Both of these are real. That is the whole difficulty tonight. How may I help?',
       ],
       choices: [
         {
@@ -246,7 +246,7 @@ export const beggarsMath: Room = {
           outcome: [
             'You do it before the rationalization can curdle into forgetting: double the lunch, confirmed, receipt in your inbox before the next corner.',
             'The man watches you go. You will carry his face for a while, and the strange truth is that carrying it is part of the price — you paid in guilt for lives you will never see saved.',
-            'USHER: Cold, consistent, and correct by at least one respectable school of thought. The man in the shelter does not subscribe to its journal, of course.',
+            'Usher: Cold, consistent, and correct by at least one respectable accounting. The man in the shelter does not read that particular journal.',
           ],
         },
         {
@@ -267,7 +267,7 @@ export const beggarsMath: Room = {
           outcome: [
             'The video does well. The framing is respectful, mostly. The man looks into your lens the way people look into weather.',
             'Notice what the camera changed: the gift now has two recipients, and one of them is your reflection. “Awareness” was raised. So was something else, quietly, in the algorithm and in you.',
-            'USHER: (as a comment, first, pinned) Bravo! The best part is you can’t tell anymore which part was for him. Neither can I, and I’m professionally omniscient on Tuesdays.',
+            'Usher: (a comment, pinned first) Well done. Though notice: you can no longer quite tell which part of this was for him. Neither, for once, can I.',
           ],
         },
       ],
@@ -337,7 +337,7 @@ export const quietAlarm: Room = {
           outcome: [
             'You practice the reasons on the way back to bed: couples argue, intervening escalates, they would resent it, you misheard, everyone is fine. Five reasons is a lot of reasons for going to sleep.',
             'The silence holds. In the morning the corridor smells like toast, banal and absolving.',
-            'USHER: (from the radiator) Statistically, you were probably right! Do notice, though, which statistic you were protecting. There were at least two available, and you chose the one already in bed.',
+            'Usher: (from the radiator) Statistically, you were probably right. Notice, though, which statistic you chose to be governed by. There were at least two on offer, and you picked the one already lying in bed.',
           ],
         },
       ],
@@ -365,7 +365,7 @@ export const photograph: Room = {
         'Smoke walks the ceiling like a crowd leaving. Two doors remain ahead, and the heat has made the choice of every other door for you.',
         'Behind the left door: coughing. A stranger, real as coughing, low to the ground and running out of ground.',
         'Behind the right door, on a small table, is the photograph. The only one. Here, that is not a keepsake — it is the last document proving who you used to be. Lose it, and a piece of your past goes unwitnessed forever. Even you will not be able to swear to it.',
-        'USHER: (calmly, wearing a tiny fire helmet) Both doors are load-bearing, I’m afraid. One life you can save, one self you can prove. The fire, being fire, declines to wait while you consult a framework.',
+        'Usher: Both doors are load-bearing, I’m afraid. Behind one, a life you can still save. Behind the other, a self you can still prove. The fire will not wait for you to consult a framework.',
       ],
       choices: [
         {
@@ -398,7 +398,7 @@ export const photograph: Room = {
           outcome: [
             'You do the human thing, which is to reject the menu. Right door — the photograph into your jacket. Left door — the stranger onto your shoulder. The fire, unimpressed by your ambition, takes its percentage anyway.',
             'Outside, the stranger breathes. You reach into your jacket and your fingers find ash arranged in the shape of a rectangle. The fire let you carry it out; it just declined to let it remain a photograph.',
-            'USHER: You tried to save everything, and saved the right one plus a handful of proof-flavored ash. For what it’s worth — and I have seen every fire — that is the most common choice among the people I end up liking.',
+            'Usher: You tried to save everything, and saved the person, and a handful of ash where the proof used to be. For what it is worth, that is the choice I see most often from the travelers I come to respect.',
           ],
         },
       ],

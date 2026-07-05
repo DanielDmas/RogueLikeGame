@@ -1,5 +1,7 @@
 import { el, HEART_SVG } from './dom';
 import { MAX_HEARTS } from '../engine/gameState';
+import { t } from '../content/text/resolver';
+import { uiKey } from '../content/text/keys';
 
 export class Hud {
   private root: HTMLElement;
@@ -12,6 +14,10 @@ export class Hud {
     const hearts = el('div', 'hearts');
     hearts.setAttribute('role', 'status');
     hearts.setAttribute('aria-label', 'grip on reality');
+    hearts.title = t(
+      uiKey('heartsTooltip'),
+      'Your grip on reality. Lost by refusing rooms too often, failing certain rooms badly, or when lucidity runs out. Losing all three hearts is an ending, not a failure.',
+    );
     for (let i = 0; i < MAX_HEARTS; i++) {
       const h = el('div', 'heart');
       h.innerHTML = HEART_SVG;
@@ -20,8 +26,8 @@ export class Hud {
     }
     const right = el('div', 'hud-right');
     this.lucidityEl = el('div', 'lucidity');
-    this.lucidityEl.title = 'Lucidity';
-    const menuBtn = el('button', 'menu-btn', 'Menu');
+    this.lucidityEl.title = t(uiKey('lucidityTooltip'), 'Lucidity — how honestly you have been looking.');
+    const menuBtn = el('button', 'menu-btn', t(uiKey('menu'), 'Menu'));
     menuBtn.addEventListener('click', onMenu);
     right.append(this.lucidityEl, menuBtn);
     this.root.append(hearts, right);

@@ -15,8 +15,8 @@ export const boulder: Room = {
         'The fog is thinning. Through it, for the first time, something like dawn — a horizon with an actual color. And between you and the horizon: a hill, and a task.',
         'Stones. A neat sign: STACK THE STONES TO PROCEED. You stack them. On the placement of the final stone, the stack unstacks itself — not violently, almost apologetically, the stones rolling back to their exact starting positions like employees returning from a break.',
         'You try again. Same result. The room, to its credit, is honest: a second sign, smaller, lower down, reads: THE TASK CANNOT BE COMPLETED. THE TASK IS ALSO MANDATORY. WE ARE AWARE OF THE TENSION.',
-        'A man is sitting on one of the stones. He looks like he has been here since the Bronze Age, because he has. He nods at you — not unkindly — and gestures at the hill with the weariness of a colleague.',
-        'USHER: (arriving with a thermos) Ah. You’ve met our longest-serving resident. He’s tried everything: engineering, prayer, litigation. The stones always come down. The only variable anyone has ever moved — (pouring two cups, one for the man) — is the carrying.',
+        'A man is sitting on one of the stones. He looks ancient in a way that has nothing to do with his face — the look of someone who has simply been here far longer than there are words for. He nods at you, not unkindly, and gestures at the hill with the weariness of a colleague.',
+        'Usher: (arriving with a thermos) You have met our longest-serving resident. He has tried everything — engineering, prayer, argument. The stones always come down. The only thing anyone has ever managed to change is the carrying of them.',
       ],
       choices: [
         {
@@ -47,7 +47,7 @@ export const boulder: Room = {
           outcome: [
             'You sit down among the stones and fold the whole task away from you. It is not laziness — it is a position: some assignments deserve refusal, and mandatory futility is surely one.',
             'The room does not punish you with thunder. It does something quieter: nothing. The dawn stays exactly where it is, unearned, and the hours pass through you, and you feel — precisely, physically — a heart’s worth of grip loosen. Not because refusal is wrong. Because refusal, here, is a vote to stop moving, and stillness in this place has a current, and the current pulls one way.',
-            'USHER: (draping a coat over your shoulders) The strike is noted, and honestly, respected. But the hill is the only road, friend. Even he — (nodding at the man) — pushes. Not because it means something. Because he’s decided the pushing is his. Come on. Up.',
+            'Usher: (draping a coat over your shoulders) The strike is noted. Respected, even. But the hill is the only road there is. Even he pushes. Not because it means something. Because he has decided the pushing is his. Come. Up.',
           ],
         },
         {
@@ -58,7 +58,7 @@ export const boulder: Room = {
           outcome: [
             'You stack the stones. You do it neither fast nor slow, neither expecting success nor performing defeat — you do it the way one does a thing that is simply one’s thing to do. And something shifts, not in the hill but in the grammar: the task stops being an obstacle between you and the dawn, and becomes the place where you happen to be alive right now.',
             'The stones come down. You notice you are not waiting for them not to. You begin again, and the beginning-again is not failure repeating — it is a rhythm, and rhythms belong to the drummer.',
-            'The man stands, dusts off his hands, and does something the Usher later swears has never happened in eleven millennia: he helps. Two stackers, one impossible task, dawn coming up like a held note. “You see it,” he says. It is not a question. For one full stack — before it falls, and it does fall — the hill is, unmistakably, happy.',
+            'The man stands, dusts off his hands, and does something the Usher later says he has never once seen before: he helps. Two stackers, one impossible task, dawn coming up like a held note. “You see it,” he says. It is not a question. For one full stack — before it falls, and it does fall — the hill is, unmistakably, happy.',
           ],
         },
       ],
@@ -82,8 +82,8 @@ export const lastMessage: Room = {
     {
       beats: [
         'A small post office at the edge of the fog, dawn now definite through its one window. The counter is worn smooth by however many elbows, and behind it, the Usher wears a postal cap with visible pride.',
-        'USHER: Final services before the Threshold. One message may be sent back — to the waking world, to anyone. One sentence. It goes through, that I can guarantee; how it arrives is not mine to say. A dream, a hunch, a song they can’t place, a sudden need to call someone. The medium improvises. The message holds.',
-        'USHER: (sliding a pen across; the pen is warm) One sentence, traveler. The pieces of you that walked these rooms have been drafting it all along, whether you noticed or not. What do you send?',
+        'Usher: Final services before the Threshold. One message may be sent back — to the waking world, to anyone. One sentence. It goes through, that I can guarantee; how it arrives is not mine to say. A dream, a hunch, a song they can’t place, a sudden need to call someone. The medium improvises. The message holds.',
+        'Usher: (sliding a pen across; the pen is warm) One sentence, traveler. The pieces of you that walked these rooms have been drafting it all along, whether you noticed or not. What do you send?',
       ],
       choices: [
         {
@@ -93,7 +93,7 @@ export const lastMessage: Room = {
           effects: { lucidity: 15, axes: { controlAcceptance: -4 } },
           outcome: [
             'You write it, and the sentence does what promises do: it binds the sender. Somewhere in the waking world, someone will pause mid-afternoon at a feeling like a hand on the shoulder, and not know why they suddenly put the kettle on and glanced at the door.',
-            'USHER: (stamping it with great ceremony) A promise. The oldest genre. It routes fastest, for what it’s worth — hope has excellent postage.',
+            'Usher: (stamping it with great ceremony) A promise. The oldest genre. It routes fastest, for what it’s worth — hope has excellent postage.',
           ],
         },
         {
@@ -105,7 +105,7 @@ export const lastMessage: Room = {
           outcome: [
             'You had one sentence, and you gave it away — addressed it to the person you know keeps the opposite belief filed where they think no one can see it.',
             'It will arrive as a dream they wake from already crying, unembarrassed for once, lighter in a way they will not examine because examining might break it. They will make breakfast differently. Small things. It compounds.',
-            'USHER: (quietly, stamping it twice, which is not procedure) Most travelers send for themselves. The ones who don’t — their letters, I’ve noticed, are the only ones the fog doesn’t touch on the way out.',
+            'Usher: (quietly, stamping it twice, which is not procedure) Most travelers send for themselves. The ones who don’t — their letters, I’ve noticed, are the only ones the fog doesn’t touch on the way out.',
           ],
         },
         {
@@ -117,7 +117,7 @@ export const lastMessage: Room = {
           outcome: [
             'A dispatch from the far side of the argument — because that is what you have been running these rooms as: an investigation. And investigations file reports.',
             'It will arrive as a 4 a.m. thought that makes someone sit up and reach for paper — one of those ideas that feels received rather than had. They will spend years on it. It will be good work. It was yours, and now it is theirs, which is how every idea has ever traveled.',
-            'USHER: A citation across the void. You absolute academic. (stamping it, moved despite himself) It routes slow but it routes deep. Some sentences take decades to deliver and land like depth charges.',
+            'Usher: A citation across the void. (stamping it, moved despite himself) It routes slow, but it routes deep. Some sentences take decades to arrive, and land like depth charges when they do.',
           ],
         },
         {
@@ -129,7 +129,7 @@ export const lastMessage: Room = {
           outcome: [
             'The sentence goes out with the hole in it showing — the fire took the photograph, the proof, the anchor, and left you this one discovery: that the memory of being someone matters less than the memory of loving someone. The second survived the fire without singeing.',
             'It will arrive as a moment in front of a mirror where someone touches their own face and thinks, unaccountably, of you — and feels witnessed, which is the thing photographs were always trying to do.',
-            'USHER: (holding the letter a moment before stamping) You lost the picture and kept the seeing. (stamp) For the record, that’s the correct order to lose them in. Most manage it the other way.',
+            'Usher: (holding the letter a moment before stamping) You lost the picture and kept the seeing. (stamp) For the record, that’s the correct order to lose them in. Most manage it the other way.',
           ],
         },
         {
@@ -141,7 +141,7 @@ export const lastMessage: Room = {
           outcome: [
             'The generous sentence — the one that spends its postage freeing the recipient instead of holding them. You write it and feel the letting-go happen in your own hands first, which is where letting go always happens.',
             'It will arrive as permission: a morning where the grief loosens its parking brake and someone does the thing they had been guiltily postponing — moves the furniture, takes the trip, laughs at something all the way through. They will feel briefly disloyal, then unaccountably accompanied. Both feelings will be correct.',
-            'USHER: (softly) That one costs the sender the most and the recipient the least. Premium rate, paid in full. It’s the sentence I’d send, if anyone were — (a pause, a small recalibration of the face) — off you go, letter. Mind the fog.',
+            'Usher: (softly) That one costs the sender the most and the recipient the least. Premium rate, paid in full. It’s the sentence I’d send, if anyone were — (a pause, a small recalibration of the face) — off you go, letter. Mind the fog.',
           ],
         },
         {
@@ -152,7 +152,7 @@ export const lastMessage: Room = {
           outcome: [
             'You slide the blank page across. The Usher looks at it, then at you, then — professional to the last — stamps it anyway.',
             'It will arrive as a silence with presence in it: an afternoon where someone stops in a doorway for no reason and feels, for four or five seconds, completely accompanied. They will tell no one, having nothing tellable. It will be one of the better moments of their year.',
-            'USHER: The blank ones are the heaviest, you know. Postage-wise. Everything unsaid weighs; it’s the only cargo with negative dimensions and positive mass. (filing it tenderly) I’ll route it through a good Tuesday.',
+            'Usher: The blank ones are the heaviest, you know. Everything unsaid still weighs something — it is the only cargo with negative dimensions and positive mass. (filing it tenderly) I will see that it arrives gently.',
           ],
         },
       ],
@@ -231,8 +231,8 @@ export const doorThatAsks: Room = {
       beats: [
         'The grille slides shut, and the door — the last door — swings open onto light that is not fog.',
         'It is morning out there. An actual one: traffic somewhere, a kettle somewhere, the world at its enormous ordinary business. The way back, present tense, three steps away.',
-        'USHER: (beside you, suddenly, hat in hands — both hats, actually) End of the line. Or start, depending on the direction you read it. The threshold takes you back — to the noise, the faces, the unfinished arguments, all of it. Most take it. It’s a good door. I polish it myself.',
-        'USHER: But it is not the only option, and regulations require I say so. You may stay — the rooms always need a keeper, and between us, I’ve been due a sabbatical since the Bronze Age. Or you may lie down here at the threshold and let the last of the dissolving finish; some travelers, at the end, choose the quiet, and it is not my place to call that losing.',
+        'Usher: (beside you, suddenly, hat in hand) End of the line. Or the start of one, depending which direction you read it. The threshold takes you back — to the noise, the faces, the unfinished arguments, all of it. Most travelers take it. It is a good door. I keep it well.',
+        'Usher: But it is not the only door open to you, and I am required to say so. You may stay — the rooms always need a keeper, and I have been at this a very long time. Or you may lie down here at the threshold and let the last of the dissolving finish. Some travelers, at the end, choose the quiet. It is not my place to call that losing.',
         (s) =>
           punchlineUnlocked(s)
             ? 'And there is — you notice it only now, and you understand that not everyone gets to notice it — a fourth door. Small. Plain. Warm light under it, and from behind it, unmistakably: laughter. The Usher follows your gaze and says nothing at all, which from the Usher is a standing ovation.'
@@ -246,7 +246,7 @@ export const doorThatAsks: Room = {
           effects: { lucidity: 15 },
           outcome: [
             'You step toward the light. The threshold has the temperature of a doorway in summer — that half-degree change that means outside.',
-            'USHER: (calling after you) Traveler. Whatever you find out there — it will be exactly the same world. That was never the promise. YOU were the renovation. Mind the gap.',
+            'Usher: (calling after you) Traveler. Whatever you find out there — it will be exactly the same world. That was never the promise. You were the renovation. Mind the gap.',
           ],
         },
         {
@@ -256,8 +256,8 @@ export const doorThatAsks: Room = {
           effects: { lucidity: 15, axes: { selfOthers: 6 } },
           outcome: [
             'You turn from the morning — actually turn from it, which the threshold registers with something like a bow — and hold out your hand for the clipboard.',
-            'USHER: (not taking it out yet) Be sure. The hours are eternal, the pay is nothing, the travelers are — well, you’ve been one. You’ll watch every one of them face the fire and the lever and the folder, and you may never tell them the answers, chiefly because there aren’t any.',
-            'USHER: (handing it over, and the clipboard is warm, and has your name on it — your real one, suddenly legible) ...Welcome aboard. First lesson: the halo and the horns are the same size. It’s on purpose. Everything here is.',
+            'Usher: (not taking it out yet) Be sure. The hours are eternal, the pay is nothing, the travelers are — well, you’ve been one. You’ll watch every one of them face the fire and the lever and the folder, and you may never tell them the answers, chiefly because there aren’t any.',
+            'Usher: (handing it over, and the clipboard is warm, and has your name on it — your real one, suddenly legible) ...Welcome aboard. First lesson: the halo and the horns are the same size. It’s on purpose. Everything here is.',
           ],
         },
         {
@@ -267,7 +267,7 @@ export const doorThatAsks: Room = {
           effects: { lucidity: 10, axes: { controlAcceptance: 12 } },
           outcome: [
             'You lie down at the threshold with the morning three steps away, and it is not defeat — the room can tell, the Usher can tell, even the fog can tell. It is a choice, made with open eyes, by someone who walked every room to earn the right to make it.',
-            'USHER: (sitting down beside you, taking off both hats for good) Then I’ll stay till it’s done. Nobody dissolves alone on my shift. (a pause) It’s not an ending, you know. It’s a tide. Everything the rooms filed goes back to the sea, and the sea — (his voice already sounding like water) — has never once lost a single thing that mattered.',
+            'Usher: (sitting down beside you, setting his hat aside for good) Then I will stay until it is done. Nobody dissolves alone on my shift. (a pause) It is not an ending, you know. It is a tide. Everything the rooms filed away goes back to the sea, and the sea — (his voice already sounding like water) — has never once lost a single thing that mattered.',
           ],
         },
         {
@@ -278,7 +278,7 @@ export const doorThatAsks: Room = {
           available: (s) => punchlineUnlocked(s),
           outcome: [
             'You cross to the small plain door, and the handle turns before you have quite gripped it, the way a friend opens from the other side.',
-            'USHER: (behind you, and for once his voice has neither halo nor horns in it) Twenty-two thousand travelers. Four noticed the courtroom trap. Fewer opened this. Go on, then. I’ll get the lights.',
+            'Usher: (behind you, and for once his voice has neither halo nor horns in it) Very few travelers ever notice this door is here. Fewer still open it. Go on, then. I will get the lights.',
           ],
         },
       ],
