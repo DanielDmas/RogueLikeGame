@@ -1,9 +1,9 @@
 import type { Persona, Profile, Settings } from '../engine/saveStore';
-import type { Ending, Room } from '../content/schema';
+import type { Ending, FieldNote, Room } from '../content/schema';
 import { allRooms } from '../content/rooms';
 import { endings } from '../content/endings';
 import { actName } from '../content/graph';
-import { clear, el } from './dom';
+import { clear, el, HEART_SVG } from './dom';
 import { showFieldNote } from './fieldNote';
 import { roomIcons, endingIcons } from '../content/icons';
 import { t } from '../content/text/resolver';
@@ -12,15 +12,21 @@ import {
   roomTitleKey,
   roomNoteTitleKey,
   roomNoteThinkersKey,
+  roomNoteBodyKey,
   endingTitleKey,
   endingEpitaphKey,
+  endingNoteTitleKey,
+  endingNoteThinkersKey,
+  endingNoteBodyKey,
 } from '../content/text/keys';
 import { LANGUAGE_LABELS } from './locale';
 import { nextLang } from '../content/text/resolver';
 import type { TextVersion } from '../content/text/resolver';
 import { sound } from '../audio/soundEngine';
+import { isElectron, isFullscreen, toggleFullscreen } from './fullscreen';
+import { applyUiZoom } from './zoom';
 
-export type TitleAction = 'new' | 'continue' | 'codex' | 'settings' | 'persona' | 'about';
+export type TitleAction = 'new' | 'continue' | 'codex' | 'settings' | 'persona' | 'about' | 'exit';
 
 function overlay(ui: HTMLElement): HTMLElement {
   const o = el('div', 'overlay fade-in');
@@ -82,6 +88,13 @@ export function showTitle(ui: HTMLElement, profile: Profile): Promise<TitleActio
     const ab = el('button', 'title-btn small', t(uiKey('aboutTitle'), 'Before you begin'));
     ab.addEventListener('click', () => done('about'));
     menu.append(cx, pe, st, ab);
+    // Only the Electron build can actually close its own window — a browser
+    // tab can't quit itself, so the button only appears there.
+    if (isElectron()) {
+      const ex = el('button', 'title-btn small', t(uiKey('exitGame'), 'Exit game'));
+      ex.addEventListener('click', () => done('exit'));
+      menu.append(ex);
+    }
     if (profile.endingsSeen.length > 0) {
       menu.append(
         el(
@@ -95,30 +108,75 @@ export function showTitle(ui: HTMLElement, profile: Profile): Promise<TitleActio
   });
 }
 
-export function showSettings(ui: HTMLElement, settings: Settings): Promise<Settings> {
+export interface SettingsActions {
+  /** Whether a run is currently in progress (title screen with no save has none). */
+  hasRun: boolean;
+  /** Abandons the in-progress run only; codex/endings/settings/persona are untouched. */
+  onResetRun: () => void;
+  /** Wipes the entire profile back to defaults and reloads. */
+  onResetProgress: () => void;
+}
+
+/** A row: label + control on one line, a short explanatory line underneath. */
+function settingRow(label: string, desc: string, control: HTMLElement): HTMLElement {
+  const row = el('div', 'setting-row');
+  const top = el('div', 'setting-row-top');
+  top.append(el('span', 'lbl', label), control);
+  row.append(top);
+  if (desc) row.append(el('div', 'setting-desc', desc));
+  return row;
+}
+
+function sectionEl(title: string): { section: HTMLElement; body: HTMLElement } {
+  const section = el('div', 'settings-section');
+  section.append(el('h3', undefined, title));
+  const body = el('div', 'settings-section-body');
+  section.append(body);
+  return { section, body };
+}
+
+/** A destructive action needs one extra click within a few seconds to fire — no separate confirm dialog needed. */
+function confirmButton(label: string, confirmLabel: string, onConfirm: () => void): HTMLButtonElement {
+  const btn = el('button', 'toggle danger', label);
+  let armed = false;
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  const disarm = () => {
+    armed = false;
+    btn.textContent = label;
+    btn.classList.remove('armed');
+  };
+  btn.addEventListener('click', () => {
+    if (!armed) {
+      armed = true;
+      btn.textContent = confirmLabel;
+      btn.classList.add('armed');
+      timer = setTimeout(disarm, 4000);
+      return;
+    }
+    if (timer) clearTimeout(timer);
+    onConfirm();
+  });
+  return btn;
+}
+
+export function showSettings(ui: HTMLElement, settings: Settings, actions: SettingsActions): Promise<Settings> {
   return new Promise((resolve) => {
     const o = overlay(ui);
-    o.append(el('h2', undefined, t(uiKey('settings'), 'Settings')));
-    const list = el('div', 'settings-list');
+    const panel = el('div', 'settings-panel');
+    panel.append(el('h2', undefined, t(uiKey('settings'), 'Settings')));
+    const scroll = el('div', 'settings-scroll');
+    const sections = el('div', 'settings-sections');
     const current = { ...settings };
     const onLabel = t(uiKey('on'), 'on');
     const offLabel = t(uiKey('off'), 'off');
-    const rows: [keyof Settings, string][] = [
-      ['music', t(uiKey('settingMusic'), 'Background music')],
-      ['sfx', t(uiKey('settingSfx'), 'Sound effects')],
-      ['typewriter', t(uiKey('settingTypewriter'), 'Typewriter text')],
-      ['reducedMotion', t(uiKey('settingReducedMotion'), 'Reduced motion')],
-      ['highContrast', t(uiKey('settingHighContrast'), 'High-contrast text')],
-      ['quality', t(uiKey('settingQuality'), 'High visual quality')],
-      ['dynamicScenery', t(uiKey('settingDynamicScenery'), 'Dynamic scenery (experimental)')],
-    ];
-    const volumeSliders: [keyof Settings, string][] = [
-      ['musicVolume', t(uiKey('settingMusicVolume'), 'Music volume')],
-      ['sfxVolume', t(uiKey('settingSfxVolume'), 'Effects volume')],
-    ];
-    for (const [key, label] of rows) {
-      const row = el('div', 'setting-row');
-      row.append(el('span', 'lbl', label));
+    const fullscreenListeners: (() => void)[] = [];
+
+    const toggleRow = (
+      body: HTMLElement,
+      key: 'music' | 'sfx' | 'typewriter' | 'reducedMotion' | 'highContrast' | 'quality' | 'dynamicScenery',
+      label: string,
+      desc: string,
+    ) => {
       const isOn = () => (key === 'quality' ? current.quality === 'high' : Boolean(current[key]));
       const btn = el('button', 'toggle', isOn() ? onLabel : offLabel);
       btn.classList.toggle('on', isOn());
@@ -128,69 +186,175 @@ export function showSettings(ui: HTMLElement, settings: Settings): Promise<Setti
         btn.textContent = isOn() ? onLabel : offLabel;
         btn.classList.toggle('on', isOn());
       });
-      row.append(btn);
-      list.append(row);
+      body.append(settingRow(label, desc, btn));
+      return btn;
+    };
 
-      // volume sliders live directly under their on/off toggle
-      if (key === 'music' || key === 'sfx') {
-        const [volKey, volLabel] = volumeSliders[key === 'music' ? 0 : 1];
-        const volRow = el('div', 'setting-row slider-row');
-        volRow.append(el('span', 'lbl', volLabel));
-        const slider = el('input', 'volume-slider') as HTMLInputElement;
-        slider.type = 'range';
-        slider.min = '0';
-        slider.max = '100';
-        slider.step = '5';
-        slider.value = String(Math.round((current[volKey] as number) * 100));
-        slider.addEventListener('input', () => {
-          const v = Number(slider.value) / 100;
-          (current[volKey] as number) = v;
-          if (volKey === 'musicVolume') sound.setMusicVolume(v);
-          else sound.setSfxVolume(v);
-        });
-        volRow.append(slider);
-        list.append(volRow);
-      }
-    }
+    // ---------- Display ----------
+    const { section: displaySection, body: displayBody } = sectionEl(t(uiKey('settingsSectionDisplay'), 'Display'));
+
+    const fsBtn = el('button', 'toggle', isFullscreen() ? onLabel : offLabel);
+    fsBtn.classList.toggle('on', isFullscreen());
+    fsBtn.addEventListener('click', () => void toggleFullscreen());
+    const onFsChange = () => {
+      fsBtn.textContent = isFullscreen() ? onLabel : offLabel;
+      fsBtn.classList.toggle('on', isFullscreen());
+    };
+    document.addEventListener('fullscreenchange', onFsChange);
+    fullscreenListeners.push(() => document.removeEventListener('fullscreenchange', onFsChange));
+    displayBody.append(
+      settingRow(
+        t(uiKey('settingFullscreen'), 'Fullscreen'),
+        t(uiKey('settingFullscreenDesc'), 'Fill the whole screen — also toggled with the F key.'),
+        fsBtn,
+      ),
+    );
+
+    const scaleOrder: Settings['renderScale'][] = ['performance', 'standard', 'sharp'];
+    const scaleLabel = (v: Settings['renderScale']) =>
+      ({
+        performance: t(uiKey('renderScalePerformance'), 'Render resolution: Performance'),
+        standard: t(uiKey('renderScaleStandard'), 'Render resolution: Standard'),
+        sharp: t(uiKey('renderScaleSharp'), 'Render resolution: Sharp'),
+      })[v];
+    const scaleBtn = el('button', 'toggle cycle', scaleLabel(current.renderScale));
+    scaleBtn.addEventListener('click', () => {
+      const i = scaleOrder.indexOf(current.renderScale);
+      current.renderScale = scaleOrder[(i + 1) % scaleOrder.length];
+      scaleBtn.textContent = scaleLabel(current.renderScale);
+    });
+    displayBody.append(
+      settingRow(
+        t(uiKey('settingRenderScale'), 'Render resolution'),
+        t(uiKey('settingRenderScaleDesc'), 'Lower = smoother on weaker graphics cards, a touch softer image. Sharp uses your full screen resolution.'),
+        scaleBtn,
+      ),
+    );
+
+    const zoomRow = el('div', 'setting-row');
+    const zoomTop = el('div', 'setting-row-top');
+    zoomTop.append(el('span', 'lbl', t(uiKey('settingUiZoom'), 'Interface size')));
+    const zoomSlider = el('input', 'volume-slider') as HTMLInputElement;
+    zoomSlider.type = 'range';
+    zoomSlider.min = '80';
+    zoomSlider.max = '130';
+    zoomSlider.step = '5';
+    zoomSlider.value = String(Math.round(current.uiZoom * 100));
+    const zoomValue = el('span', 'zoom-value', `${Math.round(current.uiZoom * 100)}%`);
+    zoomSlider.addEventListener('input', () => {
+      current.uiZoom = Number(zoomSlider.value) / 100;
+      zoomValue.textContent = `${zoomSlider.value}%`;
+      applyUiZoom(current.uiZoom);
+    });
+    zoomTop.append(zoomSlider, zoomValue);
+    zoomRow.append(zoomTop, el('div', 'setting-desc', t(uiKey('settingUiZoomDesc'), 'Scales menus and text to your liking — the 3D scene stays sharp.')));
+    displayBody.append(zoomRow);
+
+    toggleRow(displayBody, 'quality', t(uiKey('settingQuality'), 'High visual quality'), t(uiKey('settingQualityDesc'), 'Glow and smoothing effects; needs a stronger graphics card. Applies on next load.'));
+    toggleRow(displayBody, 'dynamicScenery', t(uiKey('settingDynamicScenery'), 'Dynamic scenery (experimental)'), t(uiKey('settingDynamicSceneryDesc'), 'Rooms subtly tint the light and fog to match their mood.'));
+    toggleRow(displayBody, 'reducedMotion', t(uiKey('settingReducedMotion'), 'Reduced motion'), t(uiKey('settingReducedMotionDesc'), 'Cuts camera drift and easing to near-instant — kinder to motion sensitivity.'));
+
+    // ---------- Audio ----------
+    const { section: audioSection, body: audioBody } = sectionEl(t(uiKey('settingsSectionAudio'), 'Audio'));
+    toggleRow(audioBody, 'music', t(uiKey('settingMusic'), 'Background music'), t(uiKey('settingMusicDesc'), 'A quiet, evolving ambience that shifts with each act.'));
+    const musicVolRow = el('div', 'setting-row slider-row');
+    const musicVolTop = el('div', 'setting-row-top');
+    musicVolTop.append(el('span', 'lbl', t(uiKey('settingMusicVolume'), 'Music volume')));
+    const musicSlider = el('input', 'volume-slider') as HTMLInputElement;
+    musicSlider.type = 'range';
+    musicSlider.min = '0';
+    musicSlider.max = '100';
+    musicSlider.step = '5';
+    musicSlider.value = String(Math.round(current.musicVolume * 100));
+    musicSlider.addEventListener('input', () => {
+      const v = Number(musicSlider.value) / 100;
+      current.musicVolume = v;
+      sound.setMusicVolume(v);
+    });
+    musicVolTop.append(musicSlider);
+    musicVolRow.append(musicVolTop);
+    audioBody.append(musicVolRow);
+
+    toggleRow(audioBody, 'sfx', t(uiKey('settingSfx'), 'Sound effects'), t(uiKey('settingSfxDesc'), 'Door chimes, page turns, and the small sounds of choosing.'));
+    const sfxVolRow = el('div', 'setting-row slider-row');
+    const sfxVolTop = el('div', 'setting-row-top');
+    sfxVolTop.append(el('span', 'lbl', t(uiKey('settingSfxVolume'), 'Effects volume')));
+    const sfxSlider = el('input', 'volume-slider') as HTMLInputElement;
+    sfxSlider.type = 'range';
+    sfxSlider.min = '0';
+    sfxSlider.max = '100';
+    sfxSlider.step = '5';
+    sfxSlider.value = String(Math.round(current.sfxVolume * 100));
+    sfxSlider.addEventListener('input', () => {
+      const v = Number(sfxSlider.value) / 100;
+      current.sfxVolume = v;
+      sound.setSfxVolume(v);
+    });
+    sfxVolTop.append(sfxSlider);
+    sfxVolRow.append(sfxVolTop);
+    audioBody.append(sfxVolRow);
+
+    // ---------- Text & Language ----------
+    const { section: textSection, body: textBody } = sectionEl(t(uiKey('settingsSectionText'), 'Text & Language'));
+    const langBtn = el('button', 'toggle cycle', LANGUAGE_LABELS[current.language]);
+    langBtn.addEventListener('click', () => {
+      current.language = nextLang(current.language);
+      langBtn.textContent = LANGUAGE_LABELS[current.language];
+    });
+    textBody.append(settingRow(t(uiKey('settingLanguage'), 'Language'), t(uiKey('settingLanguageDesc'), 'Applies immediately, everywhere in the game.'), langBtn));
 
     const versionLabel = (v: TextVersion) =>
       v === 'v2' ? t(uiKey('versionV2'), 'Voice: v2 (new)') : t(uiKey('versionV1'), 'Voice: v1 (original)');
     const versionOrder: TextVersion[] = ['v2', 'v1'];
-    const versionRow = el('div', 'setting-row');
-    versionRow.append(el('span', 'lbl', t(uiKey('settingTextVersion'), 'Text version')));
     const versionBtn = el('button', 'toggle cycle', versionLabel(current.textVersion));
     versionBtn.addEventListener('click', () => {
       const i = versionOrder.indexOf(current.textVersion);
       current.textVersion = versionOrder[(i + 1) % versionOrder.length];
       versionBtn.textContent = versionLabel(current.textVersion);
     });
-    versionRow.append(versionBtn);
-    list.append(versionRow);
+    textBody.append(settingRow(t(uiKey('settingTextVersion'), 'Text version'), t(uiKey('settingTextVersionDesc'), 'v1 is the original voice, kept as a selectable backup; v2 is the current rewrite.'), versionBtn));
 
-    const langRow = el('div', 'setting-row');
-    langRow.append(el('span', 'lbl', t(uiKey('settingLanguage'), 'Language')));
-    const langBtn = el('button', 'toggle cycle', LANGUAGE_LABELS[current.language]);
-    langBtn.addEventListener('click', () => {
-      current.language = nextLang(current.language);
-      langBtn.textContent = LANGUAGE_LABELS[current.language];
-    });
-    langRow.append(langBtn);
-    list.append(langRow);
+    toggleRow(textBody, 'typewriter', t(uiKey('settingTypewriter'), 'Typewriter text'), t(uiKey('settingTypewriterDesc'), 'Text appears letter by letter, like being told a story.'));
+    toggleRow(textBody, 'highContrast', t(uiKey('settingHighContrast'), 'High-contrast text'), t(uiKey('settingHighContrastDesc'), 'Brighter text color for easier reading.'));
 
-    list.append(
-      el(
-        'div',
-        'title-sub',
-        t(uiKey('settingsFooter'), 'quality changes apply on next load · language and voice apply immediately'),
-      ),
+    // ---------- Data ----------
+    const { section: dataSection, body: dataBody } = sectionEl(t(uiKey('settingsSectionData'), 'Data'));
+    if (actions.hasRun) {
+      const resetRunBtn = confirmButton(
+        t(uiKey('resetRun'), 'Reset current run'),
+        t(uiKey('confirmAgain'), 'Click again to confirm'),
+        () => {
+          actions.onResetRun();
+          resetRunBtn.textContent = t(uiKey('resetRunDone'), 'Run reset');
+          resetRunBtn.disabled = true;
+        },
+      );
+      dataBody.append(settingRow(t(uiKey('resetRun'), 'Reset current run'), t(uiKey('resetRunDesc'), 'Abandons your in-progress journey. Field notes, endings, and settings are kept.'), resetRunBtn));
+    }
+    const resetProgressBtn = confirmButton(
+      t(uiKey('resetProgress'), 'Reset all progress'),
+      t(uiKey('confirmAgain'), 'Click again to confirm'),
+      () => actions.onResetProgress(),
+    );
+    dataBody.append(settingRow(t(uiKey('resetProgress'), 'Reset all progress'), t(uiKey('resetProgressDesc'), 'Wipes everything — field notes, endings, settings, your current run — back to the very start.'), resetProgressBtn));
+
+    sections.append(displaySection, audioSection, textSection, dataSection);
+    scroll.append(sections);
+    panel.append(scroll);
+
+    const footer = el('div', 'settings-footer');
+    footer.append(
+      el('div', 'title-sub', t(uiKey('settingsFooter'), 'quality changes apply on next load · everything else applies immediately')),
     );
     const back = el('button', 'title-btn', t(uiKey('done'), 'Done'));
-    back.style.marginTop = '26px';
     back.addEventListener('click', () => {
+      for (const off of fullscreenListeners) off();
       o.remove();
       resolve(current);
     });
-    o.append(list, back);
+    footer.append(back);
+    panel.append(footer);
+    o.appendChild(panel);
   });
 }
 
@@ -327,13 +491,14 @@ export function showAbout(ui: HTMLElement): Promise<void> {
     );
     const p2 = t(
       uiKey('aboutHearts'),
-      '<b>Hearts.</b> Three hearts are your grip on reality. You lose one by refusing rooms repeatedly, by badly failing certain INSIGHT rooms, by the principled-but-costly path in a few DOOMED rooms, or when your lucidity runs out entirely. Losing all three is not a failure screen — it is a real ending, and it is written as one.',
+      '<b>Hearts.</b> Three hearts are your grip on reality. A handful of especially costly choices — always sign-posted by the Usher first — spend one outright, and so does letting your lucidity run out completely. Losing all three is not a failure screen — it is a real ending, and it is written as one.',
     );
     const p3 = t(
       uiKey('aboutDoors'),
       '<b>Doors.</b> Each door behind the corridor is a different situation, and you cannot walk through all of them in a single run. Choosing a door is choosing what you will face — and what you will skip — this time. A replay will show you the rest.',
     );
-    body.innerHTML = `<p>${p1}</p><p>${p2}</p><p>${p3}</p>`;
+    const heartGlyph = `<span class="about-heart-glyph">${HEART_SVG}</span>`;
+    body.innerHTML = `<p>${p1}</p><p>${heartGlyph}${p2}</p><p>${p3}</p>`;
     panel.append(body);
     const back = el('button', 'title-btn', t(uiKey('back'), 'Back'));
     back.style.marginTop = '26px';
@@ -344,6 +509,32 @@ export function showAbout(ui: HTMLElement): Promise<void> {
     panel.append(back);
     o.appendChild(panel);
   });
+}
+
+/**
+ * Translates a room/ending field note before it's shown from the codex.
+ * Pulled out as a pure function (no DOM) so this can be regression-tested:
+ * the codex cards were already rendering translated title/thinkers via
+ * roomNoteTitleKey/roomNoteThinkersKey, but the *opened* note was passed the
+ * raw English `note` object straight through — cards read translated, the
+ * note itself fell back to English. Room 19 (last-message) is the one
+ * exception: its note is a synthetic, already-translated object built from
+ * the player's own sent sentence, so it passes through unchanged.
+ */
+export function translateFieldNoteForCodex(id: string, note: FieldNote, isEnding: boolean): FieldNote {
+  if (id === 'last-message') return note;
+  const bareId = isEnding ? id.replace(/^ending:/, '') : id;
+  return isEnding
+    ? {
+        title: t(endingNoteTitleKey(bareId), note.title),
+        thinkers: t(endingNoteThinkersKey(bareId), note.thinkers),
+        body: t(endingNoteBodyKey(bareId), note.body),
+      }
+    : {
+        title: t(roomNoteTitleKey(bareId), note.title),
+        thinkers: t(roomNoteThinkersKey(bareId), note.thinkers),
+        body: t(roomNoteBodyKey(bareId), note.body),
+      };
 }
 
 export function showCodex(ui: HTMLElement, profile: Profile): Promise<void> {
@@ -365,7 +556,8 @@ export function showCodex(ui: HTMLElement, profile: Profile): Promise<void> {
       card.append(el('div', 'cx-thinkers', unlocked ? thinkers : notYetWalked));
       if (unlocked && note) {
         const icon = isEnding ? endingIcons[id.replace(/^ending:/, '')] : roomIcons[id];
-        card.addEventListener('click', () => showFieldNote(ui, note, isEnding ? endingLabel : fieldNoteLabel, icon));
+        const translated = translateFieldNoteForCodex(id, note, isEnding);
+        card.addEventListener('click', () => showFieldNote(ui, translated, isEnding ? endingLabel : fieldNoteLabel, icon));
       }
       grid.appendChild(card);
     };
@@ -421,19 +613,15 @@ export function showCodex(ui: HTMLElement, profile: Profile): Promise<void> {
   });
 }
 
-export function showPauseMenu(
-  ui: HTMLElement,
-): Promise<'resume' | 'codex' | 'settings' | 'persona' | 'about' | 'title'> {
+export type PauseAction = 'resume' | 'codex' | 'settings' | 'persona' | 'about' | 'title' | 'exit';
+
+export function showPauseMenu(ui: HTMLElement): Promise<PauseAction> {
   return new Promise((resolve) => {
     const o = overlay(ui);
     o.append(el('h2', undefined, t(uiKey('paused'), 'Paused')));
     o.append(el('div', 'sub', t(uiKey('pausedSub'), 'the rooms will wait — time here is decorative')));
     const menu = el('div', 'title-menu');
-    const mk = (
-      label: string,
-      action: 'resume' | 'codex' | 'settings' | 'persona' | 'about' | 'title',
-      small = false,
-    ) => {
+    const mk = (label: string, action: PauseAction, small = false) => {
       const b = el('button', `title-btn${small ? ' small' : ''}`, label);
       b.addEventListener('click', () => {
         removeEventListener('keydown', onKey);
@@ -443,11 +631,12 @@ export function showPauseMenu(
       menu.appendChild(b);
     };
     mk(t(uiKey('resume'), 'Resume'), 'resume');
+    mk(t(uiKey('saveAndExit'), 'Save & exit to title'), 'title', true);
     mk(t(uiKey('fieldNotes'), 'Field Notes'), 'codex', true);
-    mk(t(uiKey('whoAreYou'), 'Who are you?'), 'persona', true);
     mk(t(uiKey('settings'), 'Settings'), 'settings', true);
+    mk(t(uiKey('whoAreYou'), 'Who are you?'), 'persona', true);
     mk(t(uiKey('aboutTitle'), 'Before you begin'), 'about', true);
-    mk(t(uiKey('abandonToTitle'), 'Abandon to title'), 'title', true);
+    if (isElectron()) mk(t(uiKey('exitGame'), 'Exit game'), 'exit', true);
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         removeEventListener('keydown', onKey);

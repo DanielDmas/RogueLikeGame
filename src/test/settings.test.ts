@@ -73,3 +73,46 @@ describe('settings migration — old saves missing volume/dynamicScenery fields 
     expect(migrated.sfx).toBe(false);
   });
 });
+
+describe('hasSeenHeartLoss — first-heart-loss one-time moment (Phase G3)', () => {
+  it('defaults to false for a fresh profile', () => {
+    expect(defaultProfile().hasSeenHeartLoss).toBe(false);
+  });
+
+  it('a legacy save (field never existed) backfills to false via plain object-spread merge', () => {
+    // mirrors LocalSaveStore.load's `{ ...base, ...parsed }` merge, using a
+    // profile-shaped object with no hasSeenHeartLoss key at all
+    const legacyParsed = { runsCompleted: 3 };
+    const merged = { ...defaultProfile(), ...legacyParsed };
+    expect(merged.hasSeenHeartLoss).toBe(false);
+  });
+
+  it('an already-true value survives the same merge (never re-shown after the first time)', () => {
+    const parsed = { hasSeenHeartLoss: true };
+    const merged = { ...defaultProfile(), ...parsed };
+    expect(merged.hasSeenHeartLoss).toBe(true);
+  });
+});
+
+describe('render scale + UI zoom — defaults and migration (Milestone 4)', () => {
+  const base = defaultProfile().settings;
+
+  it('renderScale defaults to standard, uiZoom defaults to 1 (100%)', () => {
+    expect(base.renderScale).toBe('standard');
+    expect(base.uiZoom).toBe(1);
+  });
+
+  it('a save from before renderScale/uiZoom existed backfills both from defaults', () => {
+    const legacy = { music: true, sfx: true } as never;
+    const migrated = migrateSettings(legacy, base);
+    expect(migrated.renderScale).toBe('standard');
+    expect(migrated.uiZoom).toBe(1);
+  });
+
+  it('an existing renderScale/uiZoom choice survives migration untouched', () => {
+    const saved = { renderScale: 'sharp', uiZoom: 1.2 } as never;
+    const migrated = migrateSettings(saved, base);
+    expect(migrated.renderScale).toBe('sharp');
+    expect(migrated.uiZoom).toBe(1.2);
+  });
+});

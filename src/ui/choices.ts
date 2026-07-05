@@ -9,6 +9,7 @@ export interface DoorOption {
   teaser?: string;
   secret?: boolean;
   icon?: string;
+  unseen?: boolean;
 }
 
 export class ChoicePanel {
@@ -68,6 +69,11 @@ export class ChoicePanel {
         textCol.append(el('span', 'txt', d.hint));
         if (d.teaser) textCol.append(el('span', 'door-teaser', d.teaser));
         card.append(textCol);
+        if (d.unseen) {
+          const badge = el('span', 'door-unseen-badge', t(uiKey('doorUnseenBadge'), 'new'));
+          badge.title = t(uiKey('doorUnseenBadgeTooltip'), 'You have never walked through this door before');
+          card.append(badge);
+        }
         card.addEventListener('mouseenter', () => onHover(d.id));
         card.addEventListener('mouseleave', () => onHover(null));
         card.addEventListener('focus', () => onHover(d.id));

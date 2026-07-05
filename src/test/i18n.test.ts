@@ -30,6 +30,12 @@ const USHER_BARK_IDS = [
   'generic2',
   'generic3',
   'generic4',
+  'generic5',
+  'generic6',
+  'gate-single-door',
+  'first-choice-explainer',
+  'first-heart-loss',
+  'remembered-room',
 ];
 
 describe('i18n — Czech and Farsi coverage of navigation/structural text', () => {

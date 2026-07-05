@@ -12,6 +12,7 @@ export function newRun(): RunState {
     visited: [],
     transcript: [],
     currentRoom: null,
+    currentStage: 0,
     act: 0,
     actOptionalDone: 0,
     memoryLost: false,

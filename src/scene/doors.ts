@@ -21,7 +21,7 @@ export interface DoorSet {
 const FRAME_MAT = new THREE.MeshStandardMaterial({ color: 0x241d14, roughness: 0.75 });
 
 /** Matches SceneDirector's camera home position — doors face the viewer, not a point behind them. */
-const CAMERA_HOME = new THREE.Vector3(0, 1.6, 7);
+const CAMERA_HOME = new THREE.Vector3(0, 1.6, 7.6);
 export const DOOR_Z = -5.6;
 
 const BASE_INTENSITY = 0.42;

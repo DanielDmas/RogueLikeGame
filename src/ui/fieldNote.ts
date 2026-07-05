@@ -1,6 +1,8 @@
 import type { FieldNote } from '../content/schema';
 import { el } from './dom';
 import { sound } from '../audio/soundEngine';
+import { t } from '../content/text/resolver';
+import { uiKey } from '../content/text/keys';
 
 /** Escapes HTML, then turns `**text**` into `<strong>` — the only markup field-note bodies use. */
 export function renderEmphasis(raw: string): string {
@@ -22,12 +24,17 @@ export function showFieldNote(ui: HTMLElement, note: FieldNote, label = 'Field N
       header.append(glyph);
     }
     card.append(header);
-    card.append(el('h3', undefined, note.title));
-    card.append(el('div', 'fn-thinkers', note.thinkers));
+    // The header/title/thinkers stay put and the close button is pinned at
+    // the bottom; only the body scrolls (and reads as two columns on a wide
+    // screen) — so "Continue" is always reachable, even on a short viewport.
+    const scroll = el('div', 'fn-scroll');
+    scroll.append(el('h3', undefined, note.title));
+    scroll.append(el('div', 'fn-thinkers', note.thinkers));
     const p = el('p');
     p.innerHTML = renderEmphasis(note.body);
-    card.append(p);
-    const close = el('button', 'fn-close', 'Continue');
+    scroll.append(p);
+    card.append(scroll);
+    const close = el('button', 'fn-close', t(uiKey('continue'), 'Continue'));
     card.append(close);
     ui.appendChild(card);
 

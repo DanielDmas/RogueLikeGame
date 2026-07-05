@@ -56,10 +56,16 @@ export function silhouette(color = 0x060608, rimEmissive = 0x000000, rimIntensit
 
 /** The Usher: a silhouette with an emissive halo AND horns; one horn flickers. */
 export function usherFigure(): { group: THREE.Group; tick(t: number): void; setPresence(v: number): void } {
-  // a faint warm rim-light lift so the body reads as a figure, not a bare floating halo
-  const group = silhouette(0x0c0a08, 0x2a1f10, 0.35);
+  // a warm rim-light lift so the body reads as a figure, not a bare floating
+  // halo — raised from the original 0.35 (the figure read as too hidden/dim
+  // against the darker act themes).
+  const group = silhouette(0x0c0a08, 0x2a1f10, 0.55);
+  // scaled up ~18% for the same reason: a silhouette this size, this far
+  // from the camera, was easy to miss entirely.
+  group.scale.setScalar(1.18);
   const bodyMat = (group.children[0] as THREE.Mesh).material as THREE.MeshStandardMaterial;
-  const BASE_RIM = 0.35;
+  const head = group.children[2] as THREE.Mesh;
+  const BASE_RIM = 0.55;
   const halo = new THREE.Mesh(
     new THREE.TorusGeometry(0.19, 0.016, 10, 40),
     new THREE.MeshStandardMaterial({
@@ -80,6 +86,19 @@ export function usherFigure(): { group: THREE.Group; tick(t: number): void; setP
   hornR.position.set(0.09, 1.66, 0);
   hornR.rotation.z = -0.35;
   group.add(halo, hornL, hornR);
+
+  // A soft work-light from directly above — thematic and calm (a stagehand's
+  // lamp, not a spotlight interrogation) so the figure reads clearly against
+  // every act's palette without looking like a horror-movie reveal.
+  const BASE_SPOT = 2.0;
+  const spot = new THREE.SpotLight(0xf0d9a0, BASE_SPOT, 9, 0.55, 0.65, 1.6);
+  spot.position.set(0, 3.1, 0.35);
+  const spotTarget = new THREE.Object3D();
+  spotTarget.position.set(0, 0.7, 0);
+  group.add(spotTarget);
+  spot.target = spotTarget;
+  group.add(spot);
+
   // presence: a multiplier on how visible/lit the Usher reads right now —
   // boosted briefly while walking a player through a chosen door, so the
   // figure registers as thematic guidance rather than idle set-dressing.
@@ -92,6 +111,10 @@ export function usherFigure(): { group: THREE.Group; tick(t: number): void; setP
       halo.rotation.z = Math.sin(t * 0.7) * 0.08;
       halo.material.emissiveIntensity = BASE_HALO * presence;
       bodyMat.emissiveIntensity = BASE_RIM * presence;
+      spot.intensity = BASE_SPOT * presence;
+      // idle life: a slow, gentle glance toward the room every ~20s, rather
+      // than standing perfectly still the whole scene
+      head.rotation.y = Math.sin((t * 2 * Math.PI) / 20) * 0.16;
     },
     setPresence(v: number) {
       presence = v;

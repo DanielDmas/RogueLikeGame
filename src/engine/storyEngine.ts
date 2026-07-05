@@ -78,6 +78,7 @@ export function completeRoom(state: RunState, roomId: string, registry: RoomRegi
     visited: state.visited.includes(roomId) ? [...state.visited] : [...state.visited, roomId],
     transcript: [...state.transcript],
     currentRoom: null,
+    currentStage: 0,
   };
 
   if (room.id === PROLOGUE) {

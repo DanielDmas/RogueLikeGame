@@ -24,10 +24,10 @@ export class Hud {
     this.root = el('div', 'hud');
     const hearts = el('div', 'hearts');
     hearts.setAttribute('role', 'status');
-    hearts.setAttribute('aria-label', 'grip on reality');
+    hearts.setAttribute('aria-label', t(uiKey('heartsAriaLabel'), 'grip on reality'));
     hearts.title = t(
       uiKey('heartsTooltip'),
-      'Your grip on reality. Lost by refusing rooms too often, failing certain rooms badly, or when lucidity runs out. Losing all three hearts is an ending, not a failure.',
+      'Your grip on reality. A few costly choices spend one outright — the Usher always warns first — and so does lucidity running out completely. Losing all three hearts is an ending, not a failure.',
     );
     for (let i = 0; i < MAX_HEARTS; i++) {
       const h = el('div', 'heart');

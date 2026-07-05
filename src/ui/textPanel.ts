@@ -2,6 +2,7 @@ import type { Beat, RunState } from '../content/schema';
 import { clear, el } from './dom';
 import { sound } from '../audio/soundEngine';
 import { t, applyTokens } from '../content/text/resolver';
+import { uiKey } from '../content/text/keys';
 
 const SPEAKER_PREFIXES = ['Usher:', 'The Room:', 'The Door:', 'USHER:', 'THE ROOM:', 'THE DOOR:'];
 
@@ -22,6 +23,7 @@ export class TextPanel {
   private stage: HTMLElement;
   private panel: HTMLElement | null = null;
   private typewriter = true;
+  private remembered = false;
   private skipTyping: (() => void) | null = null;
 
   constructor(stageBottom: HTMLElement) {
@@ -30,6 +32,10 @@ export class TextPanel {
 
   setTypewriter(v: boolean) {
     this.typewriter = v;
+  }
+
+  setRemembered(v: boolean) {
+    this.remembered = v;
   }
 
   /** Plays beats one at a time; click/space/enter advances. Resolves when all are read. */
@@ -46,7 +52,7 @@ export class TextPanel {
     const texts = resolved.map((r) => r.text);
     const spoken = resolved.map((r) => r.isSpoken);
 
-    const panel = el('div', 'text-panel fade-in');
+    const panel = el('div', `text-panel fade-in${this.remembered ? ' remembered' : ''}`);
     if (header) {
       if (header.icon) {
         const iconWrap = el('div', 'room-icon');
@@ -56,6 +62,7 @@ export class TextPanel {
       const h = el('div', 'room-title');
       h.append(el('span', undefined, header.title));
       if (header.type) h.append(el('span', 'room-type', header.type));
+      if (this.remembered) h.append(el('span', 'room-remembered-tag', t(uiKey('rememberedTag'), 'remembered')));
       panel.appendChild(h);
     }
     const beatEl = el('p', 'beat');
@@ -66,7 +73,7 @@ export class TextPanel {
       dots.appendChild(d);
       return d;
     });
-    const hint = el('div', 'advance-hint', 'click · space');
+    const hint = el('div', 'advance-hint', t(uiKey('advanceHintClick'), 'click · space'));
     panel.append(beatEl, dots, hint);
 
     this.replacePanel(panel);
@@ -74,7 +81,7 @@ export class TextPanel {
     for (let i = 0; i < texts.length; i++) {
       dotEls.forEach((d, j) => d.classList.toggle('done', j <= i));
       await this.showBeat(beatEl, texts[i], spoken[i]);
-      if (i === texts.length - 1) hint.textContent = 'continue';
+      if (i === texts.length - 1) hint.textContent = t(uiKey('advanceHintContinue'), 'continue');
       await this.waitAdvance(panel);
     }
   }

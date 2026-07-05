@@ -13,6 +13,10 @@ export interface Settings {
   textVersion: 'v1' | 'v2';
   language: 'en' | 'cs' | 'fa';
   dynamicScenery: boolean;
+  /** Render resolution scale — independent of `quality` (which only controls AA/bloom). */
+  renderScale: 'performance' | 'standard' | 'sharp';
+  /** 0.8–1.3, scales the 2D UI layer (not the 3D canvas). */
+  uiZoom: number;
 }
 
 /** Cosmetic only — no mechanical effect. Empty name means "not chosen yet". */
@@ -34,6 +38,8 @@ export interface Profile {
   runsCompleted: number;
   settings: Settings;
   persona: Persona;
+  /** Whether the player has already seen the one-time first-heart-loss explanation. */
+  hasSeenHeartLoss: boolean;
 }
 
 export function defaultProfile(): Profile {
@@ -57,8 +63,11 @@ export function defaultProfile(): Profile {
       textVersion: 'v2',
       language: 'en',
       dynamicScenery: false,
+      renderScale: 'standard',
+      uiZoom: 1,
     },
     persona: { preset: '', name: '', blurb: '' },
+    hasSeenHeartLoss: false,
   };
 }
 

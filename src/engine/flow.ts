@@ -6,12 +6,13 @@ import { actIntroText, usherDoorBark } from '../content/usher';
 import { applyEffects, newRun } from './gameState';
 import { axisTriptych, evaluateEnding } from './endings';
 import { completeRoom, makeRegistry, offeredDoors } from './storyEngine';
-import type { Profile, SaveStore } from './saveStore';
+import { defaultProfile, type Profile, type SaveStore } from './saveStore';
 import { SceneDirector } from '../scene/director';
 import { Hud } from '../ui/hud';
 import { TextPanel } from '../ui/textPanel';
 import { ChoicePanel } from '../ui/choices';
 import { showFieldNote } from '../ui/fieldNote';
+import { showSavedToast } from '../ui/toast';
 import {
   showAbout,
   showCodex,
@@ -20,6 +21,7 @@ import {
   showPersona,
   showSettings,
   showTitle,
+  type SettingsActions,
 } from '../ui/overlays';
 import { el } from '../ui/dom';
 import { sound } from '../audio/soundEngine';
@@ -41,8 +43,11 @@ import {
   endingNoteThinkersKey,
   endingNoteBodyKey,
   uiKey,
+  usherBarkKey,
 } from '../content/text/keys';
 import { applyLocaleToDocument } from '../ui/locale';
+import { toggleFullscreen } from '../ui/fullscreen';
+import { applyUiZoom } from '../ui/zoom';
 
 const PROFILE_ID = 'traveler';
 const registry = makeRegistry(allRooms);
@@ -85,6 +90,7 @@ export class Game {
         onDoorClick: (id) => this.doorClickThrough?.(id),
       },
       profile.settings.quality,
+      profile.settings.renderScale,
     );
     this.hud = new Hud(ui, () => this.openPause(), profile.settings.language, (lang) => {
       this.profile.settings = { ...this.profile.settings, language: lang };
@@ -95,9 +101,11 @@ export class Game {
     this.choices = new ChoicePanel(stageBottom);
 
     addEventListener('keydown', (e) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
       if (e.key === 'Escape' && this.inGame && !this.ui.querySelector('.overlay, .field-note')) {
         this.openPause();
       }
+      if (e.key === 'f' || e.key === 'F') void toggleFullscreen();
     });
     addEventListener('pointerdown', () => sound.primeOnGesture(), { once: true });
 
@@ -111,6 +119,8 @@ export class Game {
     this.text.setTypewriter(s.typewriter && !s.reducedMotion);
     this.director.setReducedMotion(s.reducedMotion);
     this.director.setDynamicScenery(s.dynamicScenery);
+    this.director.setRenderScale(s.renderScale);
+    applyUiZoom(s.uiZoom);
     sound.setMusicEnabled(s.music);
     sound.setSfxEnabled(s.sfx);
     sound.setMusicVolume(s.musicVolume);
@@ -126,9 +136,12 @@ export class Game {
     return { name: name || t(uiKey('travellerFallback'), 'traveller') };
   }
 
-  private async persist() {
+  private async persist(showToast = false) {
     this.profile.run = this.state.finished ? null : this.state;
     await this.store.save(PROFILE_ID, this.profile);
+    // Shown only at natural checkpoints (door chosen, room completed, settings
+    // saved) — never on the silent per-stage safety-net persist, or it would nag.
+    if (showToast) showSavedToast(this.ui, t(uiKey('savedToast'), 'Progress saved'), this.profile.settings.reducedMotion);
   }
 
   private fade(on: boolean): Promise<void> {
@@ -137,7 +150,31 @@ export class Game {
     return new Promise((r) => setTimeout(r, ms));
   }
 
+  /** Abandons the in-progress run only — field notes, endings, settings, and persona survive.
+   * Reloads afterward: simplest and safest way to guarantee the game and its
+   * on-screen UI (whatever was showing when the run was reset) never disagree. */
+  private async resetRun() {
+    this.profile.run = null;
+    await this.store.save(PROFILE_ID, this.profile);
+    location.reload();
+  }
+
+  /** Wipes the whole profile back to defaults and starts over from a clean title screen. */
+  private async resetProgress() {
+    await this.store.save(PROFILE_ID, defaultProfile());
+    location.reload();
+  }
+
+  private settingsActions(): SettingsActions {
+    return {
+      hasRun: this.inGame || Boolean(this.profile.run && !this.profile.run.finished),
+      onResetRun: () => void this.resetRun(),
+      onResetProgress: () => void this.resetProgress(),
+    };
+  }
+
   private async openPause() {
+    this.director.setPaused(true);
     const action = await showPauseMenu(this.ui);
     if (action === 'codex') await showCodex(this.ui, this.profile);
     if (action === 'persona') {
@@ -146,20 +183,28 @@ export class Game {
     }
     if (action === 'about') await showAbout(this.ui);
     if (action === 'settings') {
-      this.profile.settings = await showSettings(this.ui, this.profile.settings);
+      this.profile.settings = await showSettings(this.ui, this.profile.settings, this.settingsActions());
       this.applySettings();
-      await this.persist();
+      await this.persist(true);
     }
     if (action === 'title') {
       await this.persist();
       location.reload();
+      return;
     }
+    if (action === 'exit') {
+      await this.persist();
+      window.close();
+      return;
+    }
+    this.director.setPaused(false);
   }
 
   /** Entry point: title screen loop, then the run. */
   async start() {
     this.director.setTheme(0);
     sound.setAct(0);
+    this.director.setPaused(true);
     for (;;) {
       const action = await showTitle(this.ui, this.profile);
       if (action === 'codex') {
@@ -170,9 +215,11 @@ export class Game {
       } else if (action === 'about') {
         await showAbout(this.ui);
       } else if (action === 'settings') {
-        this.profile.settings = await showSettings(this.ui, this.profile.settings);
+        this.profile.settings = await showSettings(this.ui, this.profile.settings, this.settingsActions());
         this.applySettings();
         await this.persist();
+      } else if (action === 'exit') {
+        window.close();
       } else {
         if (action === 'new' && !this.profile.persona.name) {
           this.profile.persona = await showPersona(this.ui, this.profile.persona);
@@ -182,6 +229,7 @@ export class Game {
         break;
       }
     }
+    this.director.setPaused(false);
     this.inGame = true;
     this.runStartNotes = this.profile.codexUnlocked.length;
     this.hud.show();
@@ -231,6 +279,7 @@ export class Game {
         teaser: t(roomTeaserKey(r.id), r.teaser),
         secret: Boolean(r.secret),
         icon: iconFor(r.id),
+        unseen: !this.profile.codexUnlocked.includes(r.id),
       }));
       this.director.setMood(null);
       this.director.showDoors(specs);
@@ -250,8 +299,8 @@ export class Game {
       this.director.hideDoors();
       await this.fade(false);
 
-      this.state = { ...this.state, currentRoom: roomId };
-      await this.persist();
+      this.state = { ...this.state, currentRoom: roomId, currentStage: 0 };
+      await this.persist(true);
       await this.enterRoom(registry.get(roomId));
     }
   }
@@ -261,7 +310,28 @@ export class Game {
     const title = t(roomTitleKey(room.id), room.title);
     const tokens = this.tokens();
     this.director.setMood(room.type);
-    for (let i = 0; i < room.stages.length; i++) {
+    // A room already witnessed in an earlier run reads back fast on repeat —
+    // no typewriter, and the panel carries a quiet "remembered" mark — so
+    // replays stay brisk instead of re-reading beats the player already knows.
+    const remembered = this.profile.codexUnlocked.includes(room.id);
+    if (remembered) {
+      this.text.setTypewriter(false);
+      this.text.setRemembered(true);
+    }
+    // Resume mid-room at the saved stage rather than replaying from the top —
+    // otherwise quitting mid-room would re-run already-applied effects and
+    // duplicate the transcript on the next load. Saves from before this
+    // field existed have no currentStage; treat that as stage 0.
+    const startStage = this.state.currentStage ?? 0;
+    if (remembered && startStage === 0) {
+      await this.text.playBeats(
+        [t(usherBarkKey('remembered-room'), 'You remember this room.')],
+        this.state,
+        { title, type: room.type, icon },
+        { tokens },
+      );
+    }
+    for (let i = startStage; i < room.stages.length; i++) {
       const stage = room.stages[i];
       await this.text.playBeats(stage.beats, this.state, { title, type: room.type, icon }, {
         keyOf: (bi) => roomBeatKey(room.id, i, bi),
@@ -272,6 +342,7 @@ export class Game {
       sound.choice();
       const heartsBefore = this.state.hearts;
       this.state = applyEffects(this.state, choice.effects);
+      const firstHeartLoss = this.state.hearts < heartsBefore && !this.profile.hasSeenHeartLoss;
       if (this.state.hearts < heartsBefore) sound.heartLoss();
       this.state.transcript.push({
         roomId: room.id,
@@ -283,6 +354,24 @@ export class Game {
       if (room.id === 'last-message') {
         this.profile.lastMessage = choice.text.replace(/^“|”$/g, '');
       }
+      // Shown once per profile, ever — a brief, calm explanation of what just
+      // happened, so the first heart loss reads as a mechanic, not a shock.
+      if (firstHeartLoss) {
+        this.profile.hasSeenHeartLoss = true;
+        await this.persist();
+        await this.text.playBeats(
+          [t(usherBarkKey('first-heart-loss'), 'Usher: There — a heart, spent. Feel that. It is the facility keeping an honest ledger, nothing more. You have {hearts} left. Not a countdown to failure; simply what that choice cost.')],
+          this.state,
+          { title, type: room.type, icon },
+          { tokens: { ...tokens, hearts: String(this.state.hearts) } },
+        );
+        this.text.hide();
+      }
+      // Persist right after the choice's effects land (not after its outcome
+      // beats finish) — a quit-and-resume from here re-enters at the next
+      // stage instead of re-applying this choice's effects a second time.
+      this.state = { ...this.state, currentStage: i + 1 };
+      await this.persist();
       await this.text.playBeats(choice.outcome, this.state, { title, type: room.type, icon }, {
         keyOf: (bi) => roomChoiceOutcomeKey(room.id, choice.id, bi),
         tokens,
@@ -290,6 +379,11 @@ export class Game {
       if (this.state.hearts <= 0) break;
     }
     this.text.hide();
+    if (remembered) {
+      this.text.setRemembered(false);
+      const s = this.profile.settings;
+      this.text.setTypewriter(s.typewriter && !s.reducedMotion);
+    }
 
     if (room.fieldNote) {
       await showFieldNote(
@@ -307,7 +401,7 @@ export class Game {
       this.profile.codexUnlocked.push(room.id);
     }
     this.state = completeRoom(this.state, room.id, registry);
-    await this.persist();
+    await this.persist(true);
   }
 
   private async playEnding(endingId: string): Promise<void> {

@@ -108,6 +108,9 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
   color: var(--gold); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: baseline;
 }
 .room-title .room-type { color: var(--ink-faint); letter-spacing: 0.2em; }
+.room-title .room-remembered-tag {
+  color: var(--ink-faint); letter-spacing: 0.2em; font-style: italic; opacity: 0.65;
+}
 
 .beat {
   font-family: var(--serif); font-size: 17.5px; line-height: 1.62; color: var(--ink);
@@ -125,6 +128,8 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 }
 @keyframes pulse { 0%, 100% { opacity: 0.45; } 50% { opacity: 0.95; } }
 .reduced-motion .advance-hint { animation: none; opacity: 0.7; }
+.text-panel.remembered .beat { opacity: 0.92; }
+.text-panel.remembered .advance-hint { opacity: 0.55; animation: none; }
 
 .beat-progress { display: flex; gap: 5px; margin-top: 14px; }
 .beat-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--ink-faint); opacity: 0.5; }
@@ -181,6 +186,12 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 .choice-card.door .door-teaser {
   font-size: 12.5px; line-height: 1.4; color: var(--ink-dim); font-style: italic; font-family: var(--serif);
 }
+.choice-card.door .door-unseen-badge {
+  flex-shrink: 0; align-self: flex-start;
+  font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--gold); border: 1px solid var(--gold-dim); border-radius: 20px;
+  padding: 2px 8px; opacity: 0.85;
+}
 
 /* ---------- field note ---------- */
 .field-note {
@@ -193,13 +204,13 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
   padding: 30px 38px 26px;
   box-shadow: 0 -20px 70px rgba(0, 0, 0, 0.6);
   transition: transform 0.7s var(--ease);
-  max-height: 72vh; overflow-y: auto;
+  max-height: 72vh; display: flex; flex-direction: column;
 }
 .field-note.open { transform: translate(-50%, 0); }
 .reduced-motion .field-note { transition-duration: 0.2s; }
 
 .field-note .fn-header {
-  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex: none;
 }
 .field-note .fn-label {
   font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold);
@@ -209,14 +220,19 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
   width: 34px; height: 34px; flex: none; color: var(--gold-dim); opacity: 0.85;
 }
 .field-note .fn-icon svg { width: 100%; height: 100%; }
+.field-note .fn-scroll { overflow-y: auto; padding-right: 4px; }
 .field-note h3 { font-family: var(--serif); font-weight: 600; font-size: 24px; margin-bottom: 4px; }
 .field-note .fn-thinkers {
   font-family: var(--serif); font-style: italic; font-size: 13.5px; color: var(--ink-dim); margin-bottom: 16px;
 }
 .field-note p { font-family: var(--serif); font-size: 15.5px; line-height: 1.7; color: var(--ink); max-width: 84ch; }
+/* a book-spread on wide screens; a single column (with its own scroll) below that */
+@media (min-width: 900px) {
+  .field-note p { columns: 2; column-gap: 42px; max-width: none; }
+}
 .field-note strong { color: var(--gold); font-weight: 600; }
 .field-note .fn-close {
-  margin-top: 22px; width: 100%; text-align: center;
+  margin-top: 18px; width: 100%; text-align: center; flex: none;
   font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold);
   padding: 12px; border: 1px solid var(--gold-dim); border-radius: 8px;
   transition: background 0.3s;
@@ -235,6 +251,17 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 .door-tip.on { opacity: 1; }
 .door-tip .tip-hint { white-space: nowrap; }
 .door-tip .tip-teaser { font-size: 12px; color: var(--ink-dim); white-space: normal; }
+
+/* ---------- autosave toast ---------- */
+.save-toast {
+  position: absolute; top: 22px; left: 50%; transform: translate(-50%, -14px);
+  z-index: 25; pointer-events: none;
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold);
+  background: var(--panel); border: 1px solid var(--gold-dim); border-radius: 20px;
+  padding: 8px 18px; opacity: 0;
+  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+}
+.save-toast.show { opacity: 1; transform: translate(-50%, 0); }
 
 /* ---------- menus & overlays ---------- */
 .overlay {
@@ -293,22 +320,46 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 .codex-card .cx-thinkers { font-family: var(--serif); font-style: italic; font-size: 12px; color: var(--ink-dim); }
 .codex-card.ending-card .cx-title { color: var(--gold); }
 
-/* settings rows */
-.settings-list { margin-top: 30px; display: flex; flex-direction: column; gap: 10px; min-width: min(420px, 90vw); }
-.setting-row {
-  display: flex; justify-content: space-between; align-items: center; gap: 30px;
-  background: var(--panel); border: 1px solid var(--panel-edge); border-radius: 8px; padding: 13px 18px;
+/* settings: bounded, scrollable, sectioned two-column panel on wide screens */
+.settings-panel {
+  width: min(940px, 100%); max-height: 84vh; display: flex; flex-direction: column;
 }
+.settings-scroll { overflow-y: auto; margin-top: 20px; padding-right: 4px; }
+.settings-sections { display: grid; grid-template-columns: 1fr; gap: 22px; }
+@media (min-width: 900px) {
+  .settings-sections { grid-template-columns: 1fr 1fr; }
+}
+.settings-section h3 {
+  font-family: var(--sans); font-size: 11px; letter-spacing: 0.26em; text-transform: uppercase;
+  color: var(--ink-faint); margin-bottom: 12px;
+}
+.settings-section-body { display: flex; flex-direction: column; gap: 10px; }
+.settings-footer {
+  margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--panel-edge);
+  display: flex; flex-direction: column; align-items: center; gap: 16px; flex: none;
+}
+.settings-footer .title-btn { margin: 0; }
+
+.setting-row {
+  background: var(--panel); border: 1px solid var(--panel-edge); border-radius: 8px; padding: 12px 18px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.setting-row-top { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
 .setting-row .lbl { font-size: 13px; letter-spacing: 0.08em; }
+.setting-desc { font-size: 11.5px; line-height: 1.5; color: var(--ink-faint); font-style: italic; }
 .toggle {
   font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-dim);
   border: 1px solid var(--panel-edge); border-radius: 6px; padding: 7px 16px; min-width: 74px;
   transition: color 0.25s, border-color 0.25s;
 }
 .toggle.on { color: var(--gold); border-color: var(--gold-dim); }
-.toggle.cycle { min-width: 160px; }
+.toggle.cycle { min-width: 190px; }
+.toggle.danger { color: var(--danger); border-color: rgba(179, 84, 63, 0.35); min-width: 160px; }
+.toggle.danger.armed { color: #fff; background: rgba(179, 84, 63, 0.25); border-color: var(--danger); }
+.toggle:disabled { opacity: 0.5; cursor: default; }
 
-.setting-row.slider-row { padding: 10px 18px 13px; margin-top: -4px; opacity: 0.9; }
+.setting-row.slider-row { padding: 10px 18px 13px; opacity: 0.9; }
+.zoom-value { font-size: 11px; color: var(--ink-dim); min-width: 34px; text-align: right; }
 .volume-slider {
   appearance: none; width: 160px; height: 4px; border-radius: 2px;
   background: var(--panel-edge); outline: none;
@@ -359,6 +410,10 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 .about-body { margin-top: 22px; display: flex; flex-direction: column; gap: 16px; text-align: left; }
 .about-body p { font-family: var(--serif); font-size: 14.5px; line-height: 1.65; color: var(--ink-dim); }
 .about-body b { color: var(--gold); font-weight: 500; }
+.about-heart-glyph {
+  display: inline-block; width: 14px; height: 14px; margin-right: 6px; vertical-align: -1px;
+}
+.about-heart-glyph svg { width: 100%; height: 100%; }
 
 /* ---------- ending screen ---------- */
 .ending-title {

@@ -23,6 +23,8 @@ export interface RunState {
   visited: string[];
   transcript: TranscriptEntry[];
   currentRoom: string | null;
+  /** stage index within currentRoom to resume at; undefined on saves from before this field existed (treat as 0) */
+  currentStage?: number;
   act: ActId;
   /** optional (non-gate) rooms completed in the current act */
   actOptionalDone: number;
