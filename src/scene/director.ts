@@ -277,8 +277,11 @@ export class SceneDirector {
       ? `<span class="tip-hint">${spec.hint}</span><span class="tip-teaser">${spec.teaser}</span>`
       : spec.hint;
     const p = this.doors.lintel(id).clone().project(this.camera);
+    // Clear the door's own glow/bloom, which extends above its lintel —
+    // a small gap here reads as "unreadable" once the teaser's second line
+    // (and any UI zoom) pushes it back down into that glow.
     this.tooltip.style.left = `${((p.x + 1) / 2) * innerWidth}px`;
-    this.tooltip.style.top = `${((1 - p.y) / 2) * innerHeight - 8}px`;
+    this.tooltip.style.top = `${((1 - p.y) / 2) * innerHeight - 34}px`;
     this.tooltip.classList.add('on');
   }
 

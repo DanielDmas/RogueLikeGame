@@ -1,7 +1,7 @@
 {
   "name": "anamnesis",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.5-v2-beta",
   "description": "A 2.5D philosophical roguelike about finding your way back to yourself.",
   "type": "module",
   "main": "electron/main.cjs",
