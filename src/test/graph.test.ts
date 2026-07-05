@@ -48,14 +48,13 @@ describe('room graph', () => {
     expect(contentIds).toEqual(graphIds);
   });
 
-  it('every run finishes: prologue, gates in order, all of act IV, length 15-16 rooms', () => {
+  it('every run finishes: prologue, gates in order, all of act IV, length always 15 rooms', () => {
     for (let seed = 1; seed <= 300; seed++) {
       const s = simulateRun(seed);
       expect(s.visited[0]).toBe(PROLOGUE);
-      // total = prologue + (3 optional + gate) * 3 acts + 3 final = 16,
-      // or 15 when an act's secret room stayed locked and its open pool ran short (act 3: 3 open rooms)
-      expect(s.visited.length).toBeGreaterThanOrEqual(15);
-      expect(s.visited.length).toBeLessThanOrEqual(16);
+      // total = prologue(1) + (3 optional + gate)*2 acts (I, II) + (2 optional + gate) act III + 3 (act IV) = 15.
+      // Deterministic: every act's open pool is always >= its required count, so no early/short gating.
+      expect(s.visited.length).toBe(15);
       const order = [GATES[1], GATES[2], GATES[3], ...ACT4_SEQUENCE].map((id) => s.visited.indexOf(id));
       for (const idx of order) expect(idx).toBeGreaterThan(0);
       expect([...order]).toEqual([...order].sort((a, b) => a - b));
@@ -94,12 +93,26 @@ describe('room graph', () => {
     expect(doors.map((d) => d.id)).not.toContain('omelas');
   });
 
-  it('after three optional rooms only the gate is offered', () => {
+  it('after three optional rooms only the gate is offered (act I)', () => {
     let s = newRun();
     s = completeRoom(s, PROLOGUE, registry);
     s = { ...s, actOptionalDone: 3, visited: [PROLOGUE, 'wallet', 'promotion', 'quiet-alarm'] };
     const doors = offeredDoors(s, registry);
     expect(doors.map((d) => d.id)).toEqual([GATES[1]]);
+  });
+
+  it('act III gates after only 2 of its 3 open rooms — a door choice always means skipping one', () => {
+    let s = newRun();
+    s = completeRoom(s, PROLOGUE, registry);
+    s = { ...s, act: 3, actOptionalDone: 1, visited: [PROLOGUE, 'teleporter'] };
+    const firstOffer = offeredDoors(s, registry);
+    expect(firstOffer.map((d) => d.id)).not.toContain(GATES[3]);
+    expect(firstOffer.length).toBeGreaterThanOrEqual(1);
+
+    s = { ...s, actOptionalDone: 2, visited: [PROLOGUE, 'teleporter', 'editor'] };
+    const secondOffer = offeredDoors(s, registry);
+    expect(secondOffer.map((d) => d.id)).toEqual([GATES[3]]);
+    // 'debt-of-dead' was never forced — it stayed skippable this run.
   });
 });
 
@@ -135,6 +148,16 @@ describe('content lint', () => {
     expect(new Set(hints).size).toBe(hints.length);
     const ids = allRooms.map((r) => r.id);
     expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it('every room has a spoiler-free teaser distinct from its door hint', () => {
+    for (const room of allRooms) {
+      expect(room.teaser, `room ${room.id} missing a teaser`).toBeTruthy();
+      expect(room.teaser.length).toBeGreaterThan(10);
+      expect(room.teaser).not.toBe(room.doorHint);
+    }
+    const teasers = allRooms.map((r) => r.teaser);
+    expect(new Set(teasers).size, 'teasers should be unique per room').toBe(teasers.length);
   });
 
   it('gates are marked and placed correctly', () => {

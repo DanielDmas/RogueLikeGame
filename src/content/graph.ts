@@ -19,7 +19,12 @@ export const ACT4_SEQUENCE = ['boulder', 'last-message', 'door-that-asks'];
 
 export const PROLOGUE = 'waiting-room';
 
-export const OPTIONAL_PER_ACT = 3;
+/**
+ * Rooms the player must complete per act before the gate opens. Kept strictly
+ * below each act's open-pool size so a door choice always means skipping a
+ * room this run (Act III's open pool is 3, so it takes only 2 of them).
+ */
+export const OPTIONAL_PER_ACT: Record<1 | 2 | 3, number> = { 1: 3, 2: 3, 3: 2 };
 
 export const ACT_NAMES: Record<ActId, string> = {
   0: 'Prologue — The Waiting Room',

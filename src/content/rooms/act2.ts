@@ -7,6 +7,7 @@ export const junction: Room = {
   title: 'The Junction',
   type: 'DILEMMA',
   doorHint: 'The door of the lever and the weight',
+  teaser: 'A lever, a bridge, and the same five lives, twice.',
   stages: [
     {
       beats: [
@@ -126,6 +127,7 @@ export const experienceMachine: Room = {
   title: 'The Experience Machine',
   type: 'DILEMMA',
   doorHint: 'The door behind which nothing is wrong',
+  teaser: 'A perfect life, guaranteed — if you can bear what that costs.',
   stages: [
     {
       beats: [
@@ -183,6 +185,7 @@ export const ship: Room = {
   title: 'The Ship',
   type: 'INSIGHT',
   doorHint: 'The door of the replaced planks',
+  teaser: 'Piece by piece, you are being replaced. Who walks out?',
   stages: [
     {
       beats: [
@@ -251,6 +254,7 @@ export const casinoPascal: Room = {
   title: 'The Casino of Pascal',
   type: 'INSIGHT',
   doorHint: 'The door with the infinite jackpot',
+  teaser: 'A wager on God, at a table where the house sets the odds.',
   stages: [
     {
       beats: [
@@ -319,6 +323,7 @@ export const omelas: Room = {
   title: 'The City of Omelas',
   type: 'DOOMED',
   doorHint: 'A third door, humming with festival light',
+  teaser: 'A city’s joy, and the price it never mentions out loud.',
   secret: (s) => Math.abs(s.axes.selfOthers) >= 20 || s.lucidity >= 80,
   stages: [
     {
@@ -378,6 +383,7 @@ export const courtOfUsher: Room = {
   type: 'INSIGHT',
   gate: true,
   doorHint: 'The door with the summons nailed to it',
+  teaser: 'The Usher stands trial, and you are the judge.',
   stages: [
     {
       beats: [

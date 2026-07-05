@@ -6,6 +6,7 @@ export const wallet: Room = {
   title: 'The Wallet',
   type: 'DILEMMA',
   doorHint: 'The door of the thing nobody saw',
+  teaser: 'A test with no witnesses — except the one that counts.',
   stages: [
     {
       beats: [
@@ -75,6 +76,7 @@ export const dinnerTable: Room = {
   title: 'The Dinner Table',
   type: 'NO-SOLUTION',
   doorHint: 'The door of the question you already know',
+  teaser: 'A question with no safe answer, asked by someone you love.',
   stages: [
     {
       beats: [
@@ -145,6 +147,7 @@ export const promotion: Room = {
   title: 'The Promotion',
   type: 'DILEMMA',
   doorHint: 'The door of the ledger and the friend',
+  teaser: 'Loyalty and advantage — only one of them gets to win.',
   stages: [
     {
       beats: [
@@ -214,6 +217,7 @@ export const beggarsMath: Room = {
   title: 'The Beggar’s Math',
   type: 'INSIGHT',
   doorHint: 'The door of the near and the far',
+  teaser: 'The stranger in front of you, or the larger good you cannot see.',
   stages: [
     {
       beats: [
@@ -282,6 +286,7 @@ export const quietAlarm: Room = {
   title: 'The Quiet Alarm',
   type: 'DILEMMA',
   doorHint: 'The door of the sound through the wall',
+  teaser: 'A wall, a silence, and a decision you cannot take back.',
   stages: [
     {
       beats: [
@@ -352,6 +357,7 @@ export const photograph: Room = {
   type: 'DOOMED',
   gate: true,
   doorHint: 'The door that is already warm',
+  teaser: 'Fire behind two doors. You lose something either way.',
   stages: [
     {
       beats: [

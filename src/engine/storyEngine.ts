@@ -53,7 +53,7 @@ function doorsForAct(state: RunState, act: 1 | 2 | 3, registry: RoomRegistry): R
   const open = pool.filter((r) => !r.secret);
   const secrets = pool.filter((r) => r.secret && r.secret(state));
 
-  if (state.actOptionalDone >= OPTIONAL_PER_ACT || (open.length === 0 && secrets.length === 0)) {
+  if (state.actOptionalDone >= OPTIONAL_PER_ACT[act] || (open.length === 0 && secrets.length === 0)) {
     return [registry.get(GATES[act])];
   }
 

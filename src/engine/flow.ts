@@ -85,7 +85,8 @@ export class Game {
     document.body.classList.toggle('high-contrast', s.highContrast);
     this.text.setTypewriter(s.typewriter && !s.reducedMotion);
     this.director.setReducedMotion(s.reducedMotion);
-    sound.setEnabled(s.sound);
+    sound.setMusicEnabled(s.music);
+    sound.setSfxEnabled(s.sfx);
   }
 
   private async persist() {
@@ -176,6 +177,7 @@ export class Game {
       const specs = doors.map((r) => ({
         id: r.id,
         hint: r.doorHint,
+        teaser: r.teaser,
         secret: Boolean(r.secret),
         icon: iconFor(r.id),
       }));

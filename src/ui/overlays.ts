@@ -66,7 +66,8 @@ export function showSettings(ui: HTMLElement, settings: Settings): Promise<Setti
     const list = el('div', 'settings-list');
     const current = { ...settings };
     const rows: [keyof Settings, string][] = [
-      ['sound', 'Sound'],
+      ['music', 'Background music'],
+      ['sfx', 'Sound effects'],
       ['typewriter', 'Typewriter text'],
       ['reducedMotion', 'Reduced motion'],
       ['highContrast', 'High-contrast text'],

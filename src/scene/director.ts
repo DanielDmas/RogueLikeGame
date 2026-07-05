@@ -32,12 +32,14 @@ export class SceneDirector {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: quality === 'high' });
     this.renderer.setPixelRatio(Math.min(devicePixelRatio, quality === 'high' ? 2 : 1));
     this.renderer.setSize(innerWidth, innerHeight);
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1.55;
     this.camera = new THREE.PerspectiveCamera(58, innerWidth / innerHeight, 0.1, 200);
     this.camera.position.copy(CAM_HOME);
     this.camera.lookAt(0, 1.4, -6);
     this.post = createPost(this.renderer, this.scene, this.camera, quality);
 
-    this.usher.group.position.set(5.2, 0, -3.4);
+    this.usher.group.position.set(6.2, -0.05, -4.6);
     this.usher.group.rotation.y = -0.5;
 
     this.tooltip = document.createElement('div');
@@ -119,7 +121,9 @@ export class SceneDirector {
     }
     const spec = this.doorSpecs.get(id);
     if (!spec) return;
-    this.tooltip.textContent = spec.hint;
+    this.tooltip.innerHTML = spec.teaser
+      ? `<span class="tip-hint">${spec.hint}</span><span class="tip-teaser">${spec.teaser}</span>`
+      : spec.hint;
     const p = this.doors.lintel(id).clone().project(this.camera);
     this.tooltip.style.left = `${((p.x + 1) / 2) * innerWidth}px`;
     this.tooltip.style.top = `${((1 - p.y) / 2) * innerHeight - 8}px`;
@@ -140,6 +144,7 @@ export class SceneDirector {
 
     this.theme?.tick(t);
     this.usher.tick(t);
+    this.doors?.tick(t);
 
     if (this.dolly) {
       this.camera.position.lerp(this.dolly.target, 1 - Math.pow(0.0018, dt));

@@ -8,6 +8,7 @@ export const boulder: Room = {
   title: 'The Boulder',
   type: 'NO-SOLUTION',
   doorHint: 'The door at the bottom of the hill',
+  teaser: 'A task that undoes itself. The question is how you carry it.',
   stages: [
     {
       beats: [
@@ -76,6 +77,7 @@ export const lastMessage: Room = {
   title: 'The Last Message',
   type: 'DILEMMA',
   doorHint: 'The door with the letter slot',
+  teaser: 'One sentence back to the waking world. Who gets it?',
   stages: [
     {
       beats: [
@@ -166,6 +168,7 @@ export const doorThatAsks: Room = {
   type: 'INSIGHT',
   gate: true,
   doorHint: 'The last door, which is reading your file',
+  teaser: 'It has read your whole file. Now it wants to know if you stand by it.',
   stages: [
     {
       beats: [

@@ -37,9 +37,11 @@ function particles(count: number, color: number, spread: number, size = 0.05): T
 }
 
 /** A backlit human silhouette — faces dissolved, on theme. */
-export function silhouette(color = 0x060608): THREE.Group {
+export function silhouette(color = 0x060608, rimEmissive = 0x000000, rimIntensity = 0): THREE.Group {
   const g = new THREE.Group();
-  const mat = new THREE.MeshStandardMaterial({ color, roughness: 0.95 });
+  const mat = new THREE.MeshStandardMaterial({
+    color, roughness: 0.95, emissive: rimEmissive, emissiveIntensity: rimIntensity,
+  });
   const body = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.3, 1.25, 12), mat);
   body.position.y = 0.62;
   const shoulders = new THREE.Mesh(new THREE.SphereGeometry(0.24, 12, 8), mat);
@@ -53,11 +55,12 @@ export function silhouette(color = 0x060608): THREE.Group {
 
 /** The Usher: a silhouette with an emissive halo AND horns; one horn flickers. */
 export function usherFigure(): { group: THREE.Group; tick(t: number): void } {
-  const group = silhouette(0x050507);
+  // a faint warm rim-light lift so the body reads as a figure, not a bare floating halo
+  const group = silhouette(0x0c0a08, 0x2a1f10, 0.35);
   const halo = new THREE.Mesh(
     new THREE.TorusGeometry(0.19, 0.016, 10, 40),
     new THREE.MeshStandardMaterial({
-      color: 0xd4b36a, emissive: 0xd4b36a, emissiveIntensity: 2.2, roughness: 0.3,
+      color: 0xd4b36a, emissive: 0xd4b36a, emissiveIntensity: 1.5, roughness: 0.3,
     }),
   );
   halo.position.y = 1.82;
@@ -83,14 +86,23 @@ export function usherFigure(): { group: THREE.Group; tick(t: number): void } {
   };
 }
 
+/** Blend a hex color toward neutral grey — used to desaturate the decorative corridor doors. */
+function desaturate(hex: number, amount: number): number {
+  const c = new THREE.Color(hex);
+  const grey = c.getHSL({ h: 0, s: 0, l: 0 }).l;
+  return c.lerp(new THREE.Color(grey, grey, grey), amount).getHex();
+}
+
 /** Act I (and prologue): endless dim corridor, doors leaking warm domestic light. */
 function corridorTheme(warmth: number): ThemeConfig {
   const group = new THREE.Group();
-  group.add(floor(0x141210, 0.9));
+  group.add(floor(0x201c16, 0.9));
 
-  const wallMat = new THREE.MeshStandardMaterial({ color: 0x1a1714, roughness: 0.95 });
+  const wallMat = new THREE.MeshStandardMaterial({ color: 0x2b2620, roughness: 0.95 });
+  // decorative background doors: dim and desaturated, so they read as scenery, not choices
+  const decorativeWarmth = desaturate(warmth, 0.55);
   const doorGlowMat = new THREE.MeshStandardMaterial({
-    color: 0x2a1f10, emissive: warmth, emissiveIntensity: 0.8, roughness: 0.7,
+    color: 0x241f18, emissive: decorativeWarmth, emissiveIntensity: 0.32, roughness: 0.8,
   });
   for (const side of [-1, 1]) {
     const wall = new THREE.Mesh(new THREE.BoxGeometry(0.4, 7, 90), wallMat);
@@ -101,7 +113,7 @@ function corridorTheme(warmth: number): ThemeConfig {
       slab.position.set(side * 7.28, 1.5, -4 - i * 9);
       slab.rotation.y = side * -Math.PI / 2;
       group.add(slab);
-      const light = new THREE.PointLight(warmth, 2.4, 9, 1.8);
+      const light = new THREE.PointLight(decorativeWarmth, 1.1, 8, 1.9);
       light.position.set(side * 6.6, 1.6, -4 - i * 9);
       group.add(light);
     }
@@ -110,14 +122,14 @@ function corridorTheme(warmth: number): ThemeConfig {
   ceiling.rotation.x = Math.PI / 2;
   ceiling.position.set(0, 6.4, -30);
   group.add(ceiling);
-  group.add(new THREE.AmbientLight(0x30281f, 0.7));
-  const key = new THREE.PointLight(0xc9a06a, 6, 24, 1.6);
+  group.add(new THREE.AmbientLight(0x4a3c28, 2.0));
+  const key = new THREE.PointLight(0xc9a06a, 9, 26, 1.5);
   key.position.set(0, 4.4, -2);
   group.add(key);
   const dust = particles(240, 0xc9a06a, 24, 0.035);
   group.add(dust);
   return {
-    group, fogColor: 0x0a0806, fogDensity: 0.055, background: 0x0a0806,
+    group, fogColor: 0x322a1d, fogDensity: 0.036, background: 0x322a1d,
     tick(t) { dust.rotation.y = t * 0.008; },
   };
 }
@@ -125,8 +137,8 @@ function corridorTheme(warmth: number): ThemeConfig {
 /** Act II: dark celestial factory — gears in fog, conveyor belts of small indifferent stars. */
 function machineryTheme(): ThemeConfig {
   const group = new THREE.Group();
-  group.add(floor(0x0c0e13, 0.6, 0.35));
-  const brass = new THREE.MeshStandardMaterial({ color: 0x6b5a33, roughness: 0.35, metalness: 0.9 });
+  group.add(floor(0x161a24, 0.6, 0.35));
+  const brass = new THREE.MeshStandardMaterial({ color: 0x8a7442, roughness: 0.35, metalness: 0.9 });
   const gears: THREE.Mesh[] = [];
   const gearGeo = new THREE.TorusGeometry(3.4, 0.5, 10, 28);
   const positions: [number, number, number][] = [
@@ -141,16 +153,16 @@ function machineryTheme(): ThemeConfig {
   }
   const stars = particles(500, 0x9db4e8, 46, 0.06);
   group.add(stars);
-  group.add(new THREE.AmbientLight(0x1a2030, 1.2));
-  const beam = new THREE.SpotLight(0xd4b36a, 90, 50, 0.55, 0.7, 1.4);
+  group.add(new THREE.AmbientLight(0x33405c, 2.4));
+  const beam = new THREE.SpotLight(0xd4b36a, 110, 50, 0.55, 0.7, 1.3);
   beam.position.set(0, 15, -3);
   beam.target.position.set(0, 0, -8);
   group.add(beam, beam.target);
-  const cool = new THREE.PointLight(0x4a5f9e, 8, 30, 1.6);
+  const cool = new THREE.PointLight(0x4a5f9e, 10, 32, 1.5);
   cool.position.set(-6, 3, -10);
   group.add(cool);
   return {
-    group, fogColor: 0x05060a, fogDensity: 0.045, background: 0x05060a,
+    group, fogColor: 0x20242f, fogDensity: 0.033, background: 0x20242f,
     tick(t) {
       gears.forEach((g, i) => { g.rotation.z = t * (0.05 + i * 0.02) * (i % 2 ? 1 : -1); });
       stars.position.x = Math.sin(t * 0.05) * 2;
@@ -161,7 +173,7 @@ function machineryTheme(): ThemeConfig {
 /** Act III: black-mirror floor, floating dioramas of blurred memories, cold moonlight. */
 function mirrorTheme(): ThemeConfig {
   const group = new THREE.Group();
-  group.add(floor(0x07080c, 0.12, 0.85));
+  group.add(floor(0x11141c, 0.12, 0.85));
   const dioramas: THREE.Mesh[] = [];
   const dioMat = new THREE.MeshStandardMaterial({
     color: 0x10131c, emissive: 0x2e3d66, emissiveIntensity: 0.7,
@@ -175,17 +187,17 @@ function mirrorTheme(): ThemeConfig {
     dioramas.push(d);
     group.add(d);
   }
-  group.add(new THREE.AmbientLight(0x14182a, 1.4));
-  const moon = new THREE.DirectionalLight(0x9db4e8, 1.6);
+  group.add(new THREE.AmbientLight(0x28304e, 2.6));
+  const moon = new THREE.DirectionalLight(0x9db4e8, 2.0);
   moon.position.set(-6, 12, -4);
   group.add(moon);
-  const glow = new THREE.PointLight(0x6a7fc4, 5, 26, 1.7);
+  const glow = new THREE.PointLight(0x6a7fc4, 6, 28, 1.6);
   glow.position.set(0, 3, -8);
   group.add(glow);
   const mist = particles(160, 0x9db4e8, 30, 0.03);
   group.add(mist);
   return {
-    group, fogColor: 0x05060a, fogDensity: 0.05, background: 0x04050a,
+    group, fogColor: 0x1c2036, fogDensity: 0.038, background: 0x1c2036,
     tick(t) {
       dioramas.forEach((d, i) => { d.position.y = 2.2 + Math.sin(i * 1.7) * 1.4 + Math.sin(t * 0.4 + i) * 0.18; });
     },

@@ -5,7 +5,10 @@ export interface Settings {
   reducedMotion: boolean;
   highContrast: boolean;
   quality: 'low' | 'high';
-  sound: boolean;
+  music: boolean;
+  sfx: boolean;
+  textVersion: 'v1' | 'v2';
+  language: 'en' | 'cs' | 'fa';
 }
 
 export interface Profile {
@@ -35,7 +38,10 @@ export function defaultProfile(): Profile {
         window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
       highContrast: false,
       quality: 'high',
-      sound: true,
+      music: true,
+      sfx: true,
+      textVersion: 'v2',
+      language: 'en',
     },
   };
 }

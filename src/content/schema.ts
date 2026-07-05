@@ -72,6 +72,8 @@ export interface Room {
   type: RoomType;
   /** carved above the door */
   doorHint: string;
+  /** a short, spoiler-free line about the mood/kind of situation behind the door */
+  teaser: string;
   stages: Stage[];
   /** Room 19 composes its own note; everything else has one */
   fieldNote?: FieldNote;

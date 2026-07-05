@@ -4,6 +4,7 @@ import { el } from './dom';
 export interface DoorOption {
   id: string;
   hint: string;
+  teaser?: string;
   secret?: boolean;
   icon?: string;
 }
@@ -61,7 +62,10 @@ export class ChoicePanel {
           card.append(rune);
         }
         card.append(el('span', 'num', d.secret ? '✦' : String(i + 1)));
-        card.append(el('span', 'txt', d.hint));
+        const textCol = el('span', 'door-text-col');
+        textCol.append(el('span', 'txt', d.hint));
+        if (d.teaser) textCol.append(el('span', 'door-teaser', d.teaser));
+        card.append(textCol);
         card.addEventListener('mouseenter', () => onHover(d.id));
         card.addEventListener('mouseleave', () => onHover(null));
         card.addEventListener('focus', () => onHover(d.id));

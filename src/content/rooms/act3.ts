@@ -7,6 +7,7 @@ export const teleporter: Room = {
   title: 'The Teleporter',
   type: 'DILEMMA',
   doorHint: 'The door that is also a wall',
+  teaser: 'A machine destroys you and prints a copy. It insists it walked through.',
   stages: [
     {
       beats: [
@@ -71,6 +72,7 @@ export const editor: Room = {
   title: 'The Editor',
   type: 'DILEMMA',
   doorHint: 'The door of the red pen',
+  teaser: 'Strike out your worst memory forever. See what it was holding up.',
   stages: [
     {
       beats: [
@@ -129,6 +131,7 @@ export const introduction: Room = {
   title: 'The Introduction',
   type: 'NO-SOLUTION',
   doorHint: 'A small plain door, politely ajar',
+  teaser: 'A room that only wants to know who you really are.',
   secret: (s) =>
     s.lucidity >= 100 ||
     Math.abs(s.axes.reasonFeeling) >= 40 ||
@@ -229,6 +232,7 @@ export const debtOfDead: Room = {
   title: 'The Debt of the Dead',
   type: 'DILEMMA',
   doorHint: 'The door you swore you’d never knock on',
+  teaser: 'Someone who wronged you, dying, and asking to be forgiven.',
   stages: [
     {
       beats: [
@@ -299,6 +303,7 @@ export const freeWill: Room = {
   type: 'NO-SOLUTION',
   gate: true,
   doorHint: 'The door that saw you coming',
+  teaser: 'The lights come on before you choose. You lose every bet, on purpose.',
   stages: [
     {
       beats: [

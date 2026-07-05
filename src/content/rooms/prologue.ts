@@ -6,6 +6,7 @@ export const prologue: Room = {
   title: 'The Waiting Room',
   type: 'NO-SOLUTION',
   doorHint: 'The door you are already through',
+  teaser: 'Wherever you are, it starts here.',
   stages: [
     {
       beats: [

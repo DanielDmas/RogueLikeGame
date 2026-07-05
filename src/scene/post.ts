@@ -3,14 +3,15 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 /** Vignette + film grain, subtle. */
-const GradeShader = {
+export const GradeShader = {
   uniforms: {
     tDiffuse: { value: null },
     time: { value: 0 },
-    vignette: { value: 0.42 },
-    grain: { value: 0.045 },
+    vignette: { value: 0.2 },
+    grain: { value: 0.035 },
   },
   vertexShader: /* glsl */ `
     varying vec2 vUv;
@@ -60,10 +61,11 @@ export function createPost(
   }
   const composer = new EffectComposer(renderer);
   composer.addPass(new RenderPass(scene, camera));
-  const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.55, 0.6, 0.82);
+  const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.55, 0.6, 0.8);
   composer.addPass(bloom);
   const grade = new ShaderPass(GradeShader);
   composer.addPass(grade);
+  composer.addPass(new OutputPass());
   let t = 0;
   return {
     render(dt) {
