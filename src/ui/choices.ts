@@ -108,6 +108,9 @@ export class ChoicePanel {
     this.container = wrap;
     this.stage.appendChild(wrap);
     this.keyHandler = (e: KeyboardEvent) => {
+      // A pause menu / codex / settings / field note is open on top —
+      // don't silently pick a choice hidden underneath it.
+      if (document.querySelector('.overlay, .field-note')) return;
       const n = parseInt(e.key, 10);
       if (n >= 1 && n <= count) onNum(n - 1);
     };

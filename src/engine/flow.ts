@@ -57,6 +57,7 @@ const themeForAct = (act: number): 0 | 1 | 2 | 3 | 4 => (act <= 1 ? (act as 0 | 
 export class Game {
   private ui: HTMLElement;
   private veil: HTMLElement;
+  private stageBottom: HTMLElement;
   private director: SceneDirector;
   private hud: Hud;
   private text: TextPanel;
@@ -79,6 +80,7 @@ export class Game {
 
     const stageBottom = el('div', 'stage-bottom');
     ui.appendChild(stageBottom);
+    this.stageBottom = stageBottom;
 
     this.director = new SceneDirector(
       canvas,
@@ -175,6 +177,11 @@ export class Game {
 
   private async openPause() {
     this.director.setPaused(true);
+    // The room's text/choice panel stays mounted (and its promise pending)
+    // under the pause menu — visually hide it so it can't bleed through the
+    // overlay's translucent background, without detaching it and stranding
+    // that promise.
+    this.stageBottom.classList.add('overlay-hidden');
     const action = await showPauseMenu(this.ui);
     if (action === 'codex') await showCodex(this.ui, this.profile);
     if (action === 'persona') {
@@ -197,6 +204,7 @@ export class Game {
       window.close();
       return;
     }
+    this.stageBottom.classList.remove('overlay-hidden');
     this.director.setPaused(false);
   }
 

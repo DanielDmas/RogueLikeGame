@@ -124,6 +124,9 @@ export class TextPanel {
       };
       const onKey = (e: KeyboardEvent) => {
         if (e.key === ' ' || e.key === 'Enter') {
+          // A pause menu / codex / settings / field note is open on top —
+          // don't silently advance the room hidden underneath it.
+          if (document.querySelector('.overlay, .field-note')) return;
           e.preventDefault();
           onClick();
         }
