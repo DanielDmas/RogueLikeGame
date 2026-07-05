@@ -127,7 +127,7 @@ registerAll('v2', 'cs', {
 
   [actIntroKey(1)]: 'Před vámi: chodba bytových dveří, každé prosakují teplým světlem domovů, které nikdy nebyly vaše. Obyčejné místnosti, zjistíte, jdou nejhlouběji. Varování, poutníku: pár těchto dveří stojí víc než čas — zvolte proti sobě, a srdce může odejít.',
   [actIntroKey(2)]: 'Chodba se otevírá do strojovny — ozubená kola velká jako měsíce a pomalé pásy nesoucí malé, lhostejné hvězdy. Tady se každou noc znovu odehrávají staré myšlenkové experimenty, pro posádku o jednom člověku. Některé staré experimenty si stále účtují vstupné. Měnou jsou tu srdce.',
-  [actIntroKey(3)]: 'Podlaha se mění v černé zrcadlo. Vaše vlastní vzpomínky visí ve tmě jako diorámy, tváře změkčené za hranici rozpoznání. Zařízení nazývá toto křídlo archivním. Znamená to: vaše. Něco z toho, co tu najdete, má cenu, kterou ucítíte, ne jen uvidíte.',
+  [actIntroKey(3)]: 'Podlaha se mění v černé zrcadlo. Vaše vlastní vzpomínky visí ve tmě jako diorámy, tváře změkčené za hranici rozpoznání. Zařízení nazývá toto křídlo archivním. Znamená to: vaše. Něco z toho, co tu najdete, má cenu, kterou ucítíte, ne jen uvidíte — a ano, tou cenou může být srdce.',
   [actIntroKey(4)]: 'Mlha řídne. Za ní, nezaměnitelně, ráno. Zbývají tři dveře, a pak práh. Vše od teď platí dvojnásob — ačkoli by Uvaděč řekl, že tomu tak vždy bylo. I tak blízko konci vás neopatrná volba může stát srdce.',
 
   [usherBarkKey('gate-single-door')]: 'Uvaděč: Pro tento úsek zbývají jedny dveře. Ostatní už máte za sebou, vybrané nebo vynechané — což byla svým způsobem také volba. Tyto jsou prostě jediná cesta, která zůstává otevřená.',
