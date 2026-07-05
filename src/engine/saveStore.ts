@@ -7,8 +7,12 @@ export interface Settings {
   quality: 'low' | 'high';
   music: boolean;
   sfx: boolean;
+  /** 0–1. Only audible while its `music`/`sfx` toggle above is on. */
+  musicVolume: number;
+  sfxVolume: number;
   textVersion: 'v1' | 'v2';
   language: 'en' | 'cs' | 'fa';
+  dynamicScenery: boolean;
 }
 
 /** Cosmetic only — no mechanical effect. Empty name means "not chosen yet". */
@@ -48,8 +52,11 @@ export function defaultProfile(): Profile {
       quality: 'high',
       music: true,
       sfx: true,
+      musicVolume: 0.7,
+      sfxVolume: 0.8,
       textVersion: 'v2',
       language: 'en',
+      dynamicScenery: false,
     },
     persona: { preset: '', name: '', blurb: '' },
   };

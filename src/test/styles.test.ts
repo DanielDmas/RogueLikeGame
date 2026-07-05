@@ -26,3 +26,11 @@ describe('text panel width — widened for a text-driven game', () => {
     expect(rule('.choices')).toContain('1040px');
   });
 });
+
+describe('field-note stacking — must render above the codex overlay that can open it', () => {
+  it('.field-note z-index is higher than .overlay z-index', () => {
+    const fieldNoteZ = Number(rule('.field-note').match(/z-index:\s*(\d+)/)?.[1]);
+    const overlayZ = Number(rule('.overlay').match(/z-index:\s*(\d+)/)?.[1]);
+    expect(fieldNoteZ).toBeGreaterThan(overlayZ);
+  });
+});

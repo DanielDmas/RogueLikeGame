@@ -48,4 +48,28 @@ describe('default profile — new fields have sensible defaults', () => {
     expect(s.textVersion).toBe('v2');
     expect(s.language).toBe('en');
   });
+
+  it('musicVolume/sfxVolume default to a sensible non-zero level, and dynamicScenery defaults off', () => {
+    const s = defaultProfile().settings;
+    expect(s.musicVolume).toBeGreaterThan(0);
+    expect(s.musicVolume).toBeLessThanOrEqual(1);
+    expect(s.sfxVolume).toBeGreaterThan(0);
+    expect(s.sfxVolume).toBeLessThanOrEqual(1);
+    expect(s.dynamicScenery).toBe(false);
+  });
+});
+
+describe('settings migration — old saves missing volume/dynamicScenery fields backfill from defaults', () => {
+  const base = defaultProfile().settings;
+
+  it('a save from before volume sliders existed gets default volumes, not undefined', () => {
+    const legacy = { music: true, sfx: false, textVersion: 'v2', language: 'en' } as never;
+    const migrated = migrateSettings(legacy, base);
+    expect(migrated.musicVolume).toBe(base.musicVolume);
+    expect(migrated.sfxVolume).toBe(base.sfxVolume);
+    expect(migrated.dynamicScenery).toBe(base.dynamicScenery);
+    // and the fields it did carry are preserved
+    expect(migrated.music).toBe(true);
+    expect(migrated.sfx).toBe(false);
+  });
 });

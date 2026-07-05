@@ -80,7 +80,13 @@ export class ChoicePanel {
         wrap.appendChild(card);
       });
       wrap.appendChild(
-        el('div', 'door-help', t(uiKey('doorHelp'), 'choose a path — click a door, or press its number')),
+        el(
+          'div',
+          'door-help',
+          doors.length === 1
+            ? t(uiKey('doorHelpSingle'), 'this is the only way forward — click the door, or press 1')
+            : t(uiKey('doorHelp'), 'choose a path — click a door, or press its number'),
+        ),
       );
       this.mount(wrap, doors.length, (i) => {
         onHover(null);

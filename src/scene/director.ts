@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { buildTheme, usherFigure, type ThemeConfig, type ThemeId } from './themes';
+import { applyMood, buildTheme, usherFigure, type MoodType, type ThemeConfig, type ThemeId } from './themes';
 import { createDoors, type DoorSet, type DoorSpec } from './doors';
 import { createPost, type Post } from './post';
 
@@ -26,6 +26,12 @@ export class SceneDirector {
   private tooltip: HTMLDivElement;
   private events: DirectorEvents;
   private reducedMotion = false;
+  private usherHome = new THREE.Vector3(6.2, -0.05, -4.6);
+  private usherMoveTarget = this.usherHome.clone();
+  private usherPresence = 1;
+  private usherPresenceTarget = 1;
+  private dynamicScenery = false;
+  private mood: MoodType | null = null;
 
   constructor(canvas: HTMLCanvasElement, ui: HTMLElement, events: DirectorEvents, quality: 'low' | 'high') {
     this.events = events;
@@ -39,7 +45,7 @@ export class SceneDirector {
     this.camera.lookAt(0, 1.4, -6);
     this.post = createPost(this.renderer, this.scene, this.camera, quality);
 
-    this.usher.group.position.set(6.2, -0.05, -4.6);
+    this.usher.group.position.copy(this.usherHome);
     this.usher.group.rotation.y = -0.5;
 
     this.tooltip = document.createElement('div');
@@ -61,6 +67,25 @@ export class SceneDirector {
     this.reducedMotion = v;
   }
 
+  /** Toggles the optional "dynamic scenery" mood system; off = pure static act theme (the original, default behavior). */
+  setDynamicScenery(v: boolean) {
+    this.dynamicScenery = v;
+    this.applyFogAndBackground();
+  }
+
+  /** Tints the current act theme toward a room-type mood (no-op unless dynamic scenery is enabled). Pass null to return to the plain act theme (e.g. while the corridor/door picker is up). */
+  setMood(type: MoodType | null) {
+    this.mood = type;
+    this.applyFogAndBackground();
+  }
+
+  private applyFogAndBackground() {
+    if (!this.theme) return;
+    const { fogColor, background, fogDensity } = applyMood(this.theme, this.dynamicScenery ? this.mood : null);
+    this.scene.fog = new THREE.FogExp2(fogColor, fogDensity);
+    this.scene.background = new THREE.Color(background);
+  }
+
   setTheme(id: ThemeId) {
     if (this.theme) {
       this.scene.remove(this.theme.group);
@@ -69,11 +94,15 @@ export class SceneDirector {
       });
     }
     this.theme = buildTheme(id);
+    this.mood = null;
     this.scene.add(this.theme.group);
-    this.scene.fog = new THREE.FogExp2(this.theme.fogColor, this.theme.fogDensity);
-    this.scene.background = new THREE.Color(this.theme.background);
+    this.applyFogAndBackground();
     // the Usher haunts every act except the ending space
     this.usher.group.removeFromParent();
+    this.usher.group.position.copy(this.usherHome);
+    this.usherMoveTarget.copy(this.usherHome);
+    this.usherPresence = 1;
+    this.usherPresenceTarget = 1;
     if (id !== 5) this.theme.group.add(this.usher.group);
     this.camera.position.copy(CAM_HOME);
     this.camera.lookAt(0, 1.4, -6);
@@ -109,8 +138,25 @@ export class SceneDirector {
     const target = this.doors.lintel(id).clone();
     target.y = 1.6;
     target.z += 1.2;
+
+    // The Usher steps in beside the chosen door for the crossing — a brief,
+    // thematic presence (not a jump-scare) rather than staying parked at
+    // the room's edge the whole time. It eases back to its usual spot once
+    // the walk-through completes.
+    const doorPos = this.doors.lintel(id).clone();
+    const side = doorPos.x >= 0 ? -1 : 1;
+    this.usherMoveTarget.set(doorPos.x + side * 1.3, -0.05, doorPos.z + 0.6);
+    this.usherPresenceTarget = 1.7;
+
     return new Promise((done) => {
-      this.dolly = { target, done };
+      this.dolly = {
+        target,
+        done: () => {
+          this.usherMoveTarget.copy(this.usherHome);
+          this.usherPresenceTarget = 1;
+          done();
+        },
+      };
     });
   }
 
@@ -145,6 +191,12 @@ export class SceneDirector {
     this.theme?.tick(t);
     this.usher.tick(t);
     this.doors?.tick(t);
+
+    if (!this.usher.group.position.equals(this.usherMoveTarget)) {
+      this.usher.group.position.lerp(this.usherMoveTarget, 1 - Math.pow(0.001, dt));
+    }
+    this.usherPresence += (this.usherPresenceTarget - this.usherPresence) * Math.min(1, dt * 2.5);
+    this.usher.setPresence(this.usherPresence);
 
     if (this.dolly) {
       this.camera.position.lerp(this.dolly.target, 1 - Math.pow(0.0018, dt));

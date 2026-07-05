@@ -64,23 +64,54 @@ export class SoundEngine {
   private musicGain: GainNode | null = null;
   private sfxGain: GainNode | null = null;
   private chordGain: GainNode | null = null;
+  /** Stable bus all chord-crossfade gain nodes connect through, so the tremolo LFO always applies. */
+  private chordBus: GainNode | null = null;
   private chordOscs: OscillatorNode[] = [];
   private musicEnabled = true;
   private sfxEnabled = true;
+  private musicVolume = 0.7;
+  private sfxVolume = 0.8;
   private currentAct: ActKey | null = null;
   private progressionIndex = 0;
   private chordTimer: ReturnType<typeof setTimeout> | null = null;
   private moteTimer: ReturnType<typeof setTimeout> | null = null;
   private resumed = false;
 
+  private musicTarget(): number {
+    return this.musicEnabled ? this.musicVolume : 0;
+  }
+  private sfxTarget(): number {
+    return this.sfxEnabled ? this.sfxVolume : 0;
+  }
+
+  /** Testable without an AudioContext: the effective (enabled × volume) level each bus would play at. */
+  getMusicLevel(): number {
+    return this.musicTarget();
+  }
+  getSfxLevel(): number {
+    return this.sfxTarget();
+  }
+
   setMusicEnabled(v: boolean) {
     this.musicEnabled = v;
-    if (this.musicGain) this.musicGain.gain.setTargetAtTime(v ? 1 : 0, this.now(), 0.4);
+    if (this.musicGain) this.musicGain.gain.setTargetAtTime(this.musicTarget(), this.now(), 0.4);
   }
 
   setSfxEnabled(v: boolean) {
     this.sfxEnabled = v;
-    if (this.sfxGain) this.sfxGain.gain.setTargetAtTime(v ? 1 : 0, this.now(), 0.1);
+    if (this.sfxGain) this.sfxGain.gain.setTargetAtTime(this.sfxTarget(), this.now(), 0.1);
+  }
+
+  /** 0–1. Only audible while music is enabled. */
+  setMusicVolume(v: number) {
+    this.musicVolume = Math.max(0, Math.min(1, v));
+    if (this.musicGain) this.musicGain.gain.setTargetAtTime(this.musicTarget(), this.now(), 0.15);
+  }
+
+  /** 0–1. Only audible while sfx is enabled. */
+  setSfxVolume(v: number) {
+    this.sfxVolume = Math.max(0, Math.min(1, v));
+    if (this.sfxGain) this.sfxGain.gain.setTargetAtTime(this.sfxTarget(), this.now(), 0.05);
   }
 
   /** Must be called from within a user gesture handler (autoplay policy). */
@@ -101,19 +132,39 @@ export class SoundEngine {
     master.connect(ctx.destination);
 
     const musicGain = ctx.createGain();
-    musicGain.gain.value = this.musicEnabled ? 1 : 0;
+    musicGain.gain.value = this.musicTarget();
     musicGain.connect(master);
     this.musicGain = musicGain;
 
     const sfxGain = ctx.createGain();
-    sfxGain.gain.value = this.sfxEnabled ? 1 : 0;
+    sfxGain.gain.value = this.sfxTarget();
     sfxGain.connect(master);
     this.sfxGain = sfxGain;
 
+    // Chord crossfades replace this.chordGain with a fresh node each time,
+    // so the tremolo below modulates a stable bus all of them connect
+    // through instead — otherwise it would go silent after the first
+    // act change, still connected to a gain node nothing plays through.
+    const chordBus = ctx.createGain();
+    chordBus.gain.value = 1;
+    chordBus.connect(musicGain);
+    this.chordBus = chordBus;
+
     const chordGain = ctx.createGain();
     chordGain.gain.value = 0.16;
-    chordGain.connect(musicGain);
+    chordGain.connect(chordBus);
     this.chordGain = chordGain;
+
+    // A slow amplitude "breathing" tremolo on the chord bed — just enough
+    // movement that the drone reads as alive, well under anything a
+    // listener would call rhythm. Proportional (on the bus, not a raw
+    // level), so it stays subtle regardless of the chosen music volume.
+    const chordTremolo = ctx.createOscillator();
+    chordTremolo.frequency.value = 1 / 17; // one full breath every ~17s
+    const chordTremoloGain = ctx.createGain();
+    chordTremoloGain.gain.value = 0.12;
+    chordTremolo.connect(chordTremoloGain).connect(chordBus.gain);
+    chordTremolo.start();
 
     // a faint filtered-noise breath pad, under the chord
     const noiseGain = ctx.createGain();
@@ -131,6 +182,15 @@ export class SoundEngine {
     filter.frequency.value = 340;
     noise.connect(filter).connect(noiseGain);
     noise.start();
+
+    // a very slow filter sweep so the noise pad's tone drifts instead of
+    // sitting static — a gentle "breathing" quality, not a wobble
+    const filterLFO = ctx.createOscillator();
+    filterLFO.frequency.value = 1 / 23; // one sweep every ~23s
+    const filterLFOGain = ctx.createGain();
+    filterLFOGain.gain.value = 110;
+    filterLFO.connect(filterLFOGain).connect(filter.frequency);
+    filterLFO.start();
 
     return ctx;
   }
@@ -204,7 +264,7 @@ export class SoundEngine {
 
     const newGain = ctx.createGain();
     newGain.gain.value = 0;
-    newGain.connect(this.musicGain!);
+    newGain.connect(this.chordBus!);
     newGain.gain.setTargetAtTime(0.16, t + 0.2, 2.2);
     this.chordGain = newGain;
 

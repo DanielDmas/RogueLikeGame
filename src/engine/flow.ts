@@ -86,7 +86,11 @@ export class Game {
       },
       profile.settings.quality,
     );
-    this.hud = new Hud(ui, () => this.openPause());
+    this.hud = new Hud(ui, () => this.openPause(), profile.settings.language, (lang) => {
+      this.profile.settings = { ...this.profile.settings, language: lang };
+      this.applySettings();
+      void this.persist();
+    });
     this.text = new TextPanel(stageBottom);
     this.choices = new ChoicePanel(stageBottom);
 
@@ -106,10 +110,14 @@ export class Game {
     document.body.classList.toggle('high-contrast', s.highContrast);
     this.text.setTypewriter(s.typewriter && !s.reducedMotion);
     this.director.setReducedMotion(s.reducedMotion);
+    this.director.setDynamicScenery(s.dynamicScenery);
     sound.setMusicEnabled(s.music);
     sound.setSfxEnabled(s.sfx);
+    sound.setMusicVolume(s.musicVolume);
+    sound.setSfxVolume(s.sfxVolume);
     setLocale(s.language, s.textVersion);
     applyLocaleToDocument(s.language);
+    this.hud.setLanguage(s.language);
   }
 
   /** `{name}` (and future tokens) available for interpolation into any displayed text. */
@@ -224,8 +232,9 @@ export class Game {
         secret: Boolean(r.secret),
         icon: iconFor(r.id),
       }));
+      this.director.setMood(null);
       this.director.showDoors(specs);
-      this.text.showBark(usherDoorBark(this.state, this.profile.runsCompleted), this.tokens());
+      this.text.showBark(usherDoorBark(this.state, this.profile.runsCompleted, doors.length), this.tokens());
       const picker = this.choices.pickDoor(specs, (id) => {
         this.director.highlightDoor(id);
         if (id) sound.hover();
@@ -251,6 +260,7 @@ export class Game {
     const icon = iconFor(room.id);
     const title = t(roomTitleKey(room.id), room.title);
     const tokens = this.tokens();
+    this.director.setMood(room.type);
     for (let i = 0; i < room.stages.length; i++) {
       const stage = room.stages[i];
       await this.text.playBeats(stage.beats, this.state, { title, type: room.type, icon }, {
@@ -290,6 +300,7 @@ export class Game {
           body: t(roomNoteBodyKey(room.id), room.fieldNote.body),
         },
         `${t(uiKey('fieldNoteHeader'), 'Field Note')} · ${room.type}`,
+        icon,
       );
     }
     if (!this.profile.codexUnlocked.includes(room.id)) {
@@ -334,6 +345,7 @@ export class Game {
           body: t(endingNoteBodyKey(endingId), raw.fieldNote.body),
         },
         `${t(uiKey('endingFieldNoteHeader'), 'Ending · Field Note')}`,
+        endingIcons[endingId],
       );
     }
 

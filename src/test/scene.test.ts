@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
 import { buildTheme, silhouette, usherFigure } from '../scene/themes';
-import { createDoors } from '../scene/doors';
+import { createDoors, DOOR_Z } from '../scene/doors';
 import { GradeShader } from '../scene/post';
 
 function ambientIntensity(group: THREE.Group): number {
@@ -83,6 +83,26 @@ describe('the Usher figure — reads as a person, not a floating ring', () => {
       }
     });
     expect(haloIntensity).toBeLessThan(2.2);
+  });
+
+  it('setPresence scales both the halo and body emissive intensity, for the walk-through visibility boost', () => {
+    const { group, tick, setPresence } = usherFigure();
+    let haloMat: THREE.MeshStandardMaterial | null = null;
+    let bodyMat: THREE.MeshStandardMaterial | null = null;
+    group.traverse((o) => {
+      if (o instanceof THREE.Mesh && o.geometry instanceof THREE.TorusGeometry) haloMat = o.material as THREE.MeshStandardMaterial;
+      // note: THREE.ConeGeometry (the horns) is a subclass of CylinderGeometry, so
+      // `instanceof CylinderGeometry` alone would also match the horns — check the
+      // exact geometry type to pin this to the body cylinder specifically.
+      if (o instanceof THREE.Mesh && o.geometry.type === 'CylinderGeometry') bodyMat = o.material as THREE.MeshStandardMaterial;
+    });
+    tick(0);
+    const baseHalo = (haloMat as unknown as THREE.MeshStandardMaterial).emissiveIntensity;
+    const baseBody = (bodyMat as unknown as THREE.MeshStandardMaterial).emissiveIntensity;
+    setPresence(1.7);
+    tick(0);
+    expect((haloMat as unknown as THREE.MeshStandardMaterial).emissiveIntensity).toBeCloseTo(baseHalo * 1.7, 5);
+    expect((bodyMat as unknown as THREE.MeshStandardMaterial).emissiveIntensity).toBeCloseTo(baseBody * 1.7, 5);
   });
 
   it('silhouette() still builds a basic humanoid group with a default dark color', () => {
@@ -189,10 +209,25 @@ describe('corridor decorative doors — dimmer and desaturated vs. real doors', 
     theme.group.traverse((o) => {
       if (o instanceof THREE.Mesh && o.geometry instanceof THREE.PlaneGeometry) {
         const geo = o.geometry as THREE.PlaneGeometry;
-        if (Math.abs(geo.parameters.width - 1.4) < 0.01) decorativeMat = o.material as THREE.MeshStandardMaterial;
+        if (Math.abs(geo.parameters.width - 1.2) < 0.01) decorativeMat = o.material as THREE.MeshStandardMaterial;
       }
     });
     expect(decorativeMat, 'expected a decorative wall-slab mesh').not.toBeNull();
     expect((decorativeMat as unknown as THREE.MeshStandardMaterial).emissiveIntensity).toBeLessThan(0.42);
+  });
+
+  it('the nearest decorative slab sits strictly behind the real doors (DOOR_Z)', () => {
+    const theme = buildTheme(1);
+    let nearestDecorZ = -Infinity;
+    theme.group.traverse((o) => {
+      if (o instanceof THREE.Mesh && o.geometry instanceof THREE.PlaneGeometry) {
+        const geo = o.geometry as THREE.PlaneGeometry;
+        if (Math.abs(geo.parameters.width - 1.2) < 0.01) {
+          nearestDecorZ = Math.max(nearestDecorZ, o.position.z);
+        }
+      }
+    });
+    expect(nearestDecorZ).toBeGreaterThan(-Infinity);
+    expect(nearestDecorZ).toBeLessThan(DOOR_Z);
   });
 });

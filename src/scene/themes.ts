@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { DOOR_Z } from './doors';
 
 export interface ThemeConfig {
   group: THREE.Group;
@@ -54,15 +55,18 @@ export function silhouette(color = 0x060608, rimEmissive = 0x000000, rimIntensit
 }
 
 /** The Usher: a silhouette with an emissive halo AND horns; one horn flickers. */
-export function usherFigure(): { group: THREE.Group; tick(t: number): void } {
+export function usherFigure(): { group: THREE.Group; tick(t: number): void; setPresence(v: number): void } {
   // a faint warm rim-light lift so the body reads as a figure, not a bare floating halo
   const group = silhouette(0x0c0a08, 0x2a1f10, 0.35);
+  const bodyMat = (group.children[0] as THREE.Mesh).material as THREE.MeshStandardMaterial;
+  const BASE_RIM = 0.35;
   const halo = new THREE.Mesh(
     new THREE.TorusGeometry(0.19, 0.016, 10, 40),
     new THREE.MeshStandardMaterial({
       color: 0xd4b36a, emissive: 0xd4b36a, emissiveIntensity: 1.5, roughness: 0.3,
     }),
   );
+  const BASE_HALO = 1.5;
   halo.position.y = 1.82;
   halo.rotation.x = Math.PI / 2.25;
   const hornMat = new THREE.MeshStandardMaterial({
@@ -76,12 +80,21 @@ export function usherFigure(): { group: THREE.Group; tick(t: number): void } {
   hornR.position.set(0.09, 1.66, 0);
   hornR.rotation.z = -0.35;
   group.add(halo, hornL, hornR);
+  // presence: a multiplier on how visible/lit the Usher reads right now —
+  // boosted briefly while walking a player through a chosen door, so the
+  // figure registers as thematic guidance rather than idle set-dressing.
+  let presence = 1;
   return {
     group,
     tick(t) {
       // one horn flickers, like a faulty sign
-      hornFlickerMat.emissiveIntensity = Math.random() > 0.94 ? 0.15 : 1.4 + Math.sin(t * 3) * 0.2;
+      hornFlickerMat.emissiveIntensity = (Math.random() > 0.94 ? 0.15 : 1.4 + Math.sin(t * 3) * 0.2) * presence;
       halo.rotation.z = Math.sin(t * 0.7) * 0.08;
+      halo.material.emissiveIntensity = BASE_HALO * presence;
+      bodyMat.emissiveIntensity = BASE_RIM * presence;
+    },
+    setPresence(v: number) {
+      presence = v;
     },
   };
 }
@@ -104,17 +117,21 @@ function corridorTheme(warmth: number): ThemeConfig {
   const doorGlowMat = new THREE.MeshStandardMaterial({
     color: 0x241f18, emissive: decorativeWarmth, emissiveIntensity: 0.32, roughness: 0.8,
   });
+  // The nearest decorative slab must sit clearly behind the real doors
+  // (DOOR_Z) so background scenery never renders larger/closer than an
+  // actual choice — that misread is what made the corridor confusing.
+  const DECOR_NEAR_Z = DOOR_Z - 3;
   for (const side of [-1, 1]) {
     const wall = new THREE.Mesh(new THREE.BoxGeometry(0.4, 7, 90), wallMat);
     wall.position.set(side * 7.5, 3.5, -30);
     group.add(wall);
     for (let i = 0; i < 9; i++) {
-      const slab = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 3), doorGlowMat);
-      slab.position.set(side * 7.28, 1.5, -4 - i * 9);
+      const slab = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 2.6), doorGlowMat);
+      slab.position.set(side * 7.28, 1.5, DECOR_NEAR_Z - i * 9);
       slab.rotation.y = side * -Math.PI / 2;
       group.add(slab);
-      const light = new THREE.PointLight(decorativeWarmth, 1.1, 8, 1.9);
-      light.position.set(side * 6.6, 1.6, -4 - i * 9);
+      const light = new THREE.PointLight(decorativeWarmth, 0.85, 7, 2.0);
+      light.position.set(side * 6.6, 1.6, DECOR_NEAR_Z - i * 9);
       group.add(light);
     }
   }
@@ -269,4 +286,50 @@ export function buildTheme(id: ThemeId): ThemeConfig {
     case 4: return thresholdTheme();
     case 5: return endingTheme();
   }
+}
+
+// ---------- Dynamic scenery mood (optional, settings-gated) ----------
+// A subtle per-room-type tint blended over the current act's base fog/
+// background colors — the "dynamic scenery" toggle. Kept gentle on purpose:
+// this is mood-setting, not a re-theme, so the act's identity always reads
+// through. Off by default; static (pure act theme) is the baseline behavior.
+export type MoodType = 'DILEMMA' | 'INSIGHT' | 'NO-SOLUTION' | 'DOOMED';
+
+interface MoodTint {
+  /** color blended into the base fog/background */
+  tint: number;
+  /** 0..1 blend strength toward the tint */
+  blend: number;
+  /** multiplier on the base fog density */
+  densityMul: number;
+}
+
+const MOOD_TINTS: Record<MoodType, MoodTint> = {
+  // the common case: no perceptible shift, so most rooms feel exactly as before
+  DILEMMA: { tint: 0x000000, blend: 0, densityMul: 1 },
+  // a warmer, clearer gold lift — an "aha" room
+  INSIGHT: { tint: 0xd4b36a, blend: 0.16, densityMul: 0.85 },
+  // cooler and slightly thicker — the walls close in, nothing to solve
+  'NO-SOLUTION': { tint: 0x3a4250, blend: 0.16, densityMul: 1.25 },
+  // darker and redder — foreboding, without tipping into horror
+  DOOMED: { tint: 0x4a1c18, blend: 0.2, densityMul: 1.35 },
+};
+
+export interface MoodResult {
+  fogColor: number;
+  background: number;
+  fogDensity: number;
+}
+
+/** Blends a base theme's colors toward a room-type mood tint. Pure — no THREE side effects. */
+export function applyMood(base: Pick<ThemeConfig, 'fogColor' | 'background' | 'fogDensity'>, type: MoodType | null): MoodResult {
+  if (!type) return { fogColor: base.fogColor, background: base.background, fogDensity: base.fogDensity };
+  const { tint, blend, densityMul } = MOOD_TINTS[type];
+  if (blend <= 0) return { fogColor: base.fogColor, background: base.background, fogDensity: base.fogDensity };
+  const baseFog = new THREE.Color(base.fogColor);
+  const baseBg = new THREE.Color(base.background);
+  const tintColor = new THREE.Color(tint);
+  const fog = baseFog.clone().lerp(tintColor, blend);
+  const bg = baseBg.clone().lerp(tintColor, blend);
+  return { fogColor: fog.getHex(), background: bg.getHex(), fogDensity: base.fogDensity * densityMul };
 }

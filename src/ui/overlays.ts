@@ -5,6 +5,7 @@ import { endings } from '../content/endings';
 import { actName } from '../content/graph';
 import { clear, el } from './dom';
 import { showFieldNote } from './fieldNote';
+import { roomIcons, endingIcons } from '../content/icons';
 import { t } from '../content/text/resolver';
 import {
   uiKey,
@@ -15,7 +16,9 @@ import {
   endingEpitaphKey,
 } from '../content/text/keys';
 import { LANGUAGE_LABELS } from './locale';
-import type { Lang, TextVersion } from '../content/text/resolver';
+import { nextLang } from '../content/text/resolver';
+import type { TextVersion } from '../content/text/resolver';
+import { sound } from '../audio/soundEngine';
 
 export type TitleAction = 'new' | 'continue' | 'codex' | 'settings' | 'persona' | 'about';
 
@@ -107,6 +110,11 @@ export function showSettings(ui: HTMLElement, settings: Settings): Promise<Setti
       ['reducedMotion', t(uiKey('settingReducedMotion'), 'Reduced motion')],
       ['highContrast', t(uiKey('settingHighContrast'), 'High-contrast text')],
       ['quality', t(uiKey('settingQuality'), 'High visual quality')],
+      ['dynamicScenery', t(uiKey('settingDynamicScenery'), 'Dynamic scenery (experimental)')],
+    ];
+    const volumeSliders: [keyof Settings, string][] = [
+      ['musicVolume', t(uiKey('settingMusicVolume'), 'Music volume')],
+      ['sfxVolume', t(uiKey('settingSfxVolume'), 'Effects volume')],
     ];
     for (const [key, label] of rows) {
       const row = el('div', 'setting-row');
@@ -122,6 +130,27 @@ export function showSettings(ui: HTMLElement, settings: Settings): Promise<Setti
       });
       row.append(btn);
       list.append(row);
+
+      // volume sliders live directly under their on/off toggle
+      if (key === 'music' || key === 'sfx') {
+        const [volKey, volLabel] = volumeSliders[key === 'music' ? 0 : 1];
+        const volRow = el('div', 'setting-row slider-row');
+        volRow.append(el('span', 'lbl', volLabel));
+        const slider = el('input', 'volume-slider') as HTMLInputElement;
+        slider.type = 'range';
+        slider.min = '0';
+        slider.max = '100';
+        slider.step = '5';
+        slider.value = String(Math.round((current[volKey] as number) * 100));
+        slider.addEventListener('input', () => {
+          const v = Number(slider.value) / 100;
+          (current[volKey] as number) = v;
+          if (volKey === 'musicVolume') sound.setMusicVolume(v);
+          else sound.setSfxVolume(v);
+        });
+        volRow.append(slider);
+        list.append(volRow);
+      }
     }
 
     const versionLabel = (v: TextVersion) =>
@@ -138,13 +167,11 @@ export function showSettings(ui: HTMLElement, settings: Settings): Promise<Setti
     versionRow.append(versionBtn);
     list.append(versionRow);
 
-    const langOrder: Lang[] = ['en', 'cs', 'fa'];
     const langRow = el('div', 'setting-row');
     langRow.append(el('span', 'lbl', t(uiKey('settingLanguage'), 'Language')));
     const langBtn = el('button', 'toggle cycle', LANGUAGE_LABELS[current.language]);
     langBtn.addEventListener('click', () => {
-      const i = langOrder.indexOf(current.language);
-      current.language = langOrder[(i + 1) % langOrder.length];
+      current.language = nextLang(current.language);
       langBtn.textContent = LANGUAGE_LABELS[current.language];
     });
     langRow.append(langBtn);
@@ -337,7 +364,8 @@ export function showCodex(ui: HTMLElement, profile: Profile): Promise<void> {
       card.append(el('div', 'cx-title', unlocked ? title : '· · ·'));
       card.append(el('div', 'cx-thinkers', unlocked ? thinkers : notYetWalked));
       if (unlocked && note) {
-        card.addEventListener('click', () => showFieldNote(ui, note, isEnding ? endingLabel : fieldNoteLabel));
+        const icon = isEnding ? endingIcons[id.replace(/^ending:/, '')] : roomIcons[id];
+        card.addEventListener('click', () => showFieldNote(ui, note, isEnding ? endingLabel : fieldNoteLabel, icon));
       }
       grid.appendChild(card);
     };

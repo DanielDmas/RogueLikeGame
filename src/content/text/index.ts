@@ -5,6 +5,18 @@ import './v1-en-dynamic';
 import './v1-en-usher';
 import './cs';
 import './fa';
+import './cs-rooms';
+import './fa-rooms';
+import './cs-rooms-act2';
+import './fa-rooms-act2';
+import './cs-rooms-act3';
+import './fa-rooms-act3';
+import './cs-rooms-act4';
+import './fa-rooms-act4';
+import './cs-endings';
+import './fa-endings';
+import './cs-dynamic';
+import './fa-dynamic';
 
 export * from './resolver';
 export * from './keys';

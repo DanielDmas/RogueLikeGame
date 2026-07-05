@@ -3,7 +3,27 @@ import { t } from './text/resolver';
 import { usherBarkKey, actIntroKey } from './text/keys';
 
 /** One-line Usher commentary shown at the door-choosing moment. */
-export function usherDoorBark(s: RunState, runsCompleted: number): string {
+export function usherDoorBark(s: RunState, runsCompleted: number, doorCount = 2): string {
+  // A single remaining door is a gate, not a choice — explain why, rather
+  // than letting it read as an arbitrary shrinking of options. (The very
+  // first door of the run — the prologue's threshold — is also doorCount
+  // 1, but nothing has been "skipped" yet, so it's excluded here.)
+  if (doorCount === 1 && s.visited.length > 0) {
+    return t(
+      usherBarkKey('gate-single-door'),
+      'Usher: Only one door remains for this stretch. The others are already behind you, chosen or skipped — which was its own kind of choosing. This one is simply the only way still open.',
+    );
+  }
+
+  // First real multi-door choice of a fresh run: make the stakes explicit
+  // before any clicking happens, so the choice reads as a choice.
+  if (runsCompleted === 0 && s.act === 1 && s.visited.length === 1) {
+    return t(
+      usherBarkKey('first-choice-explainer'),
+      'Usher: Several doors, and only some will be yours this time — the rest stay shut, for now. Each hides a different situation, not a different score. Choose the one whose question you are actually willing to sit with.',
+    );
+  }
+
   // Second-run winks take priority once per act
   if (runsCompleted > 0 && s.visited.length <= 1) {
     return t(usherBarkKey('second-run'), 'Usher: You have returned. The lever is where you left it; we rearrange nothing here — permanence is the one luxury the facility affords.');
@@ -39,6 +59,8 @@ export function usherDoorBark(s: RunState, runsCompleted: number): string {
     t(usherBarkKey('generic2'), 'Usher: I would tell you which I’d choose, but I have chosen all of them, once. Draw your own conclusions.'),
     t(usherBarkKey('generic3'), 'Usher: The hints above each door are honest. We do not deal in false signs here.'),
     t(usherBarkKey('generic4'), 'Usher: There is no hurry. Time, in this place, is ornamental.'),
+    t(usherBarkKey('generic5'), 'Usher: Whichever you skip stays here, unopened, for a different visit. That is not a loss. It is simply not this story.'),
+    t(usherBarkKey('generic6'), 'Usher: Read the hint before you decide. It is not decoration — it is the only honest preview you will get.'),
   ];
   return generic[s.visited.length % generic.length];
 }

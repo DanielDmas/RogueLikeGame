@@ -1,15 +1,26 @@
 import { el, HEART_SVG } from './dom';
 import { MAX_HEARTS } from '../engine/gameState';
-import { t } from '../content/text/resolver';
+import { nextLang, t } from '../content/text/resolver';
 import { uiKey } from '../content/text/keys';
+import type { Lang } from '../content/text/resolver';
+
+const LANG_SHORT: Record<Lang, string> = { en: 'EN', cs: 'CS', fa: 'FA' };
 
 export class Hud {
   private root: HTMLElement;
   private heartEls: HTMLElement[] = [];
   private lucidityEl: HTMLElement;
   private actEl: HTMLElement;
+  private langBtn: HTMLButtonElement;
 
-  constructor(ui: HTMLElement, onMenu: () => void) {
+  /**
+   * `onLanguageChange` fires immediately on click — no pause menu required.
+   * It takes effect from the next beat/room/door screen onward; whatever
+   * text is already on screen at the moment of clicking is left as-is
+   * (safely swapping already-rendered choice text mid-read isn't free —
+   * see the risk noted in the language-switch task).
+   */
+  constructor(ui: HTMLElement, onMenu: () => void, initialLang: Lang, onLanguageChange: (lang: Lang) => void) {
     this.root = el('div', 'hud');
     const hearts = el('div', 'hearts');
     hearts.setAttribute('role', 'status');
@@ -27,9 +38,17 @@ export class Hud {
     const right = el('div', 'hud-right');
     this.lucidityEl = el('div', 'lucidity');
     this.lucidityEl.title = t(uiKey('lucidityTooltip'), 'Lucidity — how honestly you have been looking.');
+    let currentLang = initialLang;
+    this.langBtn = el('button', 'menu-btn lang-btn', LANG_SHORT[currentLang]);
+    this.langBtn.title = t(uiKey('hudLanguageTooltip'), 'Change language (applies from the next beat onward)');
+    this.langBtn.addEventListener('click', () => {
+      currentLang = nextLang(currentLang);
+      this.langBtn.textContent = LANG_SHORT[currentLang];
+      onLanguageChange(currentLang);
+    });
     const menuBtn = el('button', 'menu-btn', t(uiKey('menu'), 'Menu'));
     menuBtn.addEventListener('click', onMenu);
-    right.append(this.lucidityEl, menuBtn);
+    right.append(this.lucidityEl, this.langBtn, menuBtn);
     this.root.append(hearts, right);
 
     this.actEl = el('div', 'act-label');
@@ -46,6 +65,11 @@ export class Hud {
 
   setAct(label: string) {
     this.actEl.textContent = label;
+  }
+
+  /** Keeps the HUD's language abbreviation in sync if language is instead changed via Settings. */
+  setLanguage(lang: Lang) {
+    this.langBtn.textContent = LANG_SHORT[lang];
   }
 
   show() {

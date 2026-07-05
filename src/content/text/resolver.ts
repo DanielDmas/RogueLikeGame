@@ -14,6 +14,11 @@ export type TextVersion = 'v1' | 'v2';
 export const LANGS: Lang[] = ['en', 'cs', 'fa'];
 export const VERSIONS: TextVersion[] = ['v1', 'v2'];
 
+/** The next language in the cycle (en → cs → fa → en), used by both the HUD's quick-switch button and the Settings screen. Pure — testable without a DOM. */
+export function nextLang(current: Lang): Lang {
+  return LANGS[(LANGS.indexOf(current) + 1) % LANGS.length];
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type OverrideValue = string | ((s: any) => string);
 type LangMap = Partial<Record<Lang, OverrideValue>>;
@@ -58,25 +63,30 @@ function lookup(key: string, version: TextVersion, lang: Lang): OverrideValue | 
 }
 
 /**
- * Resolves a key to display text for the current locale, degrading gracefully:
- * exact (version, lang) -> same version, English -> same language, other version
- * -> other version, English -> the inline v2-English fallback the caller supplied.
+ * Resolves a key to display text for the current locale, degrading gracefully.
  * `v2`/`en` is intentionally never registered (that variant lives directly in
- * the source as `fallback`), so that lookup always falls through by design.
+ * the source as `fallback`) — so for English, a v2 request must resolve
+ * straight to `fallback` once `(v2, en)` misses. It must NOT detour through
+ * the v1 English pack just because that happens to be registered: doing so
+ * would silently replace the v2 rewrite with the legacy voice for every key
+ * that has a v1 entry, which defeats the entire point of the text version
+ * setting.
+ *
+ * For non-English locales, a missing translation prefers staying in the
+ * reader's language over staying in the requested voice: a Czech reader
+ * gets more out of the v2-Czech text than the v1-English text, even though
+ * they asked for the v1 voice. Voice-fidelity-over-language is the last
+ * resort, tried only once every same-language option is exhausted.
  */
 export function t(key: string, fallback: string | ((s: unknown) => string), state?: unknown): string {
-  const seq: [TextVersion, Lang][] =
-    currentVersion === 'v1'
-      ? [
-          ['v1', currentLang],
-          ['v1', 'en'],
-          ['v2', currentLang],
-        ]
-      : [
-          ['v2', currentLang],
-          ['v1', currentLang],
-          ['v1', 'en'],
-        ];
+  const seq: [TextVersion, Lang][] = [];
+  if (currentVersion === 'v1') {
+    seq.push(['v1', currentLang]);
+    if (currentLang !== 'en') seq.push(['v2', currentLang], ['v1', 'en']);
+  } else {
+    seq.push(['v2', currentLang]);
+    if (currentLang !== 'en') seq.push(['v1', currentLang]);
+  }
   for (const [v, l] of seq) {
     if (v === 'v2' && l === 'en') continue;
     const val = lookup(key, v, l);

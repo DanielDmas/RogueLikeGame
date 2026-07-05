@@ -2,7 +2,7 @@ import { describe, expect, it, afterEach } from 'vitest';
 import { allRooms } from '../content/rooms';
 import { endings } from '../content/endings';
 import '../content/text'; // registers v1-en + cs + fa packs (side effect)
-import { getLocale, setLocale, t } from '../content/text/resolver';
+import { getLocale, nextLang, register, setLocale, t } from '../content/text/resolver';
 import {
   actIntroKey,
   actNameKey,
@@ -105,5 +105,38 @@ describe('resolver — locale fallback chain', () => {
     const withoutLoss = t('room.ship.stage0.beat4', 'fallback', { memoryLost: false });
     expect(withLoss).not.toBe(withoutLoss);
     expect(withLoss).not.toBe('fallback');
+  });
+
+  it('regression: a v2/English request must NOT leak the v1 pack, even when a v1/en entry exists for the same key', () => {
+    // usher.bark.generic0 has a registered v1/en override (the old sitcom-y
+    // line). Requesting it under the default v2/English locale must resolve
+    // to the caller's inline v2 fallback, not silently detour through v1 —
+    // that detour previously made the "v2 rewrite" invisible by default.
+    setLocale('en', 'v2');
+    const v2Fallback = 'Usher: this is the v2 line, not the v1 one';
+    expect(t('usher.bark.generic0', v2Fallback)).toBe(v2Fallback);
+  });
+
+  it('v2 + non-English still degrades to the v1 translation for that language before falling to the v2 fallback', () => {
+    // Simulate a key with only a v1/cs translation registered (no v2/cs yet).
+    register('test.v1-only-cs-key', 'v1', 'cs', 'Český text (v1)');
+    setLocale('cs', 'v2');
+    expect(t('test.v1-only-cs-key', 'English v2 fallback')).toBe('Český text (v1)');
+  });
+
+  it('v1 + non-English prefers the reader\'s language (v2/cs) over jumping to English (v1/en)', () => {
+    // A key with a v2/cs translation but no v1/cs translation yet.
+    register('test.v2-only-cs-key', 'v2', 'cs', 'Český text (v2)');
+    register('test.v2-only-cs-key', 'v1', 'en', 'English text (v1)');
+    setLocale('cs', 'v1');
+    expect(t('test.v2-only-cs-key', 'English v2 fallback')).toBe('Český text (v2)');
+  });
+});
+
+describe('nextLang — the HUD quick-switch and Settings screen share this cycle', () => {
+  it('cycles en -> cs -> fa -> en', () => {
+    expect(nextLang('en')).toBe('cs');
+    expect(nextLang('cs')).toBe('fa');
+    expect(nextLang('fa')).toBe('en');
   });
 });
