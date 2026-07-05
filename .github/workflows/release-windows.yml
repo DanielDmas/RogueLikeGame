@@ -2,6 +2,11 @@ name: Build and release Windows EXE
 
 on:
   workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Release tag name (defaults to nightly-<run number> if left blank)'
+        required: false
+        type: string
   push:
     tags:
       - 'v*'
@@ -35,7 +40,9 @@ jobs:
         id: tag
         shell: bash
         run: |
-          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+          if [[ -n "${{ inputs.tag_name }}" ]]; then
+            echo "tag=${{ inputs.tag_name }}" >> "$GITHUB_OUTPUT"
+          elif [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             echo "tag=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
           else
             echo "tag=nightly-${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
