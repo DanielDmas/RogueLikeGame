@@ -76,6 +76,16 @@ export class Game {
   private runStartNotes = 0;
   private uat: boolean;
   private speedMultiplier: number;
+  /** Chains every persist() onto the previous one, so writes always reach
+   * the store in call order — even when a caller fires persist() without
+   * awaiting it (the HUD's language switch does, deliberately, so the click
+   * doesn't stall on I/O). Without this, a later awaited persist() (e.g. the
+   * pause menu's "Save & exit") could theoretically settle before an earlier
+   * unawaited one if the store were ever backed by something slower than
+   * localStorage (the SaveStore interface is explicitly written to allow a
+   * future async backend) — the earlier write would then land last and clobber
+   * the newer state. Chaining makes ordering independent of backend latency. */
+  private persistChain: Promise<void> = Promise.resolve();
 
   constructor(canvas: HTMLCanvasElement, ui: HTMLElement, profile: Profile, store: SaveStore, uat = false) {
     this.ui = ui;
@@ -214,7 +224,12 @@ export class Game {
 
   private async persist(showToast = false) {
     this.profile.run = this.state.finished ? null : this.state;
-    await this.store.save(PROFILE_ID, this.profile);
+    // Chained rather than a bare `await this.store.save(...)`, so that this
+    // call's write is guaranteed to reach the store after every earlier
+    // persist() call's write, regardless of whether those earlier calls were
+    // themselves awaited by their caller.
+    this.persistChain = this.persistChain.then(() => this.store.save(PROFILE_ID, this.profile));
+    await this.persistChain;
     // Shown only at natural checkpoints (door chosen, room completed, settings
     // saved) — never on the silent per-stage safety-net persist, or it would nag.
     if (showToast) {
@@ -233,13 +248,15 @@ export class Game {
    * on-screen UI (whatever was showing when the run was reset) never disagree. */
   private async resetRun() {
     this.profile.run = null;
-    await this.store.save(PROFILE_ID, this.profile);
+    this.persistChain = this.persistChain.then(() => this.store.save(PROFILE_ID, this.profile));
+    await this.persistChain;
     location.reload();
   }
 
   /** Wipes the whole profile back to defaults and starts over from a clean title screen. */
   private async resetProgress() {
-    await this.store.save(PROFILE_ID, defaultProfile());
+    this.persistChain = this.persistChain.then(() => this.store.save(PROFILE_ID, defaultProfile()));
+    await this.persistChain;
     location.reload();
   }
 

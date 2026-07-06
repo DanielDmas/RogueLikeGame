@@ -34,6 +34,27 @@ choice); Save & Exit button; "✓ saved" autosave toast; Reset run / Reset all
 progress with two-step confirm in Settings → Data. Key files:
 `src/engine/flow.ts`, `src/content/schema.ts`, `src/ui/toast.ts`.
 
+**Amendment (Milestone 5):** a reported repro — switch language mid-run via
+the in-HUD button, then "Save & exit to title", then Continue — was
+investigated. Live Playwright repro of the exact steps did not reproduce a
+lost run (the write is correct and reaches the store before `location.reload()`
+in every attempt). Investigation did surface one real latent defect: `Game`'s
+`persist()` calls were independent `await`-or-not writes to the same profile
+key, so a slower-than-`localStorage` `SaveStore` backend (the interface is
+explicitly written to allow one — see `saveStore.ts`'s doc comment) could let
+an unawaited write (the HUD language switch's) land *after* a later, awaited
+one (the pause menu's "Save & exit"), silently reverting the newer state.
+Fixed by chaining every persist onto a single `Game.persistChain` promise
+(`flow.ts`), so writes always reach the store in call order regardless of
+backend latency or whether the caller awaits. Covered by
+`src/test/saveRoundTrip.test.ts`: full round-trips through the real
+`LocalSaveStore` (backed by an in-memory `Storage` polyfill, since tests run
+in a DOM-less `node` environment) from a representative run in every act, the
+understory, a secret room, and the final gate; the exact reported
+language-switch-then-save sequence; the title screen's continue/no-continue
+gating; and a deliberately constructed race proving the old (unchained)
+pattern *does* reorder writes while the new pattern doesn't.
+
 ---
 
 ## Phase C — Layout: Settings & Field Notes on every screen
