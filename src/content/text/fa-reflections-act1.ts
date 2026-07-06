@@ -1,0 +1,93 @@
+// Farsi translations for Act I's Examined Path reflections (spec 05).
+// Every line is translated with the specific room's situation in mind, not
+// word-for-word from English — see CLAUDE.md's translation rule.
+import { registerAll } from './resolver';
+import { reflectionKey } from './keys';
+
+registerAll('v2', 'fa', {
+  // ---------- The Wallet ----------
+  [reflectionKey('wallet', 'return-all', 'consequence')]: 'بازگرداندن یک کیف پول چیز زیادی تغییر نمی‌دهد؛ عادتِ بازگرداندنشان یک شهر را تغییر می‌دهد.',
+  [reflectionKey('wallet', 'return-all', 'duty')]: 'هرگز مالِ شما نبود؛ حساب‌وکتابِ پیامدها اینجا وارد نمی‌شود.',
+  [reflectionKey('wallet', 'return-all', 'virtue')]: 'بپرسید کسی که دارید می‌شوید با چیزهای پیداشده چه می‌کند.',
+  [reflectionKey('wallet', 'return-all', 'care')]: 'امشب کسی دارد قدم‌هایش را دوباره طی می‌کند؛ کیف پول برای او سنگین‌تر از شماست.',
+  [reflectionKey('wallet', 'mail-it', 'consequence')]: 'پول و کیف پول سالم می‌رسند — نتیجه با بردنِ حضوری یکسان است.',
+  [reflectionKey('wallet', 'mail-it', 'duty')]: 'تعهدِ بازگرداندن انجام می‌شود؛ وظیفه از چگونگی نمی‌پرسد، فقط از اینکه آیا انجام شد.',
+  [reflectionKey('wallet', 'mail-it', 'virtue')]: 'به شخصیتی که با راحتی ساخته می‌شود توجه کنید، نه با هزینه.',
+  [reflectionKey('wallet', 'mail-it', 'care')]: 'آسودگیِ یک غریبه از پاکت هم به همان اندازه می‌رسد — فقط هرگز نمی‌بینید چگونه به دستش می‌رسد.',
+  [reflectionKey('wallet', 'finders-fee', 'consequence')]: 'کسری کوچک از زیانِ یک غریبه، در برابر زمانِ صادقانه‌ی صرف‌شده‌ی شما، همچنان به سودِ اوست.',
+  [reflectionKey('wallet', 'finders-fee', 'duty')]: 'کیف پول، و هرچه در آن تا شده، هرگز مالِ شما نبود که قیمتش کنید.',
+  [reflectionKey('wallet', 'finders-fee', 'virtue')]: 'توجه کنید آن استدلال چه‌قدر روان از راه رسید — درست پس از آنکه دست از قبل در حال حرکت بود.',
+  [reflectionKey('wallet', 'finders-fee', 'care')]: 'اجاره‌ی آن‌ها تمام‌وکمال سررسیده؛ هزینه‌ی راحتیِ شما بدهیِ آن‌ها نیست.',
+  [reflectionKey('wallet', 'keep-it', 'consequence')]: 'یک سرقت به‌ندرت شهری را واژگون می‌کند؛ آسیب تمام‌وکمال روی همان کسی متمرکز می‌شود که هرگز حق آسیب‌دیدن از شما را نداشت.',
+  [reflectionKey('wallet', 'keep-it', 'duty')]: 'کیف پول نامِ صاحبش را با خود دارد، چه او را ملاقات کنید چه نه.',
+  [reflectionKey('wallet', 'keep-it', 'virtue')]: 'این همان آزمونی‌ست که حلقه‌ی گیجس هشدارش را داد — خودی که وقتی کسی تماشا نمی‌کند می‌شوید.',
+  [reflectionKey('wallet', 'keep-it', 'care')]: 'چهل دقیقه آن‌طرف‌تر، تاریخی از راه می‌رسد که این انتخاب همین الان بدترش کرد.',
+
+  // ---------- The Promotion ----------
+  [reflectionKey('promotion', 'report', 'consequence')]: 'خطا پیش از آنکه برای شرکت بیش از یک دوستی هزینه داشته باشد، کشف می‌شود.',
+  [reflectionKey('promotion', 'report', 'duty')]: 'شما به گزارش، حقیقتی را که دفترش می‌خواست بدهکار بودید، فارغ از اینکه چه کسی خطا را امضا کرده.',
+  [reflectionKey('promotion', 'report', 'virtue')]: 'درستیِ بی‌هزینه برای خودتان آسان است؛ این یکی چیزی واقعی از شما گرفت.',
+  [reflectionKey('promotion', 'report', 'care')]: 'دوستتان یک محاکمه‌ی علنی را برای اشتباهی خصوصی در حساب تحمل می‌کند — بسنجید آن دوستی چه‌قدر می‌تواند تاب بیاورد.',
+  [reflectionKey('promotion', 'silent', 'consequence')]: 'هیچ‌چیز عوض نمی‌شود جز اینکه چه کسی سرانجام ترفیع می‌گیرد — ممیزی خطا را به‌هرحال پیدا می‌کند.',
+  [reflectionKey('promotion', 'silent', 'duty')]: 'نادیده‌گرفتن هم انتخابی‌ست؛ گزارشی که ننوشتید هنوز بدهکارش بودید.',
+  [reflectionKey('promotion', 'silent', 'virtue')]: 'توجه کنید چه‌قدر آسان «مسئله‌ی من نیست» چیزی را که از قبل می‌خواستید تأمین مالی کرد.',
+  [reflectionKey('promotion', 'silent', 'care')]: 'دوستتان درست به همان اندازه بی‌پناه با ممیزی روبه‌رو می‌شود که انگار هرگز آن خطا را ندیده بودید.',
+  [reflectionKey('promotion', 'tell-friend', 'consequence')]: 'هیچ‌کدامتان آن شغل را نمی‌گیرید، اما خطا به شیوه‌ای کشف می‌شود که کمترین هزینه را برای دوستتان دارد.',
+  [reflectionKey('promotion', 'tell-friend', 'duty')]: 'چیزی را که اول به او بدهکار بودید دادید: فرصتِ صاحب‌شدنِ اشتباه خودش.',
+  [reflectionKey('promotion', 'tell-friend', 'virtue')]: 'وفاداری اینجا ترفیع را مستقیماً از شما گرفت — نسخه‌ی پرهزینه‌ی آن خصلت، نه نسخه‌ی راحتش.',
+  [reflectionKey('promotion', 'tell-friend', 'care')]: 'دوستتان با پیامد روبه‌رو می‌شود، اما همراهی‌شده و هشداریافته، نه غافلگیر.',
+  [reflectionKey('promotion', 'fix-it', 'consequence')]: 'اشتباه هرگز اتفاق نیفتاد؛ گزارش پاک ارسال می‌شود و دوستتان از آن هیچ چیز نمی‌آموزد.',
+  [reflectionKey('promotion', 'fix-it', 'duty')]: 'گزارش اکنون از نظر فنی صادقانه است، اما بدهیِ افشا به دوستتان پرداخت‌نشده می‌ماند.',
+  [reflectionKey('promotion', 'fix-it', 'virtue')]: 'بپرسید این مهربانیِ پنهانی بود، یا کنترلی در ردای مهربانی.',
+  [reflectionKey('promotion', 'fix-it', 'care')]: 'او را از درد محافظت کردید، و هم از فرصتی که آن درد شاید چیزی به او می‌آموخت.',
+
+  // ---------- The Beggar's Math ----------
+  [reflectionKey('beggars-math', 'give-him', 'consequence')]: 'یک شام، یک شب، در برابر عددِ بزرگ‌تری که همین پول می‌توانست جای دیگری به آن برسد.',
+  [reflectionKey('beggars-math', 'give-him', 'duty')]: 'مردِ روبه‌روی شما ادعایی مستقیم مطرح کرد؛ فاصله ادعایی را که از قبل مطرح شده از بین نمی‌برد.',
+  [reflectionKey('beggars-math', 'give-him', 'virtue')]: 'بپرسید چه کسی در باران زانو می‌زند برای کسی که چیزی برای جبران ندارد.',
+  [reflectionKey('beggars-math', 'give-him', 'care')]: 'او حالا نامی دارد، چون پرسیدید — نزدیکی، حساب‌وکتاب را به یک انسان تبدیل کرد.',
+  [reflectionKey('beggars-math', 'donate-far', 'consequence')]: 'همان پول، تأییدشده، به‌ازای هر واحد هزینه، رنج بیشتری نسبت به آن وعده‌ی غذا نجات می‌دهد.',
+  [reflectionKey('beggars-math', 'donate-far', 'duty')]: 'هیچ‌چیزی که مشخصاً به آن مرد بدهکارید بر آنچه محاسبه به بسیاری بدهکار است برتری ندارد.',
+  [reflectionKey('beggars-math', 'donate-far', 'virtue')]: 'توجه کنید عبور از کنار یک چهره برای یک عدد چه هزینه‌ای دارد — آن ناراحتی شاید نشانه‌ی انجامِ کارِ سخت‌تر باشد.',
+  [reflectionKey('beggars-math', 'donate-far', 'care')]: 'چهره‌ی او را، حل‌نشده، به‌عنوان بهای عادلانه‌ی انتخابِ کسانی که نمی‌بینید حمل می‌کنید.',
+  [reflectionKey('beggars-math', 'split', 'consequence')]: 'دو نیمه‌راه‌حل شاید نتیجه‌ای بدتر از یک انتخابِ کامل داشته باشند.',
+  [reflectionKey('beggars-math', 'split', 'duty')]: 'تقسیم‌کردن هیچ‌کدام از تعهدها را کامل ادا نمی‌کند — ادعای نزدیک و دور هر دو نیمه‌پاسخ می‌مانند.',
+  [reflectionKey('beggars-math', 'split', 'virtue')]: 'بپرسید آیا این مصالحه به آن‌ها خدمت کرد، یا بیشتر به نیاز خودتان به احساسِ یکپارچگی.',
+  [reflectionKey('beggars-math', 'split', 'care')]: 'او بازهم چیزی خورد امشب — نیم‌اقدام برای کسی که آن را دریافت می‌کند چیزی کم نیست.',
+  [reflectionKey('beggars-math', 'grand-gesture', 'consequence')]: 'کمک و آگاهی‌رسانی شاید واقعاً خیر برساند — بسنجید آیا ویدیو به کسانی رسید که وگرنه چیزی نمی‌دادند.',
+  [reflectionKey('beggars-math', 'grand-gesture', 'duty')]: 'هدیه‌ای که به کرامتِ یک غریبه بدهکارید با نمایش‌دادنش برای تماشاگران ادا نمی‌شود.',
+  [reflectionKey('beggars-math', 'grand-gesture', 'virtue')]: 'انتخابی که سخاوتمندانه‌ترین به‌نظر می‌رسید، شما را، نه او را، سوژه‌ی دیدنیِ قاب کرد.',
+  [reflectionKey('beggars-math', 'grand-gesture', 'care')]: 'از او خواسته می‌شود برای دوربین قدردانی نمایش دهد، علاوه بر هرچه آن شب از قبل از او خواسته بود.',
+
+  // ---------- The Quiet Alarm ----------
+  [reflectionKey('quiet-alarm', 'knock', 'consequence')]: 'هرچه پشتِ آن دیوار در جریان است، حالا با شاهدی دم در اتفاق می‌افتد — نتیجه کمی، اگر اصلاً، تغییر می‌کند.',
+  [reflectionKey('quiet-alarm', 'knock', 'duty')]: 'همسایه‌ای در خطرِ احتمالی ادعایی بر شما ایجاد می‌کند که دری قفل‌شده پاکش نمی‌کند.',
+  [reflectionKey('quiet-alarm', 'knock', 'virtue')]: 'بپرسید چه کسی بدنی بی‌سلاح میان یک غریبه و خطری نامعلوم می‌گذارد.',
+  [reflectionKey('quiet-alarm', 'knock', 'care')]: 'حضور، حتی بی‌کلام، به آن‌که داخل است می‌گوید امشب در آن آپارتمان تنها نبوده.',
+  [reflectionKey('quiet-alarm', 'call', 'consequence')]: 'دخالتِ حرفه‌ای شاید بیشتر حل کند، یا بیشتر تشدید کند، نسبت به در زدنِ خودتان — نمی‌توانید کاملاً پیش‌بینی کنید کدام.',
+  [reflectionKey('quiet-alarm', 'call', 'duty')]: 'گزارشِ آسیبِ احتمالی، تعهدی به ایمنی را ادا می‌کند که بی‌عملی نمی‌کند.',
+  [reflectionKey('quiet-alarm', 'call', 'virtue')]: 'فرستادنِ مسئولیت به جای دیگر لزوماً بزدلی نیست — بپرسید آیا انتخابی سنجیده بود یا راحت.',
+  [reflectionKey('quiet-alarm', 'call', 'care')]: 'نمی‌توانستید کنترل کنید آنچه احضار کردید واقعاً چه می‌کند — آن غیرقابل‌پیش‌بینی‌بودن بهای درخواستِ نیرویی قوی‌تر از خودتان بود.',
+  [reflectionKey('quiet-alarm', 'wait', 'consequence')]: 'هیچ‌چیز تغییر نمی‌کند تا وقتی تصمیم بگیرید چیزی تغییر کرده — نتیجه بیشتر همان چیزی‌ست که از قبل در جریان بود.',
+  [reflectionKey('quiet-alarm', 'wait', 'duty')]: 'هوشیاری بدون کنش ادعای هیچ‌کس بر شما را ادا نمی‌کند — توجه هرگز تمامِ آن تعهد نبود.',
+  [reflectionKey('quiet-alarm', 'wait', 'virtue')]: 'توجه کنید «هنوز نه» چه‌قدر می‌تواند جای یک تصمیم را بگیرد پیش از آنکه بی‌سروصدا خودش تصمیم شود.',
+  [reflectionKey('quiet-alarm', 'wait', 'care')]: 'هرکس پشتِ آن دیوار است نمی‌داند شما گوش می‌دهید، پس آن گوش‌دادن فقط شما را آرام می‌کند.',
+  [reflectionKey('quiet-alarm', 'nothing', 'consequence')]: 'سکوت به‌هرحال برقرار می‌ماند؛ پنج دلیل شما چیزی را در آنچه واقعاً در آن آپارتمان رخ داد تغییر نداد.',
+  [reflectionKey('quiet-alarm', 'nothing', 'duty')]: 'دری بسته مرزی واقعی‌ست، اما فریادی احتمالی برای کمک هم ادعایی واقعی‌ست — این دو ساده یکدیگر را خنثی نمی‌کنند.',
+  [reflectionKey('quiet-alarm', 'nothing', 'virtue')]: 'بشمارید چند دلیل لازم بود تا به رختخواب برگردید — آن عدد خودش اطلاعاتی‌ست.',
+  [reflectionKey('quiet-alarm', 'nothing', 'care')]: 'اگر چیزی اشتباه بود، هیچ‌کس پشتِ آن دیوار امشب متعلق به شما شمرده نشد.',
+
+  // ---------- The Reference Letter ----------
+  [reflectionKey('the-reference', 'write-honest', 'consequence')]: 'غریبه‌ای که آن را می‌خواند سیگنالی درست دریافت می‌کند؛ دوستتان فرصتی را از دست می‌دهد که نامه می‌توانست باز کند.',
+  [reflectionKey('the-reference', 'write-honest', 'duty')]: 'توصیه‌نامه قولی به غریبه‌ای‌ست که به آن تکیه می‌کند — آن قول بر راحتیِ دوستی برتری دارد.',
+  [reflectionKey('the-reference', 'write-honest', 'virtue')]: 'انصافی که هزینه‌ای شخصی برایتان ندارد آسان است؛ این یکی فرصتی از دوستتان گرفت.',
+  [reflectionKey('the-reference', 'write-honest', 'care')]: 'دوستتان صداقتِ نامه را تحمل می‌کند، بی‌آنکه هرگز فرصت پاسخ‌گویی از جانب خودش را داشته باشد.',
+  [reflectionKey('the-reference', 'write-kind', 'consequence')]: 'مصاحبه اتفاق می‌افتد؛ آنچه پس از آن می‌آید دیگر نتیجه‌ی نامه‌ی شما نیست.',
+  [reflectionKey('the-reference', 'write-kind', 'duty')]: 'بادکردنِ قولی که به یک غریبه داده شده، اعتماد او را به نفع دوستتان خرج می‌کند.',
+  [reflectionKey('the-reference', 'write-kind', 'virtue')]: 'بپرسید چه هزینه‌ای برای اعتبار خودتان دارد که مدام همه‌چیز را برای کسانی که دوست دارید گرد کنید.',
+  [reflectionKey('the-reference', 'write-kind', 'care')]: 'امیدوارید شغل خودش را با نامه تطبیق دهد — مهربانی‌ای که آرام‌آرام خطر را به دوستتان منتقل می‌کند.',
+  [reflectionKey('the-reference', 'decline', 'consequence')]: 'سکوت دقیقاً همان‌طور خوانده می‌شود که هست — توصیه‌ی دریغ‌شده — شبیه نامه‌ی صادقانه، منهای جزئیات.',
+  [reflectionKey('the-reference', 'decline', 'duty')]: 'امتناع، وظیفه‌ی شما به غریبه را ادا می‌کند، اما وظیفه به دوستی که دست‌کم یک کلمه‌ی صادقانه بدهکارش هستید را نه.',
+  [reflectionKey('the-reference', 'decline', 'virtue')]: 'دریغ‌کردن ارزان‌ترین راه گفتنِ حقیقتی سخت است — بپرسید آیا ارزان همان مهربان است.',
+  [reflectionKey('the-reference', 'decline', 'care')]: 'دوستتان آن سکوت را حس می‌کند؛ به‌ندرت به همان اندازه خصوصی می‌ماند که وقتی قلم را پس دادید به‌نظر می‌رسید.',
+});

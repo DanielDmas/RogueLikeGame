@@ -29,3 +29,9 @@ export const usherBarkKey = (id: string) => `usher.bark.${id}`;
 export const uiKey = (id: string) => `ui.${id}`;
 
 export const keepsakeKey = (id: string, field: 'name' | 'origin') => `keepsake.${id}.${field}`;
+
+/** Spec 05 — The Examined Path. `tradition` is one of Reflection's four
+ * literal values ('consequence' | 'duty' | 'virtue' | 'care'). */
+export const reflectionKey = (roomId: string, choiceId: string, tradition: string) =>
+  `reflection.${roomId}.${choiceId}.${tradition}`;
+export const traditionLabelKey = (tradition: string) => `ui.tradition.${tradition}`;

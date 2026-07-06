@@ -543,12 +543,46 @@ into their named phases; 8 is watch-and-wait):
 
 ## Phase O — The Examined Path (spec `05-the-examined-path.md`)
 
-- [ ] O1. Opt-in panel at new-run start, full explanation, equal-weight
-      buttons; Settings edits the default only
-- [ ] O2. Reflection cards: 4 named traditions, one line each, shuffled,
-      never a verdict, one click to dismiss
-- [ ] O3. One Socratic Usher question per act (rhetorical, unscored)
-- [ ] O4. Provable zero behavior change when off; EN+CS+FA authored coverage
+- [x] O1. Opt-in panel (`showExaminedPathOffer`, `ui/overlays.ts`) shown on
+      every genuinely fresh run — `start()`'s `'new'` path and the end
+      screen's "Walk again" (`'again'`) alike, since both construct a brand
+      new `RunState`; never on `'continue'`. Two equal-weight buttons, order
+      following the stored default only (never marked "recommended"). New
+      `Settings.examinedPathDefault` (Text & Language section) edits only
+      the next offer's pre-selection; the current run's own
+      `RunState.examined` (stamped once, immutable) is a separate field.
+- [x] O2. Reflection cards (`ui/reflection.ts`, `ReflectionPanel`) — a
+      visually quieter sibling of `TextPanel` (dimmer border, no drop
+      shadow), reusing its click/Space/Enter-dismiss + overlay-guard pattern.
+      Renders after a choice's outcome beats finish, one row per tradition,
+      shuffled fresh via Fisher-Yates on every display (`shuffledReflections`,
+      `engine/reflections.ts`) — never a fixed/rankable order. New
+      `Choice.reflections?: Reflection[]` (schema.ts), pure gate
+      `shouldShowReflections(state, choice)` extracted for a DOM-free no-op
+      proof.
+- [x] O3. One Socratic aside per act (`shouldShowSocraticAside`, gate
+      `act 1-4 && examined`), piggybacked onto `syncTheme`'s existing
+      once-per-act-transition intro beat. Bark ids `examined-act1..4`,
+      EN+CS+FA.
+- [x] O4 (partial). The no-op guarantee is proven — `shouldShowReflections`/
+      `shouldShowSocraticAside` are both `false` whenever `examined` is
+      falsy (the default for every player who never opts in), verified
+      against every room/choice in `allRooms` by `examinedPath.test.ts`
+      (schema validation, shuffle set-equality, translation coverage, the
+      no-op guard). **Content authoring is Act I only so far** — `wallet`,
+      `promotion`, `beggars-math`, `quiet-alarm`, `the-reference` (every
+      DILEMMA/INSIGHT room in Act I) have full 4-tradition reflections,
+      EN+CS+FA (`cs-reflections-act1.ts`/`fa-reflections-act1.ts`). Acts
+      II–IV's DILEMMA/INSIGHT rooms (`junction`, `experience-machine`,
+      `casino-pascal`, `chinese-room`, `newcomb-annex`, `veil-of-ignorance`,
+      `teleporter`, `editor`, `debt-of-dead`, `marys-room`,
+      `butterfly-dream`, `swampman`, plus spec 01/02's other DILEMMA/INSIGHT
+      rooms) **still need reflections authored** before this item is fully
+      done — tracked here explicitly so it isn't lost. Live-verified via
+      `?uat=1`: the opt-in panel, a reflection card on `wallet`'s
+      `return-all` choice, and the shuffled row order all render correctly
+      in a real browser. `tsc`/full suite green (367 tests before the
+      session's separate bug-fix audit added more).
 
 ## Phase P — Traveler's Ledger & Epiphanies (spec `06-ledger-and-epiphanies.md`)
 

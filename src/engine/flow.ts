@@ -6,18 +6,21 @@ import { actIntroText, usherDoorBark } from '../content/usher';
 import { keepsakesEarnedByFlags } from '../content/keepsakes';
 import { applyEffects, newRun } from './gameState';
 import { axisTriptych, computeAnamnesisEligible, evaluateEnding } from './endings';
+import { shouldShowReflections, shouldShowSocraticAside } from './reflections';
 import { completeRoom, makeRegistry, offeredDoors } from './storyEngine';
 import { defaultProfile, type Profile, type SaveStore } from './saveStore';
 import { SceneDirector } from '../scene/director';
 import { Hud } from '../ui/hud';
 import { TextPanel } from '../ui/textPanel';
 import { ChoicePanel } from '../ui/choices';
+import { ReflectionPanel } from '../ui/reflection';
 import { showFieldNote } from '../ui/fieldNote';
 import { showSavedToast } from '../ui/toast';
 import {
   showAbout,
   showCodex,
   showEndScreen,
+  showExaminedPathOffer,
   showPauseMenu,
   showPersona,
   showSettings,
@@ -59,6 +62,15 @@ const UAT_AUTOCONTINUE_KEY = 'anamnesis-uat-autocontinue';
 
 const themeForAct = (act: number): 0 | 1 | 2 | 3 | 4 => (act <= 1 ? (act as 0 | 1) : (act as 2 | 3 | 4));
 
+/** English source for the Examined Path's once-per-act Socratic asides (spec
+ * 05) — rhetorical, unscored, no branching. `Usher:` prefix marks it spoken. */
+const EXAMINED_ACT_BARK_FALLBACK: Record<1 | 2 | 3 | 4, string> = {
+  1: 'Usher: Would you have chosen the same in front of witnesses? Would that have been better — or only nicer?',
+  2: 'Usher: When the machine is right, does it matter why?',
+  3: 'Usher: Which of your reasons tonight were yours, and which were rehearsals?',
+  4: 'Usher: If no one could ever know, walk the corridor again. Anything change?',
+};
+
 export class Game {
   private ui: HTMLElement;
   private veil: HTMLElement;
@@ -67,6 +79,7 @@ export class Game {
   private hud: Hud;
   private text: TextPanel;
   private choices: ChoicePanel;
+  private reflection: ReflectionPanel;
   private state: RunState = newRun();
   private profile: Profile;
   private store: SaveStore;
@@ -121,6 +134,7 @@ export class Game {
     });
     this.text = new TextPanel(stageBottom);
     this.choices = new ChoicePanel(stageBottom);
+    this.reflection = new ReflectionPanel(stageBottom);
 
     addEventListener('keydown', (e) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
@@ -338,10 +352,16 @@ export class Game {
           this.profile.persona = await showPersona(this.ui, this.profile.persona);
           await this.persist();
         }
-        this.state =
-          action === 'continue' && this.profile.run
-            ? this.profile.run
-            : newRun(undefined, this.priorFromProfile(), this.keepsakesFromProfile());
+        if (action === 'continue' && this.profile.run) {
+          this.state = this.profile.run;
+        } else {
+          // Examined Path (spec 05): offered only on a genuinely fresh run,
+          // never on 'continue' — the mode is immutable once a run starts.
+          const examined = await showExaminedPathOffer(this.ui, this.profile.settings.examinedPathDefault);
+          this.profile.settings = { ...this.profile.settings, examinedPathDefault: examined };
+          await this.persist();
+          this.state = newRun(undefined, this.priorFromProfile(), this.keepsakesFromProfile(), examined);
+        }
         break;
       }
     }
@@ -363,6 +383,19 @@ export class Game {
       const intro = actIntroText(this.state.act);
       if (intro && this.state.act > 0) {
         await this.text.playBeats([intro], this.state, { title: actName(this.state.act) }, { tokens: this.tokens() });
+        this.text.hide();
+      }
+      // Examined Path (spec 05): one rhetorical, unscored Socratic aside per
+      // act — no input, no branching, no record kept. Piggybacks on the act
+      // intro since both fire exactly once per act transition.
+      if (shouldShowSocraticAside(this.state)) {
+        const fallback = EXAMINED_ACT_BARK_FALLBACK[this.state.act as 1 | 2 | 3 | 4];
+        await this.text.playBeats(
+          [t(usherBarkKey(`examined-act${this.state.act}`), fallback)],
+          this.state,
+          { title: actName(this.state.act) },
+          { tokens: this.tokens() },
+        );
         this.text.hide();
       }
     }
@@ -524,6 +557,13 @@ export class Game {
         keyOf: (bi) => roomChoiceOutcomeKey(room.id, choice.id, bi),
         tokens,
       });
+      // Examined Path (spec 05): plural, non-judging readings of the choice
+      // just made — after the outcome has fully landed, never before. A
+      // no-op for every player who hasn't opted in (shouldShowReflections
+      // is false whenever state.examined is falsy, which is the default).
+      if (shouldShowReflections(this.state, choice)) {
+        await this.reflection.show(room.id, choice.id, choice.reflections!, this.profile.settings.reducedMotion);
+      }
       if (this.state.hearts <= 0) break;
     }
     this.text.hide();
@@ -625,7 +665,12 @@ export class Game {
         continue;
       }
       if (action === 'again') {
-        this.state = newRun(undefined, this.priorFromProfile(), this.keepsakesFromProfile());
+        // "Walk again" is a genuinely fresh run exactly like start()'s 'new'
+        // path (new axes/hearts/lucidity/transcript) — the Examined Path
+        // opt-in applies here too, for the same reason.
+        const examined = await showExaminedPathOffer(this.ui, this.profile.settings.examinedPathDefault);
+        this.profile.settings = { ...this.profile.settings, examinedPathDefault: examined };
+        this.state = newRun(undefined, this.priorFromProfile(), this.keepsakesFromProfile(), examined);
         await this.persist();
         this.currentTheme = -1;
         this.runStartNotes = this.profile.codexUnlocked.length;

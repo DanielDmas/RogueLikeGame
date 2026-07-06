@@ -176,7 +176,15 @@ export function showSettings(ui: HTMLElement, settings: Settings, actions: Setti
 
     const toggleRow = (
       body: HTMLElement,
-      key: 'music' | 'sfx' | 'typewriter' | 'reducedMotion' | 'highContrast' | 'quality' | 'dynamicScenery',
+      key:
+        | 'music'
+        | 'sfx'
+        | 'typewriter'
+        | 'reducedMotion'
+        | 'highContrast'
+        | 'quality'
+        | 'dynamicScenery'
+        | 'examinedPathDefault',
       label: string,
       desc: string,
     ) => {
@@ -319,6 +327,12 @@ export function showSettings(ui: HTMLElement, settings: Settings, actions: Setti
 
     toggleRow(textBody, 'typewriter', t(uiKey('settingTypewriter'), 'Typewriter text'), t(uiKey('settingTypewriterDesc'), 'Text appears letter by letter, like being told a story.'));
     toggleRow(textBody, 'highContrast', t(uiKey('settingHighContrast'), 'High-contrast text'), t(uiKey('settingHighContrastDesc'), 'Brighter text color for easier reading.'));
+    toggleRow(
+      textBody,
+      'examinedPathDefault',
+      t(uiKey('settingExaminedPath'), 'Examined Path — offered at the start of each new run'),
+      t(uiKey('settingExaminedPathDesc'), 'Only changes what is pre-selected when a new run begins — you are always asked, and this run’s choice is unaffected.'),
+    );
 
     // ---------- Data ----------
     const { section: dataSection, body: dataBody } = sectionEl(t(uiKey('settingsSectionData'), 'Data'));
@@ -510,6 +524,50 @@ export function showAbout(ui: HTMLElement): Promise<void> {
       resolve();
     });
     panel.append(back);
+    o.appendChild(panel);
+  });
+}
+
+/**
+ * The Examined Path's opt-in panel (spec 05) — shown once, only on a fresh
+ * `'new'` run (never `'continue'`, never mid-run: the mode is immutable once
+ * a run starts). Two equal-weight buttons, neither preselected or marked
+ * "recommended" — the owner's requirement that this be a genuine, informed
+ * opt-in, not a nudge. Resolves `true` for the Examined Path, `false` for
+ * walking plainly.
+ */
+export function showExaminedPathOffer(ui: HTMLElement, defaultOn: boolean): Promise<boolean> {
+  return new Promise((resolve) => {
+    const o = overlay(ui);
+    const panel = el('div', 'codex-panel about-panel');
+    panel.append(el('h2', undefined, t(uiKey('examinedOfferTitle'), 'The Examination Annex')));
+    const body = el('div', 'about-body');
+    const p1 = t(
+      uiKey('examinedOfferIntro'),
+      'The Annex files commentary. It has no opinion — it has four.',
+    );
+    const p2 = t(
+      uiKey('examinedOfferBody'),
+      'An optional stamp on your intake file: after each significant choice, a quiet clerk holds up how a few named ethical traditions might read what you just did — side by side, disagreeing with each other on purpose. Nothing here is graded or scored, and no reading is ever the "right" one. The rooms, the hearts, and the endings you can reach are completely unchanged either way. Every card dismisses with a single click. You can change the default for next time later, in Settings.',
+    );
+    body.innerHTML = `<p><i>${p1}</i></p><p>${p2}</p>`;
+    panel.append(body);
+
+    const menu = el('div', 'title-menu');
+    const done = (choice: boolean) => {
+      o.remove();
+      resolve(choice);
+    };
+    const plain = el('button', 'title-btn', t(uiKey('walkPlainly'), 'Walk plainly'));
+    plain.addEventListener('click', () => done(false));
+    const examined = el('button', 'title-btn', t(uiKey('takeExaminedPath'), 'Take the Examined Path'));
+    examined.addEventListener('click', () => done(true));
+    // Equal visual weight, neither preselected — order mirrors the default
+    // only so a returning player's habitual choice reads first, never as
+    // an endorsement of it.
+    if (defaultOn) menu.append(examined, plain);
+    else menu.append(plain, examined);
+    panel.append(menu);
     o.appendChild(panel);
   });
 }

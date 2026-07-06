@@ -37,6 +37,10 @@ const USHER_BARK_IDS = [
   'first-choice-explainer',
   'first-heart-loss',
   'remembered-room',
+  'examined-act1',
+  'examined-act2',
+  'examined-act3',
+  'examined-act4',
 ];
 
 describe('i18n — Czech and Farsi coverage of navigation/structural text', () => {

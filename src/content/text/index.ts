@@ -19,6 +19,8 @@ import './cs-endings';
 import './fa-endings';
 import './cs-dynamic';
 import './fa-dynamic';
+import './cs-reflections-act1';
+import './fa-reflections-act1';
 
 export * from './resolver';
 export * from './keys';

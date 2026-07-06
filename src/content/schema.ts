@@ -57,6 +57,12 @@ export interface RunState {
    * quit-and-resume at the final door keeps the same eligibility. Undefined
    * means "not yet computed", equivalent to false. */
   anamnesisEligible?: boolean;
+  /** This run walks the Examined Path (spec 05) — immutable once the run
+   * starts (the opt-in panel is only ever offered on a fresh 'new' run, never
+   * mid-run). Undefined/false is the common case: no behavior, no reflection
+   * cards, no Socratic asides — a player who never opts in sees nothing
+   * different, ever. */
+  examined?: boolean;
   act: ActId;
   /** optional (non-gate) rooms completed in the current act */
   actOptionalDone: number;
@@ -89,6 +95,21 @@ export interface Choice {
   /** Present only on keepsake-gated bonus choices (spec 04) — renders the ✧
    * marker and records into `Profile.keepsakeChoicesTaken` when chosen. */
   keepsakeId?: string;
+  /** Plural ethical readings of this choice (spec 05), shown only on the
+   * Examined Path, only after the outcome beats finish. Never a verdict —
+   * see `Reflection`. Absent on choices the writer judged unsuited to
+   * framework readings (chiefly in NO-SOLUTION/DOOMED rooms); a gap here is
+   * a deliberate authorial choice, not a bug. */
+  reflections?: Reflection[];
+}
+
+/** One tradition's reading of a choice — English source text, ≤160 chars,
+ * present tense, naming a consideration rather than a verdict ("A
+ * consequentialist weighs…", never "You should have…"). Translated via
+ * `reflectionKey(roomId, choiceId, tradition)`. */
+export interface Reflection {
+  tradition: 'consequence' | 'duty' | 'virtue' | 'care';
+  text: string;
 }
 
 export interface Stage {

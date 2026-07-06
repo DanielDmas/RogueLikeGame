@@ -10,11 +10,14 @@ export const LUCIDITY_FLOOR = 5;
  * `prior` is the previous-run snapshot (see `RunState.prior`); pass it from
  * `Profile.lastRunTranscript`/`lastRunEndingId`/`runsCompleted`, or omit it for
  * a player's first-ever run. `keepsakesHeld` mirrors `Profile.keepsakes` at
- * run start (see `RunState.keepsakesHeld`) — omit it for a keepsake-less run. */
+ * run start (see `RunState.keepsakesHeld`) — omit it for a keepsake-less run.
+ * `examined` stamps whether this run walks the Examined Path (spec 05) —
+ * decided once, at the opt-in panel, and immutable for the run's lifetime. */
 export function newRun(
   doorSeed: number = Math.floor(Math.random() * 2 ** 31),
   prior?: RunState['prior'],
   keepsakesHeld?: string[],
+  examined?: boolean,
 ): RunState {
   return {
     hearts: MAX_HEARTS,
@@ -28,6 +31,7 @@ export function newRun(
     doorSeed,
     prior,
     keepsakesHeld,
+    examined,
     act: 0,
     actOptionalDone: 0,
     memoryLost: false,

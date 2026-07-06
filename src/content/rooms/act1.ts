@@ -1,4 +1,13 @@
-import type { Room } from '../schema';
+import type { Reflection, Room } from '../schema';
+
+/** Examined Path (spec 05) shorthand — a Reflection tuple in the fixed
+ * consequence/duty/virtue/care order (shuffled per-display by the UI). */
+const reflect = (consequence: string, duty: string, virtue: string, care: string): Reflection[] => [
+  { tradition: 'consequence', text: consequence },
+  { tradition: 'duty', text: duty },
+  { tradition: 'virtue', text: virtue },
+  { tradition: 'care', text: care },
+];
 
 export const wallet: Room = {
   id: 'wallet',
@@ -26,6 +35,12 @@ export const wallet: Room = {
             'They do not offer a reward. That, somehow, is the reward — the transaction stayed clean.',
             'Usher: You did the costly thing when the free one was available. I have made a note of it. I make very few.',
           ],
+          reflections: reflect(
+            'One wallet returned changes little; the habit of returning them changes a city.',
+            "It was never yours; the arithmetic of outcomes doesn't enter.",
+            "Ask what the person you're becoming does with found things.",
+            'Someone is retracing their steps tonight; the wallet is heavier for them than for you.',
+          ),
         },
         {
           id: 'mail-it',
@@ -37,6 +52,12 @@ export const wallet: Room = {
             'You will never see the face at the other end. You saved forty minutes and spent the face.',
             'Usher: Correct, and bloodless. A virtue that files itself away so neatly — I have seen a great many of those.',
           ],
+          reflections: reflect(
+            'The money and the wallet arrive intact — the outcome matches walking it over in person.',
+            'The obligation to return it is discharged; duty asks that it happen, not how.',
+            'Notice the character built by convenience rather than by cost.',
+            "A stranger's relief lands the same from an envelope — but you will never see it land.",
+          ),
         },
         {
           id: 'finders-fee',
@@ -48,6 +69,12 @@ export const wallet: Room = {
             'Notice how good the argument is. Notice who hired it, and when — after the hand was already in the wallet.',
             'Usher: The fee. The mind keeps a lawyer on retainer for exactly this moment, and yours argues well.',
           ],
+          reflections: reflect(
+            "A small deduction from a stranger's loss nets positive against your own honestly spent time.",
+            'The wallet, and everything folded inside it, was never yours to price.',
+            'Watch how fluently the justification arrived — after the hand was already moving.',
+            'Their rent is due in full; your convenience fee is not their debt to absorb.',
+          ),
         },
         {
           id: 'keep-it',
@@ -59,6 +86,12 @@ export const wallet: Room = {
             'Somewhere forty minutes from anywhere, a date arrives on schedule.',
             'Usher: For the record: someone was watching. You were. That is not a flaw in the arrangement. It was always the point of it.',
           ],
+          reflections: reflect(
+            'One theft rarely tips a city; the harm concentrates entirely on the one person it was never yours to harm.',
+            "The wallet keeps its owner's name on it whether or not you ever meet them.",
+            'This is the rehearsal Gyges warned about — the self you become when nothing is watching.',
+            'Forty minutes away, a date arrives that this choice just made worse.',
+          ),
         },
       ],
     },
@@ -167,6 +200,12 @@ export const promotion: Room = {
             'They find out it was you at 9:15. The friendship enters a long winter. The promotion arrives with your name on it and feels like it is wearing gloves.',
             'You were fair. You were correct. You will spend a long time explaining to yourself that those are the same thing.',
           ],
+          reflections: reflect(
+            'The error is caught before it costs the company more than one friendship.',
+            'You owed the report the truth its ledger asked for, regardless of who signed the mistake.',
+            'Correctness that costs you nothing personal is easy; this cost you something real.',
+            'Your friend absorbs a public reckoning for a private arithmetic mistake — weigh what the friendship can carry.',
+          ),
         },
         {
           id: 'silent',
@@ -178,6 +217,12 @@ export const promotion: Room = {
             'The audit finds it. Of course it finds it. Your friend is escorted through the process politely, and the job lands on your desk like something a cat brought in.',
             'Usher: Technically, you did nothing at all. Nothing is the one act that leaves no fingerprints — on the outside.',
           ],
+          reflections: reflect(
+            'Nothing changes except who ends up promoted — the audit finds the error regardless.',
+            "Omission is still a choice; the report you didn't write was still owed.",
+            "Notice how easily 'not my problem' financed something you already wanted.",
+            'Your friend faces the audit exactly as unprotected as if you had never seen the error at all.',
+          ),
         },
         {
           id: 'tell-friend',
@@ -189,6 +234,12 @@ export const promotion: Room = {
             'They self-report at 8:40. It goes hard for them, but upright — an error owned is a different species from an error caught.',
             'Neither of you gets the promotion. Something else got promoted instead; you both know it, and never say it out loud, which is how you know it’s real.',
           ],
+          reflections: reflect(
+            'Neither of you gets the job, but the error is caught the way that costs your friend least.',
+            'You gave them what was owed first: the chance to own their own mistake.',
+            'Loyalty here cost you the promotion outright — the costly version of the trait, not the comfortable one.',
+            'Your friend faces the consequence, but accompanied and warned, instead of ambushed.',
+          ),
         },
         {
           id: 'fix-it',
@@ -200,6 +251,12 @@ export const promotion: Room = {
             'Your friend never learns what almost happened to them — which means they never learn, which means the next decimal is already loose somewhere, and now it has a guardian angel with your sleep schedule.',
             'Usher: Kindness, in secret. Or control, in kindness’s coat. I confess I cannot always tell them apart myself, and I have held both positions.',
           ],
+          reflections: reflect(
+            'The mistake never happened; the report ships clean and your friend learns nothing from it.',
+            'The report is now technically honest, but a debt of disclosure to your friend goes unpaid.',
+            "Ask whether this was kindness in secret, or control wearing kindness's coat.",
+            'You protected them from the sting, and also from the chance the sting might have taught them something.',
+          ),
         },
       ],
     },
@@ -237,6 +294,12 @@ export const beggarsMath: Room = {
             'Somewhere far away, the arithmetic continues without you. It always was going to. Arithmetic is patient; the man in the shelter was not going to be here for the argument.',
             'You chose the face. The face is not a fallacy. It might be a foundation.',
           ],
+          reflections: reflect(
+            'One dinner, one night, against the greater number the same money could have reached elsewhere.',
+            "The man in front of you made a direct claim; distance doesn't dissolve a claim already made.",
+            'Ask what kind of person kneels in the rain for someone with nothing to offer back.',
+            'He has a name now, because you asked — proximity turned arithmetic into a person.',
+          ),
         },
         {
           id: 'donate-far',
@@ -248,6 +311,12 @@ export const beggarsMath: Room = {
             'The man watches you go. You will carry his face for a while, and the strange truth is that carrying it is part of the price — you paid in guilt for lives you will never see saved.',
             'Usher: Cold, consistent, and correct by at least one respectable accounting. The man in the shelter does not read that particular journal.',
           ],
+          reflections: reflect(
+            'The same money, verified, saves more suffering per unit spent than the meal in front of you.',
+            'Nothing you owe the man specifically outweighs what the calculation owes the many.',
+            'Notice what it costs to walk past a face for a number — that discomfort may be the harder thing done right.',
+            'You carry his face, unresolved, as the price of choosing the ones you cannot see.',
+          ),
         },
         {
           id: 'split',
@@ -258,6 +327,12 @@ export const beggarsMath: Room = {
             'Half a lunch and half a net. The compromise feels wise for exactly one block, and then feels like what it is: two half-answers holding hands.',
             'And yet — he ate something, and somewhere a child sleeps under half your arithmetic. Perhaps the split was not for them at all. Perhaps it was so you could keep both of your selves on speaking terms.',
           ],
+          reflections: reflect(
+            'Half a solution twice is arguably a worse expected outcome than either option chosen whole.',
+            'Splitting discharges neither claim fully — the near one and the far one both go half-answered.',
+            'Ask whether the compromise served them, or mainly served your need to feel undivided.',
+            'He still ate something tonight — a half-measure is not nothing to the person receiving it.',
+          ),
         },
         {
           id: 'grand-gesture',
@@ -269,6 +344,12 @@ export const beggarsMath: Room = {
             'Notice what the camera changed: the gift now has two recipients, and one of them is your reflection. “Awareness” was raised. So was something else, quietly, in the algorithm and in you.',
             'Usher: (a comment, pinned first) Well done. Though notice: you can no longer quite tell which part of this was for him. Neither, for once, can I.',
           ],
+          reflections: reflect(
+            'The gift and the awareness may do real good — measure whether the video reached new givers.',
+            "A gift owed to a stranger's dignity isn't discharged by being staged for an audience.",
+            'The choice that felt most generous made you, not him, the visible subject of the frame.',
+            'He is asked to perform gratitude for a lens, on top of everything the night already asked of him.',
+          ),
         },
       ],
     },
@@ -306,6 +387,12 @@ export const quietAlarm: Room = {
             '“Everything’s fine,” the face says, in the tone people use for exactly the two occasions: when everything is fine, and when it is not.',
             'You go back to bed knowing one thing for certain: they know the wall has ears now, and a hand. Whatever happens next door tonight happens in front of a witness. Sometimes that is the entire job.',
           ],
+          reflections: reflect(
+            'Whatever is happening next door now happens with a witness at the door — outcomes shift little, if at all.',
+            "A neighbor in possible danger creates a claim on you that a locked door doesn't erase.",
+            'Ask what kind of person puts an unarmed body between a stranger and an unknown risk.',
+            'Presence, even wordless, tells whoever is inside they were not alone in that apartment tonight.',
+          ),
         },
         {
           id: 'call',
@@ -317,6 +404,12 @@ export const quietAlarm: Room = {
             'You watch through the peephole as the machinery you summoned does its work — voices, forms, a check on someone’s wellbeing conducted at the volume of authority. You could not control what you sent. That was the price of sending something stronger than yourself.',
             'In the morning there is an ambulance that leaves slowly and empty, which could mean everything or nothing. You made the call with the information you had. The outcome was never yours; only the dialing was.',
           ],
+          reflections: reflect(
+            'Professional intervention may resolve more, or escalate more, than your own knock — you cannot fully predict which.',
+            'Reporting a possible harm discharges an obligation to safety that inaction does not.',
+            'Sending responsibility onward is not cowardice by default — ask if it was the considered choice, or the easy one.',
+            'You cannot control what you summoned once it arrived — that unpredictability is the price of asking for more force than yours.',
+          ),
         },
         {
           id: 'wait',
@@ -328,6 +421,12 @@ export const quietAlarm: Room = {
             'At some point you wake up against the wall, cold, having stood guard over your own hesitation for two hours. The apartment next door is quiet — the good quiet now, probably. Probably is the word you will keep.',
             'In the morning, you pass one of them at the mailboxes. You look for evidence on their face. Their face is a closed door with a welcome mat. You will never know what your waiting cost, or saved, or was.',
           ],
+          reflections: reflect(
+            'Nothing changes until you decide something has — the outcome is mostly whatever was already happening.',
+            "Vigilance without action discharges no one's claim on you; attention was never the whole obligation.",
+            "Notice how long 'not yet' can substitute for a decision before it quietly becomes one.",
+            'Whoever is behind that wall does not know you are listening, so the listening comforts only you.',
+          ),
         },
         {
           id: 'nothing',
@@ -339,6 +438,12 @@ export const quietAlarm: Room = {
             'The silence holds. In the morning the corridor smells like toast, banal and absolving.',
             'Usher: (from the radiator) Statistically, you were probably right. Notice, though, which statistic you chose to be governed by. There were at least two on offer, and you picked the one already lying in bed.',
           ],
+          reflections: reflect(
+            'The silence holds either way; your five reasons changed nothing about what happened behind that wall.',
+            'A closed door is a real boundary, but a possible cry for help is a real claim — the two do not simply cancel.',
+            'Count how many reasons it took to go back to sleep — that number is itself information.',
+            'If something was wrong, no one behind that wall was thought of as belonging to you tonight.',
+          ),
         },
       ],
     },
@@ -498,6 +603,12 @@ export const theReference: Room = {
             'They do not get the job. They never learn precisely why, though friendships have a way of noticing weather even without a forecast.',
             'Usher: You told the truth to a stranger and let a friend absorb the cost of it. That is not nothing. It is also not free.',
           ],
+          reflections: reflect(
+            'The stranger reading it gets an accurate signal; your friend loses a chance the letter could have opened.',
+            "A reference is a promise to the stranger relying on it — that promise outranks the friendship's comfort.",
+            'Fairness that costs you nothing personal is easy; this cost you a friend an opportunity.',
+            'Your friend absorbs the letter\'s honesty without ever getting to answer for themselves.',
+          ),
         },
         {
           id: 'write-kind',
@@ -509,6 +620,12 @@ export const theReference: Room = {
             'They get an interview. What happens after that interview is no longer your sentence to write — though you notice you are hoping, hard, that the job grows to fit the letter, rather than the other way around.',
             'Usher: Kindness, forward-dated. You have written a check against their future performance. I confess I have written a few myself.',
           ],
+          reflections: reflect(
+            'The interview happens; what follows is no longer the letter\'s outcome to own.',
+            "Inflating a promise made to a stranger spends their trust on your friend's behalf.",
+            'Ask what it costs your own credibility to round every corner up, repeatedly, for people you love.',
+            "You're hoping the job grows to fit the letter — a kindness that quietly transfers the risk onto your friend.",
+          ),
         },
         {
           id: 'decline',
@@ -520,6 +637,12 @@ export const theReference: Room = {
             'Silence is not neutral. It is information, and they will read it as exactly what it is — the one reference you could not bring yourself to give.',
             'Usher: You told the truth by omission, which is the cheapest way to tell it. They will still hear it. Silence rarely stays private for long.',
           ],
+          reflections: reflect(
+            'Silence reads as exactly what it is — the reference withheld — resembling the honest letter minus the specifics.',
+            "Declining discharges your duty to the stranger, but not your duty to a friend owed an honest word.",
+            'Withholding is the cheapest way to tell a hard truth — ask whether cheap is the same as kind.',
+            "Your friend will feel the silence; it rarely stays as private as it seemed when you handed back the pen.",
+          ),
         },
       ],
     },

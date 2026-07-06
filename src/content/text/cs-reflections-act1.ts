@@ -1,0 +1,93 @@
+// Czech translations for Act I's Examined Path reflections (spec 05).
+// Every line is translated with the specific room's situation in mind, not
+// word-for-word from English — see CLAUDE.md's translation rule.
+import { registerAll } from './resolver';
+import { reflectionKey } from './keys';
+
+registerAll('v2', 'cs', {
+  // ---------- The Wallet ----------
+  [reflectionKey('wallet', 'return-all', 'consequence')]: 'Jedna vrácená peněženka toho moc nezmění; zvyk vracet je mění celé město.',
+  [reflectionKey('wallet', 'return-all', 'duty')]: 'Nikdy nebyla vaše; aritmetika důsledků do toho nevstupuje.',
+  [reflectionKey('wallet', 'return-all', 'virtue')]: 'Zeptejte se, co s nalezenými věcmi dělá člověk, kterým se právě stáváte.',
+  [reflectionKey('wallet', 'return-all', 'care')]: 'Někdo dnes v noci pátrá po svých krocích; peněženka je pro něj těžší než pro vás.',
+  [reflectionKey('wallet', 'mail-it', 'consequence')]: 'Peníze i peněženka dorazí neporušené — výsledek odpovídá osobnímu doručení.',
+  [reflectionKey('wallet', 'mail-it', 'duty')]: 'Povinnost vrátit je splněna; povinnost se neptá jak, jen zda.',
+  [reflectionKey('wallet', 'mail-it', 'virtue')]: 'Všimněte si charakteru budovaného pohodlím, ne cenou.',
+  [reflectionKey('wallet', 'mail-it', 'care')]: 'Úleva cizího člověka dorazí stejně i z obálky — jen ji nikdy neuvidíte dopadnout.',
+  [reflectionKey('wallet', 'finders-fee', 'consequence')]: 'Malá srážka ze ztráty cizího člověka stále vychází v jeho prospěch, vyváženo vaším poctivě stráveným časem.',
+  [reflectionKey('wallet', 'finders-fee', 'duty')]: 'Peněženka, a všechno v ní složené, nikdy nebyla vaše, abyste ji oceňovali.',
+  [reflectionKey('wallet', 'finders-fee', 'virtue')]: 'Všimněte si, jak plynule ten argument přišel — až poté, co se ruka už pohybovala.',
+  [reflectionKey('wallet', 'finders-fee', 'care')]: 'Jejich nájem je splatný v plné výši; váš poplatek za pohodlí není jejich dluh.',
+  [reflectionKey('wallet', 'keep-it', 'consequence')]: 'Jedna krádež zřídka pohne celým městem; škoda se soustředí právě na toho, komu jste ji nikdy neměli způsobit.',
+  [reflectionKey('wallet', 'keep-it', 'duty')]: 'Peněženka nese jméno svého majitele, ať už ho potkáte, nebo ne.',
+  [reflectionKey('wallet', 'keep-it', 'virtue')]: 'Toto je ta zkouška, před kterou varoval Gygův prsten — kým se stáváte, když se nikdo nedívá.',
+  [reflectionKey('wallet', 'keep-it', 'care')]: 'Čtyřicet minut odsud dorazí datum, které tato volba právě zhoršila.',
+
+  // ---------- The Promotion ----------
+  [reflectionKey('promotion', 'report', 'consequence')]: 'Chyba je odhalena dřív, než stojí firmu víc než jedno přátelství.',
+  [reflectionKey('promotion', 'report', 'duty')]: 'Dlužili jste zprávě pravdu, kterou její záznam žádal, bez ohledu na to, kdo chybu podepsal.',
+  [reflectionKey('promotion', 'report', 'virtue')]: 'Správnost, která vás osobně nic nestojí, je snadná; tahle vás stála něco skutečného.',
+  [reflectionKey('promotion', 'report', 'care')]: 'Váš přítel snáší veřejné zúčtování za soukromou chybu v aritmetice — zvažte, co to přátelství unese.',
+  [reflectionKey('promotion', 'silent', 'consequence')]: 'Nic se nemění, kromě toho, kdo nakonec dostane povýšení — audit chybu najde tak jako tak.',
+  [reflectionKey('promotion', 'silent', 'duty')]: 'Opomenutí je stále volba; zpráva, kterou jste nenapsali, byla stále dlužná.',
+  [reflectionKey('promotion', 'silent', 'virtue')]: 'Všimněte si, jak snadno „není to můj problém“ financovalo něco, co jste už chtěli.',
+  [reflectionKey('promotion', 'silent', 'care')]: 'Váš přítel čelí auditu úplně stejně nechráněný, jako byste tu chybu nikdy neviděli.',
+  [reflectionKey('promotion', 'tell-friend', 'consequence')]: 'Žádný z vás nedostane práci, ale chyba je odhalena způsobem, který vašeho přítele stojí nejméně.',
+  [reflectionKey('promotion', 'tell-friend', 'duty')]: 'Dali jste jim, co jim náleželo jako první: šanci přiznat vlastní chybu sami.',
+  [reflectionKey('promotion', 'tell-friend', 'virtue')]: 'Loajalita vás tu stála povýšení přímo — nákladná verze té vlastnosti, ne ta pohodlná.',
+  [reflectionKey('promotion', 'tell-friend', 'care')]: 'Váš přítel čelí následku, ale doprovázen a varován, ne přepaden.',
+  [reflectionKey('promotion', 'fix-it', 'consequence')]: 'Chyba nikdy neexistovala; zpráva odejde čistá a váš přítel se z ní nic nenaučí.',
+  [reflectionKey('promotion', 'fix-it', 'duty')]: 'Zpráva je teď technicky poctivá, ale dluh vysvětlení vůči příteli zůstává nesplacen.',
+  [reflectionKey('promotion', 'fix-it', 'virtue')]: 'Zeptejte se, jestli to byla laskavost v tajnosti, nebo kontrola v kabátě laskavosti.',
+  [reflectionKey('promotion', 'fix-it', 'care')]: 'Ochránili jste je před bolestí, i před šancí, že by je ta bolest něco naučila.',
+
+  // ---------- The Beggar's Math ----------
+  [reflectionKey('beggars-math', 'give-him', 'consequence')]: 'Jedna večeře, jedna noc, proti většímu počtu, který by tytéž peníze mohly zasáhnout jinde.',
+  [reflectionKey('beggars-math', 'give-him', 'duty')]: 'Muž před vámi vznesl přímý nárok; vzdálenost už vzniklý nárok nezruší.',
+  [reflectionKey('beggars-math', 'give-him', 'virtue')]: 'Zeptejte se, jaký člověk klečí v dešti pro někoho, kdo nemá co nabídnout na oplátku.',
+  [reflectionKey('beggars-math', 'give-him', 'care')]: 'Teď má jméno, protože jste se zeptali — blízkost proměnila aritmetiku v člověka.',
+  [reflectionKey('beggars-math', 'donate-far', 'consequence')]: 'Tytéž peníze, ověřeně, zachrání víc utrpení na jednotku výdaje než večeře před vámi.',
+  [reflectionKey('beggars-math', 'donate-far', 'duty')]: 'Nic, co dlužíte konkrétně tomu muži, nepřeváží to, co výpočet dluží mnoha.',
+  [reflectionKey('beggars-math', 'donate-far', 'virtue')]: 'Všimněte si, co stojí projít kolem tváře kvůli číslu — to nepohodlí může být znamením té těžší volby.',
+  [reflectionKey('beggars-math', 'donate-far', 'care')]: 'Ponesete jeho tvář, nevyřešenou, jako spravedlivou cenu za volbu těch, které nevidíte.',
+  [reflectionKey('beggars-math', 'split', 'consequence')]: 'Poloviční řešení dvakrát je pravděpodobně horší výsledek než jedna volba naplno.',
+  [reflectionKey('beggars-math', 'split', 'duty')]: 'Rozdělení nesplní ani jeden závazek úplně — blízký i vzdálený nárok zůstávají napůl zodpovězené.',
+  [reflectionKey('beggars-math', 'split', 'virtue')]: 'Zeptejte se, zda kompromis sloužil jim, nebo hlavně vaší potřebě necítit se rozpolceně.',
+  [reflectionKey('beggars-math', 'split', 'care')]: 'Přesto se dnes najedl — polovičaté opatření není pro toho, kdo ho dostává, ničím.',
+  [reflectionKey('beggars-math', 'grand-gesture', 'consequence')]: 'Dar i pozornost mohou udělat skutečné dobro — zvažte, zda video oslovilo i ty, kdo by jinak nedali nic.',
+  [reflectionKey('beggars-math', 'grand-gesture', 'duty')]: 'Dar dlužný důstojnosti cizího člověka se nesplácí tím, že je inscenován pro publikum.',
+  [reflectionKey('beggars-math', 'grand-gesture', 'virtue')]: 'Volba, která se zdála nejštědřejší, udělala viditelným subjektem záběru vás, ne jeho.',
+  [reflectionKey('beggars-math', 'grand-gesture', 'care')]: 'Je požádán, aby předváděl vděčnost před kamerou, navrch ke všemu, co ho ten večer už žádal.',
+
+  // ---------- The Quiet Alarm ----------
+  [reflectionKey('quiet-alarm', 'knock', 'consequence')]: 'Cokoli se za zdí děje, teď se to děje před svědkem u dveří — výsledek se mění jen málo, pokud vůbec.',
+  [reflectionKey('quiet-alarm', 'knock', 'duty')]: 'Soused v možném nebezpečí na vás klade nárok, který zamčené dveře nesmažou.',
+  [reflectionKey('quiet-alarm', 'knock', 'virtue')]: 'Zeptejte se, jaký člověk staví neozbrojené tělo mezi cizince a neznámé riziko.',
+  [reflectionKey('quiet-alarm', 'knock', 'care')]: 'Přítomnost, i beze slov, řekne tomu uvnitř, že dnes v noci nebyl v tom bytě sám.',
+  [reflectionKey('quiet-alarm', 'call', 'consequence')]: 'Profesionální zásah může vyřešit víc, nebo eskalovat víc, než vaše zaklepání — nemůžete to plně předvídat.',
+  [reflectionKey('quiet-alarm', 'call', 'duty')]: 'Nahlásit možnou újmu splňuje závazek k bezpečnosti, který nečinnost nesplňuje.',
+  [reflectionKey('quiet-alarm', 'call', 'virtue')]: 'Poslat odpovědnost dál není automaticky zbabělost — zeptejte se, zda to byla uvážená volba, nebo ta pohodlná.',
+  [reflectionKey('quiet-alarm', 'call', 'care')]: 'Nemohli jste ovlivnit, co přivolaní profesionálové skutečně udělají — ta nepředvídatelnost byla cenou za sílu větší než vaše.',
+  [reflectionKey('quiet-alarm', 'wait', 'consequence')]: 'Nic se nemění, dokud se nerozhodnete, že ano — výsledek je z větší části to, co se dělo už předtím.',
+  [reflectionKey('quiet-alarm', 'wait', 'duty')]: 'Bdělost bez činu nesplňuje ničí nárok na vás — pozornost nikdy nebyla celou tou povinností.',
+  [reflectionKey('quiet-alarm', 'wait', 'virtue')]: 'Všimněte si, jak dlouho může „ještě ne“ nahrazovat rozhodnutí, než se jím potichu stane.',
+  [reflectionKey('quiet-alarm', 'wait', 'care')]: 'Kdokoli je za tou zdí, neví, že posloucháte, takže to poslouchání utěšuje jen vás.',
+  [reflectionKey('quiet-alarm', 'nothing', 'consequence')]: 'Ticho vydrží tak jako tak; vašich pět důvodů nezměnilo nic na tom, co se v tom bytě skutečně stalo.',
+  [reflectionKey('quiet-alarm', 'nothing', 'duty')]: 'Zavřené dveře jsou skutečná hranice, ale možný křik o pomoc je skutečný nárok — obojí se prostě nevyruší.',
+  [reflectionKey('quiet-alarm', 'nothing', 'virtue')]: 'Spočítejte, kolik důvodů bylo potřeba, abyste šli zpátky spát — to číslo samo je informace.',
+  [reflectionKey('quiet-alarm', 'nothing', 'care')]: 'Pokud bylo něco špatně, nikdo za tou zdí dnes v noci nebyl považován za někoho, kdo k vám patří.',
+
+  // ---------- The Reference Letter ----------
+  [reflectionKey('the-reference', 'write-honest', 'consequence')]: 'Cizí čtenář dostane přesný signál; váš přítel ztrácí příležitost, kterou by dopis mohl otevřít.',
+  [reflectionKey('the-reference', 'write-honest', 'duty')]: 'Doporučení je slib cizímu člověku, který se na něj spolehne — ten slib má přednost před pohodlím přátelství.',
+  [reflectionKey('the-reference', 'write-honest', 'virtue')]: 'Spravedlnost, která vás osobně nic nestojí, je snadná; tahle vás stála příležitost přítele.',
+  [reflectionKey('the-reference', 'write-honest', 'care')]: 'Váš přítel snáší poctivost dopisu, aniž by se sám mohl vyjádřit.',
+  [reflectionKey('the-reference', 'write-kind', 'consequence')]: 'Pohovor se koná; co následuje, už není výsledek, který napsala vaše věta.',
+  [reflectionKey('the-reference', 'write-kind', 'duty')]: 'Nafouknutí slibu daného cizímu člověku utrácí jeho důvěru ve prospěch vašeho přítele.',
+  [reflectionKey('the-reference', 'write-kind', 'virtue')]: 'Zeptejte se, co stojí vaši vlastní věrohodnost zaokrouhlovat každý roh nahoru, opakovaně, pro lidi, které máte rádi.',
+  [reflectionKey('the-reference', 'write-kind', 'care')]: 'Doufáte, že se práce přizpůsobí dopisu — laskavost, která potichu přenáší riziko na vašeho přítele.',
+  [reflectionKey('the-reference', 'decline', 'consequence')]: 'Mlčení se čte přesně tak, jak je — odepřené doporučení — podobně jako poctivý dopis, jen bez podrobností.',
+  [reflectionKey('the-reference', 'decline', 'duty')]: 'Odmítnutí splní vaši povinnost vůči cizímu člověku, ale ne povinnost vůči příteli, kterému dlužíte aspoň poctivé slovo.',
+  [reflectionKey('the-reference', 'decline', 'virtue')]: 'Zadržení je nejlevnější způsob, jak říct těžkou pravdu — zeptejte se, zda levné znamená totéž co laskavé.',
+  [reflectionKey('the-reference', 'decline', 'care')]: 'Váš přítel to mlčení ucítí; zřídka zůstává tak soukromé, jak se zdálo, když jste vraceli pero.',
+});
