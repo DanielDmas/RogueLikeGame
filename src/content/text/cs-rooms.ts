@@ -193,6 +193,60 @@ registerAll('v2', 'cs', {
   [roomNoteBodyKey('quiet-alarm')]: 'Poté, co byla Kitty Genovese napadena v doslechu desítek lidí, psychologové Darley a Latané objevili efekt přihlížejícího: čím víc svědků, tím méně pravděpodobné, že kterýkoli z nich zasáhne — odpovědnost se rozptýlí, dokud nepatří nikomu. Zeď ve dvě ráno je jednočlenný experiment ze stejné fyziky: je tohle moje? Pak Williams a Nagel přidávají tvrdší zvrat — morální štěstí. Ať jste dnes zvolili cokoli, jeho morální zbarvení bude přiřazeno zpětně výsledkem, který jste nemohli vidět: totéž zaklepání je „hrdinské“, pokud bylo něco v nepořádku, a „hysterické“, pokud ne; totéž spaní je „rozumné“ nebo „neomluvitelné“ do rána. Soudíme volby, jako by byly učiněny s připojenou budoucností, přitom jsou učiněny ve tmě, vedle zdi. **Jediná část, která kdy byla plně vaše, byla otázka, kterou jste si položili před volbou: čí pohodlí to vlastně chráním — jejich, nebo své?**',
 });
 
+// ---------- Act I: The Buridan Annex ----------
+registerAll('v2', 'cs', {
+  [roomBeatKey('buridans-queue', 0, 0)]: 'Přístavek, o kterém nevíte, že chodba vůbec vyrostla. Stojí před vámi dvoje dveře, vyřezané ze stejného dřeva, zavěšené stejnou rukou, osvětlené stejnou žárovkou.',
+  [roomBeatKey('buridans-queue', 0, 1)]: 'Mosazná cedulka je přišroubovaná do zdi přesně mezi nimi: OBOJÍ VEDOU DÁL. ŽÁDNÉ NEJSOU ŠPATNÉ. Někdo tu cedulku leští podstatně víc než ty dveře.',
+  [roomBeatKey('buridans-queue', 0, 2)]: 'Nic je neodlišuje. Kontrolujete to dvakrát. Ta druhá kontrola je ten typ, který děláte jen tehdy, když už znáte odpověď a jen si vymýšlíte čas pro lepší.',
+  [roomBeatKey('buridans-queue', 0, 3)]: 'Nad hlavou tikají jediné funkční hodiny v celé chodbě — s ručičkami, na rozdíl od kteréhokoli jiného místa tady — a to tikání zní skoro jako komentář.',
+  [roomBeatKey('buridans-queue', 0, 4)]: 'Uvaděč: Nespěchejte. Myslím to trochu nelaskavě. Většina poutníků stejně nespěchá.',
+  [roomChoiceTextKey('buridans-queue', 'take-left')]: 'Přestaňte váhat. Vyberte levé dveře a jděte.',
+  [roomChoiceHintKey('buridans-queue', 'take-left')]: 'Ať je vaše vlastní ruka mincí, kterou hodíte.',
+  [roomChoiceOutcomeKey('buridans-queue', 'take-left', 0)]: 'Přestanete uprostřed myšlenky počítat a prostě jdete — vlevo, protože levá strana byla blíž vaší ruce, což se ukazuje jako naprosto dostatečný důvod k ukončení nekonečného regresu.',
+  [roomChoiceOutcomeKey('buridans-queue', 'take-left', 1)]: 'Dveře se za vámi zavřou rozumně, bez události, tak jak to dveře dělají, když na tom, které jste zvolili, ve skutečnosti vůbec nezáleželo.',
+  [roomChoiceOutcomeKey('buridans-queue', 'take-left', 2)]: 'Uvaděč: Vyměnil jste jistotu za rychlost. Málokdy jsem potkal poutníka, který by tuhle konkrétní výměnu litoval tolik, kolik se jí předem obával.',
+  [roomChoiceTextKey('buridans-queue', 'weigh-it')]: 'Nejdřív to promyslete — musí v tom být nějaký rozdíl.',
+  [roomChoiceHintKey('buridans-queue', 'weigh-it')]: 'Najděte to znamení, než se zavážete.',
+  [roomChoiceOutcomeKey('buridans-queue', 'weigh-it', 0)]: 'Obcházíte obojí dveře, zkoušíte panty, kresbu dřeva, úhel světla — a někde ve třetím kole si všimnete, že jste přestali sbírat důkazy. Jen si zdržujete čas dalšími kroky.',
+  [roomChoiceOutcomeKey('buridans-queue', 'weigh-it', 1)]: 'Nakonec si stejně jedny vyberete a okamžitě, bez vyzvání, si vyprodukujete tři dobré důvody, proč jste je zvolili. Všechny tři přišly až poté, co vaše ruka už byla na klice.',
+  [roomChoiceOutcomeKey('buridans-queue', 'weigh-it', 2)]: 'Uvaděč: To uvažování bylo skutečné. Prostě nebylo první. Všimněte si, jak zřídka bývá.',
+  [roomChoiceTextKey('buridans-queue', 'sit-down')]: 'Sedněte si mezi ty dveře a čekejte.',
+  [roomChoiceHintKey('buridans-queue', 'sit-down')]: 'Ať se rozhodne místnost, pokud chce.',
+  [roomChoiceOutcomeKey('buridans-queue', 'sit-down', 0)]: 'Sednete si na studenou podlahu mezi dvoje identické dveře a uděláte tu nejstatečnější nudnou věc, která je k dispozici: nic, zcela úmyslně.',
+  [roomChoiceOutcomeKey('buridans-queue', 'sit-down', 1)]: 'Po chvíli — přestanete počítat, jak dlouhé to bylo — projde skrz ty levé dveře průvan a ony se pootevřou o pár centimetrů, jako by to, co za nimi čekalo, bylo prostě trpělivé ohledně toho pantu.',
+  [roomChoiceOutcomeKey('buridans-queue', 'sit-down', 2)]: 'Uvaděč: Nezvolil jste. Nakonec zvolila místnost za vás, tak jak to místnosti dělají, když to neudělá nikdo jiný. Všimněte si, že odmítnutí volby vás nezbavilo výsledku — jen přeneslo účet za čekání na někoho jiného. Dnes večer na mě.',
+  [roomNoteTitleKey('buridans-queue')]: 'Osel mezi dvěma otepmi sena',
+  [roomNoteThinkersKey('buridans-queue')]: 'Jean Buridan · Jean-Paul Sartre, radikální svoboda',
+  [roomNoteBodyKey('buridans-queue')]: 'Středověcí logikové popisovali hladového osla umístěného přesně mezi dva identické otepy sena: bez důvodu upřednostnit jeden nebo druhý umírá hladem přesně v bodě dokonalé racionality — samotný rozum, naznačuje paradox, nedokáže jednání vyvolat, jen seřadit alternativy, které se už nějak liší. Sartre přenesl stejný problém do etiky: jsme, napsal, odsouzeni ke svobodě, a odmítnutí volby je samo o sobě volbou, učiněnou ve špatné víře ve chvíli, kdy předstíráme opak. Tyto dvoje dveře jsou upřímné ohledně toho, co většina rozhodnutí maskuje — že pod důvody, které uvádíme, se musí odehrát libovolný první pohyb, výdej vůle tam, kde logice už nezbývá co utrácet. **Dveře nikdy nebyly tou těžkou částí. Byl jí ten okamžik, než se pohnula vaše ruka.** Všimněte si také, jak rychle se dostavily důvody, jakmile jste se už rozhodli: mysl vede vynikající obhajobu pro verdikty, ke kterým ve skutečnosti nijak nepřispěla.',
+});
+
+// ---------- Act I: The Reference Letter ----------
+registerAll('v2', 'cs', {
+  [roomBeatKey('the-reference', 0, 0)]: 'Stolní lampa, prázdná řádka čekající na podpis, a žádost o zaměstnání se jménem vašeho přítele úhledně napsaným v záhlaví.',
+  [roomBeatKey('the-reference', 0, 1)]: 'Znáte se deset let. Je laskavý způsobem, který ho nic nestojí, věrný způsobem, který ho stál hodně — a potichu, tak jak staří přátelé vědí věci, aniž by je vyslovili, na tuhle konkrétní práci se moc nehodí.',
+  [roomBeatKey('the-reference', 0, 2)]: 'Ta pozice chce někoho precizního. On je báječný. Ta dvě fakta sedí na stránce nepříjemně blízko sebe.',
+  [roomBeatKey('the-reference', 0, 3)]: 'Doporučení je potřeba do rána. Ve skutečnosti stačí jedna věta. Právě to to ztěžuje — jedna věta je přesně dost prostoru na to, abyste v ní mohli lhát, nebo v ní zranit, nebo se v ní schovat.',
+  [roomBeatKey('the-reference', 0, 4)]: 'Uvaděč: Bylo mi řečeno, že dobrá doporučení jsou běžnou zdvořilostí. Přečetl jsem jich dost na to, abych měl podezření, že slovo „běžnou“ v té větě odvádí většinu práce.',
+  [roomChoiceTextKey('the-reference', 'write-honest')]: 'Napište upřímné doporučení — vyvážené, spravedlivé, a ne zářivé.',
+  [roomChoiceHintKey('the-reference', 'write-honest')]: 'Ať pravda stojí, co stojí.',
+  [roomChoiceOutcomeKey('the-reference', 'write-honest', 0)]: 'Píšete pečlivě, uznání dáváte přesně tam, kde si ho zaslouží, a ani o kousek dál, a výsledný dopis je spravedlivý tak, jak je spravedlivá váha — přesný, a bez útěchy.',
+  [roomChoiceOutcomeKey('the-reference', 'write-honest', 1)]: 'Tu práci nezíská. Nikdy se přesně nedozví proč, ačkoli přátelství mají svůj způsob, jak si všimnout počasí i bez předpovědi.',
+  [roomChoiceOutcomeKey('the-reference', 'write-honest', 2)]: 'Uvaděč: Řekl jste pravdu cizímu člověku a nechal jste přítele vstřebat její cenu. To není nic málo. Ale ani to není zadarmo.',
+  [roomChoiceTextKey('the-reference', 'write-kind')]: 'Napište tu velkorysou verzi — dost pravdivou, teplejší, než si zaslouží.',
+  [roomChoiceHintKey('the-reference', 'write-kind')]: 'Zaokrouhlete každý roh nahoru.',
+  [roomChoiceOutcomeKey('the-reference', 'write-kind', 0)]: 'Sáháte po superlativech, které jsou technicky obhajitelné, a skládáte je na sebe, dokud dopis nezáří o něco jasněji než osoba, kterou popisuje.',
+  [roomChoiceOutcomeKey('the-reference', 'write-kind', 1)]: 'Dostane pohovor. Co se stane po tom pohovoru, už není věta, kterou píšete vy — ačkoli si všimnete, že vší silou doufáte, že se ta práce nakonec přizpůsobí dopisu, a ne naopak.',
+  [roomChoiceOutcomeKey('the-reference', 'write-kind', 2)]: 'Uvaděč: Laskavost s pozdějším datem splatnosti. Vypsal jste šek na jeho budoucí výkon. Přiznávám, že pár takových jsem vypsal sám.',
+  [roomChoiceTextKey('the-reference', 'decline')]: 'Řekněte, že to nedokážete napsat — vraťte pero.',
+  [roomChoiceHintKey('the-reference', 'decline')]: 'Raději nic neřeknout, než pravdu zabarvit.',
+  [roomChoiceOutcomeKey('the-reference', 'decline', 0)]: 'Vrátíte formulář nepodepsaný, s vysvětlením, které zní lépe ve vaší hlavě, než bude znít v jeho.',
+  [roomChoiceOutcomeKey('the-reference', 'decline', 1)]: 'Ticho není neutrální. Je to informace, a on ji přečte přesně tak, jak je — jako to jediné doporučení, ke kterému jste se nedokázal přinutit.',
+  [roomChoiceOutcomeKey('the-reference', 'decline', 2)]: 'Uvaděč: Řekl jste pravdu vynecháním, což je nejlevnější způsob, jak ji říct. Stejně ji uslyší. Ticho zůstává soukromé jen zřídka a nikdy nadlouho.',
+  [roomNoteTitleKey('the-reference')]: 'Laskavá lež, notářsky ověřená',
+  [roomNoteThinkersKey('the-reference')]: 'Immanuel Kant · Bernard Williams, etika svědectví',
+  [roomNoteBodyKey('the-reference')]: 'Kant tvrdil, že pravdomluvnost je povinností vůči lidství jako takovému, nekalibrovanou podle toho, kdo se ptá nebo co unese: doporučení je slib, mlčky daný cizímu člověku, který se na něj spolehne, a jeho přikrášlení zachází s tím cizím člověkem jako s prostředkem k cíli vašeho přítele. Bernard Williams tu úhlednost komplikuje — doporučení je také žánr, napůl rituál, čtený lidmi znalými jeho obvyklého přikrášlení, odečítaného ještě dřív, než odstavec skončí. Kterou konvencí jste tedy skutečně vázán: tou přísnou, nebo tou, na jejímž mírném ohýbání se všichni potichu shodli? Všimněte si, co dopis skutečně riskuje: ne vaši integritu v abstraktní rovině, ale skutečnou důvěru cizího člověka, vydanou jménem vašeho přítele bez jeho vědomí či souhlasu. **Věrnost, která něco stojí třetí stranu, není věrnost — je to přesun.** Ať jste podepsal cokoli, pravděpodobně ucítíte jeho váhu v den, kdy doporučení prověří obyčejné těžké úterý v té práci — a stejně tak, méně spravedlivě, i on.',
+});
+
 // ---------- Act I: The Photograph ----------
 registerAll('v2', 'cs', {
   [roomBeatKey('photograph', 0, 0)]: 'Chodba hoří. Ne metaforicky — i když asi taky metaforicky. Tohle místo zřídkakdy vydá požár jen na jeden význam.',

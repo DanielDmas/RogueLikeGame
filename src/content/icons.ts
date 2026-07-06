@@ -46,6 +46,17 @@ export const roomIcons: Record<string, string> = {
     <path d="M16 42 l7 -8 6 5 9 -11 8 9" opacity="0.6"/>
     <path d="M44 46 q6 -4 4 -12 q8 4 4 14 q-4 6 -8 -2 Z"/>
   `),
+  'buridans-queue': svg(`
+    <rect x="14" y="20" width="14" height="34" rx="1"/>
+    <rect x="36" y="20" width="14" height="34" rx="1"/>
+    <circle cx="32" cy="12" r="6"/>
+    <path d="M32 12 v-3 M32 12 l3 2"/>
+  `),
+  'the-reference': svg(`
+    <rect x="10" y="18" width="44" height="30" rx="2"/>
+    <path d="M10 20 L32 38 L54 20"/>
+    <path d="M20 50 L46 24" opacity="0.7"/>
+  `),
 
   // Act II — The Machinery
   junction: svg(`

@@ -3,7 +3,10 @@ import type { Axis, Effects, RunState } from '../content/schema';
 export const MAX_HEARTS = 3;
 export const LUCIDITY_FLOOR = 5;
 
-export function newRun(): RunState {
+/** `doorSeed` defaults to a fresh random value per run — pass one explicitly for
+ * deterministic tests. It salts door-offer shuffling (see storyEngine.ts) so two
+ * runs see different door orders even from an identical, empty visited history. */
+export function newRun(doorSeed: number = Math.floor(Math.random() * 2 ** 31)): RunState {
   return {
     hearts: MAX_HEARTS,
     lucidity: 0,
@@ -13,6 +16,7 @@ export function newRun(): RunState {
     transcript: [],
     currentRoom: null,
     currentStage: 0,
+    doorSeed,
     act: 0,
     actOptionalDone: 0,
     memoryLost: false,

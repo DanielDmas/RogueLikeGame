@@ -57,9 +57,13 @@ function doorsForAct(state: RunState, act: 1 | 2 | 3, registry: RoomRegistry): R
     return [registry.get(GATES[act])];
   }
 
-  // Salted by the actual path taken so far: deterministic across a reload,
-  // but different journeys see different doors (keeps all rooms reachable).
-  const salt = hashKey(state.visited.join('|'), act);
+  // Salted by the path taken so far AND the run's own doorSeed: deterministic
+  // across a reload, but different runs see different doors from the very
+  // first offer of an act (visited history alone is identical for every fresh
+  // run at that point, which — without doorSeed — could leave some pool
+  // members structurally unreachable for every player once a pool grows
+  // beyond a small size; doorSeed keeps the whole pool reachable across runs).
+  const salt = hashKey(`${state.visited.join('|')}#${state.doorSeed ?? 0}`, act);
   const picked = [...open]
     .sort((a, b) => hashKey(a.id, salt) - hashKey(b.id, salt))
     .slice(0, 2);

@@ -243,14 +243,23 @@ Continuity nit: the Punchline ending says "twenty rooms"; a run is 15.
 
 ## Phase K — New rooms (spec `01-new-rooms.md`)
 
-- [ ] K1. Act I +2: `buridans-queue`, `the-reference`
+- [x] K1. Act I +2: `buridans-queue`, `the-reference` — full content, EN+CS+FA,
+      icons, pool-wired. **Uncovered and fixed a real engine bug along the
+      way**: `doorsForAct`'s door-offer hash was salted only by `visited`
+      history, which is identical for every fresh run's first offer in an
+      act — growing a pool could leave a member (here, `dinner-table`)
+      structurally unreachable for every player, not just unlucky test
+      seeds. Fixed by adding `RunState.doorSeed` (a per-run random salt,
+      migration-safe) folded into the hash; added a generic reachability
+      regression test (`newRooms.test.ts`) covering all three acts' pools so
+      this class of bug is caught immediately as K2/K3 grow them further.
 - [ ] K2. Act II +3: `chinese-room`, `newcomb-annex`, `veil-of-ignorance`
 - [ ] K3. Act III +3: `marys-room`, `butterfly-dream`, `swampman`
 - [ ] K4. Secret room `the-cave` (Plato; replays your previous run as shadows;
       returning travelers only)
-- [ ] K5. Every room complete (beats/choices/notes/icons/moods) in EN+CS+FA,
-      same commit
-- [ ] K6. Pool wiring + graph-test invariants updated
+- [x] K5. Rooms shipped so far are complete (beats/choices/notes/icons/moods)
+      in EN+CS+FA, same commit — coverage tests auto-extended and pass.
+- [x] K6. Pool wiring + graph-test invariants updated for rooms shipped so far.
 
 ## Phase L — Act V: The Understory (spec `02-act-five-the-understory.md`)
 

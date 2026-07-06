@@ -25,6 +25,11 @@ export interface RunState {
   currentRoom: string | null;
   /** stage index within currentRoom to resume at; undefined on saves from before this field existed (treat as 0) */
   currentStage?: number;
+  /** Per-run salt for door-offer shuffling (storyEngine.ts) — without it, every fresh
+   * run's very first offer in a given act would be identical (visited history alone
+   * is the same for everyone at that point), which can leave pool members structurally
+   * unreachable once a pool grows. Undefined on saves from before this field existed (treat as 0). */
+  doorSeed?: number;
   act: ActId;
   /** optional (non-gate) rooms completed in the current act */
   actOptionalDone: number;

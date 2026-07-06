@@ -4,7 +4,7 @@ import { actNameKey } from './text/keys';
 
 /** Optional-room pools per act; the player completes OPTIONAL_PER_ACT of them, then the gate. */
 export const ACT_POOLS: Record<Exclude<ActId, 0 | 4>, string[]> = {
-  1: ['wallet', 'dinner-table', 'promotion', 'beggars-math', 'quiet-alarm'],
+  1: ['wallet', 'dinner-table', 'promotion', 'beggars-math', 'quiet-alarm', 'buridans-queue', 'the-reference'],
   2: ['junction', 'experience-machine', 'ship', 'casino-pascal', 'omelas'],
   3: ['teleporter', 'editor', 'introduction', 'debt-of-dead'],
 };

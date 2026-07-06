@@ -411,4 +411,124 @@ export const photograph: Room = {
   },
 };
 
-export const act1Rooms = [wallet, dinnerTable, promotion, beggarsMath, quietAlarm, photograph];
+export const buridansQueue: Room = {
+  id: 'buridans-queue',
+  act: 1,
+  title: 'The Buridan Annex',
+  type: 'NO-SOLUTION',
+  doorHint: 'The door of the two doors',
+  teaser: 'A choice that is only hard because nothing makes it easy.',
+  stages: [
+    {
+      beats: [
+        'An annex you don’t remember the corridor growing. Two doors face you, cut from the same wood, hung by the same hand, lit by the same bulb.',
+        'A brass plaque is screwed into the wall exactly between them: BOTH LEAD ONWARD. NEITHER IS WRONG. Someone has polished the plaque considerably more than the doors.',
+        'Nothing distinguishes them. You check twice. The second check is the kind you do only when you already know the answer and are stalling for a better one.',
+        'Overhead, the corridor’s one working clock — hands, unlike anywhere else in this place — ticks with something that resembles commentary.',
+        'Usher: Take your time. I mean that a little unkindly. Most travelers do.',
+      ],
+      choices: [
+        {
+          id: 'take-left',
+          text: 'Stop deliberating. Pick the left door and go.',
+          hint: 'Let your own hand be the coin toss.',
+          effects: { lucidity: 10, axes: { controlAcceptance: -6 } },
+          outcome: [
+            'You stop calculating mid-thought and simply go — left, because left was nearest your hand, which turns out to be a perfectly good reason to end an infinite regress.',
+            'The door closes behind you sensibly, uneventfully, the way doors do when nothing was actually riding on which one you chose.',
+            'Usher: You traded certainty for speed. I have rarely met a traveler who regretted that particular trade as much as they feared they would, beforehand.',
+          ],
+        },
+        {
+          id: 'weigh-it',
+          text: 'Reason it out first — there must be some difference.',
+          hint: 'Find the tell before you commit.',
+          effects: { lucidity: 12, axes: { reasonFeeling: -7 } },
+          outcome: [
+            'You circle both doors, testing the hinges, the grain, the angle of the light — and somewhere in the third circuit you notice you have stopped gathering evidence. You are stalling with extra steps.',
+            'Eventually you pick one anyway, and immediately produce, unbidden, three good reasons you chose it. All three arrived after your hand was already on the handle.',
+            'Usher: The reasoning was real. It simply was not first. Notice how rarely it is.',
+          ],
+        },
+        {
+          id: 'sit-down',
+          text: 'Sit down between the doors and wait.',
+          hint: 'Let the room decide, if it wants to.',
+          effects: { lucidity: 10, axes: { controlAcceptance: 8 } },
+          outcome: [
+            'You sit on the cold floor between two identical doors and do the bravest boring thing available to you: nothing, entirely on purpose.',
+            'After a while — you stop counting how long — a draft moves through the left one, and it drifts open a few inches, as if whatever waited behind it had simply been patient about the hinge.',
+            'Usher: You did not choose. The room chose for you, eventually, the way rooms do when no one else will. Notice that declining did not exempt you from an outcome — it only billed the waiting to someone else. Tonight, to me.',
+          ],
+        },
+      ],
+    },
+  ],
+  fieldNote: {
+    title: 'The Ass Between Two Bales',
+    thinkers: 'Jean Buridan · Jean-Paul Sartre, radical freedom',
+    body: 'Medieval logicians described a hungry ass placed exactly between two identical bales of hay: with no reason to prefer either, it starves at precisely the point of perfect rationality — reason alone, the paradox suggests, cannot originate action, only rank alternatives that already differ. Sartre carried the same problem into ethics: we are, he wrote, condemned to be free, and refusing to choose is itself a choice, made in bad faith the moment we pretend otherwise. The two doors here are honest about what most decisions disguise — that beneath the reasons we give, an arbitrary first move has to happen, a spending of will where logic has nothing left to spend. **The doors were never the hard part. The moment before your hand moved was.** Notice, too, how quickly reasons arrived once you had already chosen: the mind keeps excellent counsel for verdicts it did not actually help reach.',
+  },
+};
+
+export const theReference: Room = {
+  id: 'the-reference',
+  act: 1,
+  title: 'The Reference Letter',
+  type: 'DILEMMA',
+  doorHint: 'The door of the borrowed pen',
+  teaser: 'Someone you love needs a sentence from you that may not be true.',
+  stages: [
+    {
+      beats: [
+        'A desk lamp, a blank line waiting for a signature, and a job application with your friend’s name typed neatly across the top of it.',
+        'You have known them a decade. They are kind in a way that costs them nothing to be, loyal in a way that has cost them plenty — and, quietly, the way old friends know things without saying them, not very good at this particular job.',
+        'The position wants someone precise. They are wonderful. The two facts sit uncomfortably close together on the page.',
+        'The reference is due by morning. It only needs one sentence, really. That is what makes it difficult — one sentence is exactly enough room to lie in, or to wound in, or to hide in.',
+        'Usher: I am told good references are common courtesies. I have read enough of them to suspect “common” is doing quite a lot of that sentence’s work.',
+      ],
+      choices: [
+        {
+          id: 'write-honest',
+          text: 'Write the honest reference — measured, fair, and not glowing.',
+          hint: 'Let the truth cost what it costs.',
+          effects: { lucidity: 16, axes: { reasonFeeling: -6, selfOthers: -5 } },
+          outcome: [
+            'You write carefully, giving credit exactly where it is earned and no further, and the letter that results is fair the way a scale is fair — accurate, and comfortless.',
+            'They do not get the job. They never learn precisely why, though friendships have a way of noticing weather even without a forecast.',
+            'Usher: You told the truth to a stranger and let a friend absorb the cost of it. That is not nothing. It is also not free.',
+          ],
+        },
+        {
+          id: 'write-kind',
+          text: 'Write the generous version — true enough, warmer than deserved.',
+          hint: 'Round every corner up.',
+          effects: { lucidity: 12, axes: { reasonFeeling: 7, selfOthers: 7 } },
+          outcome: [
+            'You reach for superlatives that are technically defensible and stack them until the letter glows a little brighter than the person it describes.',
+            'They get an interview. What happens after that interview is no longer your sentence to write — though you notice you are hoping, hard, that the job grows to fit the letter, rather than the other way around.',
+            'Usher: Kindness, forward-dated. You have written a check against their future performance. I confess I have written a few myself.',
+          ],
+        },
+        {
+          id: 'decline',
+          text: 'Say you cannot write it — return the pen.',
+          hint: 'Withhold rather than shade the truth.',
+          effects: { lucidity: 14, axes: { selfOthers: -9, controlAcceptance: -4 } },
+          outcome: [
+            'You hand the form back unsigned, with an explanation that sounds better in your head than it will in theirs.',
+            'Silence is not neutral. It is information, and they will read it as exactly what it is — the one reference you could not bring yourself to give.',
+            'Usher: You told the truth by omission, which is the cheapest way to tell it. They will still hear it. Silence rarely stays private for long.',
+          ],
+        },
+      ],
+    },
+  ],
+  fieldNote: {
+    title: 'The Kind Lie, Notarized',
+    thinkers: 'Immanuel Kant · Bernard Williams, the ethics of testimony',
+    body: 'Kant held that truthfulness is a duty owed to humanity as such, not calibrated to whoever is asking or whatever they can bear: a reference is a promise, silently made to a stranger who will rely on it, and inflating it treats that stranger as a means to your friend’s end. Bernard Williams complicates the neatness — a reference is also a genre, half-ritual, read by people fluent in its usual inflation, discounted before the paragraph even finishes. So which convention are you actually bound by: the strict one, or the one everyone quietly agrees to fudge? Notice what the letter really risks: not your integrity in the abstract, but a stranger’s real trust, spent on your friend’s behalf without their knowledge or consent. **Loyalty that costs a third party is not loyalty — it is a transfer.** Whatever you signed, you will likely feel its weight the day the reference is tested by an ordinary difficult Tuesday at that job — and so, less fairly, will they.',
+  },
+};
+
+export const act1Rooms = [wallet, dinnerTable, promotion, beggarsMath, quietAlarm, buridansQueue, theReference, photograph];
