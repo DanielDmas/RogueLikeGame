@@ -3,7 +3,7 @@ import type { RunState } from '../content/schema';
 import { allRooms } from '../content/rooms';
 import { ACT4_SEQUENCE, ACT_POOLS, GATES, PROLOGUE, UNDERSTORY_SEQUENCE } from '../content/graph';
 import { applyEffects, newRun } from '../engine/gameState';
-import { completeRoom, makeRegistry, offeredDoors } from '../engine/storyEngine';
+import { backfillVisitedForJump, completeRoom, makeRegistry, offeredDoors } from '../engine/storyEngine';
 import { endingIcons, roomIcons } from '../content/icons';
 import { endings } from '../content/endings';
 
@@ -183,5 +183,32 @@ describe('content lint', () => {
       expect(endingIcons[ending.id], `ending ${ending.id} missing an icon`).toBeDefined();
       expect(endingIcons[ending.id]).toContain('<svg');
     }
+  });
+});
+
+describe('backfillVisitedForJump (Milestone 5, Phase S §S7)', () => {
+  it('leaves visited unchanged for a room outside both sequences', () => {
+    expect(backfillVisitedForJump(['wallet'], 'junction')).toEqual(['wallet']);
+  });
+
+  it('backfills the preceding ACT4_SEQUENCE rooms when jumping straight to the last one', () => {
+    const result = backfillVisitedForJump([], 'door-that-asks');
+    expect(result).toEqual(expect.arrayContaining(['boulder', 'last-message']));
+    expect(result).not.toContain('door-that-asks');
+  });
+
+  it('does not backfill anything when jumping to the first ACT4_SEQUENCE room', () => {
+    expect(backfillVisitedForJump([], 'boulder')).toEqual([]);
+  });
+
+  it('backfills boulder plus the preceding understory rooms when jumping into the understory', () => {
+    const result = backfillVisitedForJump([], 'the-echo');
+    expect(result).toEqual(expect.arrayContaining(['boulder', 'the-archive', 'the-unchosen']));
+    expect(result).not.toContain('the-echo');
+  });
+
+  it('never duplicates an already-visited entry', () => {
+    const result = backfillVisitedForJump(['boulder'], 'door-that-asks');
+    expect(result.filter((id) => id === 'boulder')).toHaveLength(1);
   });
 });

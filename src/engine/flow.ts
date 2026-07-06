@@ -7,7 +7,7 @@ import { keepsakesEarnedByFlags } from '../content/keepsakes';
 import { applyEffects, newRun } from './gameState';
 import { axisTriptych, computeAnamnesisEligible, evaluateEnding } from './endings';
 import { shouldShowReflections, shouldShowSocraticAside } from './reflections';
-import { completeRoom, makeRegistry, offeredDoors } from './storyEngine';
+import { backfillVisitedForJump, completeRoom, makeRegistry, offeredDoors } from './storyEngine';
 import { defaultProfile, type Profile, type SaveStore } from './saveStore';
 import { SceneDirector } from '../scene/director';
 import { Hud } from '../ui/hud';
@@ -178,7 +178,16 @@ export class Game {
     }
     const room = registry.get(roomId);
     const base = this.inGame && !this.state.finished ? this.state : newRun(undefined, this.priorFromProfile(), this.keepsakesFromProfile());
-    const next: RunState = { ...base, act: room.act, currentRoom: roomId, currentStage: 0, finished: false, endingId: null };
+    const next: RunState = {
+      ...base,
+      act: room.act,
+      currentRoom: roomId,
+      currentStage: 0,
+      finished: false,
+      endingId: null,
+      visited: backfillVisitedForJump(base.visited, roomId),
+      descended: UNDERSTORY_SEQUENCE.includes(roomId) ? true : base.descended,
+    };
     this.profile.run = next;
     void this.store.save(PROFILE_ID, this.profile).then(() => {
       sessionStorage.setItem(UAT_AUTOCONTINUE_KEY, '1');

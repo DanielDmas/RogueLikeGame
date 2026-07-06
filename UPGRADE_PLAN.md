@@ -754,13 +754,19 @@ into their named phases; 8 is watch-and-wait):
       before the `Game` is constructed. EN+CS+FA (`ui.recovery*` keys).
       Live-verified: throwing a synthetic uncaught error in a real browser
       correctly shows the panel over the dimmed title screen.
-- [ ] S7. **Committed UAT suite (doc 11 §A10):** move the five stable
-      Playwright scripts out of the ephemeral scratchpad into `tests/uat/`
-      (title/onboarding + auto-About, save/reload/continue, examined path,
-      keepsakes + shelf, anamnesis) with a README (run instructions,
-      3-minute budget each per CLAUDE.md). Includes fixing `jump()` into
-      Act IV to backfill the preceding `ACT4_SEQUENCE` rooms into `visited`
-      (mid-milestone review item 7) so scripts stop hand-seeding it.
+- [x] S7. **Committed UAT suite (doc 11 §A10):** `tests/uat/` now holds five
+      stable, self-contained Playwright scripts — `01-title-onboarding`
+      (fresh-profile title screen + auto-About + phantom-run regression),
+      `02-save-reload-continue`, `03-examined-path` (reflection card),
+      `04-keepsakes-shelf`, `05-anamnesis` (hidden ending option) — plus a
+      README (run instructions, environment notes, 3-minute budget each per
+      CLAUDE.md). `playwright` added as a devDependency. Also fixes
+      `jump()`'s Act IV/Understory backfill (mid-milestone review item 7):
+      `backfillVisitedForJump` (`engine/storyEngine.ts`, pure, tested in
+      `graph.test.ts`) marks the preceding `ACT4_SEQUENCE`/
+      `UNDERSTORY_SEQUENCE` rooms `visited` (and sets `descended`) so jumping
+      straight to e.g. `door-that-asks` no longer re-offers `boulder`
+      afterward. All five scripts verified green in this session.
 
 ## Implementation order
 

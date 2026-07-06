@@ -85,6 +85,31 @@ function doorsForAct(state: RunState, act: 1 | 2 | 3, registry: RoomRegistry): R
   return picked;
 }
 
+/**
+ * UAT-only helper (spec 09 §S7): jumping straight to a room in `ACT4_SEQUENCE`
+ * or `UNDERSTORY_SEQUENCE` must backfill the sequence's earlier rooms into
+ * `visited`, or `offeredDoors` re-offers them the moment the jump target is
+ * completed and the story engine recomputes what comes next (e.g. jumping to
+ * `door-that-asks` would otherwise re-offer `boulder` afterward). Pure and
+ * DOM-free so it's directly testable. Rooms outside both sequences are
+ * returned unchanged.
+ */
+export function backfillVisitedForJump(visited: string[], roomId: string): string[] {
+  const act4Index = ACT4_SEQUENCE.indexOf(roomId);
+  const understoryIndex = UNDERSTORY_SEQUENCE.indexOf(roomId);
+  if (act4Index === -1 && understoryIndex === -1) return visited;
+  const merged = new Set(visited);
+  if (act4Index !== -1) {
+    for (let i = 0; i < act4Index; i++) merged.add(ACT4_SEQUENCE[i]);
+  }
+  if (understoryIndex !== -1) {
+    // The understory is only reachable past the boulder fork.
+    merged.add('boulder');
+    for (let i = 0; i < understoryIndex; i++) merged.add(UNDERSTORY_SEQUENCE[i]);
+  }
+  return [...merged];
+}
+
 /** Marks a room complete and advances act structure. Pure. */
 export function completeRoom(state: RunState, roomId: string, registry: RoomRegistry): RunState {
   const room = registry.get(roomId);
