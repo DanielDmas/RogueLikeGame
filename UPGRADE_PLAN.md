@@ -6,7 +6,8 @@
 > milestones are condensed to short summaries to keep the file readable — full
 > detail lives in git history — but **open items are never deleted**.
 
-**Current milestone: 5 — THE DEEPER FACILITY (planned, see bottom of file).**
+**Current milestone: 5 — THE DEEPER FACILITY (in progress, see bottom of
+file — S1, K, L, N, M shipped; next up: O, P, Q, R, S2–S5).**
 Milestone 4 is mostly shipped — Phases A–I implemented (see checkboxes below
 for the handful of items amended or deferred); its remaining Playwright
 verification debt is folded into Milestone 5's Phase S2. Previous milestones
@@ -259,6 +260,95 @@ blurb is collected and never used. Five flags are set but never read
 `erased-memory`) — ready-made hooks. Audio is generative WebAudio with no
 reverb bus yet. Electron has no icon/fullscreenable/window-state memory.
 Continuity nit: the Punchline ending says "twenty rooms"; a run is 15.
+
+---
+
+## Mid-milestone review — 2026-07-06 (review pass only; no code changed)
+
+**Verified state at commit `3020fb0`.** Shipped in order, each with tests and
+a live `?uat=1` browser check: S1 (uat mode) → K1–K4 (9 new rooms, doorSeed
+fix, prior-run mirror) → L (Act V understory) → N (keepsakes) → M (seventh
+ending), plus an out-of-band save-ordering fix (`persistChain`). Suite: 312
+tests green, `tsc` clean, working tree clean. Note the actual phase order
+deviated from the "Implementation order" section below (K → **L** → N → M,
+not K → N → M → L); every real dependency (M after N per spec 03 §10) was
+respected, so this is recorded for accuracy, not as a defect.
+
+The "codebase facts" block above is a **pre-K snapshot** — do not build on
+it. As of this review: 30 base rooms + 3 understory rooms; act pools 7/8/8;
+and **all five formerly-dead flags now have readers** (L gave `pushed`/
+`kept-bridge` to the-echo; N gave `sharp-gambler`/`entered-machine` — and
+`saved-photo` — earn-triggers; M gave `erased-memory` its blocking role).
+
+**Findings for the next coding session** (noted deliberately, not fixed —
+items 1, 5, 6 are small and should open the next session; 2–4 and 7 fold
+into their named phases; 8 is watch-and-wait):
+
+1. **[M, i18n gap] The v1/English pack never shows the three margin hints.**
+   Hints were appended to the v2 note bodies and CS/FA packs (v1+cs/fa
+   correctly falls back to v2/cs–fa, which carry them — resolver chain
+   verified by `i18n.test.ts`), but `textVersion: 'v1'` + English reads the
+   old extracted bodies in `v1-en.ts`, which predate the hints. The seventh
+   ending stays *reachable* on v1, just never hinted. Recommended: append
+   the three hints to the v1-en bodies (cheap); alternative: declare v1 a
+   legacy voice excluded from M5 content, and say so in spec 03.
+2. **[M, spec deviation] Spec 03 wants the margin hints *italic*; they
+   shipped as plain sentences** — `renderEmphasis` (`ui/fieldNote.ts`)
+   supports only `**bold**`; no note body anywhere uses italics. Either add
+   `*em*` support (natural home: Phase Q polish) and italicize the three
+   hints, or amend spec 03 §5 to drop the italic requirement. Until one of
+   those happens, spec and game disagree.
+3. **[M, display-rule edge] The About/onboarding copy says "six endings"
+   forever** (`uiKey('aboutWhy')` in EN, CS, FA). Correct while the ending
+   is a secret; after `anamnesis` is witnessed the title screen says 7 but
+   About still says six. Decide in Phase R: make the sentence dynamic via
+   `endingsTotal`, or accept as flavor. Same bucket as the "twenty rooms"
+   Punchline nit already listed for R.
+4. **[M, hardening] `endingsTotal` hardcodes 6/7.** Fine today; an eighth
+   ending would silently miscount. When next touched, derive from
+   `endings.length` minus unwitnessed hidden endings — a `hidden: true`
+   field on `Ending` would let the codex filter (`overlays.ts` currently
+   hardcodes `ending.id === 'anamnesis'`) and the count share one source of
+   truth.
+5. **[M/FA, tone nit] The casino-pascal FA margin hint ends "از کسی نپرس"
+   (informal singular imperative) amid otherwise formal-plural FA prose —
+   should be "از کسی نپرسید".** One-word fix; fold into Phase R's CS/FA
+   quality pass. (CS "Nikoho se neptejte" is already correct formal.)
+6. **[N, convention risk] `keepsakeChoicesTaken` dedupes by bare
+   `choice.id`, but choice ids are only unique per room.** The four current
+   keepsake choices happen to be globally unique, so counting is correct
+   today; a future keepsake choice reusing another room's id would
+   undercount the ≥2 predicate. Cheapest guard: one `it()` in
+   `keepsakes.test.ts` asserting keepsake-gated choice ids are globally
+   unique. (Recording `roomId/choiceId` instead would be a save-format
+   change — not worth it while the guard test holds.)
+7. **[S1/UAT, quirk] `jump()` into an Act-IV room does not backfill earlier
+   `ACT4_SEQUENCE` rooms into `visited`** — completing the jumped room then
+   re-offers `boulder`. Unreachable by real players; it only bites UAT
+   scripts (the Phase M verification script had to seed
+   `visited: ['boulder','last-message']` by hand). Fix options: one line in
+   spec 09 §4 documenting the seeding requirement, and/or make `jump()`
+   backfill the preceding fixed-sequence rooms itself (small and safe — it
+   mirrors state a real player must have). Do one of these before Phase S2
+   writes more UAT scripts against Act IV.
+8. **[B, unresolved report] The user-reported "Continue started a new run
+   after mid-run language switch + save" never reproduced** under live
+   Playwright (mid-room and between-rooms saves, EN→CS via the HUD button,
+   exact reported step order). The write-ordering race that *was* found is
+   fixed and regression-tested (`saveRoundTrip.test.ts`). If it recurs:
+   before clicking Continue, capture
+   `localStorage['anamnesis:profile:traveler']` — `run: null` means a write
+   was lost (store side); an intact `run` means a `start()` resolution bug
+   (flow side). That one datum halves the search space. One benign
+   look-alike to rule out with the user: Settings → Data → "Reset run"
+   produces exactly the reported symptom by design.
+9. **[M, bookkeeping] `evaluateEnding` checks `remember-everything` after
+   `lie-down`,** not above all final-door checks as spec 03 words it. Both
+   are same-stage choices of one room — mutually exclusive in any
+   transcript — so the order is provably immaterial. Recorded so nobody
+   later "fixes" it into a semantic change. Spec 03's internal acceptance
+   checkboxes were intentionally left unticked; this file is the single
+   tracking surface.
 
 ---
 
