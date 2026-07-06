@@ -1,7 +1,7 @@
 import { describe, expect, it, afterEach } from 'vitest';
-import '../content/text'; // registers all translation packs including the 10 dynamic v2 beats
+import '../content/text'; // registers all translation packs including all dynamic v2 beats
 import { setLocale, t } from '../content/text/resolver';
-import { roomBeatKey, roomChoiceOutcomeKey } from '../content/text/keys';
+import { roomBeatKey, roomChoiceOutcomeKey, roomChoiceTextKey } from '../content/text/keys';
 import { newRun } from '../engine/gameState';
 import type { RunState } from '../content/schema';
 
@@ -117,6 +117,46 @@ describe('the 9 v2 dynamic (RunState-dependent) beats resolve translated text in
       expect(lost).not.toBe('fallback');
       expect(intact).not.toBe('fallback');
       expect(lost).not.toBe(intact);
+    });
+
+    it(`the-cave.stage0.beat2/3/4 — shadow-play with a real prior transcript translates to ${lang}`, () => {
+      setLocale(lang, 'v2');
+      // 4 entries so pickShadowMoments' first/middle/last selection gives each
+      // of the three shadow beats a distinct, real quote to translate.
+      const prior = {
+        runs: 1,
+        endingId: 'return',
+        transcript: [
+          { roomId: 'wallet', stageIndex: 0, choiceId: 'take', choiceText: 'Take it. No one has to know.' },
+          { roomId: 'junction', stageIndex: 0, choiceId: 'pull', choiceText: 'Pull the lever.' },
+          { roomId: 'ship', stageIndex: 0, choiceId: 'original', choiceText: 'The one on the bench.' },
+          { roomId: 'editor', stageIndex: 0, choiceId: 'keep-it', choiceText: 'Close the folder. Keep it.' },
+        ],
+      };
+      const expectedQuotes = [
+        t(roomChoiceTextKey('wallet', 'take'), 'Take it. No one has to know.'),
+        t(roomChoiceTextKey('ship', 'original'), 'The one on the bench.'),
+        t(roomChoiceTextKey('editor', 'keep-it'), 'Close the folder. Keep it.'),
+      ];
+      [2, 3, 4].forEach((beatIndex, i) => {
+        const key = roomBeatKey('the-cave', 0, beatIndex);
+        const withPrior = t(key, 'fallback', { ...newRun(), prior });
+        expect(withPrior, `beat${beatIndex}`).not.toBe('fallback');
+        expect(withPrior, `beat${beatIndex} should quote the translated choice text`).toContain(expectedQuotes[i]);
+      });
+    });
+
+    it(`the-cave.stage0.beat2/3/4 — empty prior transcript still translates (generic fallback vignette) to ${lang}`, () => {
+      setLocale(lang, 'v2');
+      const prior = { runs: 1, endingId: null, transcript: [] };
+      const seen = new Set<string>();
+      for (const beatIndex of [2, 3, 4] as const) {
+        const key = roomBeatKey('the-cave', 0, beatIndex);
+        const withEmptyPrior = t(key, 'fallback', { ...newRun(), prior });
+        expect(withEmptyPrior, `beat${beatIndex}`).not.toBe('fallback');
+        seen.add(withEmptyPrior);
+      }
+      expect(seen.size).toBe(3); // three distinct generic vignettes, not one repeated line
     });
   }
 });

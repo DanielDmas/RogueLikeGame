@@ -268,17 +268,33 @@ Continuity nit: the Punchline ending says "twenty rooms"; a run is 15.
       branching dynamic beat, following the `ship`/`door-that-asks`
       pattern, with its own `dynamicBeats.test.ts` coverage), `swampman`
       (Davidson/Parfit) — full content, EN+CS+FA, icons, pool-wired.
-- [ ] K4. Secret room `the-cave` (Plato; replays your previous run as shadows;
-      returning travelers only) — needs the `RunState.prior` mirror and
-      `profile.lastRunTranscript`/`lastRunEndingId` snapshot infrastructure
-      from spec 01 §4 / spec 02 §4; deliberately deferred to its own run
-      since it's shared, cross-cutting engine work, not pure content.
+- [x] K4. Secret room `the-cave` (Plato) — shipped along with the shared
+      cross-cutting infrastructure it needs (spec 01 §4 / spec 02 §4):
+      `RunState.prior?: { runs, endingId, transcript }`, stamped once by
+      `newRun(doorSeed?, prior?)`; `Profile.lastRunTranscript`/
+      `lastRunEndingId`, written in `Game.playEnding` right before
+      `runsCompleted` increments and the profile persists; a `priorFromProfile()`
+      helper wired into all three `newRun()` call sites in `flow.ts`
+      (fresh-run start, jump, play-again). `the-cave.secret = (s) =>
+      (s.prior?.runs ?? 0) >= 1` — returning travelers only, never a
+      player's first run. Its shadow-play uses a new `pickShadowMoments`
+      helper (`gameState.ts`) selecting first/middle/last from the previous
+      run's transcript, degrading to 3 generic vignettes when empty
+      (legacy save). **Scope note:** the shadow beats quote the exact
+      (re-translated) choice text per room, but do not additionally name
+      the room by title — attaching a real room title would have required
+      either a hand-maintained id→title lookup table or an import from
+      `content/rooms/index.ts` back into `content/rooms/act3.ts`, which is
+      circular (index.ts already imports act3.ts). Quoting the choice text
+      alone satisfies spec 01's acceptance criterion ("quote real
+      previous-run data when available") without that risk.
 - [x] K5. Rooms shipped so far are complete (beats/choices/notes/icons/moods)
       in EN+CS+FA, same commit — coverage tests auto-extended and pass.
 - [x] K6. Pool wiring + graph-test invariants updated for rooms shipped so far
-      (28 numbered rooms + prologue after Act I+II+III growth); the
-      reachability regression test from K1 already covered each act's grown
-      pool with no changes needed.
+      (29 numbered rooms + prologue after Act I+II+III growth, including
+      `the-cave`); the reachability regression test from K1 already covered
+      each act's grown open pool with no changes needed (secret rooms are
+      correctly excluded from that check).
 
 ## Phase L — Act V: The Understory (spec `02-act-five-the-understory.md`)
 

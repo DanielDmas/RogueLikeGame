@@ -30,6 +30,12 @@ export interface RunState {
    * is the same for everyone at that point), which can leave pool members structurally
    * unreachable once a pool grows. Undefined on saves from before this field existed (treat as 0). */
   doorSeed?: number;
+  /** Snapshot of the most recently FINISHED run, stamped once by `newRun()` and
+   * never mutated mid-run — lets rooms (e.g. `the-cave`) reference "your
+   * previous run" without relying on `transcript`, which resets every run.
+   * Undefined on a player's first-ever run, or a save from before this field
+   * existed; readers must treat both cases as "no previous run to recall". */
+  prior?: { runs: number; endingId: string | null; transcript: TranscriptEntry[] };
   act: ActId;
   /** optional (non-gate) rooms completed in the current act */
   actOptionalDone: number;

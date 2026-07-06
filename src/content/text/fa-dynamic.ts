@@ -1,12 +1,28 @@
-// The 9 v2 beats that are functions of RunState (state-reactive callbacks),
+// The v2 beats that are functions of RunState (state-reactive callbacks),
 // translated by hand alongside their string siblings in fa-rooms-actN.ts —
 // scripts/extract-v2.ts only lifts plain strings, so these can't be
 // auto-extracted. Branching logic mirrors the English source exactly.
-import { register } from './resolver';
-import { choseIn, hasFlag } from '../../engine/gameState';
+import { register, t } from './resolver';
+import { choseIn, hasFlag, pickShadowMoments } from '../../engine/gameState';
 import { punchlineUnlocked } from '../../engine/endings';
 import type { RunState } from '../schema';
-import { roomBeatKey, roomChoiceOutcomeKey } from './keys';
+import { roomBeatKey, roomChoiceOutcomeKey, roomChoiceTextKey } from './keys';
+
+/** Farsi mirror of act3.ts's SHADOW_FALLBACK, index-aligned. */
+const CAVE_SHADOW_FALLBACK_FA: string[] = [
+  'سایه‌ای به‌سوی اهرمی دست دراز می‌کند که هرگز کاملاً نخواهد کشید، در میانه‌ی تصمیم گرفتار، برای همیشه تقریباً.',
+  'سایه‌ای کنار بستری می‌نشیند که دیگر آنجا نیست، و چیزی می‌گوید که آتش پیش از رسیدن به دیوار می‌بلعد.',
+  'سایه‌ای در آستانه‌ای ایستاده، یک دست نیمه‌بالا — نه کاملاً دست‌تکان‌دادن، نه کاملاً امتناع — و آن حالت را مدتی طولانی نگه می‌دارد.',
+];
+
+for (const index of [0, 1, 2] as const) {
+  register(roomBeatKey('the-cave', 0, 2 + index), 'v2', 'fa', (s: RunState) => {
+    const entry = pickShadowMoments(s.prior)[index];
+    if (!entry) return CAVE_SHADOW_FALLBACK_FA[index];
+    const choice = t(roomChoiceTextKey(entry.roomId, entry.choiceId), entry.choiceText);
+    return `روی دیوار، سایه‌ای انتخابی را که قبلاً کرده‌اید، دقیقاً همان‌طور که کردید، تکرار می‌کند: «${choice}»`;
+  });
+}
 
 register(roomBeatKey('junction', 1, 3), 'v2', 'fa', (s: RunState) =>
   choseIn(s, 'junction', 'pull')

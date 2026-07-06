@@ -1,5 +1,5 @@
-import type { Room } from '../schema';
-import { choseIn } from '../../engine/gameState';
+import type { Room, RunState } from '../schema';
+import { choseIn, pickShadowMoments } from '../../engine/gameState';
 
 export const teleporter: Room = {
   id: 'teleporter',
@@ -470,6 +470,84 @@ export const swampman: Room = {
   },
 };
 
+/** Generic vignettes shown when there is no prior-run data to quote (a legacy
+ * save from before `RunState.prior` existed, or a degenerate empty transcript
+ * — `secret` below already keeps this room unreachable on a player's first-
+ * ever run, so this path is a safety net, not the common case). */
+const SHADOW_FALLBACK: string[] = [
+  'A shadow reaches for a lever it will never quite pull, caught mid-decision, forever almost.',
+  'A shadow sits at a bedside that isn’t there anymore, saying something the fire swallows before it reaches the wall.',
+  'A shadow stands at a threshold, one hand half-raised — not quite a wave, not quite a refusal — and holds that shape for a very long time.',
+];
+
+const shadowMomentBeat =
+  (index: 0 | 1 | 2) =>
+  (s: RunState): string => {
+    const entry = pickShadowMoments(s.prior)[index];
+    if (!entry) return SHADOW_FALLBACK[index];
+    return `On the wall, a shadow repeats a choice already made, exactly as you made it: “${entry.choiceText}”`;
+  };
+
+export const theCave: Room = {
+  id: 'the-cave',
+  act: 3,
+  title: 'The Cave',
+  type: 'NO-SOLUTION',
+  doorHint: 'The low door with the firelight',
+  teaser: 'Shadows you will recognize, projected for an audience of one.',
+  secret: (s) => (s.prior?.runs ?? 0) >= 1,
+  stages: [
+    {
+      beats: [
+        'A low door, easy to miss, warmer than the corridor around it. Firelight comes under the gap the way it does in old stories — orange, unsteady, patient.',
+        'Inside: a fire, a wall, and a bench facing the wall, as if someone built this room around the single purpose of sitting here and watching.',
+        shadowMomentBeat(0),
+        shadowMomentBeat(1),
+        shadowMomentBeat(2),
+        'The shapes on the wall are doing exactly what you did. Not similar. Exactly. You recognize your own posture in silhouette before you recognize the choice.',
+        'Usher: I did not build this room, and I do not know who did, though I have a guess I keep to myself. It only appears for travelers who have already left once and come back. I am told that detail matters. I have never been able to say why.',
+      ],
+      choices: [
+        {
+          id: 'name-them',
+          text: '“I recognize you.” Say, out loud, whose choices these are.',
+          hint: 'Name what you are watching — the hardest kind of looking.',
+          effects: { lucidity: 14, axes: { selfOthers: -3 } },
+          outcome: [
+            'You say it. Not the name a stranger would use — the small true one, the one you used on yourself in the dark, the one the shadows on the wall would recognize if shadows could listen.',
+            'Usher: Most travelers watch. Almost none name what they are watching. I do not know exactly what that costs, but I can see, from here, that it costs something. The wall dims afterward, the way a fire settles once it has been fed precisely what it wanted.',
+          ],
+        },
+        {
+          id: 'watch-silent',
+          text: 'Watch without speaking. Let the shadows finish their play.',
+          hint: 'Witness without narrating.',
+          effects: { lucidity: 8, axes: { controlAcceptance: 6 } },
+          outcome: [
+            'You say nothing. The shadows finish their small, exact performances without your narration, without your correction, without your permission.',
+            'It is easier this way, and you notice the ease, and you notice yourself noticing it, and the fire does not seem to mind either version of you.',
+          ],
+        },
+        {
+          id: 'turn-to-fire',
+          text: 'Turn from the wall toward the fire itself — the light, not the shapes it throws.',
+          hint: 'Look at the projector, not the shadows, and leave toward it.',
+          effects: { lucidity: 10, axes: { reasonFeeling: -5, controlAcceptance: -4 } },
+          outcome: [
+            'You turn from the wall, deliberately, toward the flame doing the actual work — the wall was only ever a screen, and screens, however well lit, were never where the light lived.',
+            'Usher: An unusual choice for this particular room. Most travelers study the shapes for as long as the fire allows. You looked instead at the thing that makes shapes possible, and walked toward it before the play was finished. I have no verdict on whether that is wisdom or simply impatience. Possibly a room this old does not get to have an opinion.',
+          ],
+        },
+      ],
+    },
+  ],
+  fieldNote: {
+    title: 'The Fire and the Wall',
+    thinkers: 'Plato, the ascent from the cave',
+    body: 'Plato\'s allegory, in the Republic, imagines prisoners chained since childhood in a cave, facing a wall, watching shadows a fire behind them casts — shadows they take, understandably, for the whole of reality, having never had reason to suspect there was more. Freed and dragged into the sunlight, the prisoner is first blinded, then furious, then slowly transformed — and Plato\'s harder question follows immediately: what happens if that prisoner climbs back down to tell the others? They will not thank him. Plato suggests they will try to kill him, because the shadows were working fine and no one enjoys being told their whole world was a wall. This room does something the allegory never quite risked: it hands you your own shadows, cast by your own fire, and asks you to watch yourself from exactly the angle the prisoners never got. **The chains were never the interesting part. The wall was never lying to you on purpose. It simply never mentioned that it was a wall.**',
+  },
+};
+
 export const freeWill: Room = {
   id: 'free-will',
   act: 3,
@@ -547,5 +625,6 @@ export const act3Rooms = [
   marysRoom,
   butterflyDream,
   swampman,
+  theCave,
   freeWill,
 ];

@@ -1,4 +1,4 @@
-import type { RunState } from '../content/schema';
+import type { RunState, TranscriptEntry } from '../content/schema';
 
 export interface Settings {
   typewriter: boolean;
@@ -40,6 +40,12 @@ export interface Profile {
   persona: Persona;
   /** Whether the player has already seen the one-time first-heart-loss explanation. */
   hasSeenHeartLoss: boolean;
+  /** Snapshot of the most recently finished run — feeds `RunState.prior` for
+   * rooms that remember the previous run (e.g. `the-cave`). Written in
+   * `Game.playEnding` just before the profile is persisted. Optional: absent
+   * before the player's first completed run, or on legacy saves. */
+  lastRunTranscript?: TranscriptEntry[];
+  lastRunEndingId?: string | null;
 }
 
 export function defaultProfile(): Profile {

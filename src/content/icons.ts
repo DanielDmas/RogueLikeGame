@@ -154,6 +154,11 @@ export const roomIcons: Record<string, string> = {
     <circle cx="44" cy="16" r="6" stroke-dasharray="3 3"/>
     <path d="M44 22 v20 M36 34 L44 26 L52 34 M38 50 L44 42 L50 50" stroke-dasharray="3 3"/>
   `),
+  'the-cave': svg(`
+    <path d="M12 50 q-3 -8 1 -14 q3 6 5 3 q-3 -9 5 -15 q7 10 0 18 q4 -1 3 -6 q4 8 -3 14 q-5 4 -8 0 q-4 -4 -3 0 Z"/>
+    <path d="M38 12 v40"/>
+    <path d="M46 20 l10 -5 M46 32 l12 -4 M46 44 l10 -5" opacity="0.6"/>
+  `),
   'free-will': svg(`
     <circle cx="16" cy="32" r="6"/>
     <circle cx="32" cy="32" r="6"/>

@@ -1,12 +1,28 @@
-// The 9 v2 beats that are functions of RunState (state-reactive callbacks),
+// The v2 beats that are functions of RunState (state-reactive callbacks),
 // translated by hand alongside their string siblings in cs-rooms-actN.ts —
 // scripts/extract-v2.ts only lifts plain strings, so these can't be
 // auto-extracted. Branching logic mirrors the English source exactly.
-import { register } from './resolver';
-import { choseIn, hasFlag } from '../../engine/gameState';
+import { register, t } from './resolver';
+import { choseIn, hasFlag, pickShadowMoments } from '../../engine/gameState';
 import { punchlineUnlocked } from '../../engine/endings';
 import type { RunState } from '../schema';
-import { roomBeatKey, roomChoiceOutcomeKey } from './keys';
+import { roomBeatKey, roomChoiceOutcomeKey, roomChoiceTextKey } from './keys';
+
+/** Czech mirror of act3.ts's SHADOW_FALLBACK, index-aligned. */
+const CAVE_SHADOW_FALLBACK_CS: string[] = [
+  'Stín sahá po páce, kterou nikdy úplně nezatáhne, zachycený uprostřed rozhodování, navždy skoro.',
+  'Stín sedí u postele, která už tu není, a říká něco, co oheň pohltí dřív, než to dorazí ke stěně.',
+  'Stín stojí v prahu, jednu ruku napůl zvednutou — ne tak docela mávnutí, ne tak docela odmítnutí — a tu pozici drží velmi dlouho.',
+];
+
+for (const index of [0, 1, 2] as const) {
+  register(roomBeatKey('the-cave', 0, 2 + index), 'v2', 'cs', (s: RunState) => {
+    const entry = pickShadowMoments(s.prior)[index];
+    if (!entry) return CAVE_SHADOW_FALLBACK_CS[index];
+    const choice = t(roomChoiceTextKey(entry.roomId, entry.choiceId), entry.choiceText);
+    return `Na stěně stín opakuje volbu, kterou jste už jednou učinili, přesně tak, jak jste ji učinili: „${choice}“`;
+  });
+}
 
 register(roomBeatKey('junction', 1, 3), 'v2', 'cs', (s: RunState) =>
   choseIn(s, 'junction', 'pull')

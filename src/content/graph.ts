@@ -6,7 +6,16 @@ import { actNameKey } from './text/keys';
 export const ACT_POOLS: Record<Exclude<ActId, 0 | 4>, string[]> = {
   1: ['wallet', 'dinner-table', 'promotion', 'beggars-math', 'quiet-alarm', 'buridans-queue', 'the-reference'],
   2: ['junction', 'experience-machine', 'ship', 'casino-pascal', 'omelas', 'chinese-room', 'newcomb-annex', 'veil-of-ignorance'],
-  3: ['teleporter', 'editor', 'introduction', 'debt-of-dead', 'marys-room', 'butterfly-dream', 'swampman'],
+  3: [
+    'teleporter',
+    'editor',
+    'introduction',
+    'debt-of-dead',
+    'marys-room',
+    'butterfly-dream',
+    'swampman',
+    'the-cave',
+  ],
 };
 
 export const GATES: Record<Exclude<ActId, 0>, string> = {

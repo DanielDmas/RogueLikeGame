@@ -1,7 +1,10 @@
 // Czech translation of the v2 Act III room prose (beats, choice text/hint/
 // outcome, field notes) for: teleporter, editor, introduction, debt-of-dead,
-// marys-room, butterfly-dream, swampman, free-will. Registered under version
-// 'v2'. See cs-rooms.ts for the established pattern this file follows.
+// marys-room, butterfly-dream, swampman, the-cave, free-will. Registered
+// under version 'v2'. See cs-rooms.ts for the established pattern this file
+// follows. NOTE: the-cave's three shadow-play beats (stage0.beat2/3/4) are
+// RunState-dependent functions — those live in cs-dynamic.ts alongside the
+// other state-reactive beats, not here.
 import { registerAll } from './resolver';
 import {
   roomBeatKey,
@@ -208,6 +211,30 @@ registerAll('v2', 'cs', {
   [roomNoteTitleKey('swampman')]: 'Muž z bažiny',
   [roomNoteThinkersKey('swampman')]: 'Donald Davidson · Derek Parfit, příčinná historie a to, na čem záleží',
   [roomNoteBodyKey('swampman')]: 'Donald Davidson navrhl Bažinného muže jako reductio: blesk udeří do bažiny a náhodou, kosmickou náhodou, sestaví bytost molekulu po molekule identickou s Davidsonem, se všemi vzpomínkami, ale bez jakékoli příčinné historie spojující ji s originálem — žádné dětství, žádné učení, žádný skutečný vztah k lidem, které si „pamatuje“. Davidsonova vlastní intuice byla, že Bažinný muž nemůže svými slovy nic myslet, protože význam vyžaduje příčinnou historii, kterou bažinné stvoření nikdy nemělo; reprezentace v tomhle pohledu není jen struktura, je to struktura plus příběh. Derek Parfit, pracující se stejnou vidlicí z jiného úhlu, tvrdil, že na příběhu nikdy nezáleželo: na přežití záleží psychologická kontinuita a propojenost — paměť, záměr, charakter nesený dál — ne nepřerušené příčinné vlákno k určitému kusu hmoty. Pokud má pravdu Parfit, bažina je jen zvláštní způsob doručení někoho, kdo přesto je vámi, v každém smyslu, na kterém záleží. Pokud má pravdu Davidson, v místnosti sedí cizinec, který dorazil předem naplněný celým vaším vnitřním životem a žádnou vaší historií. Oba mohou mít pravdu v tom, co každý z nich měří — nikdy se ve skutečnosti nehádali o stejnou otázku.',
+});
+
+// ---------- Act III: The Cave ----------
+// (stage0.beat2/3/4 — the shadow-play — are registered in cs-dynamic.ts)
+registerAll('v2', 'cs', {
+  [roomBeatKey('the-cave', 0, 0)]: 'Nízké dveře, snadno přehlédnutelné, teplejší než chodba kolem nich. Světlo ohně proniká pod škvírou tak, jak to bývá ve starých příbězích — oranžové, neklidné, trpělivé.',
+  [roomBeatKey('the-cave', 0, 1)]: 'Uvnitř: oheň, stěna a lavice obrácená ke stěně, jako by někdo postavil tuhle místnost jen za jediným účelem — sedět tu a dívat se.',
+  [roomBeatKey('the-cave', 0, 5)]: 'Tvary na stěně dělají přesně to, co jste dělali vy. Ne podobně. Přesně. Svou vlastní pozici poznáte v siluetě dřív, než poznáte tu volbu.',
+  [roomBeatKey('the-cave', 0, 6)]: 'Uvaděč: Tuhle místnost jsem nepostavil já, a nevím, kdo ano, ačkoli mám tušení, které si nechávám pro sebe. Objevuje se jen pro poutníky, kteří už jednou odešli a vrátili se. Prý na tom detailu záleží. Nikdy jsem nedokázal říct proč.',
+  [roomChoiceTextKey('the-cave', 'name-them')]: '„Poznávám tě.“ Řekněte nahlas, čí jsou tyto volby.',
+  [roomChoiceHintKey('the-cave', 'name-them')]: 'Pojmenujte to, na co se díváte — nejtěžší druh dívání.',
+  [roomChoiceOutcomeKey('the-cave', 'name-them', 0)]: 'Řeknete to. Ne jméno, jaké by použil cizinec — to malé pravé, které jste používali na sebe potmě, to, které by stíny na stěně poznaly, kdyby stíny uměly poslouchat.',
+  [roomChoiceOutcomeKey('the-cave', 'name-them', 1)]: 'Uvaděč: Většina poutníků se dívá. Skoro nikdo nepojmenuje to, na co se dívá. Nevím přesně, co to stojí, ale odsud vidím, že to něco stojí. Stěna se potom ztlumí, tak jako se oheň usadí, jakmile dostane přesně to, co chtěl.',
+  [roomChoiceTextKey('the-cave', 'watch-silent')]: 'Dívejte se, aniž byste promluvili. Nechte stíny dohrát.',
+  [roomChoiceHintKey('the-cave', 'watch-silent')]: 'Buďte svědkem, ne vypravěčem.',
+  [roomChoiceOutcomeKey('the-cave', 'watch-silent', 0)]: 'Neřeknete nic. Stíny dohrají svá malá, přesná představení bez vašeho komentáře, bez vaší opravy, bez vašeho svolení.',
+  [roomChoiceOutcomeKey('the-cave', 'watch-silent', 1)]: 'Takhle je to snazší, a všimnete si té snadnosti, a všimnete si, že jste si jí všimli, a oheň nezdá se mít nic proti ani jedné z vašich verzí.',
+  [roomChoiceTextKey('the-cave', 'turn-to-fire')]: 'Odvraťte se od stěny k samotnému ohni — ke světlu, ne k tvarům, které vrhá.',
+  [roomChoiceHintKey('the-cave', 'turn-to-fire')]: 'Dívejte se na promítač, ne na stíny, a odejděte k němu.',
+  [roomChoiceOutcomeKey('the-cave', 'turn-to-fire', 0)]: 'Odvrátíte se od stěny, záměrně, ke plameni, který odvádí tu skutečnou práci — stěna byla vždycky jen plátnem, a plátna, ať sebelépe osvětlená, nikdy nebyla tím, kde bydlelo světlo.',
+  [roomChoiceOutcomeKey('the-cave', 'turn-to-fire', 1)]: 'Uvaděč: Neobvyklá volba pro tuhle konkrétní místnost. Většina poutníků studuje tvary, dokud jim to oheň dovolí. Vy jste se místo toho podívali na to, co tvary umožňuje, a vydali se k tomu, ještě než představení skončilo. Nemám žádný verdikt, zda je to moudrost, nebo prostě netrpělivost. Možná tak stará místnost nemá právo na názor.',
+  [roomNoteTitleKey('the-cave')]: 'Oheň a stěna',
+  [roomNoteThinkersKey('the-cave')]: 'Platón, výstup z jeskyně',
+  [roomNoteBodyKey('the-cave')]: 'Platónovo podobenství v Ústavě si představuje vězně spoutané od dětství v jeskyni, obrácené ke stěně, sledující stíny, které za nimi vrhá oheň — stíny, které pochopitelně považují za celou realitu, protože nikdy neměli důvod tušit, že existuje víc. Osvobozený a vytažený na sluneční světlo je vězeň nejprve oslepen, pak rozzuřen, pak pomalu proměněn — a Platónova těžší otázka následuje okamžitě: co se stane, když se ten vězeň vrátí dolů, aby to řekl ostatním? Nepoděkují mu. Platón naznačuje, že se ho pokusí zabít, protože stíny fungovaly dobře a nikdo nerad slyší, že celý jeho svět byl jen stěnou. Tahle místnost dělá něco, co si podobenství nikdy úplně netrouflo: podá vám vaše vlastní stíny, vržené vaším vlastním ohněm, a požádá vás, abyste se na sebe dívali přesně z toho úhlu, který vězni nikdy neměli. Řetězy nikdy nebyly to zajímavé. Stěna vám nikdy záměrně nelhala. Jen vám nikdy neřekla, že je stěnou.',
 });
 
 // ---------- Act III: The Free Will Waiting Room ----------

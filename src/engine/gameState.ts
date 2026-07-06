@@ -1,12 +1,15 @@
-import type { Axis, Effects, RunState } from '../content/schema';
+import type { Axis, Effects, RunState, TranscriptEntry } from '../content/schema';
 
 export const MAX_HEARTS = 3;
 export const LUCIDITY_FLOOR = 5;
 
 /** `doorSeed` defaults to a fresh random value per run — pass one explicitly for
  * deterministic tests. It salts door-offer shuffling (see storyEngine.ts) so two
- * runs see different door orders even from an identical, empty visited history. */
-export function newRun(doorSeed: number = Math.floor(Math.random() * 2 ** 31)): RunState {
+ * runs see different door orders even from an identical, empty visited history.
+ * `prior` is the previous-run snapshot (see `RunState.prior`); pass it from
+ * `Profile.lastRunTranscript`/`lastRunEndingId`/`runsCompleted`, or omit it for
+ * a player's first-ever run. */
+export function newRun(doorSeed: number = Math.floor(Math.random() * 2 ** 31), prior?: RunState['prior']): RunState {
   return {
     hearts: MAX_HEARTS,
     lucidity: 0,
@@ -17,12 +20,25 @@ export function newRun(doorSeed: number = Math.floor(Math.random() * 2 ** 31)): 
     currentRoom: null,
     currentStage: 0,
     doorSeed,
+    prior,
     act: 0,
     actOptionalDone: 0,
     memoryLost: false,
     finished: false,
     endingId: null,
   };
+}
+
+/** Selects up to 3 representative moments from a previous run's transcript —
+ * used by `the-cave`'s shadow-play (first, middle, last choice made): a rough
+ * shape of the whole run without any per-room bookkeeping. Empty if there is
+ * no prior transcript (first-ever run, or a legacy save from before `prior`
+ * existed) — callers must degrade gracefully rather than assume 3 entries. */
+export function pickShadowMoments(prior: RunState['prior']): TranscriptEntry[] {
+  const transcript = prior?.transcript ?? [];
+  if (transcript.length <= 3) return transcript;
+  const mid = Math.floor(transcript.length / 2);
+  return [transcript[0], transcript[mid], transcript[transcript.length - 1]];
 }
 
 const clampAxis = (v: number) => Math.max(-100, Math.min(100, v));

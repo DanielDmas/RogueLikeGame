@@ -64,6 +64,52 @@ describe('Milestone 5, Phase K — Act III new rooms land correctly (marys-room,
   });
 });
 
+describe('Milestone 5, Phase K4 — the-cave (secret room; the prior-run shadow-play)', () => {
+  it('resolves in the registry in Act III, as a secret (non-gate) room', () => {
+    const room = registry.get('the-cave');
+    expect(room.act).toBe(3);
+    expect(room.gate).toBeFalsy();
+    expect(typeof room.secret).toBe('function');
+  });
+
+  it("is wired into Act III's pool", () => {
+    expect(ACT_POOLS[3]).toContain('the-cave');
+  });
+
+  it('has a schematic icon, at least 3 choices with hints, and a field note', () => {
+    expect(roomIcons['the-cave']).toContain('<svg');
+    const choices = registry.get('the-cave').stages[0].choices;
+    expect(choices.length).toBeGreaterThanOrEqual(3);
+    for (const c of choices) expect(c.hint, c.id).toBeTruthy();
+    expect(registry.get('the-cave').fieldNote).toBeTruthy();
+  });
+
+  it('secret predicate is false on a first-ever run (no prior, or prior.runs 0)', () => {
+    const secret = registry.get('the-cave').secret!;
+    expect(secret(newRun())).toBe(false);
+    expect(secret({ ...newRun(), prior: { runs: 0, endingId: null, transcript: [] } })).toBe(false);
+  });
+
+  it('secret predicate is true once prior.runs >= 1 (a returning traveler)', () => {
+    const secret = registry.get('the-cave').secret!;
+    expect(secret({ ...newRun(), prior: { runs: 1, endingId: 'return', transcript: [] } })).toBe(true);
+    expect(secret({ ...newRun(), prior: { runs: 5, endingId: null, transcript: [] } })).toBe(true);
+  });
+
+  it('is offered as a third door alongside the usual two, only for a returning traveler', () => {
+    let s = newRun();
+    s = completeRoom(s, 'waiting-room', registry);
+    const freshDoors = offeredDoors({ ...s, act: 3, actOptionalDone: 0 }, registry);
+    expect(freshDoors.map((d) => d.id)).not.toContain('the-cave');
+
+    const returningDoors = offeredDoors(
+      { ...s, act: 3, actOptionalDone: 0, prior: { runs: 1, endingId: 'return', transcript: [] } },
+      registry,
+    );
+    expect(returningDoors.map((d) => d.id)).toContain('the-cave');
+  });
+});
+
 /**
  * Regression guard for a real bug this phase uncovered: `doorsForAct`
  * (storyEngine.ts) offers only 2 (or 3, with a secret) rooms at a time from

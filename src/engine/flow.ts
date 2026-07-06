@@ -149,13 +149,24 @@ export class Game {
       return;
     }
     const room = registry.get(roomId);
-    const base = this.inGame && !this.state.finished ? this.state : newRun();
+    const base = this.inGame && !this.state.finished ? this.state : newRun(undefined, this.priorFromProfile());
     const next: RunState = { ...base, act: room.act, currentRoom: roomId, currentStage: 0, finished: false, endingId: null };
     this.profile.run = next;
     void this.store.save(PROFILE_ID, this.profile).then(() => {
       sessionStorage.setItem(UAT_AUTOCONTINUE_KEY, '1');
       location.reload();
     });
+  }
+
+  /** Stamped once at the start of each fresh run — the read-only previous-run
+   * snapshot consumed by `RunState.prior` (e.g. `the-cave`'s unlock condition
+   * and shadow-play). Absent fields degrade to "no previous run to recall". */
+  private priorFromProfile(): RunState['prior'] {
+    return {
+      runs: this.profile.runsCompleted,
+      endingId: this.profile.lastRunEndingId ?? null,
+      transcript: this.profile.lastRunTranscript ?? [],
+    };
   }
 
   private applySettings() {
@@ -298,7 +309,7 @@ export class Game {
           this.profile.persona = await showPersona(this.ui, this.profile.persona);
           await this.persist();
         }
-        this.state = action === 'continue' && this.profile.run ? this.profile.run : newRun();
+        this.state = action === 'continue' && this.profile.run ? this.profile.run : newRun(undefined, this.priorFromProfile());
         break;
       }
     }
@@ -521,6 +532,8 @@ export class Game {
     const endingCodexKey = `ending:${endingId}`;
     if (!this.profile.codexUnlocked.includes(endingCodexKey)) this.profile.codexUnlocked.push(endingCodexKey);
     if (!this.profile.endingsSeen.includes(endingId)) this.profile.endingsSeen.push(endingId);
+    this.profile.lastRunTranscript = this.state.transcript;
+    this.profile.lastRunEndingId = endingId;
     this.profile.runsCompleted += 1;
     await this.persist();
 
@@ -548,7 +561,7 @@ export class Game {
         continue;
       }
       if (action === 'again') {
-        this.state = newRun();
+        this.state = newRun(undefined, this.priorFromProfile());
         await this.persist();
         this.currentTheme = -1;
         this.runStartNotes = this.profile.codexUnlocked.length;
