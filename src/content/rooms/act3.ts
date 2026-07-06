@@ -403,6 +403,18 @@ export const butterflyDream: Room = {
             "It is the correct answer, if it's an answer at all, and it comes with nothing to hold — no waking triumph, no butterfly's ease, just the papered walls glowing at exactly the warmth they always were, indifferent to which of you is asking.",
           ],
         },
+        {
+          id: 'compare-dreams',
+          text: "Hold the experience machine's release form up beside this dream. One of the two, at least, you signed for.",
+          hint: 'Compare the artificial dream you paid for against this unbilled one.',
+          effects: { lucidity: 10, axes: { reasonFeeling: -4 } },
+          keepsakeId: 'release-form',
+          available: (s) => (s.keepsakesHeld ?? []).includes('release-form'),
+          outcome: [
+            'You lay the signed form flat against the papered wall, side by side with whatever this is — waking, dreaming, butterfly, self.',
+            'The form has a date, a signature line, a clause about refunds. This room has none of that. Only one of your two dreams, you notice, ever bothered to ask permission.',
+          ],
+        },
       ],
     },
   ],
@@ -458,6 +470,18 @@ export const swampman: Room = {
           outcome: [
             'You take off the coat and hand it over, half seriously, and for a moment you are just two people standing in bad light, working out logistics instead of metaphysics, which turns out to be considerably easier.',
             "Usher: Derek Parfit would have liked this room, I think — he spent a career arguing that survival was never the prize to fight over; what matters is that someone psychologically continuous with you carries what you cared about forward. By that measure, tonight, you both won. Try not to let the coat become a whole new argument.",
+          ],
+        },
+        {
+          id: 'show-the-splinter',
+          text: 'Take out the splinter of the ship\'s original timber and hold it up. "Planks again. Tell me which of us owns the voyage."',
+          hint: 'The ship question, wearing a coat.',
+          effects: { lucidity: 10, axes: { selfOthers: 4 } },
+          keepsakeId: 'ship-splinter',
+          available: (s) => (s.keepsakesHeld ?? []).includes('ship-splinter'),
+          outcome: [
+            'It looks at the splinter, then at you, and laughs — once, briefly, a real laugh, the first unguarded thing either of you has done tonight.',
+            '"I don\'t know," it says, still smiling. "But I notice neither of us threw it away." The question does not resolve. It gets, somehow, a little smaller anyway.',
           ],
         },
       ],

@@ -9,8 +9,13 @@ export const LUCIDITY_FLOOR = 5;
  * runs see different door orders even from an identical, empty visited history.
  * `prior` is the previous-run snapshot (see `RunState.prior`); pass it from
  * `Profile.lastRunTranscript`/`lastRunEndingId`/`runsCompleted`, or omit it for
- * a player's first-ever run. */
-export function newRun(doorSeed: number = Math.floor(Math.random() * 2 ** 31), prior?: RunState['prior']): RunState {
+ * a player's first-ever run. `keepsakesHeld` mirrors `Profile.keepsakes` at
+ * run start (see `RunState.keepsakesHeld`) — omit it for a keepsake-less run. */
+export function newRun(
+  doorSeed: number = Math.floor(Math.random() * 2 ** 31),
+  prior?: RunState['prior'],
+  keepsakesHeld?: string[],
+): RunState {
   return {
     hearts: MAX_HEARTS,
     lucidity: 0,
@@ -22,6 +27,7 @@ export function newRun(doorSeed: number = Math.floor(Math.random() * 2 ** 31), p
     currentStage: 0,
     doorSeed,
     prior,
+    keepsakesHeld,
     act: 0,
     actOptionalDone: 0,
     memoryLost: false,

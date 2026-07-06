@@ -213,7 +213,7 @@ export const ship: Room = {
           id: 'pattern',
           text: '“The one in the corner. I’m the pattern, not the timber — and that’s the original timber.”',
           hint: 'The reassembled parts.',
-          effects: { lucidity: 15, axes: { reasonFeeling: -12 } },
+          effects: { lucidity: 15, flags: ['ship-splinter'], axes: { reasonFeeling: -12 } },
           outcome: [
             'Usher: Hobbes’s old headache. Rebuild the ship from the discarded planks, and the “continuous” one starts to look like a well-documented impostor. You have just voted your own bench-self a replica. It heard you say so. The corridor ahead will be an awkward one.',
           ],
@@ -548,6 +548,18 @@ export const newcombAnnex: Room = {
             'You turn the placard over. On the back, in smaller print: THE MECHANISM IS NOT DESCRIBED HERE, BECAUSE DESCRIBING IT WOULD CHANGE WHAT IT PREDICTS.',
             'You look up at the steel box, and for a moment its polished lid gives back your own reflection instead of a seam. Whatever the facility used to know you, you realize, it did not need to be magic — only to have been paying closer attention, for longer, than you ever thought anyone was.',
             'Usher: The mechanism is the whole puzzle, wearing a coat. Ask how it worked and you are really asking whether you are predictable at all — and unfortunately, the asking is itself something a good predictor would have seen coming.',
+          ],
+        },
+        {
+          id: 'bet-against',
+          text: 'Set the casino chip on the pedestal — stake it on the predictor being wrong about you, just this once.',
+          hint: 'Bet the house against the house.',
+          effects: { lucidity: 12, axes: { reasonFeeling: -4 } },
+          keepsakeId: 'casino-chip',
+          available: (s) => (s.keepsakesHeld ?? []).includes('casino-chip'),
+          outcome: [
+            'You set the chip down beside the boxes, small and warm — a side wager that this time, at least, you are not the kind of traveler the ledger already has figured out.',
+            'The steel box, when you lift it, has exactly one more compartment than you expected, sized for one small round object. The chip fits it perfectly. Whatever the facility knew about you yesterday, apparently, it already knew you would bring this.',
           ],
         },
       ],

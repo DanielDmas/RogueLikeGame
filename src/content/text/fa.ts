@@ -4,7 +4,7 @@
 // translated and gracefully falls back to English v2 (see resolver.ts).
 // RTL layout and the Vazirmatn webfont are applied in ui/locale.ts.
 import { registerAll } from './resolver';
-import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey } from './keys';
+import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey, keepsakeKey } from './keys';
 
 registerAll('v2', 'fa', {
   [uiKey('abandonToTitle')]: 'رها کردن و بازگشت به صفحه‌ی عنوان',
@@ -116,6 +116,8 @@ registerAll('v2', 'fa', {
   [uiKey('travelerLabel')]: 'مسافر',
   [uiKey('travellerFallback')]: 'مسافر',
   [uiKey('archiveBlurbFallback')]: 'در پرونده توضیح بیشتری ثبت نشده',
+  [uiKey('shelfTitle')]: 'قفسه',
+  [uiKey('keepsakeChoiceTooltip')]: 'یادگاری، آرام خرج‌شده',
   [uiKey('versionV1')]: 'لحن: نسخه‌ی ۱ (اصلی)',
   [uiKey('versionV2')]: 'لحن: نسخه‌ی ۲ (جدید)',
   [uiKey('walkAgain')]: 'دوباره طی کنید — اتاق‌ها برای هیچ‌کس دوباره نمی‌چینند، اما شما تغییر کرده‌اید',
@@ -266,4 +268,16 @@ registerAll('v2', 'fa', {
   [endingEpitaphKey('gardener')]: 'اتاق‌ها همیشه به یک نگهبان نیاز دارند. نگهبان همیشه به اتاق‌ها نیاز داشت.',
   [endingTitleKey('punchline')]: 'نکته‌ی پایانی',
   [endingEpitaphKey('punchline')]: 'هیچ‌کس اینجا جز شما نبود. جوک خوبی است، نه؟',
+});
+
+// ---------- Keepsakes (Milestone 5, Phase N) ----------
+registerAll('v2', 'fa', {
+  [keepsakeKey('casino-chip', 'name')]: 'ژتون خرج‌نشده',
+  [keepsakeKey('casino-chip', 'origin')]: 'از کازینو نگه‌داشته‌شده، خرج‌نشده',
+  [keepsakeKey('photo-corner', 'name')]: 'گوشه‌ای از عکس',
+  [keepsakeKey('photo-corner', 'origin')]: 'از آتش نجات‌یافته، یک گوشه از آن',
+  [keepsakeKey('ship-splinter', 'name')]: 'تراشه‌ای از کشتی',
+  [keepsakeKey('ship-splinter', 'origin')]: 'از کارگاه نگه‌داشته‌شده، چوب اصلی',
+  [keepsakeKey('release-form', 'name')]: 'فرم ترخیص دستگاه',
+  [keepsakeKey('release-form', 'origin')]: 'در راه خروج امضا شده، هرگز پست نشده',
 });

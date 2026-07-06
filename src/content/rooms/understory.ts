@@ -74,6 +74,18 @@ export const theArchive: Room = {
             'Usher: That, I think, is the shelf’s actual purpose. Not a verdict either way — a place to put something down without needing to have finished deciding what it was.',
           ],
         },
+        {
+          id: 'pin-the-corner',
+          text: 'Pin the unburnt corner of the photograph to the edge of the open box — an amendment to the record.',
+          hint: 'Add to the file, rather than sign or refuse it.',
+          effects: { lucidity: 10, axes: { selfOthers: 3 } },
+          keepsakeId: 'photo-corner',
+          available: (s) => (s.keepsakesHeld ?? []).includes('photo-corner'),
+          outcome: [
+            'You press the small torn corner against the card with your thumb until it holds, an amendment nobody asked you to make and nobody will ask you to justify.',
+            'The archive accepts it exactly the way archives accept everything — without comment, without objection, and, you notice, without ever once needing to.',
+          ],
+        },
       ],
     },
   ],

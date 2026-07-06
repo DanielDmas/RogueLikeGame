@@ -46,6 +46,13 @@ export interface Profile {
    * before the player's first completed run, or on legacy saves. */
   lastRunTranscript?: TranscriptEntry[];
   lastRunEndingId?: string | null;
+  /** Keepsakes ever earned (ids from `KEEPSAKES` in `content/keepsakes.ts`).
+   * Never removed. A keepsake earned mid-run only becomes "held"
+   * (`RunState.keepsakesHeld`) from the next run — see gameState.ts's `newRun`. */
+  keepsakes: string[];
+  /** Ids of keepsake-gated choices actually taken, ever — feeds the seventh
+   * ending's unlock predicate (spec 03). Deduped; never removed. */
+  keepsakeChoicesTaken: string[];
 }
 
 export function defaultProfile(): Profile {
@@ -74,6 +81,8 @@ export function defaultProfile(): Profile {
     },
     persona: { preset: '', name: '', blurb: '' },
     hasSeenHeartLoss: false,
+    keepsakes: [],
+    keepsakeChoicesTaken: [],
   };
 }
 

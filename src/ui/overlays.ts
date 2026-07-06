@@ -6,6 +6,7 @@ import { actName, UNDERSTORY_SEQUENCE } from '../content/graph';
 import { clear, el, HEART_SVG } from './dom';
 import { showFieldNote } from './fieldNote';
 import { roomIcons, endingIcons } from '../content/icons';
+import { KEEPSAKES, keepsakeIcons } from '../content/keepsakes';
 import { t } from '../content/text/resolver';
 import {
   uiKey,
@@ -18,6 +19,7 @@ import {
   endingNoteTitleKey,
   endingNoteThinkersKey,
   endingNoteBodyKey,
+  keepsakeKey,
 } from '../content/text/keys';
 import { LANGUAGE_LABELS } from './locale';
 import { nextLang } from '../content/text/resolver';
@@ -612,13 +614,32 @@ export function showCodex(ui: HTMLElement, profile: Profile): Promise<void> {
       );
     }
 
+    const shelf = el('div', 'codex-shelf');
+    shelf.append(el('div', 'shelf-title', t(uiKey('shelfTitle'), 'The Shelf')));
+    const shelfItems = el('div', 'shelf-items');
+    for (const def of KEEPSAKES) {
+      const earned = profile.keepsakes.includes(def.id);
+      const item = el('div', `shelf-item${earned ? '' : ' unearned'}`);
+      if (earned) {
+        const icon = el('span', 'shelf-icon');
+        icon.innerHTML = keepsakeIcons[def.id] ?? '';
+        const name = t(keepsakeKey(def.id, 'name'), def.name);
+        item.title = t(keepsakeKey(def.id, 'origin'), def.origin);
+        item.append(icon, el('span', 'shelf-name', name));
+      } else {
+        item.append(el('span', 'shelf-icon shelf-placeholder', '·'));
+      }
+      shelfItems.appendChild(item);
+    }
+    shelf.append(shelfItems);
+
     const back = el('button', 'title-btn', t(uiKey('back'), 'Back'));
     back.style.marginTop = '30px';
     back.addEventListener('click', () => {
       o.remove();
       resolve();
     });
-    panel.append(grid, back);
+    panel.append(grid, shelf, back);
     o.appendChild(panel);
   });
 }

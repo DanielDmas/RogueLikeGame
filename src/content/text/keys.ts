@@ -27,3 +27,5 @@ export const actIntroKey = (act: number) => `act.intro.${act}`;
 export const usherBarkKey = (id: string) => `usher.bark.${id}`;
 
 export const uiKey = (id: string) => `ui.${id}`;
+
+export const keepsakeKey = (id: string, field: 'name' | 'origin') => `keepsake.${id}.${field}`;

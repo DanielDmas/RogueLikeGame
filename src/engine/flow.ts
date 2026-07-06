@@ -3,6 +3,7 @@ import { allRooms } from '../content/rooms';
 import { getEnding } from '../content/endings';
 import { actName, UNDERSTORY_SEQUENCE } from '../content/graph';
 import { actIntroText, usherDoorBark } from '../content/usher';
+import { keepsakesEarnedByFlags } from '../content/keepsakes';
 import { applyEffects, newRun } from './gameState';
 import { axisTriptych, evaluateEnding } from './endings';
 import { completeRoom, makeRegistry, offeredDoors } from './storyEngine';
@@ -149,7 +150,7 @@ export class Game {
       return;
     }
     const room = registry.get(roomId);
-    const base = this.inGame && !this.state.finished ? this.state : newRun(undefined, this.priorFromProfile());
+    const base = this.inGame && !this.state.finished ? this.state : newRun(undefined, this.priorFromProfile(), this.keepsakesFromProfile());
     const next: RunState = { ...base, act: room.act, currentRoom: roomId, currentStage: 0, finished: false, endingId: null };
     this.profile.run = next;
     void this.store.save(PROFILE_ID, this.profile).then(() => {
@@ -167,6 +168,13 @@ export class Game {
       endingId: this.profile.lastRunEndingId ?? null,
       transcript: this.profile.lastRunTranscript ?? [],
     };
+  }
+
+  /** Stamped once at the start of each fresh run — a keepsake earned mid-run
+   * only becomes "held" from the *next* run (spoiler-safe: no earn-and-spend
+   * in the same run). See `RunState.keepsakesHeld`. */
+  private keepsakesFromProfile(): string[] {
+    return [...this.profile.keepsakes];
   }
 
   private applySettings() {
@@ -313,7 +321,10 @@ export class Game {
           this.profile.persona = await showPersona(this.ui, this.profile.persona);
           await this.persist();
         }
-        this.state = action === 'continue' && this.profile.run ? this.profile.run : newRun(undefined, this.priorFromProfile());
+        this.state =
+          action === 'continue' && this.profile.run
+            ? this.profile.run
+            : newRun(undefined, this.priorFromProfile(), this.keepsakesFromProfile());
         break;
       }
     }
@@ -435,9 +446,21 @@ export class Game {
       const choice: Choice = await this.choices.pick(available, this.state, room.id);
       sound.choice();
       const heartsBefore = this.state.hearts;
+      const flagsBefore = this.state.flags;
       this.state = applyEffects(this.state, choice.effects);
       const firstHeartLoss = this.state.hearts < heartsBefore && !this.profile.hasSeenHeartLoss;
       if (this.state.hearts < heartsBefore) sound.heartLoss();
+      // Keepsakes (spec 04): earned silently, once per profile ever, the
+      // instant their trigger flag is first set — no toast, no interruption.
+      // Not retroactive: a flag set by a run before keepsakes shipped grants
+      // nothing, since flags reset every run.
+      const newFlags = this.state.flags.filter((f) => !flagsBefore.includes(f));
+      for (const keepsakeId of keepsakesEarnedByFlags(newFlags)) {
+        if (!this.profile.keepsakes.includes(keepsakeId)) this.profile.keepsakes.push(keepsakeId);
+      }
+      if (choice.keepsakeId && !this.profile.keepsakeChoicesTaken.includes(choice.id)) {
+        this.profile.keepsakeChoicesTaken.push(choice.id);
+      }
       this.state.transcript.push({
         roomId: room.id,
         stageIndex: i,
@@ -572,7 +595,7 @@ export class Game {
         continue;
       }
       if (action === 'again') {
-        this.state = newRun(undefined, this.priorFromProfile());
+        this.state = newRun(undefined, this.priorFromProfile(), this.keepsakesFromProfile());
         await this.persist();
         this.currentTheme = -1;
         this.runStartNotes = this.profile.codexUnlocked.length;

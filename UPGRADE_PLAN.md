@@ -354,11 +354,44 @@ Continuity nit: the Punchline ending says "twenty rooms"; a run is 15.
 
 ## Phase N — Keepsakes (spec `04-keepsakes.md`)
 
-- [ ] N1. Four keepsakes auto-earned via existing choice flags
-- [ ] N2. Each unlocks exactly one ✧-marked bonus choice in one linked room
-- [ ] N3. Codex "Shelf" strip (earned + dim placeholders)
-- [ ] N4. Persistence + the hard no-op guarantee test (base game bit-identical
-      without them)
+- [x] N1. Four keepsakes (`casino-chip`, `photo-corner`, `ship-splinter`,
+      `release-form`) auto-earned via `keepsakesEarnedByFlags` (new
+      `content/keepsakes.ts`), diffed once per choice in `flow.ts`'s
+      `enterRoom` against flags newly added that turn. Three reuse existing
+      dead flags (`sharp-gambler`, `saved-photo`, `entered-machine`); the
+      fourth adds `ship-splinter` to act2's ship-room `pattern` choice
+      (chosen because its text already asserts "that's the original
+      timber" — only its `flags` array changed, `lucidity`/`axes` untouched).
+      New `Profile.keepsakes: string[]`, earned exactly once ever (dedup on
+      push), never retroactive: mirrored into `RunState.keepsakesHeld` only
+      at `newRun()` time (same K4 `prior`-mirror pattern), so a keepsake
+      earned mid-run cannot be spent until the *next* run.
+- [x] N2. Each keepsake unlocks exactly one `keepsakeId`-tagged, ✧-marked
+      bonus choice, gated by the existing `available(s)` mechanism (no new
+      engine capability): `bet-against` (newcomb-annex), `pin-the-corner`
+      (the-archive), `show-the-splinter` (swampman), `compare-dreams`
+      (butterfly-dream). None costs a heart; each records into the new
+      `Profile.keepsakeChoicesTaken` when taken (feeds Phase M's ending
+      predicate).
+- [x] N3. Codex "Shelf" strip: a whisper-quiet horizontal strip appended
+      below the room grid in `showCodex` — earned keepsakes show a
+      schematic SVG icon + translated name (origin as tooltip); unearned
+      ones render as a dim `·` placeholder, no popups or attention drawn to
+      the doors, per the owner's brief. ✧ marker + tooltip added to
+      `ui/choices.ts`'s `pick()`.
+- [x] N4. Full EN+CS+FA content (choice text/hint/outcomes, keepsake
+      name/origin), persistence via the existing profile-save path (no new
+      persist call needed). Hard no-op guarantee proved by
+      `keepsakes.test.ts` (15 tests): `keepsakesHeld: []` is bit-identical
+      to `undefined` across every room/stage; holding all four adds
+      *exactly* the four specified choices and removes/alters nothing else;
+      no sibling choice in the four unlock rooms is itself keepsake-gated;
+      no keepsake choice has a `hearts` effect; every keepsake has an icon,
+      cs/fa translation, a real earn-trigger, and unlocks somewhere.
+      Live-verified via `?uat=1` + `jump()`: the ✧-marked `bet-against`
+      choice renders correctly in newcomb-annex with a seeded
+      `casino-chip`, and the Shelf strip shows the correct mixed
+      earned/unearned state. `tsc`/full suite green (279 tests).
 
 ## Phase O — The Examined Path (spec `05-the-examined-path.md`)
 

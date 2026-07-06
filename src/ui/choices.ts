@@ -1,7 +1,8 @@
 import type { Choice, RunState } from '../content/schema';
 import { el } from './dom';
 import { t } from '../content/text/resolver';
-import { roomChoiceTextKey, roomChoiceHintKey, uiKey } from '../content/text/keys';
+import { roomChoiceTextKey, roomChoiceHintKey, uiKey, keepsakeKey } from '../content/text/keys';
+import { KEEPSAKES } from '../content/keepsakes';
 
 export interface DoorOption {
   id: string;
@@ -29,6 +30,15 @@ export class ChoicePanel {
       wrap.setAttribute('role', 'group');
       choices.forEach((c, i) => {
         const card = el('button', 'choice-card');
+        if (c.keepsakeId) {
+          const def = KEEPSAKES.find((k) => k.id === c.keepsakeId);
+          const name = def ? t(keepsakeKey(def.id, 'name'), def.name) : '';
+          const mark = el('span', 'keepsake-mark', '✧');
+          mark.title = name
+            ? `${t(uiKey('keepsakeChoiceTooltip'), 'A keepsake, quietly spent')}: ${name}`
+            : t(uiKey('keepsakeChoiceTooltip'), 'A keepsake, quietly spent');
+          card.append(mark);
+        }
         card.append(el('span', 'num', String(i + 1)));
         card.append(el('span', 'txt', t(roomChoiceTextKey(roomId, c.id), c.text)));
         if (c.hint) card.append(el('span', 'hint', t(roomChoiceHintKey(roomId, c.id), c.hint)));

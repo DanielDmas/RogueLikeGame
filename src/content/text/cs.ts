@@ -3,7 +3,7 @@
 // long-form room prose (beats, choice outcomes, field notes) is not yet
 // translated and gracefully falls back to English v2 (see resolver.ts).
 import { registerAll } from './resolver';
-import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey } from './keys';
+import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey, keepsakeKey } from './keys';
 
 registerAll('v2', 'cs', {
   [uiKey('abandonToTitle')]: 'Opustit a vrátit se na titulní obrazovku',
@@ -115,6 +115,8 @@ registerAll('v2', 'cs', {
   [uiKey('travelerLabel')]: 'Poutník',
   [uiKey('travellerFallback')]: 'poutníku',
   [uiKey('archiveBlurbFallback')]: 've spisu není žádný další popis',
+  [uiKey('shelfTitle')]: 'Polička',
+  [uiKey('keepsakeChoiceTooltip')]: 'Upomínka, tiše vydaná',
   [uiKey('versionV1')]: 'Hlas: v1 (původní)',
   [uiKey('versionV2')]: 'Hlas: v2 (nový)',
   [uiKey('walkAgain')]: 'Projít znovu — místnosti se nepřeskládají pro nikoho, ale vy jste se změnili',
@@ -265,4 +267,16 @@ registerAll('v2', 'cs', {
   [endingEpitaphKey('gardener')]: 'Místnosti vždy potřebují strážce. Strážce vždy potřeboval místnosti.',
   [endingTitleKey('punchline')]: 'Pointa',
   [endingEpitaphKey('punchline')]: 'Nikdy tu nebyl nikdo jiný než vy. Dobrý vtip, že?',
+});
+
+// ---------- Keepsakes (Milestone 5, Phase N) ----------
+registerAll('v2', 'cs', {
+  [keepsakeKey('casino-chip', 'name')]: 'Neutracený žeton',
+  [keepsakeKey('casino-chip', 'origin')]: 'ponecháno z kasina, neutraceno',
+  [keepsakeKey('photo-corner', 'name')]: 'Roh fotografie',
+  [keepsakeKey('photo-corner', 'origin')]: 'zachráněno z ohně, jeden roh z ní',
+  [keepsakeKey('ship-splinter', 'name')]: 'Tříska z lodi',
+  [keepsakeKey('ship-splinter', 'origin')]: 'ponecháno z dílny, původní dřevo',
+  [keepsakeKey('release-form', 'name')]: 'Výstupní formulář stroje',
+  [keepsakeKey('release-form', 'origin')]: 'podepsáno cestou ven, nikdy neodesláno',
 });

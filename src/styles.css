@@ -179,6 +179,9 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 .choice-card .num {
   font-size: 10px; color: var(--gold); letter-spacing: 0.2em; font-family: var(--sans);
 }
+.choice-card .keepsake-mark {
+  font-size: 12px; color: var(--gold); opacity: 0.8; margin-right: 2px;
+}
 .choice-card .txt { font-family: var(--serif); font-size: 15.5px; line-height: 1.45; }
 .choice-card .hint { font-size: 12px; color: var(--ink-dim); font-style: italic; font-family: var(--serif); }
 
@@ -323,6 +326,17 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 .codex-card .cx-title { font-family: var(--serif); font-size: 16.5px; color: var(--ink); }
 .codex-card .cx-thinkers { font-family: var(--serif); font-style: italic; font-size: 12px; color: var(--ink-dim); }
 .codex-card.ending-card .cx-title { color: var(--gold); }
+
+/* keepsakes shelf — whisper-quiet, no popups, no attention drawn to the doors */
+.codex-shelf { margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--panel-edge); }
+.shelf-title { font-size: 9.5px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
+.shelf-items { display: flex; flex-wrap: wrap; gap: 16px; }
+.shelf-item { display: flex; align-items: center; gap: 7px; opacity: 0.85; }
+.shelf-item.unearned { opacity: 0.35; }
+.shelf-icon { width: 20px; height: 20px; color: var(--gold); flex-shrink: 0; }
+.shelf-icon svg { width: 100%; height: 100%; }
+.shelf-placeholder { display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--ink-faint); }
+.shelf-name { font-family: var(--serif); font-size: 12.5px; color: var(--ink-dim); }
 
 /* settings: bounded, scrollable, sectioned two-column panel on wide screens */
 .settings-panel {

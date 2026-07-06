@@ -46,6 +46,11 @@ export interface RunState {
    * understory room, if any, is offered next — see `offeredDoors`'s act-4
    * branch. Undefined/false means "not descended" (the common case). */
   descended?: boolean;
+  /** Keepsakes held at run start — a mirror of `Profile.keepsakes`, stamped
+   * once by `newRun()` like `prior`. A keepsake earned mid-run only becomes
+   * "held" from the *next* run (spoiler-safe: you cannot earn-and-spend in
+   * one run). Undefined/absent means "holding nothing" — the common case. */
+  keepsakesHeld?: string[];
   act: ActId;
   /** optional (non-gate) rooms completed in the current act */
   actOptionalDone: number;
@@ -75,6 +80,9 @@ export interface Choice {
   effects: Effects;
   outcome: Beat[];
   available?: (s: RunState) => boolean;
+  /** Present only on keepsake-gated bonus choices (spec 04) — renders the ✧
+   * marker and records into `Profile.keepsakeChoicesTaken` when chosen. */
+  keepsakeId?: string;
 }
 
 export interface Stage {
