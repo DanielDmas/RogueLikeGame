@@ -741,13 +741,19 @@ into their named phases; 8 is watch-and-wait):
       II–IV reflections authored, EN+CS+FA) · README + CHANGELOG current
       (R11) · real-v0.1.5-profile migration fixture green · charter
       feel-pass signed · one Electron boot smoke test.
-- [ ] S6. **Recovery overlay (stability hardening, doc 11 §A13):** global
+- [x] S6. **Recovery overlay (stability hardening, doc 11 §A13):** global
       `error` + `unhandledrejection` + `webglcontextlost` handlers → one
       calm, in-fiction recovery panel ("The facility flickers. Your file is
       safe.") with a return-to-title action. Safe by design: the profile is
       always persisted at the last checkpoint, so recovery loses nothing.
       Charter-compliant (quiet, one interaction, no technical jargon in the
-      player-facing copy).
+      player-facing copy). Implemented as `shouldTriggerRecovery` (pure
+      one-shot guard, `engine/recovery.ts`, tested) +
+      `installRecoveryHandlers`/`showRecoveryOverlay` (`ui/recovery.ts`,
+      reuses `.codex-panel.about-panel` styling), wired once in `main.ts`
+      before the `Game` is constructed. EN+CS+FA (`ui.recovery*` keys).
+      Live-verified: throwing a synthetic uncaught error in a real browser
+      correctly shows the panel over the dimmed title screen.
 - [ ] S7. **Committed UAT suite (doc 11 §A10):** move the five stable
       Playwright scripts out of the ephemeral scratchpad into `tests/uat/`
       (title/onboarding + auto-About, save/reload/continue, examined path,
