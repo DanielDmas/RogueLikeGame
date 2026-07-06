@@ -1,6 +1,6 @@
 import type { Room } from '../schema';
 import { hasFlag } from '../../engine/gameState';
-import { punchlineUnlocked } from '../../engine/endings';
+import { anamnesisAvailable, punchlineUnlocked } from '../../engine/endings';
 
 export const boulder: Room = {
   id: 'boulder',
@@ -279,6 +279,17 @@ export const doorThatAsks: Room = {
           outcome: [
             'You cross to the small plain door, and the handle turns before you have quite gripped it, the way a friend opens from the other side.',
             'Usher: (behind you, and for once his voice has neither halo nor horns in it) Very few travelers ever notice this door is here. Fewer still open it. Go on, then. I will get the lights.',
+          ],
+        },
+        {
+          id: 'remember-everything',
+          text: '“I remember all of it.”',
+          hint: 'Every room, every choice, at once.',
+          effects: { lucidity: 20 },
+          available: (s) => anamnesisAvailable(s),
+          outcome: [
+            'You do not step toward any of the doors. You say it instead, the way you would say a fact rather than a wish, and the saying is already most of what happens.',
+            'The Usher goes very still, hat halfway to his chest, and does not finish taking it off.',
           ],
         },
       ],

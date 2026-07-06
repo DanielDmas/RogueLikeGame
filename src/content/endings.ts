@@ -110,6 +110,25 @@ export const endings: Ending[] = [
       body: 'The Upanishads compress it to three words: tat tvam asi — thou art that. The seeker and the sought, the questioner and the questioned, the traveler and the facility: one thing, playing hide-and-seek with itself and playing to win. Alan Watts spent a career retelling it as comedy, because comedy is the only genre with the right timing: the punchline works precisely because it was visible all along — **every mystical tradition’s final secret is an open one, guarded not by locks but by the seeker’s certainty that it must be elsewhere.** The laughing, the traditions agree, is diagnostic: enlightenment-as-tragedy is usually misfiled melancholy, but the real recognition arrives as a laugh, because the distance you spent everything crossing turns out never to have existed. God on odd days, the Devil on even days, and you keeping the calendar the entire time. It took you twenty rooms. The average, the Usher would want noted, is considerably worse.',
     },
   },
+  {
+    id: 'anamnesis',
+    title: 'Anamnesis',
+    epitaph: 'They did not go back. They woke, and the waking contained the rooms.',
+    beats: [
+      'Every door in the facility opens at once — not thrown, not forced, just opens, the way a fact opens rather than a lock.',
+      'The corridor lights come on behind every one of them: ordinary, fluorescent, kind. Not fog. Not morning either. Just light, doing what light does when nothing needs to be hidden from it anymore.',
+      'The wallet, the lever, the fire, the folder, the planks, the wager, the small polite room, the stones — all of it is simply there at once, the way a room you actually live in is there at once, without needing to be walked through room by room to be believed.',
+      'The Usher stands in the light with his hat off, and does not narrate, does not file, does not ask you to sign anything. He says one word, the shortest thing he says in the entire facility.',
+      'Usher: “Ah.”',
+      'It does not feel like remembering a fact. It feels the way Meno’s slave felt at the diagram — not being told something new, but recognizing something that was, it turns out, already there, the whole time, under everything you called forgetting.',
+      'You wake. Not to the corridor, not to the threshold, not to a bed in a plausible room — you wake the way the very first beat of this whole journey woke you, except this time {name} arrives with the waking instead of a half-second after it, already fitted, already yours, carrying every room instead of leaving them behind.',
+    ],
+    fieldNote: {
+      title: 'Total Recollection',
+      thinkers: 'Plato · Henri Bergson',
+      body: 'Plato’s theory of anamnesis holds that learning is not acquisition but recollection: the soul already knows, and the diagram in the dust — Meno’s slave boy tracing a geometric proof he was never taught — only reminds it of what it always held. Bergson took the same shape and turned it toward memory itself: the past, he argued, is not stored like a filing cabinet, retrieved piece by piece, but persists whole and simultaneous, a durée the present is always swimming inside rather than dipping into. **This ending does not add a memory. It removes the delay between having lived something and knowing that you did.** Nothing here was earned by force — no fight, no bargain, no lever. What changes, when nothing is missing, is not the self’s contents but the self’s shape: a person who no longer experiences their own history as a sequence of rooms to be re-entered, but as a single standing fact they happen to be. The rooms were never behind you. They were, it turns out, always the shape of you being awake.',
+    },
+  },
 ];
 
 export function getEnding(id: string) {

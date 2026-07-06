@@ -5,7 +5,7 @@ import { actName, UNDERSTORY_SEQUENCE } from '../content/graph';
 import { actIntroText, usherDoorBark } from '../content/usher';
 import { keepsakesEarnedByFlags } from '../content/keepsakes';
 import { applyEffects, newRun } from './gameState';
-import { axisTriptych, evaluateEnding } from './endings';
+import { axisTriptych, computeAnamnesisEligible, evaluateEnding } from './endings';
 import { completeRoom, makeRegistry, offeredDoors } from './storyEngine';
 import { defaultProfile, type Profile, type SaveStore } from './saveStore';
 import { SceneDirector } from '../scene/director';
@@ -411,6 +411,19 @@ export class Game {
   }
 
   private async enterRoom(room: Room): Promise<void> {
+    // The hidden seventh ending's eligibility (spec 03): profile data is only
+    // in scope here, so it's recomputed fresh each time the final door is
+    // reached — a codex/keepsake milestone hit mid-run counts immediately,
+    // rather than requiring a fresh run to notice it.
+    if (room.id === 'door-that-asks') {
+      const eligible = computeAnamnesisEligible(
+        registry.all().map((r) => r.id),
+        UNDERSTORY_SEQUENCE,
+        this.profile.codexUnlocked,
+        this.profile.keepsakeChoicesTaken,
+      );
+      this.state = { ...this.state, anamnesisEligible: eligible };
+    }
     const icon = iconFor(room.id);
     const title = t(roomTitleKey(room.id), room.title);
     const tokens = this.tokens();

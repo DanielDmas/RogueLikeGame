@@ -2,6 +2,7 @@ import type { Persona, Profile, Settings } from '../engine/saveStore';
 import type { Ending, FieldNote, Room } from '../content/schema';
 import { allRooms } from '../content/rooms';
 import { endings } from '../content/endings';
+import { endingsTotal } from '../engine/endings';
 import { actName, UNDERSTORY_SEQUENCE } from '../content/graph';
 import { clear, el, HEART_SVG } from './dom';
 import { showFieldNote } from './fieldNote';
@@ -102,7 +103,7 @@ export function showTitle(ui: HTMLElement, profile: Profile): Promise<TitleActio
         el(
           'div',
           'title-sub',
-          `${t(uiKey('endingsWitnessed'), 'endings witnessed')}: ${profile.endingsSeen.length} ${t(uiKey('of'), 'of')} ${endings.length}`,
+          `${t(uiKey('endingsWitnessed'), 'endings witnessed')}: ${profile.endingsSeen.length} ${t(uiKey('of'), 'of')} ${endingsTotal(profile.endingsSeen)}`,
         ),
       );
     }
@@ -604,6 +605,10 @@ export function showCodex(ui: HTMLElement, profile: Profile): Promise<void> {
     }
     const endingLabelAct = t(uiKey('ending'), 'Ending');
     for (const ending of endings) {
+      // The hidden seventh ending isn't shown locked like the rest — it isn't
+      // shown at all until witnessed, per spec 03: no visible lock, no hint
+      // via the codex that a seventh ending exists.
+      if (ending.id === 'anamnesis' && !profile.endingsSeen.includes('anamnesis')) continue;
       addCard(
         `ending:${ending.id}`,
         endingLabelAct,

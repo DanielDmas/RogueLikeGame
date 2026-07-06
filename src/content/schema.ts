@@ -51,6 +51,12 @@ export interface RunState {
    * "held" from the *next* run (spoiler-safe: you cannot earn-and-spend in
    * one run). Undefined/absent means "holding nothing" — the common case. */
   keepsakesHeld?: string[];
+  /** Recomputed by flow.ts at the top of `enterRoom` for `door-that-asks` only
+   * (the sole place profile-level codex/keepsake data is in scope) — whether
+   * the hidden seventh ending is reachable this run. Serialized so a
+   * quit-and-resume at the final door keeps the same eligibility. Undefined
+   * means "not yet computed", equivalent to false. */
+  anamnesisEligible?: boolean;
   act: ActId;
   /** optional (non-gate) rooms completed in the current act */
   actOptionalDone: number;

@@ -227,6 +227,13 @@ export const endingIcons: Record<string, string> = {
     <path d="M24 28 q0 3 3 3 M37 28 q0 3 3 3" />
     <path d="M22 38 q10 8 20 0" opacity="0.8"/>
   `),
+  // The prologue's waiting-room door (rect + knob), now open with rays —
+  // the frame stays, the panel swings wide, and the light finally gets out.
+  anamnesis: svg(`
+    <rect x="12" y="10" width="20" height="44" rx="2" opacity="0.45"/>
+    <path d="M32 10 L48 16 L48 48 L32 54"/>
+    <path d="M48 32 L60 32 M48 20 L58 12 M48 44 L58 52" opacity="0.7"/>
+  `),
 };
 
 export function iconFor(roomId: string): string | undefined {

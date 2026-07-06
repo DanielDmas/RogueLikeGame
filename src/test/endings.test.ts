@@ -10,11 +10,11 @@ function finalChoice(s: RunState, choiceId: string): RunState {
 }
 
 describe('endings evaluator', () => {
-  it('all six endings exist as content', () => {
-    for (const id of ['return', 'open-hand', 'fortress', 'dissolved', 'gardener', 'punchline']) {
+  it('all seven endings exist as content (six ordinary, one hidden)', () => {
+    for (const id of ['return', 'open-hand', 'fortress', 'dissolved', 'gardener', 'punchline', 'anamnesis']) {
       expect(getEnding(id).beats.length).toBeGreaterThan(3);
     }
-    expect(endings).toHaveLength(6);
+    expect(endings).toHaveLength(7);
   });
 
   it('zero hearts always dissolves, regardless of anything else', () => {

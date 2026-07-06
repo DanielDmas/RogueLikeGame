@@ -345,12 +345,51 @@ Continuity nit: the Punchline ending says "twenty rooms"; a run is 15.
 
 ## Phase M — The Seventh Ending: "Anamnesis" (spec `03-the-seventh-ending.md`)
 
-- [ ] M1. Unlock predicate: codex complete + ≥2 keepsake choices + lucidity
-      threshold + not-erased-this-run
-- [ ] M2. Exactly three field-note margin hints; endings count shows 7 only
-      after it is witnessed
-- [ ] M3. Full ending content (beats/epitaph/note/icon), evaluation wired
-- [ ] M4. Dead flags reused where thematic (`erased-memory` blocks it)
+- [x] M1. Unlock predicate: `computeAnamnesisEligible` (new, `engine/endings.ts`)
+      — pure, exported, independently testable — requires codex-complete over
+      every room except the optional understory trio (secrets included: all of
+      it means all of it) **and** `profile.keepsakeChoicesTaken.length >= 2`.
+      Recomputed by `flow.ts`'s `enterRoom` fresh each time `door-that-asks` is
+      reached (not just at run start), stamped onto the new
+      `RunState.anamnesisEligible` field. Per-run gate `anamnesisAvailable(s)`
+      adds `lucidity >= ANAMNESIS_LUCIDITY` (140, named constant beside
+      `PUNCHLINE_LUCIDITY`) and `!hasFlag(s, 'erased-memory')` — the editor
+      room's erase choice finally gets a reader. The new fifth option,
+      `remember-everything` (`"I remember all of it."`), is appended last to
+      `door-that-asks`'s final stage with no special styling, gated by
+      `available: (s) => anamnesisAvailable(s)`.
+- [x] M2. Exactly three field-note margin hints appended as a final sentence
+      to existing note bodies — `waiting-room` ("the ones who remember all of
+      it do not use the door at all"), `editor` ("what is erased is not merely
+      gone — it is owed"), `casino-pascal` ("the house pays out, once, for a
+      completed collection"). `endingsTotal(endingsSeen)` (new,
+      `engine/endings.ts`) returns 6 until `'anamnesis'` is in `endingsSeen`,
+      then 7; wired into the title screen's "endings witnessed" count and the
+      Codex, which now skips the anamnesis card entirely (not shown locked)
+      until it has actually been witnessed.
+- [x] M3. Full ending content: title "Anamnesis", 7 beats (doors opening at
+      once, the Usher's single line — "Ah.", the last beat mirroring the
+      prologue's first, `{name}` used once), field note "Total Recollection"
+      (Plato · Henri Bergson). `evaluateEnding` (`endings.ts`) checks
+      `choseIn(s, 'door-that-asks', 'remember-everything')` above the other
+      final-door checks, below only `hearts <= 0` (dissolution still trumps
+      everything). `EndingId`/`endings` array both extended; `getEnding`,
+      `endingIcons`, and `playEnding` needed no changes at all — the ending
+      pipeline was already fully data-driven.
+- [x] M4. `erased-memory` (Act III's editor room) and `keepsakeChoicesTaken`
+      (spec 04) are both now load-bearing, exactly as specced.
+      Tests: `anamnesis.test.ts` (18 tests) — the eligibility gate's five
+      positive/negative conditions, the per-run gate's four conditions, the
+      fifth option's wiring and zero-hearts-effect, evaluation priority
+      (including hearts-trumps-anamnesis and extreme-axes-do-not-override),
+      the display rule, and en/cs/fa margin-hint coverage. `endings.test.ts`
+      updated for a 7th ending. Full EN+CS+FA content in the same commit.
+      Live-verified via `?uat=1` + a seeded profile (full codex, 2 keepsake
+      choices, backfilled Act IV `visited` since `jump()` skips straight to
+      the final gate): the hidden choice renders correctly, unstyled, last in
+      the list; choosing it plays the full "Anamnesis" ending end-to-end.
+      `tsc`/full suite green (297 tests before Phase M's own save/resume
+      side-quest below added more).
 
 ## Phase N — Keepsakes (spec `04-keepsakes.md`)
 
