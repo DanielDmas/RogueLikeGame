@@ -7,8 +7,13 @@ context** to implement it without asking questions. The roadmap-level view
 lives in `UPGRADE_PLAN.md` at the repository root; these documents are the
 ground-level detail behind its Milestone 5 phases.
 
-**Status: specification only. Nothing here is implemented. Do not begin
-implementation until the project owner explicitly commands it.**
+**Status (updated 2026-07-06): implementation in progress.** Shipped: 09-S1
+(uat mode), 01 (rooms), 02 (understory), 03 (seventh ending), 04 (keepsakes);
+05 (examined path) is implemented with Act I content only — Acts II–IV
+reflections are a **release gate** for v0.2.0. Open: 06, 07, 08, 09-S2…S5.
+Ground truth lives in `UPGRADE_PLAN.md`; read `11-production-review.md`
+before starting any new phase — it carries the audit findings and the
+hardening items it added to the plan (R8–R11, S6–S7).
 
 ## Documents
 
@@ -24,6 +29,7 @@ implementation until the project owner explicitly commands it.**
 | `08-platform-localization-engine-health.md` | R | GitHub Pages, Electron polish, Czech pass, DE/FR, cleanups |
 | `09-testing-and-release.md` | S | The `?uat=1` test mode, feature→test traceability matrix, verification debt, release procedure |
 | `10-experience-charter.md` | all | **Binding UX/beauty rules** every spec is implemented under, plus the owner's pre-release feel-pass checklist |
+| `11-production-review.md` | all | **Production review (2026-07-06):** spec-completeness & release-readiness audit — findings, explicit assumptions, risks by severity, the added hardening items (R8–R11, S6–S7), release gates, and binding process rules (Definition of Done, architecture rules) |
 
 ## Implementation order and dependencies
 
@@ -70,6 +76,24 @@ verification depends on it.
 7. **No feature without its tests.** Spec 09 §6 carries the feature→test
    traceability matrix; a feature is done when its matrix row is green, not
    when its code compiles.
+8. **Definition of Done** (codified 2026-07-06 from six phases of practice —
+   see `11-production-review.md` §A9). A *feature* is done when: spec
+   conformance is checked against the open spec → `tsc` clean → full vitest
+   green → live `?uat=1` browser verification (screenshots taken **and
+   read**) → honest `UPGRADE_PLAN.md` entry (checkbox + what actually
+   shipped + any deviation amended inline) → one-phase commit → push.
+   A *release* is done per spec 09 S5 **plus** the review's blockers: S6/S7
+   done, R8 backup live, README/CHANGELOG current, real-v0.1.5-profile
+   migration fixture green, charter feel-pass signed.
+9. **Architecture rules** (codified 2026-07-06, review §A6/A8/A11): content
+   files may import **pure predicates only** from the engine — never
+   side-effectful code, never ui/scene. No new subsystem logic inline in
+   the `Game` class — pure helper module + tests first, `Game` only
+   orchestrates; if `enterRoom` must grow again, extract a room controller
+   first. The Usher **reads** state, never changes it. Persistence goes
+   through `SaveStore` only. Never rename or re-type a `Profile`/`RunState`
+   field without a `schemaVersion` bump and a captured-payload fixture test
+   (R8). Unseeded randomness is allowed for cosmetics only.
 
 ## Decisions already made (do not re-litigate)
 

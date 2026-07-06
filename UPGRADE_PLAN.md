@@ -7,7 +7,12 @@
 > detail lives in git history — but **open items are never deleted**.
 
 **Current milestone: 5 — THE DEEPER FACILITY (in progress, see bottom of
-file — S1, K, L, N, M shipped; next up: O, P, Q, R, S2–S5).**
+file — S1, K, L, N, M shipped; O partial (Act I content only — Acts II–IV
+are a v0.2.0 release gate); next up: O completion, hardening batch
+(S6/S7/R8/R9), P, Q, R, S2–S5).** A full production review (2026-07-06)
+lives at `docs/development/11-production-review.md` — read it before
+starting any new phase; its action items are tracked as R8–R11 and S6–S7
+below.
 Milestone 4 is mostly shipped — Phases A–I implemented (see checkboxes below
 for the handful of items amended or deferred); its remaining Playwright
 verification debt is folded into Milestone 5's Phase S2. Previous milestones
@@ -671,9 +676,40 @@ into their named phases; 8 is watch-and-wait):
       mid-feature, so nothing is missed.
 - [ ] R4. German + French packs — **lowest priority; may slip to M6**
 - [ ] R5. Content-pipeline validation tests + "twenty rooms" continuity fix
-- [ ] R6. Dead-flag audit: every set flag gains a reader (CI-enforced)
+- [ ] R6. Dead-flag audit: every set flag gains a reader (CI-enforced).
+      **Wording extended per production review (doc 11, §A4):** implement as
+      a *generated registry test*, not a one-off — collect every
+      `effects.flags` writer and every `hasFlag`/`choseIn`/`choseInPrior`
+      reader from content+engine, assert the sets match (explicit allowlist
+      for intentional one-ways). The registry then *is* the test and cannot
+      rot. Also record the Usher invariant here: he reads state, never
+      changes it (docs README convention 9).
 - [ ] R7. Persona whisper pass: exactly four `{name}`/blurb touches, never on
       door screens
+
+### Production-review additions (2026-07-06 — see `docs/development/11-production-review.md`)
+
+- [ ] R8. **Save integrity:** `Profile.schemaVersion` int; keep the previous
+      good payload under a `:backup` localStorage key on each successful
+      load; on parse failure restore from backup (quiet one-time title
+      notice), only then fall back to defaults. Capture a real
+      `v0.1.5-v2-beta` profile blob as a committed migration fixture.
+      Binding rule (docs README convention 9): never rename/re-type a
+      persisted field without a version bump + fixture test.
+- [ ] R9. **Profile export/import** in Settings → Data: download the profile
+      as JSON; paste-import with a confirm step. Doubles as the player
+      backup, cross-build (web ↔ Electron) transfer, and bug-repro channel.
+- [ ] R10. **Citation-accuracy audit** of every field note and ending note:
+      verify each named attribution/quote; soften anything unverifiable
+      into honest paraphrase. EN first; propagate to cs/fa inside R3.
+- [ ] R11. **Documentation refresh:** root `README.md` (30+3 rooms; endings
+      phrased without spoiling the display rule — "six endings, and rumors";
+      Act V; fix the release procedure to the proven `workflow_dispatch`
+      path — tag pushes 403 here; add target session length, a one-line
+      content-sensitivity note, the 1280×720 @ ≤130 % zoom support floor;
+      confirm `dist/` is gitignored). Create `CHANGELOG.md` and backfill one
+      line per released version. (docs/development/README status line
+      already fixed with the review.)
 
 ## Phase S — Testing, UAT & release (spec `09-testing-and-release.md`)
 
@@ -690,7 +726,26 @@ into their named phases; 8 is watch-and-wait):
       3-minute rule
 - [ ] S3. Feature→test traceability matrix green (~240+ tests expected)
 - [ ] S4. Full regression + owner feel-pass (charter checklist)
-- [ ] S5. Release v0.2.0-beta EXE + first Pages deploy; checkboxes updated
+- [ ] S5. Release v0.2.0-beta EXE + first Pages deploy; checkboxes updated.
+      **Release blockers extended per production review (doc 11, §B4):**
+      S6/S7 done · R8 backup live · Phase O release gate satisfied (Acts
+      II–IV reflections authored, EN+CS+FA) · README + CHANGELOG current
+      (R11) · real-v0.1.5-profile migration fixture green · charter
+      feel-pass signed · one Electron boot smoke test.
+- [ ] S6. **Recovery overlay (stability hardening, doc 11 §A13):** global
+      `error` + `unhandledrejection` + `webglcontextlost` handlers → one
+      calm, in-fiction recovery panel ("The facility flickers. Your file is
+      safe.") with a return-to-title action. Safe by design: the profile is
+      always persisted at the last checkpoint, so recovery loses nothing.
+      Charter-compliant (quiet, one interaction, no technical jargon in the
+      player-facing copy).
+- [ ] S7. **Committed UAT suite (doc 11 §A10):** move the five stable
+      Playwright scripts out of the ephemeral scratchpad into `tests/uat/`
+      (title/onboarding + auto-About, save/reload/continue, examined path,
+      keepsakes + shelf, anamnesis) with a README (run instructions,
+      3-minute budget each per CLAUDE.md). Includes fixing `jump()` into
+      Act IV to backfill the preceding `ACT4_SEQUENCE` rooms into `visited`
+      (mid-milestone review item 7) so scripts stop hand-seeding it.
 
 ## Implementation order
 
@@ -698,3 +753,14 @@ into their named phases; 8 is watch-and-wait):
 (DE/FR last)** — content first, the mechanics that thread through it, then
 presentation, then platform. All of it under the Experience Charter
 (`docs/development/10-experience-charter.md`).
+
+**Revised remaining order (production review, 2026-07-06, doc 11 §B5):**
+finish O's Acts II–IV authoring (release gate) → hardening batch
+(S6 + S7 + R8 + R9; small, independent, everything after ships on top of
+them) → P (with a keepsakes-style read-only hard-guarantee test required,
+not optional) → Q (+ fold in the dangling I9 colorblind/readability audit
+or explicitly re-defer it to M6) → R (R1–R3, R5–R7, R10, R11; R3 is large —
+schedule honestly) → S2–S5 → R4 last. Six open questions for the owner are
+listed in doc 11 §B6 (save-safety confirmation, citation-softening policy,
+target session length, whether Q hard-gates v0.2.0, telemetry-never
+confirmation, accessibility scope).
