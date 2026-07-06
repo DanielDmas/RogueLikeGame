@@ -317,8 +317,13 @@ Continuity nit: the Punchline ending says "twenty rooms"; a run is 15.
 
 ## Phase S — Testing, UAT & release (spec `09-testing-and-release.md`)
 
-- [ ] S1. `?uat=1` test mode (typewriter off, fast tweens, gated debug handle
-      incl. `jump`/`doorRects`/`fps`) — **built first**
+- [x] S1. `?uat=1` test mode (typewriter off, fast tweens, gated debug handle
+      incl. `jump`/`doorRects`/`fps`) — **built first**. `src/engine/uatMode.ts`
+      + wiring in `main.ts`/`flow.ts`/`director.ts`/`doors.ts`/`toast.ts`;
+      `__APP_VERSION__` vite define added (also serves Q3.1 later). Verified
+      live: handle absent on normal boot, present + correctly shaped under
+      `?uat=1`, `jump('junction')` reloads straight into Act II at the right
+      stage with zero console/page errors.
 - [ ] S2. Milestone 4's deferred verification debt cleared: layout sweep,
       scenery proof, door-visibility sweep, transition-garble check, troll
       test, i18n matrix — all as committed `scripts/uat/` scripts under the

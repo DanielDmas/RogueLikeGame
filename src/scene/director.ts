@@ -102,6 +102,10 @@ export class SceneDirector {
   /** Paused while a full-screen DOM overlay (settings/codex/pause/etc.) covers the scene — no reason to keep rendering underneath it. */
   private paused = false;
   private lastFrameTime = 0;
+  /** Scales tween durations (Usher walk, camera dolly) — 1 normally, 0.25 under `?uat=1`. */
+  private speedMultiplier = 1;
+  /** Timestamps (ms) of recently-presented frames, for the UAT fps() probe — trimmed to the last ~2s. */
+  private frameTimestamps: number[] = [];
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -147,6 +151,49 @@ export class SceneDirector {
   /** Suspends the render loop entirely (a DOM overlay is covering the whole scene) — the single biggest idle GPU/battery saving available. */
   setPaused(v: boolean) {
     this.paused = v;
+  }
+
+  /** Scales all future tween durations (Usher walk, camera dolly) by `m` — used by `?uat=1` to run at 4x pace. */
+  setSpeedMultiplier(m: number) {
+    this.speedMultiplier = m;
+  }
+
+  /** Rolling average frames-per-second over the last ~2s of actually-presented frames (0 if too few samples yet). UAT-only probe. */
+  getFps(): number {
+    const samples = this.frameTimestamps;
+    if (samples.length < 2) return 0;
+    const spanMs = samples[samples.length - 1] - samples[0];
+    if (spanMs <= 0) return 0;
+    return ((samples.length - 1) * 1000) / spanMs;
+  }
+
+  /** Projects every current door's frame to screen pixels — UAT probe for "is this door fully visible?" sweeps. */
+  getDoorRects(): { id: string; rect: { left: number; top: number; right: number; bottom: number; width: number; height: number }; onScreen: boolean }[] {
+    if (!this.doors) return [];
+    const out: ReturnType<SceneDirector['getDoorRects']> = [];
+    for (const id of this.doorSpecs.keys()) {
+      const corners = this.doors.frameCorners(id);
+      if (!corners) continue;
+      let left = Infinity;
+      let right = -Infinity;
+      let top = Infinity;
+      let bottom = -Infinity;
+      let behindCamera = false;
+      for (const corner of corners) {
+        const p = corner.clone().project(this.camera);
+        if (p.z > 1) behindCamera = true;
+        const x = ((p.x + 1) / 2) * innerWidth;
+        const y = ((1 - p.y) / 2) * innerHeight;
+        left = Math.min(left, x);
+        right = Math.max(right, x);
+        top = Math.min(top, y);
+        bottom = Math.max(bottom, y);
+      }
+      const rect = { left, top, right, bottom, width: right - left, height: bottom - top };
+      const onScreen = !behindCamera && left >= 0 && top >= 0 && right <= innerWidth && bottom <= innerHeight;
+      out.push({ id, rect, onScreen });
+    }
+    return out;
   }
 
   /** Applies a new render-resolution scale live (no reload needed, unlike `quality`'s AA/bloom). */
@@ -248,7 +295,7 @@ export class SceneDirector {
     const doorPos = this.doors.lintel(id).clone();
     const side = doorPos.x >= 0 ? -1 : 1;
     const usherTarget = new THREE.Vector3(doorPos.x + side * 1.3, -0.05, doorPos.z + 0.6);
-    this.usherWalk = { from: this.usher.group.position.clone(), to: usherTarget, startT: now, duration: USHER_WALK_SECONDS };
+    this.usherWalk = { from: this.usher.group.position.clone(), to: usherTarget, startT: now, duration: USHER_WALK_SECONDS * this.speedMultiplier };
     this.usherPresenceTarget = 1.7;
 
     return new Promise((done) => {
@@ -256,9 +303,14 @@ export class SceneDirector {
         from: this.camera.position.clone(),
         to: target,
         startT: now,
-        duration: CAMERA_DOLLY_SECONDS,
+        duration: CAMERA_DOLLY_SECONDS * this.speedMultiplier,
         done: () => {
-          this.usherWalk = { from: this.usher.group.position.clone(), to: this.usherHome.clone(), startT: this.clock.elapsedTime, duration: USHER_WALK_SECONDS };
+          this.usherWalk = {
+            from: this.usher.group.position.clone(),
+            to: this.usherHome.clone(),
+            startT: this.clock.elapsedTime,
+            duration: USHER_WALK_SECONDS * this.speedMultiplier,
+          };
           this.usherPresenceTarget = 1;
           done();
         },
@@ -304,6 +356,8 @@ export class SceneDirector {
     const now = performance.now();
     if (!shouldRenderFrame(now, this.lastFrameTime)) return;
     this.lastFrameTime = now;
+    this.frameTimestamps.push(now);
+    while (this.frameTimestamps.length > 0 && now - this.frameTimestamps[0] > 2000) this.frameTimestamps.shift();
 
     const dt = Math.min(this.clock.getDelta(), 0.05);
     const t = this.clock.elapsedTime;

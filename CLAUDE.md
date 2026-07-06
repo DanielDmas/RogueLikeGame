@@ -17,3 +17,12 @@
 - If a check still doesn't pass after one repair attempt, stop trying to fix
   it further — report what's wrong and move on, rather than iterating
   indefinitely.
+- Load the game with `?uat=1` (or bare `?uat`) in every UAT script. It forces
+  the typewriter off, runs scene tweens/fades/toasts at 4x speed
+  (`speedMultiplierFor` in `src/engine/uatMode.ts`), and exposes a
+  `window.__anamnesisUat` handle (`version`, `state()`, `doorRects()`,
+  `fps()`, `jump(roomId)`) that does not exist without the flag. Use
+  `jump(roomId)` to land directly on a specific room for a screenshot sweep
+  instead of playing there by hand — it persists a legitimate `RunState` and
+  reloads, so it can't produce an illegal game state. It refuses unknown room
+  ids with a console warning rather than throwing.

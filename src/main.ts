@@ -8,6 +8,7 @@ import './styles.css';
 
 import { LocalSaveStore } from './engine/localSave';
 import { Game } from './engine/flow';
+import { parseUatFlag } from './engine/uatMode';
 import { setLocale } from './content/text';
 import { applyLocaleToDocument } from './ui/locale';
 
@@ -18,7 +19,8 @@ async function boot() {
   const profile = await store.load('traveler');
   setLocale(profile.settings.language, profile.settings.textVersion);
   applyLocaleToDocument(profile.settings.language);
-  const game = new Game(canvas, ui, profile, store);
+  const uat = parseUatFlag(location.search);
+  const game = new Game(canvas, ui, profile, store, uat);
   await game.start();
 }
 

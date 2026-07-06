@@ -231,3 +231,40 @@ describe('corridor decorative doors — dimmer and desaturated vs. real doors', 
     expect(nearestDecorZ).toBeLessThan(DOOR_Z);
   });
 });
+
+describe('doors — frameCorners (UAT door-visibility probe, Phase S1)', () => {
+  it('returns 4 world-space corners for a real door id', () => {
+    const set = createDoors([{ id: 'a', hint: 'a' }]);
+    const corners = set.frameCorners('a');
+    expect(corners).not.toBeNull();
+    expect(corners).toHaveLength(4);
+    set.dispose();
+  });
+
+  it('returns null for an unknown door id', () => {
+    const set = createDoors([{ id: 'a', hint: 'a' }]);
+    expect(set.frameCorners('nope')).toBeNull();
+    set.dispose();
+  });
+
+  it('corners span from the floor (y=0) up to the lintel height, centered on the door', () => {
+    const set = createDoors([{ id: 'a', hint: 'a' }]);
+    const corners = set.frameCorners('a')!;
+    const ys = corners.map((c) => c.y);
+    const xs = corners.map((c) => c.x);
+    expect(Math.min(...ys)).toBeCloseTo(0, 5);
+    expect(Math.max(...ys)).toBeGreaterThan(3); // lintel-top height
+    // symmetric about the door's own x position
+    const door = set.group.children[0];
+    expect(Math.min(...xs)).toBeCloseTo(door.position.x - (Math.max(...xs) - door.position.x), 5);
+    set.dispose();
+  });
+
+  it('multiple doors get distinct, non-overlapping corner x-ranges', () => {
+    const set = createDoors([{ id: 'a', hint: 'a' }, { id: 'b', hint: 'b' }]);
+    const aXs = set.frameCorners('a')!.map((c) => c.x);
+    const bXs = set.frameCorners('b')!.map((c) => c.x);
+    expect(Math.max(...aXs)).toBeLessThan(Math.min(...bXs));
+    set.dispose();
+  });
+});

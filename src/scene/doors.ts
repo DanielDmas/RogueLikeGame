@@ -13,6 +13,8 @@ export interface DoorSet {
   setHover(id: string | null): void;
   /** world position of a door's lintel, for the DOM tooltip */
   lintel(id: string): THREE.Vector3;
+  /** the 4 world-space corners of the door's frame (outer jamb edges, floor to lintel top) — for UAT screen-bounds checks */
+  frameCorners(id: string): THREE.Vector3[] | null;
   /** per-frame idle pulse so real, clickable doors read as alive against the dim decorative corridor doors */
   tick(t: number): void;
   dispose(): void;
@@ -35,6 +37,8 @@ export function createDoors(specs: DoorSpec[]): DoorSet {
   const lintels = new Map<string, THREE.Vector3>();
   const phases = new Map<string, number>();
   let hoveredId: string | null = null;
+
+  const doorGroups = new Map<string, THREE.Group>();
 
   const n = specs.length;
   const spacing = 3.4;
@@ -77,7 +81,13 @@ export function createDoors(specs: DoorSpec[]): DoorSet {
     const lp = new THREE.Vector3(0, 3.5, 0);
     door.localToWorld(lp);
     lintels.set(spec.id, lp);
+    doorGroups.set(spec.id, door);
   });
+
+  // Outer jamb edge (half-width) and lintel-top height, matching the frame
+  // geometry above (jamb centers at ±0.85, width 0.18; lintel at y 3.15, height 0.18).
+  const FRAME_HALF_WIDTH = 0.94;
+  const FRAME_TOP_Y = 3.24;
 
   return {
     group,
@@ -87,6 +97,17 @@ export function createDoors(specs: DoorSpec[]): DoorSet {
     },
     lintel(id) {
       return lintels.get(id) ?? new THREE.Vector3();
+    },
+    frameCorners(id) {
+      const door = doorGroups.get(id);
+      if (!door) return null;
+      const local = [
+        new THREE.Vector3(-FRAME_HALF_WIDTH, 0, 0),
+        new THREE.Vector3(-FRAME_HALF_WIDTH, FRAME_TOP_Y, 0),
+        new THREE.Vector3(FRAME_HALF_WIDTH, 0, 0),
+        new THREE.Vector3(FRAME_HALF_WIDTH, FRAME_TOP_Y, 0),
+      ];
+      return local.map((v) => door.localToWorld(v.clone()));
     },
     tick(t) {
       for (const [doorId, mat] of slabs) {

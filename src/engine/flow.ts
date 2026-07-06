@@ -48,9 +48,13 @@ import {
 import { applyLocaleToDocument } from '../ui/locale';
 import { toggleFullscreen } from '../ui/fullscreen';
 import { applyUiZoom } from '../ui/zoom';
+import { installUatHandle, isJumpableRoom, speedMultiplierFor, type UatHandle } from './uatMode';
 
 const PROFILE_ID = 'traveler';
 const registry = makeRegistry(allRooms);
+/** sessionStorage marker: set by jump() right before a reload, so start() knows to
+ * skip the title screen and resume `profile.run` directly instead of waiting for a click. */
+const UAT_AUTOCONTINUE_KEY = 'anamnesis-uat-autocontinue';
 
 const themeForAct = (act: number): 0 | 1 | 2 | 3 | 4 => (act <= 1 ? (act as 0 | 1) : (act as 2 | 3 | 4));
 
@@ -69,11 +73,15 @@ export class Game {
   private doorClickThrough: ((id: string) => void) | null = null;
   private inGame = false;
   private runStartNotes = 0;
+  private uat: boolean;
+  private speedMultiplier: number;
 
-  constructor(canvas: HTMLCanvasElement, ui: HTMLElement, profile: Profile, store: SaveStore) {
+  constructor(canvas: HTMLCanvasElement, ui: HTMLElement, profile: Profile, store: SaveStore, uat = false) {
     this.ui = ui;
     this.profile = profile;
     this.store = store;
+    this.uat = uat;
+    this.speedMultiplier = speedMultiplierFor(uat);
 
     this.veil = el('div', 'veil');
     ui.appendChild(this.veil);
@@ -94,6 +102,7 @@ export class Game {
       profile.settings.quality,
       profile.settings.renderScale,
     );
+    this.director.setSpeedMultiplier(this.speedMultiplier);
     this.hud = new Hud(ui, () => this.openPause(), profile.settings.language, (lang) => {
       this.profile.settings = { ...this.profile.settings, language: lang };
       this.applySettings();
@@ -112,13 +121,48 @@ export class Game {
     addEventListener('pointerdown', () => sound.primeOnGesture(), { once: true });
 
     this.applySettings();
+
+    installUatHandle(window as unknown as { __anamnesisUat?: UatHandle }, this.uat, {
+      version: typeof __APP_VERSION__ === 'string' ? __APP_VERSION__ : '',
+      doorRects: () => this.director.getDoorRects(),
+      state: () => ({
+        act: this.state.act,
+        hearts: this.state.hearts,
+        lucidity: this.state.lucidity,
+        currentRoom: this.state.currentRoom,
+        currentStage: this.state.currentStage ?? 0,
+      }),
+      fps: () => this.director.getFps(),
+      jump: (roomId) => this.jump(roomId),
+    });
+  }
+
+  /** UAT-only: jump straight to a room by id, bypassing normal play, without
+   * synthesizing an illegal state — it builds an ordinary RunState (same
+   * shape a resumed run has) and lets the normal state → persist → runLoop
+   * path pick it up after a reload. Refuses unknown rooms with a console
+   * warning rather than throwing. */
+  private jump(roomId: string): void {
+    if (!this.uat) return;
+    if (!isJumpableRoom(roomId, registry)) {
+      console.warn(`[anamnesis:uat] jump("${roomId}") refused — unknown room id.`);
+      return;
+    }
+    const room = registry.get(roomId);
+    const base = this.inGame && !this.state.finished ? this.state : newRun();
+    const next: RunState = { ...base, act: room.act, currentRoom: roomId, currentStage: 0, finished: false, endingId: null };
+    this.profile.run = next;
+    void this.store.save(PROFILE_ID, this.profile).then(() => {
+      sessionStorage.setItem(UAT_AUTOCONTINUE_KEY, '1');
+      location.reload();
+    });
   }
 
   private applySettings() {
     const s = this.profile.settings;
     document.body.classList.toggle('reduced-motion', s.reducedMotion);
     document.body.classList.toggle('high-contrast', s.highContrast);
-    this.text.setTypewriter(s.typewriter && !s.reducedMotion);
+    this.text.setTypewriter(this.effectiveTypewriter());
     this.director.setReducedMotion(s.reducedMotion);
     this.director.setDynamicScenery(s.dynamicScenery);
     this.director.setRenderScale(s.renderScale);
@@ -138,17 +182,26 @@ export class Game {
     return { name: name || t(uiKey('travellerFallback'), 'traveller') };
   }
 
+  /** Typewriter forced off under `?uat=1`, regardless of the stored setting (which still displays as-is in Settings). */
+  private effectiveTypewriter(): boolean {
+    if (this.uat) return false;
+    const s = this.profile.settings;
+    return s.typewriter && !s.reducedMotion;
+  }
+
   private async persist(showToast = false) {
     this.profile.run = this.state.finished ? null : this.state;
     await this.store.save(PROFILE_ID, this.profile);
     // Shown only at natural checkpoints (door chosen, room completed, settings
     // saved) — never on the silent per-stage safety-net persist, or it would nag.
-    if (showToast) showSavedToast(this.ui, t(uiKey('savedToast'), 'Progress saved'), this.profile.settings.reducedMotion);
+    if (showToast) {
+      showSavedToast(this.ui, t(uiKey('savedToast'), 'Progress saved'), this.profile.settings.reducedMotion, this.speedMultiplier);
+    }
   }
 
   private fade(on: boolean): Promise<void> {
     this.veil.classList.toggle('on', on);
-    const ms = this.profile.settings.reducedMotion ? 280 : 720;
+    const ms = (this.profile.settings.reducedMotion ? 280 : 720) * this.speedMultiplier;
     return new Promise((r) => setTimeout(r, ms));
   }
 
@@ -210,6 +263,18 @@ export class Game {
 
   /** Entry point: title screen loop, then the run. */
   async start() {
+    // jump() left a marker + a fully-formed run before reloading — resume it
+    // directly instead of making a scripted test click through the title.
+    if (this.uat && sessionStorage.getItem(UAT_AUTOCONTINUE_KEY) && this.profile.run) {
+      sessionStorage.removeItem(UAT_AUTOCONTINUE_KEY);
+      this.director.setTheme(0);
+      this.state = this.profile.run;
+      this.director.setPaused(false);
+      this.inGame = true;
+      this.runStartNotes = this.profile.codexUnlocked.length;
+      this.hud.show();
+      return this.runLoop();
+    }
     this.director.setTheme(0);
     sound.setAct(0);
     this.director.setPaused(true);
@@ -389,8 +454,7 @@ export class Game {
     this.text.hide();
     if (remembered) {
       this.text.setRemembered(false);
-      const s = this.profile.settings;
-      this.text.setTypewriter(s.typewriter && !s.reducedMotion);
+      this.text.setTypewriter(this.effectiveTypewriter());
     }
 
     if (room.fieldNote) {
