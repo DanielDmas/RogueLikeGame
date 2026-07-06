@@ -253,13 +253,24 @@ Continuity nit: the Punchline ending says "twenty rooms"; a run is 15.
       migration-safe) folded into the hash; added a generic reachability
       regression test (`newRooms.test.ts`) covering all three acts' pools so
       this class of bug is caught immediately as K2/K3 grow them further.
-- [ ] K2. Act II +3: `chinese-room`, `newcomb-annex`, `veil-of-ignorance`
+- [x] K2. Act II +3: `chinese-room` (Searle/Turing), `newcomb-annex`
+      (Newcomb/Nozick — the predictor is explicitly "the facility," never the
+      Usher), `veil-of-ignorance` (Rawls/Harsanyi) — full content, EN+CS+FA,
+      icons, pool-wired. Same false-positive translation-coverage pattern as
+      K1 recurred (three thinkers fields were pure Western proper nouns with
+      no translatable component, so the correct CS/FA rendering was
+      byte-identical to English); fixed the same way, by enriching the EN
+      source with a translatable descriptor phrase to match the game-wide
+      convention, then translating it.
 - [ ] K3. Act III +3: `marys-room`, `butterfly-dream`, `swampman`
 - [ ] K4. Secret room `the-cave` (Plato; replays your previous run as shadows;
       returning travelers only)
 - [x] K5. Rooms shipped so far are complete (beats/choices/notes/icons/moods)
       in EN+CS+FA, same commit — coverage tests auto-extended and pass.
-- [x] K6. Pool wiring + graph-test invariants updated for rooms shipped so far.
+- [x] K6. Pool wiring + graph-test invariants updated for rooms shipped so far
+      (25 numbered rooms + prologue after Act I+II growth); the reachability
+      regression test from K1 already covered Act II's grown pool with no
+      changes needed.
 
 ## Phase L — Act V: The Understory (spec `02-act-five-the-understory.md`)
 

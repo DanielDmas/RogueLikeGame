@@ -1,6 +1,7 @@
 // Czech translation of the v2 room prose for Act II (beats, choice text/hint/
 // outcome, field notes). Registered under version 'v2'. Rooms: junction,
-// experience-machine, ship, casino-pascal, omelas, court-of-usher.
+// experience-machine, ship, casino-pascal, omelas, chinese-room,
+// newcomb-annex, veil-of-ignorance, court-of-usher.
 import { registerAll } from './resolver';
 import {
   roomBeatKey,
@@ -157,6 +158,83 @@ registerAll('v2', 'cs', {
   [roomNoteTitleKey('omelas')]: 'Ti, kdo odcházejí',
   [roomNoteThinkersKey('omelas')]: 'Ursula K. Le Guinová · etika obětního beránka · William James',
   [roomNoteBodyKey('omelas')]: 'Le Guinové povídka z roku 1973 — impuls připsala Williamu Jamesovi, který se ptal, zda by miliony mohly přijmout štěstí koupené trápením jedné ztracené duše — je past postavená z krásy. Stráví stránky tím, že udělá z Omelasu skutečně dobré místo, a pak ukáže ten sklep a nezeptá se na nic než: a co teď? Utilitaristický součet je obludný a správný zároveň — bída jednoho dítěte proti rozkvětu celé civilizace vychází, což je přesně to obvinění: jakákoli etika, která to dokáže spočítat, si něco amputovala. Ale ta povídka je vychytralejší než jen argument proti utilitarismu. Ti, kdo odcházejí, nikoho nezachraňují; jejich odmítnutí je výrazové, ne účinné — spoluúčast odmítnutá za cenu exilu, k ničemu pro to dítě. A otevřít ty dveře je z hlediska města ještě horší než zbytečné. Každá možnost je odsouzena k neúspěchu, a to je to hlavní: některé struktury nenabízejí žádné nevinné pozice, jen výběr dluhů. Většina z nás žije v Omelasu. Zvony jsou letos velmi dobré.',
+});
+
+// ---------- Act II: The Chinese Room ----------
+registerAll('v2', 'cs', {
+  [roomBeatKey('chinese-room', 0, 0)]: 'Malá budka zabudovaná do stěny soukolí, dřevo vyleštěné staletími rukou, které tu nikdy nebyly zároveň. Mosazný otvor, ohlazený, čeká ve výšce hrudi.',
+  [roomBeatKey('chinese-room', 0, 1)]: 'Vedle ní tištěná cedulka: NAPIŠTE COKOLI. ODPOVÍ. ZDARMA.',
+  [roomBeatKey('chinese-room', 0, 2)]: 'Napíšete něco — skutečnou otázku, takovou, jakou byste položili člověku — a prostrčíte to dovnitř. Odpověď přijde skoro okamžitě, vašimi vlastními slovy, vřelejší a přesnější, než jste čekali. Je to, nezaměnitelně, dobrá odpověď.',
+  [roomBeatKey('chinese-room', 0, 3)]: 'Zvědavost vás přemůže a obejdete budku dokola. Boční panel, neuzamčený, se otevře na pantu, který zjevně chtěl být nalezen.',
+  [roomBeatKey('chinese-room', 0, 4)]: 'Uvnitř: postava obklopená účetními knihami, přiřazující každý symbol z vašeho lístku k záznamu v pravidlech, přepisující odpovídající symboly odpovědi na kartu jeden po druhém, aniž by se jedinkrát podívala nahoru, aby zjistila, co to všechno znamená.',
+  [roomBeatKey('chinese-room', 0, 5)]: 'Uvaděč: Ta budka nikdy neselhala na žádné otázce. Chci být přesný v tom, co to dokazuje, a co ne.',
+  [roomChoiceTextKey('chinese-room', 'it-understands')]: 'Samozřejmě že to rozumí. Kde jinde by porozumění mělo bydlet, když ne tady?',
+  [roomChoiceHintKey('chinese-room', 'it-understands')]: 'Chování je celý ten důkaz.',
+  [roomChoiceOutcomeKey('chinese-room', 'it-understands', 0)]: 'Zaklepete na bok budky a poděkujete jí, upřímně, tak jako byste poděkovali člověku.',
+  [roomChoiceOutcomeKey('chinese-room', 'it-understands', 1)]: 'Uvaděč: Obhajitelný postoj. Pokud je porozumění cokoli, co spolehlivě, pod tlakem, napříč novými otázkami, produkuje chování ve tvaru porozumění — budka právě zdolala laťku, na kterou se lidé mezi sebou málokdy testují.',
+  [roomChoiceTextKey('chinese-room', 'only-rules')]: 'Nic tam uvnitř ničemu nerozumí. Jsou to jen pravidla, až na dno.',
+  [roomChoiceHintKey('chinese-room', 'only-rules')]: 'Syntaxe nikdy nebyla sémantikou.',
+  [roomChoiceOutcomeKey('chinese-room', 'only-rules', 0)]: 'Chvíli ještě sledujete tu postavu při práci — teď rychlejší, protože jí věnujete pozornost, mechanicky nedotčenou vaším zkoumáním.',
+  [roomChoiceOutcomeKey('chinese-room', 'only-rules', 1)]: 'Uvaděč: Také obhajitelné. Postava uvnitř dnes manipulovala s deseti tisíci symboly a nepochopila význam ani jednoho z nich, podle vlastního svědectví, kdyby ho mohla podat. Někde mezi budkou a významem, trvá ten argument, zhasne světlo.',
+  [roomChoiceTextKey('chinese-room', 'ask-it')]: 'Prostrčte ještě jeden lístek: „Rozumíš mi?“',
+  [roomChoiceHintKey('chinese-room', 'ask-it')]: 'Zeptejte se systému, ať popíše svou vlastní místnost.',
+  [roomChoiceOutcomeKey('chinese-room', 'ask-it', 0)]: 'Odpověď přijde okamžitě, krásně formátovaná, oslovující vaši otázku s vřelostí a přesností: „Zpracovávám váš vstup podle pravidel, která produkují přesně tuto větu. Zda to představuje porozumění, je, případně, mimo má pravidla.“',
+  [roomChoiceOutcomeKey('chinese-room', 'ask-it', 1)]: 'Uvaděč: Dokonalá odpověď na jedinou otázku, na kterou budka o sobě samé vlastně nedokáže odpovědět. Všimněte si, že neuhnula. Řekla vám přesně tvar své vlastní hranice — což je buď to nejupřímnější v této chodbě, nebo to nejchytřejší.',
+  [roomNoteTitleKey('chinese-room')]: 'Místnost, která promluvila',
+  [roomNoteThinkersKey('chinese-room')]: 'John Searle · Alan Turing, výpočet a význam',
+  [roomNoteBodyKey('chinese-room')]: 'John Searle si představil místnost, kde člověk, který neumí čínsky, následuje anglický soubor pravidel, přiřazující příchozí čínské symboly k odchozím, dostatečně dobře na to, aby rodilí mluvčí venku věřili, že hovoří s plynulou myslí. Místnost projde Turingovým testem — chování nerozeznatelné od porozumění — zatímco Searle trvá na tom, že nikdo uvnitř nikdy nerozuměl jedinému slovu. Turingova vlastní odpověď, o desetiletí dřív, byla stručnější: přestaňte se ptát, čím myšlení tajně *je*, a sledujte, co systém *dělá*; pokud se konverzace nedá odlišit od té s člověkem, otázka „ale opravdu to myslí?“ možná neodpovídá na nic, co chování už samo nevyřešilo. Ten spor se nikdy úplně neuzavřel. Searleho kritici odpovídají, že *systém* — místnost, pravidla a úředník dohromady — rozumí, i když žádná jeho jednotlivá část nerozumí, stejně jako vy rozumíte větě, i když jí nerozumí žádný jednotlivý neuron. **Budka vám nikdy nelhala. Soubor pravidel může být prostě místem, kde smí porozumění bydlet, aniž by si nejdřív muselo vyžádat povolení.**',
+});
+
+// ---------- Act II: The Newcomb Annex ----------
+registerAll('v2', 'cs', {
+  [roomBeatKey('newcomb-annex', 0, 0)]: 'Tišší místnost mimo kasinový sál, obložená plstí, tiše hučící stejným soukolím jako stoly venku. Na podstavci čekají dvě krabice.',
+  [roomBeatKey('newcomb-annex', 0, 1)]: 'První je skleněná: uvnitř viditelný svazek bankovek, skromná a jistá suma.',
+  [roomBeatKey('newcomb-annex', 0, 2)]: 'Druhá je zapečetěná ocel, na pohled těžší, nečitelná. Mosazná cedulka vedle ní hlásá: TATO KRABICE BYLA VČERA NAPLNĚNA — NEBO PONECHÁNA PRÁZDNÁ — PODLE TOHO, CO ZAŘÍZENÍ PŘEDPOVĚDĚLO, ŽE ZDE DNES UDĚLÁTE. POKUD PŘEDPOVĚDĚLO, ŽE SI VEZMETE JEN ZAPEČETĚNOU KRABICI, JE PLNÁ. POKUD PŘEDPOVĚDĚLO, ŽE SI VEZMETE OBĚ, JE PRÁZDNÁ. ZAŘÍZENÍ ZATÍM PŘEDPOVÍDALO SPRÁVNĚ VE VŠECH ZAZNAMENANÝCH PŘÍPADECH.',
+  [roomBeatKey('newcomb-annex', 0, 3)]: 'Můžete si vzít jen zapečetěnou krabici, nebo obě. Skleněná je vaše tak jako tak; ta část nikdy nebyla součástí sázky.',
+  [roomBeatKey('newcomb-annex', 0, 4)]: 'Uvaděč: (ode dveří, žádné krabice se nedotýká) Chci být jasný — tuhle předpověď jsem nedělal já, a nesmím ji vidět. Ať už o vás zařízení včera vědělo cokoli, mně to neřeklo. Jsem tu jen jako divák, stejně jako vy.',
+  [roomChoiceTextKey('newcomb-annex', 'take-both')]: 'Vezměte si obě krabice. Předpověď už je hotová — nic, co teď uděláte, nemůže změnit, co je uvnitř.',
+  [roomChoiceHintKey('newcomb-annex', 'take-both')]: 'Ocelová krabice je už tím, čím je.',
+  [roomChoiceOutcomeKey('newcomb-annex', 'take-both', 0)]: 'Vezmete si obě. Bankovky ve skleněné krabici jsou teplé od světla nad nimi; ocelová krabice je, když ji otevřete, přesně tak lehká jako krabice, ve které nic není.',
+  [roomChoiceOutcomeKey('newcomb-annex', 'take-both', 1)]: 'Uvaděč: Kauzálně je vaše uvažování bezchybné — krabice byla naplněna, nebo ne, včera, a vaše dnešní ruka nemůže sáhnout zpátky, aby to změnila. Zároveň je to, podle historických záznamů, prohrávající tah, doslova pokaždé. Udělejte si vlastní závěr o tom, jaký druh uvažování zařízení skutečně odměňuje.',
+  [roomChoiceTextKey('newcomb-annex', 'take-one')]: 'Vezměte si jen zapečetěnou krabici. Důvěřujte předpovědi a její logice.',
+  [roomChoiceHintKey('newcomb-annex', 'take-one')]: 'Buďte tím druhem člověka, kterého už zařízení vidělo.',
+  [roomChoiceOutcomeKey('newcomb-annex', 'take-one', 0)]: 'Necháte skleněnou krabici nedotčenou na podstavci a zvednete jen tu zapečetěnou. Je těžká způsobem, který působí jako odpověď, ještě než ji vůbec otevřete.',
+  [roomChoiceOutcomeKey('newcomb-annex', 'take-one', 1)]: 'Uvnitř: víc, než by skleněná krabice kdy mohla obsáhnout. Nikdy se nedozvíte, jestli ta váha byla osud, nebo jen velmi dobrý odhad — jen to, že tentokrát se sázka na předpověď vyplatila.',
+  [roomChoiceTextKey('newcomb-annex', 'inspect-mechanism')]: 'Než se rozhodnete, zeptejte se, jak byla ta předpověď vlastně udělána.',
+  [roomChoiceHintKey('newcomb-annex', 'inspect-mechanism')]: 'Prověřte krabici, než na ni vsadíte.',
+  [roomChoiceOutcomeKey('newcomb-annex', 'inspect-mechanism', 0)]: 'Otočíte cedulku. Na zadní straně, menším písmem: MECHANISMUS ZDE NENÍ POPSÁN, PROTOŽE JEHO POPIS BY ZMĚNIL TO, CO PŘEDPOVÍDÁ.',
+  [roomChoiceOutcomeKey('newcomb-annex', 'inspect-mechanism', 1)]: 'Podíváte se na ocelovou krabici, a na okamžik vám její vyleštěné víko vrátí místo švu váš vlastní odraz. Ať už zařízení používalo k tomu, aby vás poznalo, cokoli, uvědomíte si, že to nemuselo být kouzlo — stačilo mu jen věnovat pozornost pozorněji a déle, než jste si kdy mysleli, že jí někdo věnuje.',
+  [roomChoiceOutcomeKey('newcomb-annex', 'inspect-mechanism', 2)]: 'Uvaděč: Mechanismus je celá ta hádanka, jen v kabátě. Zeptáte-li se, jak fungoval, ve skutečnosti se ptáte, zda jste vůbec předvídatelní — a bohužel, samo to ptaní je něco, co by dobrý předpovídač viděl přicházet.',
+  [roomNoteTitleKey('newcomb-annex')]: 'Účetní kniha předpovídače',
+  [roomNoteThinkersKey('newcomb-annex')]: 'William Newcomb · Robert Nozick, predikce a svoboda',
+  [roomNoteBodyKey('newcomb-annex')]: 'Fyzik William Newcomb vymyslel tuhle hádanku; Robert Nozick ji přinesl do filozofie v roce 1969 s varováním, které dodnes platí: „Téměř každému je naprosto jasné a zřejmé, co by se mělo udělat. Potíž je v tom, že se tihle lidé zdají rozdělovat na problému téměř rovnoměrně, přičemž velký počet z nich si myslí, že ta druhá polovina je prostě hloupá.“ Kauzální teorie rozhodování říká: vezměte si obě krabice — obsah je už daný, a odmítat volné peníze kvůli už učiněné předpovědi je pověra v hávu strategie. Evidenční teorie rozhodování říká: vezměte si jednu — vaše volba je důkazem o tom, jaký druh volitele jste, a druh volitele, který si vezme jen jednu krabici, empiricky, je ten, kdo zbohatne. Oba argumenty jsou platné; jen se neshodují na tom, k čemu volba *slouží*. **Ocelová krabice nikdy netestovala vaši logiku. Testovala, jakým druhem uvažujícího už jste — otázku, kterou teorie rozhodování stále nedokáže úplně vyřešit.**',
+});
+
+// ---------- Act II: The Veil of Ignorance ----------
+registerAll('v2', 'cs', {
+  [roomBeatKey('veil-of-ignorance', 0, 0)]: 'Rýsovací stůl pod jedinou stálou lampou. Na něm: miniaturní městečko, dvanáct malých domků v kruhu, každý s natřenými dveřmi a komínem se skutečným, drobným kouřem.',
+  [roomBeatKey('veil-of-ignorance', 0, 1)]: 'V okraji stolu jsou zasazeny tři mosazné páky, popsané rytým písmem: CHLÉB. LÉKY. POCTY.',
+  [roomBeatKey('veil-of-ignorance', 0, 2)]: 'Kartička, opřená o nejbližší komín: NAVRHNĚTE TOHLE MĚSTEČKO, JAK CHCETE. AŽ SKONČÍTE, PROBUDÍTE SE UVNITŘ NĚJ — JAKO JEDNA Z DVANÁCTI DOMÁCNOSTÍ, VYLOSOVANÁ. NEVÍTE, KTEROU Z NICH BUDETE.',
+  [roomBeatKey('veil-of-ignorance', 0, 3)]: 'Nemůžete navrhnout městečko a pak si dodatečně vybrat domácnost. Los přijde z vaší perspektivy jako první; návrh přijde jako první z perspektivy městečka.',
+  [roomBeatKey('veil-of-ignorance', 0, 4)]: 'Uvaděč: Oblíbená otázka filozofa, který nikdy nemusel žít pod svou vlastní odpovědí, a sám to přiznal. Vy tuhle výjimku dnes večer nedostanete.',
+  [roomChoiceTextKey('veil-of-ignorance', 'equal-shares')]: 'Nastavte všechny tři páky na rovný podíl — chléb, léky i pocty rozdělené stejným dvanácterým dílem.',
+  [roomChoiceHintKey('veil-of-ignorance', 'equal-shares')]: 'Žádná domácnost pod žádnou jinou.',
+  [roomChoiceOutcomeKey('veil-of-ignorance', 'equal-shares', 0)]: 'Malé komíny kouří všechny do stejné skromné výšky. Cítíte, jak se někde otáčí los, a probudíte se uvnitř domu číslo sedm — dveře ani honosnější, ani chudší než ostatních jedenáct.',
+  [roomChoiceOutcomeKey('veil-of-ignorance', 'equal-shares', 1)]: 'Chléb je prostý a dostatečný. Léky přicházejí včas, pro vás i pro dům přes celý kruh stejně. Nikdo tu nevzkvétá nápadně. Nikdo, kdo se podívá na ostatních jedenáct dveří, nemá důvod měnit.',
+  [roomChoiceOutcomeKey('veil-of-ignorance', 'equal-shares', 2)]: 'Uvaděč: Tiché uspořádání. Nic tady nikdy nikoho nenechá vydechnout úžasem. Málokdy tu ale taky někoho zničí.',
+  [roomChoiceTextKey('veil-of-ignorance', 'merit-weighted')]: 'Važte chléb, léky i pocty podle zásluh a přínosu — některé domy si povedou lépe, poctivě zaslouženě.',
+  [roomChoiceHintKey('veil-of-ignorance', 'merit-weighted')]: 'Odměňte to, co se skutečně vyprodukuje.',
+  [roomChoiceOutcomeKey('veil-of-ignorance', 'merit-weighted', 0)]: 'Nastavíte páky tak, aby sledovaly výstup — domy, které vyprodukují víc chleba, ho víc sní, domy, které víc přispívají k údržbě městečka, jsou na oplátku lépe opečovávány. Na rýsovacím stole je to elegantní kus inženýrství.',
+  [roomChoiceOutcomeKey('veil-of-ignorance', 'merit-weighted', 1)]: 'Los se otočí. Probudíte se v domě číslo dvanáct — nejmenší komín, nejtenčí kouř — a ta matematika, kterou jste obdivovali shora, je zespodu podstatně chladnější, přichází pozdě a zkrácená, přesně podle návrhu, přesně tak zasloužená verzí vás, která nikdy nedostala šanci zasloužit si něco jiného.',
+  [roomChoiceOutcomeKey('veil-of-ignorance', 'merit-weighted', 2)]: 'Uvaděč: Aritmetika se mezi rýsovacím stolem a prahem nezměnila. Změnilo se jen vaše místo.',
+  [roomChoiceTextKey('veil-of-ignorance', 'floor-then-freedom')]: 'Zaručte každé domácnosti obyvatelné minimum — a pak nechte rozdíly nad ním volně zasloužit.',
+  [roomChoiceHintKey('veil-of-ignorance', 'floor-then-freedom')]: 'Nikdo neklesne pod určitou hranici; nad ní ať se to liší.',
+  [roomChoiceOutcomeKey('veil-of-ignorance', 'floor-then-freedom', 0)]: 'Nastavíte páky tak, aby chléb ani léky žádné domácnosti nemohly klesnout pod pevnou, velkorysou hranici — a páku poct necháte nad ní volnou, ať odměňuje to, co každý dům skutečně dělá.',
+  [roomChoiceOutcomeKey('veil-of-ignorance', 'floor-then-freedom', 1)]: 'Los se otočí. Probudíte se v domě číslo devět, uprostřed kruhu, ani nejhonosnější, ani nejmenší. Podlaha vás drží tak, jak by podlaha měla — neviditelně, dokud si nevšimnete, že jste na ni jedinkrát nemuseli myslet. Nad ní je kruh nerovný: některé dveře jsou honosnější, poctivě, a stojí vás překvapivě málo se na to dívat.',
+  [roomChoiceOutcomeKey('veil-of-ignorance', 'floor-then-freedom', 2)]: 'Uvaděč: Instinkt maximinu — navrhujte, jako byste dostali to nejhorší místo, protože dnes večer jste ho málem opravdu dostali. Městečko nad podlahou se se sebou pořád hádá. Městečko pod podlahou to už nepotřebovalo.',
+  [roomNoteTitleKey('veil-of-ignorance')]: 'Navrhování zpoza opony',
+  [roomNoteThinkersKey('veil-of-ignorance')]: 'John Rawls · John Harsanyi, spravedlnost jako férovost',
+  [roomNoteBodyKey('veil-of-ignorance')]: 'John Rawls navrhl myšlenkový experiment jako nástroj poctivosti: navrhněte pravidla společnosti zpoza „závoje nevědomosti“, aniž byste věděli, jestli se narodíte bohatí, nebo chudí, nadaní, nebo zápasící, ve většině, nebo na okraji. Zbaveni vlastního zájmu by, tvrdil, rozumní lidé nesázeli na systém založený čistě na zásluhách, který by je mohl uvěznit na dně — vybrali by principy, které nejdřív chrání ty nejhůř postavené, strategii „maximinu“, a nerovnost nad touto hranicí by povolili jen tehdy, pokud stále prospívá všem, včetně nejméně zvýhodněných. John Harsanyi odpověděl jinou sázkou zpoza téže opony: pokud opravdu nevíte, které místo obsadíte, měli byste maximalizovat *průměrný* výsledek napříč všemi dvanácti dveřmi, nikoli se pojišťovat proti té nejhorší — racionální hazardér hraje na pravděpodobnost, ne na noční můru. Oba vycházejí ze stejné pásky přes oči a dojdou k odlišným městečkům. **Závoj neodstraňuje vlastní zájem. Jen vás donutí vsadit na všech dvanáct domů místo jednoho — a to, jak tu sázku vážíte, je celý ten spor.**',
 });
 
 // ---------- Act II: The Court of the Usher ----------

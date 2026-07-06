@@ -85,6 +85,25 @@ export const roomIcons: Record<string, string> = {
     <path d="M8 40 h44"/>
     <rect x="26" y="44" width="6" height="6"/>
   `),
+  'chinese-room': svg(`
+    <rect x="14" y="12" width="36" height="40" rx="2"/>
+    <rect x="26" y="26" width="12" height="3"/>
+    <rect x="40" y="38" width="10" height="7" rx="1"/>
+  `),
+  'newcomb-annex': svg(`
+    <rect x="8" y="26" width="20" height="20" rx="1"/>
+    <path d="M8 26 L28 46 M28 26 L8 46" opacity="0.5"/>
+    <rect x="36" y="20" width="20" height="26" rx="1"/>
+  `),
+  'veil-of-ignorance': svg(`
+    <path d="M14 8 q5 10 0 20 q-5 10 0 20"/>
+    <path d="M26 8 q5 10 0 20 q-5 10 0 20"/>
+    <path d="M38 8 q5 10 0 20 q-5 10 0 20"/>
+    <path d="M18 50 h28"/>
+    <path d="M32 42 v8"/>
+    <circle cx="24" cy="46" r="4"/>
+    <circle cx="40" cy="46" r="4"/>
+  `),
   'court-of-usher': svg(`
     <path d="M32 10 v40"/>
     <path d="M14 20 h36"/>

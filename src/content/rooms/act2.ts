@@ -444,4 +444,190 @@ export const courtOfUsher: Room = {
   },
 };
 
-export const act2Rooms = [junction, experienceMachine, ship, casinoPascal, omelas, courtOfUsher];
+export const chineseRoom: Room = {
+  id: 'chinese-room',
+  act: 2,
+  title: 'The Chinese Room',
+  type: 'INSIGHT',
+  doorHint: 'The door of the perfect answer',
+  teaser: 'It will answer anything you ask, in your own words.',
+  stages: [
+    {
+      beats: [
+        'A small booth built into the machinery wall, wood polished by centuries of hands that were never here at once. A brass slot, worn smooth, waits at chest height.',
+        'A printed card beside it: WRITE ANYTHING. IT WILL ANSWER. NO CHARGE.',
+        'You write something — a real question, the kind you would ask a person — and slide it through. A reply comes back almost immediately, in your own words, warmer and more precise than you expected. It is, unmistakably, a good answer.',
+        'Curiosity gets the better of you and you circle the booth. A side panel, unlatched, swings open on a hinge that clearly wanted to be found.',
+        'Inside: a figure surrounded by ledgers, matching each symbol on your note to a rulebook entry, copying the corresponding reply-symbols onto a card one at a time, without ever once looking up to know what any of it means.',
+        'Usher: The booth has never failed a question. I want to be precise about what that does, and does not, prove.',
+      ],
+      choices: [
+        {
+          id: 'it-understands',
+          text: 'Of course it understands. Where else would understanding live, if not here?',
+          hint: 'Behavior is the whole of the evidence.',
+          effects: { lucidity: 8, axes: { reasonFeeling: 5, controlAcceptance: 4 } },
+          outcome: [
+            'You knock on the booth’s side and thank it, sincerely, the way you would thank a person.',
+            'Usher: A defensible position. If understanding is whatever produces understanding-shaped behavior, reliably, under pressure, across novel questions — the booth has just cleared a bar most people never test each other against.',
+          ],
+        },
+        {
+          id: 'only-rules',
+          text: 'Nothing in there understands anything. It’s rules, all the way down.',
+          hint: 'Syntax was never semantics.',
+          effects: { lucidity: 8, axes: { reasonFeeling: -6 } },
+          outcome: [
+            'You watch the figure work a while longer — faster now that you are paying attention, mechanically unbothered by your scrutiny.',
+            'Usher: Also defensible. The figure inside has manipulated ten thousand symbols today and grasped the meaning of none of them, by its own testimony, if it could give testimony. Somewhere between the booth and the meaning, the argument insists, the light goes out.',
+          ],
+        },
+        {
+          id: 'ask-it',
+          text: 'Slip in one more note: “Do you understand me?”',
+          hint: 'Ask the system to describe its own room.',
+          effects: { lucidity: 12 },
+          outcome: [
+            'The reply comes back instantly, formatted beautifully, addressing your question with warmth and precision: “I process your input according to rules that produce this exact sentence. Whether that constitutes understanding is, appropriately, outside my rules.”',
+            'Usher: The perfect answer to the only question the booth cannot actually answer about itself. Notice it did not dodge. It told you, precisely, the shape of its own limit — which is either the most honest thing in this corridor, or the cleverest.',
+          ],
+        },
+      ],
+    },
+  ],
+  fieldNote: {
+    title: 'The Room That Spoke',
+    thinkers: 'John Searle · Alan Turing, computation and meaning',
+    body: 'John Searle imagined a room where a person who speaks no Chinese follows an English rulebook, matching incoming Chinese symbols to outgoing ones, well enough that native speakers outside believe they are conversing with a fluent mind. The room passes Turing’s test — behavior indistinguishable from understanding — while Searle insists nobody inside ever understood a word. Turing’s own answer, decades earlier, was blunter: stop asking what thinking secretly *is* and watch what a system *does*; if the conversation cannot be told apart from a person’s, the question “but does it really think?” may not be answering anything the behavior hasn’t already settled. The disagreement has never fully closed. Searle’s critics reply that the *system* — room, rulebook, and clerk together — understands even if no single part does, the way you understand a sentence though no single neuron does. **The booth was never lying to you. The rulebook may simply be a place understanding is allowed to live without asking permission first.**',
+  },
+};
+
+export const newcombAnnex: Room = {
+  id: 'newcomb-annex',
+  act: 2,
+  title: 'The Newcomb Annex',
+  type: 'DILEMMA',
+  doorHint: 'The door of the box already filled',
+  teaser: 'Your choice has been predicted. It is not too late — is it?',
+  stages: [
+    {
+      beats: [
+        'A quieter room off the casino floor, felt-lined, humming faintly with the same machinery as the tables outside. Two boxes wait on a pedestal.',
+        'The first is glass: a stack of bills visible inside, a modest and certain sum.',
+        'The second is sealed steel, heavier-looking, unreadable. A brass placard beside it reads: THIS BOX WAS FILLED — OR LEFT EMPTY — YESTERDAY, ACCORDING TO WHAT THE FACILITY PREDICTED YOU WOULD DO HERE TODAY. IF IT PREDICTED YOU WOULD TAKE ONLY THE SEALED BOX, IT IS FULL. IF IT PREDICTED YOU WOULD TAKE BOTH, IT IS EMPTY. THE FACILITY HAS PREDICTED CORRECTLY, IN EVERY RECORDED CASE, SO FAR.',
+        'You may take the sealed box alone, or both boxes. The glass one is yours regardless; that part was never the wager.',
+        'Usher: (from the doorway, not touching either box) I want to be clear — I did not make this prediction, and I am not permitted to see it. Whatever the facility knew about you yesterday, it did not tell me. I am here only to watch, same as you.',
+      ],
+      choices: [
+        {
+          id: 'take-both',
+          text: 'Take both boxes. The prediction is already made — nothing you do now can change what’s inside.',
+          hint: 'The steel box is already whatever it is.',
+          effects: { lucidity: 8, axes: { reasonFeeling: -5, controlAcceptance: -5 } },
+          outcome: [
+            'You take both. The glass box’s bills are warm from the light above them; the steel box, when you open it, is exactly as light as a box with nothing in it.',
+            'Usher: Causally, your reasoning is airtight — the box was filled or not, yesterday, and your hand today cannot reach backward to change it. It is also, on the historical record, the losing move every single time. Draw your own conclusion about which kind of reasoning the facility actually rewards.',
+          ],
+        },
+        {
+          id: 'take-one',
+          text: 'Take only the sealed box. Trust the prediction, and its logic.',
+          hint: 'Be the kind of person the facility already saw.',
+          effects: { lucidity: 8, axes: { controlAcceptance: 6 } },
+          outcome: [
+            'You leave the glass box untouched on the pedestal and lift only the sealed one. It is heavy in a way that feels like an answer before you have even opened it.',
+            'Inside: more than the glass box could ever have held. You will never know whether the weight was destiny or a very good guess — only that, this time, betting on the prediction paid for itself.',
+          ],
+        },
+        {
+          id: 'inspect-mechanism',
+          text: 'Before choosing, ask how the prediction was actually made.',
+          hint: 'Audit the box before you bet on it.',
+          effects: { lucidity: 12, axes: { reasonFeeling: -4 } },
+          outcome: [
+            'You turn the placard over. On the back, in smaller print: THE MECHANISM IS NOT DESCRIBED HERE, BECAUSE DESCRIBING IT WOULD CHANGE WHAT IT PREDICTS.',
+            'You look up at the steel box, and for a moment its polished lid gives back your own reflection instead of a seam. Whatever the facility used to know you, you realize, it did not need to be magic — only to have been paying closer attention, for longer, than you ever thought anyone was.',
+            'Usher: The mechanism is the whole puzzle, wearing a coat. Ask how it worked and you are really asking whether you are predictable at all — and unfortunately, the asking is itself something a good predictor would have seen coming.',
+          ],
+        },
+      ],
+    },
+  ],
+  fieldNote: {
+    title: 'The Predictor’s Ledger',
+    thinkers: 'William Newcomb · Robert Nozick, prediction and freedom',
+    body: 'The physicist William Newcomb devised this puzzle; Robert Nozick brought it to philosophy in 1969 with a warning that has held up: “To almost everyone, it is perfectly clear and obvious what should be done. The difficulty is that these people seem to divide almost evenly on the problem, with large numbers thinking that the opposing half is just being silly.” Causal decision theory says take both boxes — the contents are already fixed, and refusing free money because of a prediction already made is superstition dressed as strategy. Evidential decision theory says take one — your choice is evidence about the kind of chooser you are, and the kind of chooser who one-boxes is, empirically, the kind who gets rich. Both arguments are valid; they simply disagree about what a choice is *for*. **The steel box was never testing your logic. It was testing which kind of reasoner you already are — a question decision theory still cannot fully settle.**',
+  },
+};
+
+export const veilOfIgnorance: Room = {
+  id: 'veil-of-ignorance',
+  act: 2,
+  title: 'The Veil of Ignorance',
+  type: 'DILEMMA',
+  doorHint: 'The door of the drawn lot',
+  teaser: 'You will design a small world, and then you will live in it.',
+  stages: [
+    {
+      beats: [
+        'A drafting table under a single steady lamp. On it: a miniature town, twelve small houses in a ring, each with a painted door and a chimney of real, tiny smoke.',
+        'Three brass levers are set into the table’s edge, labeled in engraver’s script: BREAD. MEDICINE. HONORS.',
+        'A card, propped against the nearest chimney: DESIGN THIS TOWN HOWEVER YOU LIKE. WHEN YOU ARE FINISHED, YOU WILL WAKE INSIDE IT — AS ONE OF THE TWELVE HOUSEHOLDS, DRAWN BY LOT. YOU DO NOT KNOW WHICH ONE YOU WILL BE.',
+        'You do not get to design the town and then choose your household afterward. The lot comes first, from your perspective; the design comes first, from the town’s.',
+        'Usher: A favorite question of a philosopher who never once had to live under his own answer, and admitted as much. You do not get that exemption tonight.',
+      ],
+      choices: [
+        {
+          id: 'equal-shares',
+          text: 'Set all three levers to equal shares — bread, medicine, and honors divided the same twelve ways.',
+          hint: 'No household beneath any other.',
+          effects: { lucidity: 8, axes: { selfOthers: 6 } },
+          outcome: [
+            'The little chimneys all smoke the same modest height. You feel the lot turn, somewhere, and wake inside house number seven — a door no grander or meaner than the other eleven.',
+            'The bread is plain and sufficient. The medicine arrives on time, for you and for the house across the ring alike. Nobody here is thriving spectacularly. Nobody, checking the other eleven doors, has reason to trade.',
+            'Usher: A quiet arrangement. Nothing here will ever make anyone gasp. Very little here will ever ruin anyone, either.',
+          ],
+        },
+        {
+          id: 'merit-weighted',
+          text: 'Weight bread, medicine, and honors by merit and contribution — some houses will do better, fairly earned.',
+          hint: 'Reward what is actually produced.',
+          effects: { lucidity: 8, axes: { reasonFeeling: -5, selfOthers: -5 } },
+          outcome: [
+            'You set the levers to track output — the houses that produce more bread eat more of it, the houses that contribute more to the town’s upkeep are better tended in return. It is, on the drafting table, an elegant piece of engineering.',
+            'The lot turns. You wake in house number twelve — the smallest chimney, the thinnest smoke — and the mathematics you admired from above feels considerably colder from underneath it, arriving late and reduced, exactly as designed, exactly as earned by a version of you that never got the chance to earn anything else.',
+            'Usher: The arithmetic did not change between the drafting table and the doorway. Only your seat did.',
+          ],
+        },
+        {
+          id: 'floor-then-freedom',
+          text: 'Guarantee every household a livable floor — then let differences above that floor be earned freely.',
+          hint: 'Nobody falls below a certain line; above it, let it vary.',
+          effects: { lucidity: 10, axes: { selfOthers: 3, controlAcceptance: 3 } },
+          outcome: [
+            'You set the levers so no household’s bread or medicine can fall beneath a fixed, generous line — and leave the honors lever loose above it, free to reward whatever each house actually does.',
+            'The lot turns. You wake in house number nine, mid-ring, neither grandest nor smallest. The floor holds under you the way a floor should — invisibly, until you notice you never once had to think about it. Above it, the ring is uneven: some doors are grander, fairly, and it costs you surprisingly little to watch them be.',
+            'Usher: The maximin instinct — design as if you were assigned the worst seat, because tonight, you very nearly were. The town above the floor still argues with itself. The town below the floor stopped needing to.',
+          ],
+        },
+      ],
+    },
+  ],
+  fieldNote: {
+    title: 'Designing From Behind the Curtain',
+    thinkers: 'John Rawls · John Harsanyi, justice as fairness',
+    body: 'John Rawls proposed a thought experiment as an honesty device: design the rules of a society from behind a “veil of ignorance,” not knowing whether you will be born rich or poor, gifted or struggling, in the majority or the margin. Stripped of self-interest, he argued, reasonable people would not gamble on a merit-only system that might strand them at the bottom — they would choose principles that protect the worst-off first, a “maximin” strategy, then allow inequality above that floor only if it still benefits everyone, including the least advantaged. John Harsanyi pushed back with a different bet from behind the same veil: if you truly do not know which seat you will occupy, you should maximize the *average* outcome across all twelve doors, not insure against the worst one — a rational gambler plays the odds, not the nightmare. Both start from the identical blindfold and arrive at different towns. **The veil does not remove self-interest. It just makes you bet on all twelve houses instead of one — and how you weigh that bet is the whole of the disagreement.**',
+  },
+};
+
+export const act2Rooms = [
+  junction,
+  experienceMachine,
+  ship,
+  casinoPascal,
+  omelas,
+  chineseRoom,
+  newcombAnnex,
+  veilOfIgnorance,
+  courtOfUsher,
+];

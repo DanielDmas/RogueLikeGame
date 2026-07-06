@@ -36,14 +36,14 @@ function simulateRun(seed: number): RunState {
 }
 
 describe('room graph', () => {
-  it('the graph names exactly 22 numbered rooms plus the prologue (Milestone 5, Phase K in progress: +2 Act I rooms so far)', () => {
+  it('the graph names exactly 25 numbered rooms plus the prologue (Milestone 5, Phase K in progress: +2 Act I, +3 Act II rooms so far)', () => {
     const graphIds = new Set<string>([
       PROLOGUE,
       ...Object.values(ACT_POOLS).flat(),
       ...Object.values(GATES),
       ...ACT4_SEQUENCE,
     ]);
-    expect(graphIds.size).toBe(23);
+    expect(graphIds.size).toBe(26);
     const contentIds = new Set(allRooms.map((r) => r.id));
     expect(contentIds).toEqual(graphIds);
   });
