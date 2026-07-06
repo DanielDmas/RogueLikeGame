@@ -1,5 +1,14 @@
-import type { Room, RunState } from '../schema';
+import type { Reflection, Room, RunState } from '../schema';
 import { choseIn, pickShadowMoments } from '../../engine/gameState';
+
+/** Examined Path (spec 05) shorthand — a Reflection tuple in the fixed
+ * consequence/duty/virtue/care order (shuffled per-display by the UI). */
+const reflect = (consequence: string, duty: string, virtue: string, care: string): Reflection[] => [
+  { tradition: 'consequence', text: consequence },
+  { tradition: 'duty', text: duty },
+  { tradition: 'virtue', text: virtue },
+  { tradition: 'care', text: care },
+];
 
 export const teleporter: Room = {
   id: 'teleporter',
@@ -33,6 +42,12 @@ export const teleporter: Room = {
             'Which is, of course, precisely what the sign said the copy would feel. You check your hands. They are very convincing. You are either the same person or the best evidence that “same person” was always a feeling wearing a fact’s clothes.',
             'Usher: (already on the far side — or an Usher is) Painless, you see. Whether anyone survived it is a question with no remaining witness to answer it. Welcome, either way. Both of you.',
           ],
+          reflections: reflect(
+            'The one who arrives will do everything you would have done, perfectly, for as long as anyone is watching.',
+            'No one was owed the guarantee of an unbroken thread — but the ones waiting on the far side never signed up to wonder about it either.',
+            'Ask whether trusting the pattern this completely is composure, or simply declining to look at the one question that has no answer.',
+            'Whoever meets you on the far side will be greeted by someone who remembers loving them exactly as much — which may be all that reunion was ever asking for.',
+          ),
         },
         {
           id: 'refuse-stairs',
@@ -44,6 +59,12 @@ export const teleporter: Room = {
             'There are no stairs. There were never stairs. The room is honest about its one door, and the door is the booth. You stand at the gap a long while, and then — because forward is the only direction this place sells — you step in anyway, having gained nothing except the certainty that you exhausted the alternatives.',
             'Usher: For what it is worth — the ones who search arrive on the far side identical to the ones who simply trusted. But they arrive having fought for it, and some travelers need exactly that receipt. You kept the thread as long as the thread existed. No one can do more than that. Whether anyone can do even that much is the question this room was built to ask.',
           ],
+          reflections: reflect(
+            'The search finds nothing the room didn’t already know it lacked — you cross exactly where you would have, only later, and having paid extra for the delay.',
+            'You owe the thread nothing but the honest attempt to keep it — an attempt made in full, even if the room never had another door to offer.',
+            'Notice that the receipt of having searched is itself a kind of comfort — ask whether it was owed to the truth, or to your own nerves.',
+            'No one on either side of the gap is made safer by the extra hour you spent looking; the search was a service to you alone.',
+          ),
         },
         {
           id: 'copy-first',
@@ -55,6 +76,12 @@ export const teleporter: Room = {
             'The far-you appears, checks its hands with your exact gesture, and looks across the gap at you. For one long moment you are both silent, because you both know: whatever you feel right now — this vertigo of being the original — the far one feels it too, symmetrically, and calls itself the original. There is no experiment either of you could run to settle it.',
             'Usher: And there is the scalpel, precisely. If the copy is you when you are destroyed, why is it not you when you are not? A philosopher found that fork a great many years ago, and it has never stopped bleeding. (to the far one) You will take the booth now. (to you) And so, in time, will you. There is still no bridge — only, now, the one who will finish your crossing for you. Be kind to him. He has had a strange day too.',
           ],
+          reflections: reflect(
+            'Splitting the moment doesn’t resolve who crosses — it just adds a second person standing at the gap with an identical claim.',
+            'You owed the far-you nothing it wasn’t going to get anyway — but making it watch itself get chosen last is a cost the room quietly assigns to someone.',
+            'Ask whether delaying the disassembly was rigor, or a way to make someone else hold the vertigo for a while first.',
+            'For one long moment, two of you looked at each other and both felt like the original — that symmetry doesn’t resolve, no matter which one takes the booth.',
+          ),
         },
       ],
     },
@@ -92,6 +119,12 @@ export const editor: Room = {
             'And then, over the following corridors, you notice the edges of the hole. A certain kind of stranger’s grief you used to recognize on sight — now just weather on a face. A patience you had, hard-won from somewhere, now unfunded. The wound is gone. So is what the wound was holding up.',
             'Usher: No judgment. Genuinely. Some weight is load-bearing, and some is simply weight, and even I cannot always tell which from the outside. You made the call from the only seat that had a view of it.',
           ],
+          reflections: reflect(
+            'The wound is gone cleanly, but so, unnoticed until later, is whatever the wound was quietly propping up.',
+            'No one is owed the carrying of unchosen pain — the pen simply cashes an option that was always yours to take.',
+            'Ask what kind of self is built by editing out its worst chapter rather than living alongside it.',
+            'Whoever needed the specific patience that wound had built in you will meet someone who no longer has it to give, and will never know why.',
+          ),
         },
         {
           id: 'keep-it',
@@ -103,6 +136,12 @@ export const editor: Room = {
             'But something has changed, minutely: you have now chosen it. The memory used to be something that happened to you. As of tonight it is something you carry on purpose — same stone, different grip.',
             'Usher: For the record — that is the difference between a scar and a wound. Same tissue. One of them has stopped being written by someone else.',
           ],
+          reflections: reflect(
+            'Nothing about the weight changes — the difference is only that you now hold what you were always going to hold anyway.',
+            'You owe the memory nothing except honesty about its presence — keeping it is not a debt paid, only a debt acknowledged.',
+            'Notice that choosing the weight on purpose is a different act than merely failing to put it down.',
+            'Whoever benefits from the patience or empathy this wound built keeps receiving it, unaware of what it cost you to keep supplying.',
+          ),
         },
         {
           id: 'read-first',
@@ -114,6 +153,12 @@ export const editor: Room = {
             'And having read it, the pen looks different. Smaller. The memory is still terrible, but it is now terrible and witnessed — by the one witness whose testimony you can never lose. You leave it in the folder, unstruck. Not because it doesn’t hurt. Because it’s true, and you were there, and someone should have been.',
             'Usher: (quietly) That is the rarest choice. Most travelers choose between carrying it and cutting it out. Almost nobody thinks to finally read the thing. The pen has sat on this desk a very long time. The chair you just sat in was always the real instrument.',
           ],
+          reflections: reflect(
+            'Reading the uncut version changes nothing about what happened — it only changes what you now know about what happened.',
+            'You owed the memory a witness before you owed it a verdict — reading it first pays a debt the pen would have let you skip.',
+            'This is the rarest choice precisely because it asks for nothing except the willingness to actually look.',
+            'The memory finally has a witness whose testimony can’t be lost — which is a kind of care extended backward, to a version of you who had no one else.',
+          ),
         },
       ],
     },
@@ -252,6 +297,12 @@ export const debtOfDead: Room = {
             'Their face does what faces do when a life’s last account unexpectedly clears. They do not say thank you. They say your name — correctly, gently — and something in the ledger between you, which was never going to balance, simply closes instead.',
             'Forgiving did not make what they did acceptable. It made it finished. You will spend years learning that those are different words, and tonight was the first lesson.',
           ],
+          reflections: reflect(
+            'The account between you closes tonight, for both of you, regardless of whether it was ever going to balance on its own.',
+            'You owed them nothing — forgiveness given at a deathbed is a gift, not a payment, and gifts are not owed.',
+            'Ask whether releasing the debt here was generosity, or simply the easier feeling to carry out of this room.',
+            'Whatever peace this brings them, it was never really about them — it was about which weight you chose to keep carrying afterward.',
+          ),
         },
         {
           id: 'refuse',
@@ -263,6 +314,12 @@ export const debtOfDead: Room = {
             'They receive it. Somewhere under the machines’ courtesy, you see something almost like respect: they asked an honest question at the end of their life and got an honest answer, which is more than most endings are furnished with.',
             'You held the line, and stayed anyway. Some debts are recorded honestly rather than settled falsely, and the record, too, is a kind of tribute — proof that what happened happened, to someone who was really there.',
           ],
+          reflections: reflect(
+            'The wrong remains fully on the record — nothing about their dying changes what the ledger says happened.',
+            'You owed the wound an honest account more than you owed the dying a comfortable ending — and you paid that debt instead.',
+            'Ask whether staying without absolving was integrity, or a way to make sure the cost was felt by someone, even at the very end.',
+            'They received an honest answer instead of a comfortable one — which, from someone with nothing left to lose by lying, may have been the more respectful gift.',
+          ),
         },
         {
           id: 'forgive-silently',
@@ -274,6 +331,12 @@ export const debtOfDead: Room = {
             'Out loud you say only, “Rest now,” and their eyes search your face for the verdict, and find kindness where the verdict would be, which they will spend their last hours reading in both directions.',
             'You kept the forgiveness and withheld the absolution — freed yourself without unlocking their door. Notice, without judgment, that this was the one option where the mercy stayed entirely on your side of the bed. Perhaps that was wisdom. Perhaps it was the last small installment of the debt, paid in their currency after all.',
           ],
+          reflections: reflect(
+            'You are lighter afterward and they are unsure why — the outcome changes for you; theirs stays exactly as uncertain as before.',
+            'You owe your own peace to yourself, not to them — keeping the forgiveness private clears the debt for you without formally discharging it for them.',
+            'Notice this is the one option where the mercy never crosses the bed — ask whether that is restraint, or simply not finishing the gesture.',
+            'They spend their last hours reading your kindness without ever knowing what it actually was — a comfort built on an ambiguity you chose to leave standing.',
+          ),
         },
         {
           id: 'ask-question',
@@ -285,6 +348,12 @@ export const debtOfDead: Room = {
             'The answer is smaller than the wound. It always is. Not malice on a throne — a frightened person, a weak moment metastasized, reasons that would embarrass a schoolchild. You expected an architecture of cruelty and were handed a shrug that broke your life. The disappointment is its own strange medicine: nothing that small deserves the throne it has occupied in you.',
             'What you say after — yes, or no, or rest now — matters less than you thought it would. The question was the visit. They answer it, and you both know the account was audited at last, by the only two people who ever held it.',
           ],
+          reflections: reflect(
+            'The answer, once heard, is always smaller than the wound it explains — the facts change; the hurt they caused does not shrink to match.',
+            'You are owed the truth before you owe anyone your verdict — asking first honors the debt in the correct order.',
+            'Ask whether wanting the reason first was patience, or a way to delay the harder work of actually deciding how to answer.',
+            'Whatever you say next, they get the rarer gift first: someone who wanted to understand them before deciding anything about them.',
+          ),
         },
       ],
     },
@@ -322,6 +391,12 @@ export const marysRoom: Room = {
             'You open the drawer. Inside: light, arranged at the exact wavelength the papers promised, sitting in a shallow dish like something held mid-breath.',
             'Red.',
           ],
+          reflections: reflect(
+            'Opening the drawer adds exactly one experience to a life that already had every fact — nothing else in the world changes because of it.',
+            'The papers owed you nothing further; whatever the drawer holds is a gift to yourself, not a debt anyone was required to pay.',
+            'Ask what kind of knowing you were missing, if the physics was already complete and something in you still reached for the handle.',
+            'No one else’s life is touched by what’s in this drawer — this was always a completion owed only to you.',
+          ),
         },
         {
           id: 'leave-sealed',
@@ -332,6 +407,12 @@ export const marysRoom: Room = {
             'You close the drawer without opening it, and slide the papers back into their folder, satisfied that a complete physical description has no gaps in it worth this kind of ceremony.',
             "The drawer seems to hum very faintly for the rest of your time in this room — the particular hum of an unread letter, sitting exactly where you left it, patient in a way unread letters generally aren't.",
           ],
+          reflections: reflect(
+            'Nothing observable changes by leaving it shut — the physical facts remain exactly as complete as they were before you decided.',
+            'You owe the theory nothing extra — if the physical account was truly complete, closing the drawer is simply taking it at its word.',
+            'Ask whether trusting the papers this far was intellectual consistency, or a quiet refusal to test a belief you’d rather not risk.',
+            'The faint hum you notice afterward is not owed to anyone but yourself — an unopened letter troubles only its intended reader.',
+          ),
         },
         {
           id: 'give-away',
@@ -342,6 +423,12 @@ export const marysRoom: Room = {
             'You lift the drawer — light, and unexpectedly warm — and carry it out past the papers, past the grey walls, without once lifting the lid.',
             "Usher: An unusual kindness. Most travelers who reach this room want the seeing for themselves — understandably; it's the one experience this wing can't hand you twice. You are giving away something you don't yet have. I don't know what to call that, except generous.",
           ],
+          reflections: reflect(
+            'Someone else now gets the one experience this wing cannot hand out twice — and you get, instead, only the fact that you gave it.',
+            'You owed this experience to no one, which is exactly what makes carrying it to someone else a gift rather than a repayment.',
+            'Ask what it costs to want the seeing for someone else more than you want it for yourself, in the one room built to make seeing precious.',
+            'Whoever receives the drawer gets something you will now never have — the rarest kind of care is the kind that costs the giver the thing itself.',
+          ),
         },
       ],
     },
@@ -451,6 +538,12 @@ export const swampman: Room = {
             'You cross the room and shake its hand, which shakes back with your own slight hesitation, and something in the strobing light settles, briefly, into something less like a crime scene and more like a family reunion with unusually short notice.',
             'Usher: A generous ruling, and a coherent one — if what matters is the pattern rather than the provenance, the swamp is just an unusually dramatic delivery method. The two of you will have to work out, on your own time, whose turn it is to use the name.',
           ],
+          reflections: reflect(
+            'Treating the pattern as sufficient for identity means everything the mind in that chair does counts as fully, presently you.',
+            'Neither of you is owed sole use of the name — accepting them means the debt of continuing your life is now shared rather than assigned.',
+            'Ask whether accepting a stranger with your exact mind is generosity toward them, or simply relief at not being the only one anymore.',
+            'Whoever loved you meets someone who remembers loving them back exactly as much, formed forty seconds ago — accepting them was done for their sake too.',
+          ),
         },
         {
           id: 'deny-them',
@@ -461,6 +554,12 @@ export const swampman: Room = {
             'You keep your distance, and it accepts this with a wince you recognize, because it is, after all, your own wince, deployed by someone with no actual history of ever using it before tonight.',
             'Usher: Also coherent — if identity requires an unbroken causal chain to the person who lived the life being remembered, this one has memories but no biography, a diary with nobody\'s hand behind the ink. It will go on believing it is you regardless. Belief, unfortunately, has never required a valid pedigree.',
           ],
+          reflections: reflect(
+            'Keeping your distance changes nothing about what the swamp assembled — it will go on believing it is you, respected or not.',
+            'You owe your history to no one but yourself to protect — denying the claim honors the specific, unbroken thread that actually lived your life.',
+            'Ask whether requiring a causal thread is rigor about what a self is, or simply not wanting to share the word with a stranger wearing your face.',
+            'It absorbs the refusal with your own wince, deployed by someone who never needed it before — the coldness lands on something that feels exactly like you.',
+          ),
         },
         {
           id: 'split-the-coat',
@@ -471,6 +570,12 @@ export const swampman: Room = {
             'You take off the coat and hand it over, half seriously, and for a moment you are just two people standing in bad light, working out logistics instead of metaphysics, which turns out to be considerably easier.',
             "Usher: Derek Parfit would have liked this room, I think — he spent a career arguing that survival was never the prize to fight over; what matters is that someone psychologically continuous with you carries what you cared about forward. By that measure, tonight, you both won. Try not to let the coat become a whole new argument.",
           ],
+          reflections: reflect(
+            'Dividing what you have solves the practical question completely while leaving the metaphysical one exactly as open as it was.',
+            'Nobody’s survival was actually owed here — dividing the room, the name, the coat honors what needs distributing, not what can’t be settled.',
+            'Ask whether choosing logistics over metaphysics was wisdom, or simply the more comfortable question to spend the night on.',
+            'You just gave a forty-second-old stranger who remembers loving your mother half of everything — the easiest or strangest act of care available here.',
+          ),
         },
         {
           id: 'show-the-splinter',
@@ -483,6 +588,12 @@ export const swampman: Room = {
             'It looks at the splinter, then at you, and laughs — once, briefly, a real laugh, the first unguarded thing either of you has done tonight.',
             '"I don\'t know," it says, still smiling. "But I notice neither of us threw it away." The question does not resolve. It gets, somehow, a little smaller anyway.',
           ],
+          reflections: reflect(
+            'Holding up the splinter doesn’t resolve either question — the ship’s or this one’s — it just makes clear they were always the same question wearing two coats.',
+            'Neither of you owes the other a verdict tonight — the splinter is proof you both preferred keeping the question to answering it.',
+            'Notice that the first unguarded laugh all night arrived not from an answer, but from both of you refusing to force one.',
+            'Whatever this is between you, neither of you threw the splinter away — that, more than any argument, is the actual relationship being negotiated.',
+          ),
         },
       ],
     },

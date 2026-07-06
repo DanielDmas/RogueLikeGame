@@ -23,6 +23,8 @@ import './cs-reflections-act1';
 import './fa-reflections-act1';
 import './cs-reflections-act2';
 import './fa-reflections-act2';
+import './cs-reflections-act3';
+import './fa-reflections-act3';
 
 export * from './resolver';
 export * from './keys';
