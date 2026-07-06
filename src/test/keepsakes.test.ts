@@ -153,4 +153,18 @@ describe('keepsake content completeness (Milestone 5, Phase N)', () => {
       expect(unlockedIds.has(def.id), `${def.id} unlocks no choice`).toBe(true);
     }
   });
+
+  it('every keepsake-gated choice id is globally unique (profile.keepsakeChoicesTaken dedupes by bare choice id, not room/choice)', () => {
+    const seen = new Map<string, string>();
+    for (const room of allRooms) {
+      for (const stage of room.stages) {
+        for (const c of stage.choices) {
+          if (!c.keepsakeId) continue;
+          const priorRoom = seen.get(c.id);
+          expect(priorRoom, `choice id "${c.id}" is keepsake-gated in both ${priorRoom} and ${room.id} — profile.keepsakeChoicesTaken would undercount`).toBeUndefined();
+          seen.set(c.id, room.id);
+        }
+      }
+    }
+  });
 });

@@ -284,14 +284,17 @@ and **all five formerly-dead flags now have readers** (L gave `pushed`/
 items 1, 5, 6 are small and should open the next session; 2–4 and 7 fold
 into their named phases; 8 is watch-and-wait):
 
-1. **[M, i18n gap] The v1/English pack never shows the three margin hints.**
-   Hints were appended to the v2 note bodies and CS/FA packs (v1+cs/fa
-   correctly falls back to v2/cs–fa, which carry them — resolver chain
-   verified by `i18n.test.ts`), but `textVersion: 'v1'` + English reads the
-   old extracted bodies in `v1-en.ts`, which predate the hints. The seventh
-   ending stays *reachable* on v1, just never hinted. Recommended: append
-   the three hints to the v1-en bodies (cheap); alternative: declare v1 a
-   legacy voice excluded from M5 content, and say so in spec 03.
+1. **[M, i18n gap] — FIXED (2026-07-06).** Appended the three margin hints
+   to `v1-en.ts`'s `waiting-room`/`editor`/`casino-pascal` note bodies
+   (verbatim English, matching v2/cs/fa) and to the FA `casino-pascal` hint's
+   formality (`نپرس` → `نپرسید`, item 5 below, same commit). `v1-en.ts`'s
+   header previously said "regenerate with `scripts/extract-v1.ts`" — that
+   script no longer exists anywhere in the repo (one-time migration, already
+   run), so hand-editing was the only option; header comment updated to say
+   so and to scope future hand-edits to mechanically load-bearing content
+   only. `keepsakes.test.ts` gained a guard test for item 6 (a
+   choice id uniqueness assertion across all keepsake-gated choices).
+   313 tests green, `tsc` clean.
 2. **[M, spec deviation] Spec 03 wants the margin hints *italic*; they
    shipped as plain sentences** — `renderEmphasis` (`ui/fieldNote.ts`)
    supports only `**bold**`; no note body anywhere uses italics. Either add
@@ -310,18 +313,13 @@ into their named phases; 8 is watch-and-wait):
    field on `Ending` would let the codex filter (`overlays.ts` currently
    hardcodes `ending.id === 'anamnesis'`) and the count share one source of
    truth.
-5. **[M/FA, tone nit] The casino-pascal FA margin hint ends "از کسی نپرس"
-   (informal singular imperative) amid otherwise formal-plural FA prose —
-   should be "از کسی نپرسید".** One-word fix; fold into Phase R's CS/FA
-   quality pass. (CS "Nikoho se neptejte" is already correct formal.)
-6. **[N, convention risk] `keepsakeChoicesTaken` dedupes by bare
-   `choice.id`, but choice ids are only unique per room.** The four current
-   keepsake choices happen to be globally unique, so counting is correct
-   today; a future keepsake choice reusing another room's id would
-   undercount the ≥2 predicate. Cheapest guard: one `it()` in
-   `keepsakes.test.ts` asserting keepsake-gated choice ids are globally
-   unique. (Recording `roomId/choiceId` instead would be a save-format
-   change — not worth it while the guard test holds.)
+5. **[M/FA, tone nit] — FIXED, see item 1.** `از کسی نپرس` → `از کسی نپرسید`.
+6. **[N, convention risk] — GUARDED, see item 1.** Added
+   `keepsakes.test.ts`'s "every keepsake-gated choice id is globally unique"
+   test — it does not change behavior, only ensures a future keepsake reusing
+   another room's choice id fails CI immediately instead of silently
+   undercounting `keepsakeChoicesTaken`. Recording `roomId/choiceId` instead
+   would be a save-format change — still not worth it while the guard holds.
 7. **[S1/UAT, quirk] `jump()` into an Act-IV room does not backfill earlier
    `ACT4_SEQUENCE` rooms into `visited`** — completing the jumped room then
    re-offers `boulder`. Unreachable by real players; it only bites UAT
