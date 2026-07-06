@@ -2,8 +2,9 @@
 
 > **This is the living tracking file for all further development of ANAMNESIS.**
 > Each work item has a checkbox. As features land, boxes get checked and remarks
-> are added inline. New milestones append new phases at the bottom — history is
-> never deleted, so this file doubles as the project's development log.
+> are added inline. New milestones append new phases at the bottom. Shipped
+> milestones are condensed to short summaries to keep the file readable — full
+> detail lives in git history — but **open items are never deleted**.
 
 **Current milestone: 5 — THE DEEPER FACILITY (planned, see bottom of file).**
 Milestone 4 is mostly shipped — Phases A–I implemented (see checkboxes below
@@ -16,98 +17,22 @@ Latest release: [`v0.1.5-v2-beta`](../../releases/tag/v0.1.5-v2-beta).
 
 ---
 
-## Known issues found during planning (verified in code)
+## Phase A — Display, Performance & Fullscreen — **shipped (v0.1.5-v2-beta)**
 
-These were confirmed by code inspection before this plan was written, and are
-fixed by the phases below:
-
-1. **Codex language bug** — `showCodex` (`src/ui/overlays.ts` ~398/409) passes
-   the raw English `room.fieldNote`/`ending.fieldNote` to `showFieldNote`,
-   while `src/engine/flow.ts:296-304, 342-349` correctly translates. Result:
-   codex cards show Czech, but the opened note shows English. → Phase D1.
-2. **Untranslated UI strings** — `'Continue'` (`src/ui/fieldNote.ts:30`),
-   `'click · space'` and `'continue'` (`src/ui/textPanel.ts:69,77`), plus two
-   aria-labels. → Phase D2.
-3. **Mid-room save flaw** — quitting during a room's beats/choices restarts
-   the room from stage 0 on resume and re-applies already-saved effects
-   (double-counted hearts/axes, duplicate transcript). Quitting at the door
-   screen or right after choosing a door is safe (persist at `flow.ts:254`).
-   → Phase B1/B2.
-4. **No FPS cap** — uncapped `requestAnimationFrame` (`src/scene/director.ts:187`);
-   no resolution-scale setting; no fullscreen anywhere. → Phase A.
-5. **Settings overlay clips on short screens** — no bounded scroll container
-   (unlike `.codex-panel`'s `max-height:84vh`); bottom rows/Done can be
-   unreachable. → Phase C1.
-6. **Usher "flies"** — exponential position lerp `1−0.001^dt`
-   (`director.ts:196`) closes the distance in under a second; camera dolly
-   (`1−0.0018^dt`, `:202`) is similarly abrupt. → Phase F.
-7. **Doors can leave the screen** on narrow aspect ratios — FOV 58, door
-   spacing 3.4, camera z=7, no aspect compensation. → Phase H.
-8. **Hearts explanation overpromises** — About text mentions a "repeated
-   refusal" cost that has no backing code; only 4 choices + the lucidity
-   drain (`src/engine/gameState.ts:44-53`) cost hearts; act intros never
-   mention hearts at all. → Phase G.
+60 FPS frame limiter + render pause under overlays/`document.hidden`; render
+resolution setting; UI zoom (80–130 %); fullscreen toggle + `F` hotkey; GPU
+diet audit. Key files: `src/scene/director.ts`, `src/ui/fullscreen.ts`,
+`src/ui/zoom.ts`, `src/engine/saveStore.ts`. (Electron window-state memory
+moved to Milestone 5, spec 08.)
 
 ---
 
-## Phase A — Display, Performance & Fullscreen
-*(resolution/zoom · fullscreen · 60 FPS cap · must not be GPU-demanding)*
+## Phase B — Saving, Reset & Data Safety — **shipped (v0.1.5-v2-beta)**
 
-- [x] **A1. 60 FPS frame limiter.** In `SceneDirector.loop` (`src/scene/director.ts`):
-  keep rAF but skip render+tick until ≥1/60 s has accumulated since the last
-  presented frame. Prevents 144–240 Hz monitors from rendering 4× the needed
-  frames. Implement as a pure, unit-testable `shouldRender(now, last)` helper.
-- [x] **A2. Stop rendering when nothing moves.** Pause the 3D loop entirely
-  while a full-screen overlay (Settings/Codex/About/pause) is open and while
-  `document.hidden`; drop the title screen to 30 FPS once its intro settles.
-  The single biggest GPU/battery saving available.
-- [x] **A3. Resolution setting** — new Settings row "Render resolution":
-  `0.75× (performance) / 1× (standard) / native (sharp, up to 2× DPR)`,
-  driving `renderer.setPixelRatio` live. Decoupled from "High visual quality"
-  (which keeps controlling antialiasing + bloom only). Persist in `Settings`
-  (`src/engine/saveStore.ts` + migration backfill, same pattern as
-  `dynamicScenery`).
-- [x] **A4. UI zoom setting** — 80%–130% slider scaling the root font size so
-  every panel and text scales together. For TVs and small laptops. Persisted,
-  applies instantly.
-- [x] **A5. Fullscreen toggle** in Settings + `F` hotkey —
-  `document.documentElement.requestFullscreen()` / `exitFullscreen()`, state
-  synced from the `fullscreenchange` event (so Esc-exit updates the toggle).
-  Works in browser and the Electron shell alike; also add window-state
-  remembering to `electron/main.cjs`.
-- [x] **A6. GPU diet pass** — confirm bloom only runs on "high"; cap
-  `devicePixelRatio` at 2 everywhere; audit geometry/material disposal on
-  theme switches with `renderer.info` across a 10-switch soak test (no leaks).
-
-**Tests:** limiter unit test · Playwright fullscreen round-trip · live
-resolution change asserts canvas backing-store size · soak-test renderer.info.
-
----
-
-## Phase B — Saving, Reset & Data Safety
-*(save/reset buttons · verify saving on quit always works, incl. when choosing doors)*
-
-- [x] **B1. Fix the mid-room resume bug.** Add `currentStage: number` to
-  `RunState` (`src/content/schema.ts`, `newRun` in `src/engine/gameState.ts`),
-  persist after **every stage choice** in `enterRoom` (`src/engine/flow.ts`),
-  resume at the saved stage. Kills replayed beats, duplicate transcript
-  entries, and double-charged hearts. Old saves migrate with `currentStage: 0`.
-- [x] **B2. Verify save-on-quit from every state** — scripted playthrough that
-  quits to menu (a) at door selection, (b) immediately after clicking a door,
-  (c) mid-beats, (d) at a choice prompt, (e) during an act intro, (f) on the
-  ending screen — reload after each, assert exact resume position.
-- [x] **B3. "Save & Exit" button** in the pause menu — explicit, reassuring
-  save-then-title path (saving already happens on quit; the button makes it
-  *visible* to the player).
-- [x] **B4. Autosave indicator** — small "✓ saved" fade near the HUD whenever a
-  checkpoint persists (door chosen, room completed, act reached). Players
-  should never wonder whether progress is safe.
-- [x] **B5. "Reset progress" button** in Settings → new *Data* section, with a
-  two-step confirm; wipes the profile and reloads. Plus **"Reset current
-  run"** (abandon run, keep codex/endings/settings).
-
-**Tests:** stage-resume unit tests · Playwright quit-matrix (B2) · reset flows
-(full wipe vs run-only) leave the right things intact.
+Mid-room resume fixed via `RunState.currentStage` (persist after every stage
+choice); Save & Exit button; "✓ saved" autosave toast; Reset run / Reset all
+progress with two-step confirm in Settings → Data. Key files:
+`src/engine/flow.ts`, `src/content/schema.ts`, `src/ui/toast.ts`.
 
 ---
 
@@ -137,32 +62,13 @@ settings panel, field-note column rule).
 
 ---
 
-## Phase D — i18n completion + the Czech codex bug
-*(translate "Click", "Space", "Continue", chapter names · verify all translated ·
-"Když klikám na poznámky z menu s češtinou, zobrazují se anglicky")*
+## Phase D — i18n completion + the Czech codex bug — **shipped (v0.1.5-v2-beta)**
 
-- [x] **D1. Fix the codex language bug** — in `showCodex`
-  (`src/ui/overlays.ts`) build the note passed to `showFieldNote` with
-  `t(roomNoteTitleKey/ThinkersKey/BodyKey)` and the ending equivalents,
-  exactly mirroring `flow.ts:296-304/342-349`. Translate the aria-label too.
-- [x] **D2. Translate the last hardcoded strings** — `'Continue'`
-  (`fieldNote.ts:30`), `'click · space'` + `'continue'`
-  (`textPanel.ts:69,77`), aria-labels (`hud.ts:27`, `fieldNote.ts:27`). New
-  `ui.*` keys + CS/FA entries in `src/content/text/cs.ts` / `fa.ts`.
-- [x] **D3. Chapter/act names in-game verification** — code already routes
-  them through `t(actNameKey(...))` (`src/content/graph.ts:40-42`); play
-  through in CS and FA and confirm the HUD label, act-intro title, and codex
-  act labels actually render translated. If any surface caches English before
-  the locale applies, fix the ordering.
-- [x] **D4. Full untranslated-string sweep** — audit every string literal that
-  reaches the DOM in `src/ui/*` + `src/engine/flow.ts`; add a guard test that
-  fails when a new user-visible literal bypasses `t()`.
-- [x] **D5. New strings from this milestone** (settings descriptions, save
-  toasts, act heart warnings…) land in EN+CS+FA **in the same commit** —
-  enforced by extending the existing translation-coverage tests to `ui.*`.
-
-**Tests:** extended i18n coverage · Playwright: open a codex note in Czech and
-assert the body differs from the English source text.
+The reported Czech codex bug fixed (`translateFieldNoteForCodex` in
+`src/ui/overlays.ts`); last hardcoded strings ("Continue", "click · space",
+aria-labels) translated; the self-updating `uiKeyCoverage.test.ts` guard now
+fails CI whenever a used `ui.*` key lacks a cs/fa entry — it caught four
+pre-existing gaps on its first run.
 
 ---
 
@@ -195,61 +101,24 @@ assert the body differs from the English source text.
 
 ---
 
-## Phase F — The Usher: visibility & motion
-*(more graphically visible · "why does he fly around?" · approach slowly, slow animations)*
+## Phase F — The Usher: visibility & motion — **shipped (v0.1.5-v2-beta)**
 
-- [x] **F1. Kill the "flying".** Root cause: exponential lerp `1−0.001^dt`
-  (`director.ts:196`) closes ~99.9 % of the distance within a second.
-  Replace with a **fixed-duration eased walk**: ~2.5 s, smoothstep easing,
-  y locked to the floor, subtle vertical bob at step frequency so it reads as
-  *walking* to the chosen door — same for the walk back home.
-- [x] **F2. Slow the camera dolly** the same way — ~2 s ease-in-out tween
-  (replacing `1−0.0018^dt`, `director.ts:202`), fade starting slightly
-  earlier so the pass-through feels deliberate, not yanked.
-- [x] **F3. Make the Usher visible.** Scale the silhouette up ~15–20 %; raise
-  the warm rim emissive; add a soft narrow **spotlight from above** onto its
-  spot (a stagehand under a work light — calm and thematic, never horror);
-  move its idle post ~1.5 units closer to the camera path so it sits inside
-  the player's natural field of view. Keep `usherFigure()`'s presence API
-  (`src/scene/themes.ts`) so the door-walk boost still layers on top.
-- [x] **F4. Idle life** — a small head-turn toward the camera every ~20 s and
-  whenever a door is hovered: the Usher *notices you choosing*. Cheap
-  rotation tween, big presence gain.
-
-**Tests:** tween helper unit tests (duration, easing bounds, y-lock) · scene
-test asserting the spotlight exists and rim intensity ≥ the new baseline ·
-manual feel-pass on the walk.
+The "flying" fixed: exponential lerps replaced with fixed-duration eased
+walks (~2.5 s) + a slowed ~2 s camera dolly; silhouette scaled up with a
+stagehand spotlight and idle head-turns. Key files: `src/scene/director.ts`,
+`src/scene/themes.ts`.
 
 ---
 
-## Phase G — Hearts: explanation & honest mechanics
-*(explain heart loss before each act · make sure the mechanic exists · don't make it too hard)*
+## Phase G — Hearts: explanation & honest mechanics — **shipped (v0.1.5-v2-beta)**
 
-- [x] **G1. Truthful mechanics — amended.** Investigated adding a new global
-  "second refusal costs a heart" rule as drafted above, but found the content
-  already has a bespoke, intentional per-room refusal-escalation pattern (the
-  junction room's `refuse1`/`refuse2` flags) — a second global rule would
-  double-charge that room and muddy an existing, deliberate design. Fixed the
-  text instead: the About panel and heart tooltip now describe the *actual*
-  mechanics (the handful of marked `hearts:-1` choices + the lucidity-below-zero
-  drain), so the copy is honest without inventing a new punishing rule.
-  Validated by `difficultyGuardRail.test.ts`: a sincere player never hits 0
-  hearts across 200 seeds and keeps ≥2 hearts on average — the game was
-  already forgiving.
-- [x] **G2. Explain before every act** — one translated line appended to each
-  `actIntroText` (`src/content/usher.ts`), phrased differently per act so it
-  never feels like a repeated tooltip. Also add hearts (with the ♥ pictogram)
-  to the "Before you begin" onboarding panel.
-- [x] **G3. First-loss moment** — the first time a heart is ever lost in a
-  profile: brief pause, heart-loss sound, HUD heart shatter animation, and a
-  one-line Usher aside explaining what happened and how many remain. Shown
-  once, never repeated.
-- [x] **G4. Difficulty guard-rail test** — simulation across seeds asserting a
-  sincere player (never refuses twice, avoids the marked choices) always
-  finishes with ≥1 heart.
-
-**Tests:** refusal-cost unit tests · G4 simulation · i18n coverage for all new
-lines.
+Per-act heart cautions in every act intro; first-heart-loss one-time
+explanation; About/tooltip copy corrected to the *actual* mechanics.
+**Amendment kept for the record:** the drafted global "second refusal costs a
+heart" rule was intentionally NOT built — the junction room already has a
+bespoke refusal-escalation design a global rule would double-charge; text was
+fixed instead, validated by `difficultyGuardRail.test.ts` (a sincere player
+never reaches 0 hearts across 200 seeds).
 
 ---
 
@@ -299,26 +168,18 @@ lines.
   `HOVER_INTENSITY`, from an earlier milestone); the *new* emissive-pulse +
   pre-walk brighten described here wasn't added.
 
-**Should (strong flavor, moderate effort):**
-- [ ] **I6. Traveler's ledger** — a stats screen (title/pause menu): runs
-  completed, rooms witnessed X/24, endings Y/6, hearts lost lifetime,
-  most-walked door. The data already lives in the profile.
-- [ ] **I7. Act-transition light spill** — when the chosen door opens, light
-  colored by the *next* act spills from the doorway during the dolly. One
-  animated PointLight + a glow plane; sells "walking into somewhere new".
-- [ ] **I8. Audio easing pass** — ~4 s chord crossfades on act transitions,
-  a small reverb tail on the heart-loss sound, hover chime pitch varying per
-  door index. Cohesion without new assets.
+**Superseded by Milestone 5** (each item now lives, expanded, in a Milestone 5
+phase — tracked there, not here): I5 door-hover feedback → **Q4** · I6
+traveler's ledger → **Phase P** · I7 light spill → **Q2** · I8 audio easing →
+**Q5** · I11 epitaph wall → **Q3** · I12 secret room → **K4 (the-cave)**.
+I10 "Daily door" was dropped entirely — the owner rejected separate replay
+modes in the Milestone 5 review.
+
+**Still open, unscheduled (not part of Milestone 5 — keep in mind for M6):**
+- [ ] **I3. End-of-act interlude** — one quiet screen between acts: act name,
+  a one-line Usher observation on the run's dominant axis, hearts/lucidity.
 - [ ] **I9. Colorblind & readability audit** — gold-on-dark contrast ≥ WCAG AA
   at all UI zoom levels; heart state not conveyed by color alone.
-
-**Could (delightful, only if time permits):**
-- [ ] **I10. Daily door** — optional title-screen mode seeding the run from
-  today's date: the same door layout for everyone that day.
-- [ ] **I11. Ending epitaph wall** — after 2+ endings, the title background
-  faintly shows collected epitaphs carved into the fog.
-- [ ] **I12. One secret room** hinted only in a field note's margin — rewards
-  the close readers.
 
 ---
 
@@ -346,16 +207,6 @@ lines.
 - [x] Update this file's checkboxes, commit, push, trigger
   `release-windows.yml` → `v0.1.5-v2-beta` EXE.
 
-## Implementation order
-
-**D (bug + i18n, quick wins) → B (save safety) → A (display/perf) → C (layout)
-→ E (menus/clarity) → F (Usher) → G (hearts) → H (verification sweeps) →
-I (enjoyment picks) → J (release).**
-
-Rationale: first fix what is broken for players right now (Czech notes,
-mid-room saves), then the settings the user will immediately touch, then feel
-and polish.
-
 ---
 ---
 
@@ -363,6 +214,9 @@ and polish.
 
 > Planned 2026-07-05, shaped by 12 preference questions answered by the user.
 > Phases continue Milestone 4's lettering (A–J used there): **K–S**.
+> **Detailed developer specifications for each phase live in
+> [`docs/development/`](docs/development/README.md)** — implement from those,
+> track progress here.
 
 **The user's decisions that shaped this milestone:**
 content = new rooms AND a new act · the Usher stays enigmatic (no backstory,
