@@ -102,8 +102,24 @@ quit/resume preserves the mode.
   overlay-guard added in M4).
 - Order of rows: shuffle per display (a fixed order would silently rank the
   traditions; shuffling is the neutrality the owner asked for — document this
-  in a code comment).
+  in a code comment). Tests assert set-equality of rendered rows, never order.
 - `reducedMotion`: no fade animation, instant show.
+
+### Interactions with existing systems (verified against current code)
+
+- **Remembered rooms (M4's replay fast-forward):** reflections still show in
+  rooms the player has seen before — they comment on the *choice just made*,
+  which is new every time. The remembered mode only skips the typewriter;
+  the Reflection card was never typewritten anyway.
+- **Quit during a Reflection card:** the choice's effects and `currentStage`
+  were already persisted before the card rendered (M4's persist-before-outcome
+  ordering), so a resume lands at the next stage and the card is simply not
+  re-shown. Acceptable and deliberate — reflections are commentary, not
+  state. Cover with a resume test.
+- **First-heart-loss moment / field notes:** if a choice triggers both the
+  one-time heart-loss explanation and a Reflection, order is: heart-loss aside
+  → outcome beats → Reflection card. The Annex files last; the facility's
+  ledger speaks first.
 
 ### Socratic follow-ups (once per act)
 

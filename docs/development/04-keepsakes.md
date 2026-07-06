@@ -80,6 +80,14 @@ icons + origin lines); push unseen ids into `profile.keepsakes` and persist.
 No toast, no interruption — the Shelf is where they're discovered (owner:
 whisper-quiet).
 
+**Not retroactive — by design.** Flags live in `RunState` and reset every
+run, so a choice made in a run *before* keepsakes shipped grants nothing;
+the player re-earns it by making the choice again in a new run. Document this
+in a code comment and cover it with a test (a profile with `runsCompleted > 0`
+and empty `keepsakes` stays empty until a trigger flag is set in a live run).
+This keeps the earn logic honest and simple, and replays are the game's
+texture anyway.
+
 **Unlock choices** (added to the four rooms — three of them are spec 01
 rooms; `the-archive` is spec 02):
 

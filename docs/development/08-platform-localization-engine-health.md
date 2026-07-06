@@ -67,6 +67,10 @@ jobs:
   → Source: **GitHub Actions**.
 - README: add a "Play in the browser" line with the Pages URL
   (`https://danieldmas.github.io/RogueLikeGame/`) once live.
+- **Browser-tab dignity** (charter §2): `index.html` gets a proper
+  `<title>ANAMNESIS</title>` (verify), a `<meta name="description">`, and a
+  favicon — the waiting-room door glyph as an inline SVG data-URI (no asset
+  pipeline needed). Check the tab looks intentional before calling R1 done.
 - Verification: saves are `localStorage`-keyed — unaffected by hosting; test
   a full prologue + settings round-trip on the deployed URL (one short UAT
   script, per CLAUDE.md budget).

@@ -137,6 +137,15 @@ dispose leaves `renderer.info` counts unchanged across a 10-room soak
    locale change (title re-entry is sufficient — build in `showTitle`'s flow
    call, not reactively). Dispose with theme.
 
+**Testability of Q3 (all three are unit-testable without DOM/GL):** extract
+pure helpers — `parallaxOffset(pointer: {x,y}, max = 0.15): {x,y}` (clamped,
+zero at center); `epitaphLines(profile): string[]` (empty under 2 endings,
+translated epitaphs of exactly the seen endings, anamnesis included only when
+seen); version string equals `package.json`'s (assert `__APP_VERSION__`
+define wiring via a vitest that imports the built constant or reads
+`vite.config.ts`). The `?uat=1` handle also exposes `version` for the UAT
+title check (spec 09).
+
 ## 7. Q4 — Door hover pulse
 
 - In the render loop's hover section: hovered door's glow plane emissive
@@ -145,6 +154,8 @@ dispose leaves `renderer.info` counts unchanged across a 10-room soak
 - On selection (`walkThrough` start): chosen door snaps to `base + 0.35`
   before the spill takes over.
 - `reducedMotion`: static `base + 0.15`, no sine.
+- **Test:** pure `hoverPulseIntensity(t, base, reducedMotion)` helper —
+  bounds `[base, base + 0.15]`, constant under reducedMotion.
 
 ## 8. Q5 — Audio deepening
 
@@ -160,8 +171,11 @@ dispose leaves `renderer.info` counts unchanged across a 10-room soak
    stays as-is for the internal progression cycling.
 3. **Hover pitch per door:** `hover(index?: number)` — pitch = pentatonic
    offsets `[0, 2, 4, 7, 9]` semitones above 880 by door index
-   (`880 * 2^(semi/12)`); callers (`flow.ts` runLoop hover callback,
-   `choices.pickDoor` hover) pass the door's index.
+   (`880 * 2^(semi/12)`); callers pass the door's index. **All three hover
+   sources must agree:** the card hover in `choices.pickDoor`, `flow.ts`'s
+   runLoop hover callback, AND the 3D raycast hover in `director.ts` (which
+   calls `events` → the same flow callback — verify it carries the index or
+   resolve index from the door id at the flow layer, once).
 4. **Diorama accents (3 only, quality high only):** junction — low 55 Hz sine
    drone at gain 0.006 while in-room; casino — mote scheduler biased +1 octave
    while in-room; ship — filtered-noise creak burst every ~11 s at gain 0.01.

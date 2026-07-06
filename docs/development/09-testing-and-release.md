@@ -60,6 +60,7 @@ Threaded into `Game` (constructor option). When ON:
      version: __APP_VERSION__,
      doorRects(): { id: string; rect: DOMRect-like; onScreen: boolean }[],  // projected door bounds
      state(): { act, hearts, lucidity, currentRoom, currentStage },
+     fps(): number,                // rolling average over the last ~2s of presented frames
      jump(roomId: string): void,   // set currentRoom + reload flow into it (skips ahead legally via state, not by faking)
    };
    ```
@@ -67,6 +68,12 @@ Threaded into `Game` (constructor option). When ON:
    this). `jump` exists for screenshot sweeps (E3/H2) that need specific
    rooms without playing to them; it routes through the normal
    `state → persist → runLoop` path so it can't create illegal states.
+   **`jump` semantics (binding):** it must also set `state.act = room.act`
+   (theme/mood/HUD stay coherent), reset `currentStage` to 0, and refuse —
+   with a console warning, not a throw — targets whose preconditions can't be
+   legally synthesized (understory rooms without `prior`, the anamnesis-gated
+   final stage). `fps()` exists so diorama-heavy rooms get a cheap
+   performance assertion (E3/H2 scripts assert `fps() >= 30` headless).
 4. Never persisted; never enabled by settings; no UI surface. Prod players
    who paste the URL merely get faster text — acceptable.
 
@@ -94,18 +101,42 @@ Each failing check: one repair attempt, then report. Results table goes into
 the PR description; `UPGRADE_PLAN.md`'s M4 deferred items get checked with a
 pointer to the run.
 
-## 6. S3 — Per-capability test inventory (rollup of specs 01–08)
+## 6. S3 — Feature → test traceability matrix (every new thing has a test)
 
-New vitest files each spec must land (names binding): `newRooms.test.ts`,
-`understory.test.ts`, `anamnesis.test.ts`, `keepsakes.test.ts`,
-`examinedPath.test.ts`, `ledger.test.ts`, `dioramas.test.ts`,
-`flagAudit.test.ts`, `contentPipeline.test.ts`, plus extensions to
-`audio.test.ts`, `usherMotion.test.ts`, `graph.test.ts`, `i18n.test.ts`,
-`settings.test.ts` (new fields' migration). Expected suite: **~240+ tests,
-all green**, `npx tsc --noEmit` clean, throughout the milestone — not just at
-the end. The difficulty guard-rail and full-graph seeded-run tests are the
-regression net for every content change; they run unmodified except count
-updates.
+This matrix is the completeness contract: **no feature below ships without
+its listed tests green.** (Unit/Sim = vitest, node env; UAT = `scripts/uat/`
+Playwright under the CLAUDE.md budget; Manual = documented steps for the
+owner where automation cannot judge.)
+
+| Feature (spec) | Unit / simulation | UAT / manual |
+|---|---|---|
+| 9 new rooms (01) | `newRooms.test.ts` (structure, secret gate, dynamic beats) · `graph.test.ts` counts · `difficultyGuardRail` re-run · i18n auto-coverage | `i18n-matrix.mjs` spot-render; door sweeps pick up new pools |
+| prior-run mirror (01/02) | stamp/reset/resume tests in `understory.test.ts` | quit/reload cycle in `quit-resume` script |
+| Understory (02) | `understory.test.ts` (eligibility, once-only fork, sequencing, fallbacks, exhibit-pick rule, **quote-translation rule**) | scripted descent playthrough (`?uat=1&jump`) |
+| Codex secrecy for understory (02/06) | `ledger.test.ts` `visibleRoomCount` | codex screenshot before/after descent |
+| 7th ending (03) | `anamnesis.test.ts` (predicate positive + each-negative, priority, 6/7 display, margin hints in 3 langs) | reachability walk via seeded profile + `jump` |
+| Keepsakes (04) | `keepsakes.test.ts` (hard no-op guarantee, earn idempotence, mirror timing, non-retroactivity, taken-tracking, no hearts effects) | ✧ marker + Shelf screenshot |
+| Examined Path (05) | `examinedPath.test.ts` (disabled no-op, reflections schema, shuffle set-equality, resume behavior, act-question gating) | opt-in panel flow + one reflection render, EN+CS |
+| Ledger & Epiphanies (06) | `ledger.test.ts` (all stats, all 12 predicates ±, newly-earned dedup, counter write-points, migration) | ledger screenshot at 1024×700 (layout) |
+| Dioramas (07 Q1) | `dioramas.test.ts` (registry completeness, mesh budget, dispose leak via renderer.info soak) | `fps() >= 30` assertion per bespoke room; visual archive |
+| Light-spill (07 Q2) | `spillColorFor` unit + disposal assert | transition screenshot burst (garble script) |
+| Title polish (07 Q3) | `parallaxOffset`, `epitaphLines`, version-define wiring | title screenshot ±2 endings; version string via uat handle |
+| Hover pulse (07 Q4) | `hoverPulseIntensity` bounds/reduced-motion | — (covered visually by door sweep) |
+| Audio deepening (07 Q5) | `makeImpulse`, pitch table, crossfade param, accent idempotence, reverb-send wiring | manual listen pass (owner feel-pass list) |
+| Usher lantern (07 Q6) | `usherMotion.test.ts` ext (exists, clamp, decay, lean sign) | manual feel pass |
+| Pages deploy (08 R1) | workflow YAML lint (actionlint or schema check) | deployed-URL smoke script (prologue + settings) |
+| Electron polish (08 R2) | window-state read/write pure helpers | manual Windows checklist in PR |
+| Czech pass (08 R3) | coverage tests stay green (values-only change) | owner reads 3 sample screens |
+| DE/FR (08 R4) | language-list loops in all 3 coverage tests | `i18n-matrix.mjs` extended |
+| Flag audit (08 R6) | `flagAudit.test.ts` (every set flag has a reader) | — |
+| Persona whisper (08 R7) | token-preservation test (`{name}` survives cs/fa) | one bark render with a named persona |
+| `?uat=1` mode (09 S1) | flag parsing, speed multiplier math, handle absent in prod | every S2 script exercises it |
+| Content pipeline (08 R5) | `contentPipeline.test.ts` structural invariants | — |
+
+Suite expectation: **~240+ tests, all green, `npx tsc --noEmit` clean,
+throughout the milestone — not just at the end.** The difficulty guard-rail
+and full-graph seeded-run tests are the regression net for every content
+change; they run unmodified except count updates.
 
 ## 7. S4 — Full regression & feel pass
 

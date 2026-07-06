@@ -252,7 +252,9 @@ markup sparingly. All nine are single-stage unless noted.
   `s.prior.transcript` (room title + the exact `choiceText` the player picked,
   e.g. *"a shadow lifts a shadow-lever, and the shadow-tram turns"*). If the
   snapshot is empty (legacy profile), fall back to three generic shadow
-  vignettes — the room must read wholly without it.
+  vignettes — the room must read wholly without it. **Quoted text must be
+  re-translated at display time** — see the binding quoting rule in spec 02 §4
+  (`t(roomChoiceTextKey(...))`, never raw `choiceText`).
 - **Choices:** (1) `name-them` — say aloud whose choices these were
   (`selfOthers: -3, lucidity: +14` — the room rewards the hardest looking in
   the wing); (2) `watch-silent` (`controlAcceptance: +6, lucidity: +8`);
@@ -288,6 +290,11 @@ For each room: `room.<id>.title/doorHint/teaser`, `room.<id>.stage0.beatN`,
 in the same commit as the English content. `translationCoverage.test.ts` and
 `i18n.test.ts` iterate `allRooms`, so they extend automatically; no test
 edits needed for coverage, only for counts (below).
+
+**Text versions:** new rooms are authored in the v2 voice only. Players on
+`textVersion: 'v1'` read the same v2 text via the resolver's fallback chain —
+intended; no v1 authoring for new content, ever. (The v1 pack is a preserved
+historical voice, not a maintained parallel edition.)
 
 ## 8. Test plan
 

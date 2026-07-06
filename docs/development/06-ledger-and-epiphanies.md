@@ -72,7 +72,7 @@ in `overlays.ts`, `.codex-panel`-style with a Back button.
 | Row | Source |
 |---|---|
 | Runs completed | `profile.runsCompleted` |
-| Rooms witnessed | count of `codexUnlocked` ids that are room ids (exclude `ending:` prefix) → "X of {registry.all().length}" |
+| Rooms witnessed | count of `codexUnlocked` ids that are room ids (exclude `ending:` prefix) → "X of Y", where **Y counts the same rooms the codex renders cards for**: all base rooms (secrets included — their locked cards already tease) **plus only understory rooms already walked** (spec 02 §7 hides unwalked understory from the codex; the Ledger must not leak what the codex hides). Extract as `visibleRoomCount(profile, registry)` beside `endingsTotal` |
 | Endings witnessed | `endingsSeen.length` of `endingsTotal(profile)` (spec 03's 6/7 rule) |
 | Hearts lost, lifetime | `profile.heartsLost` |
 | The door most walked | `argmax(profile.roomVisits)` → room title via `t(roomTitleKey(id), …)`; ties → first; empty → em-dash |

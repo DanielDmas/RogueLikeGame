@@ -65,6 +65,28 @@ descended?: boolean;
 - `prior` stamping: `newRun(prior?)` per spec 01 §4. Never mutate `prior`
   mid-run; it is serialized with the save, so quit/resume keeps it intact.
 - Legacy profiles: both fields optional; rooms must degrade (see §6 fallbacks).
+- **Migration edge:** a save with a run already in progress when M5 ships has
+  no `prior` → the staircase is simply not offered that run and appears from
+  the next completed run onward. No special handling; add a test for it.
+
+### ⚠ Quoting rule (binding for every room that speaks the past)
+
+`TranscriptEntry.choiceText` stores the **raw English source** (`flow.ts`
+pushes `choice.text` verbatim). Any beat that quotes a previous run — the
+Archive's exhibit card, the Echo's spoken lines, the Cave's shadow captions
+(spec 01) — must **re-translate at display time**:
+
+```ts
+t(roomChoiceTextKey(entry.roomId, entry.choiceId), entry.choiceText)   // the line
+t(roomTitleKey(entry.roomId), fallbackTitle)                           // the room name
+```
+
+Never render `entry.choiceText` directly — a Czech or Farsi player would hear
+their own past in English. Add a dedicated test: build a transcript, switch
+locale to `cs`, and assert the quoted output contains the Czech choice text,
+not the stored English. (This also means quoted lines track the *current*
+text version/language, which is correct — memory speaks the language you
+listen in.)
 
 ## 5. Behavior specification
 
@@ -145,7 +167,10 @@ each; full field notes.
 - **Premise:** a corridor of doors that were offered to the player in the
   previous run **and not taken** (computable: previous run's acts' pools minus
   `prior.transcript` room ids; pick 3, deterministic salted hash like
-  `doorsForAct`). They stand slightly open. One of them — the same hash picks
+  `doorsForAct`). Honest approximation, documented in code: the engine never
+  records which doors were *offered*, so pools-minus-visited is the proxy —
+  every door it produces genuinely went unentered, which is all the room
+  claims. They stand slightly open. One of them — the same hash picks
   it — swings wide and offers itself *now*, out of context.
 - **Behavior:** taking it does **not** play that room; it plays a condensed
   3-beat "what you find is smaller than what you imagined" vignette (the room
@@ -183,6 +208,14 @@ each; full field notes.
 - The fork renders as an ordinary 2-door screen (existing framing handles 2
   doors); the staircase card carries the violet secret styling + its own icon
   (stair steps descending into a doorway).
+- **Codex secrecy:** the three understory rooms are **hidden from the codex
+  grid entirely** until first walked (same pattern as the anamnesis ending
+  card, spec 03 — filtered from the loop, *not* shown as locked "···" cards).
+  Existing secret rooms (omelas, introduction, the-cave) keep their teasing
+  locked cards — that is established behavior; the understory is a different
+  kind of surprise. The codex "collected X" counter counts only rendered
+  cards, so it stays consistent automatically. The Ledger's rooms-witnessed
+  denominator follows the same rule (spec 06 §5).
 - Understory rooms get moods per type as usual; spec 07 gives them a shared
   diorama family (bare bulbs, shelving) — not required for this spec to ship.
 - Act label while below: keep "Act IV — The Threshold" in the HUD but the

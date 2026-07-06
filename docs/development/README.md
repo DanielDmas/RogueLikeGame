@@ -22,7 +22,8 @@ implementation until the project owner explicitly commands it.**
 | `06-ledger-and-epiphanies.md` | P | The Traveler's Ledger and quiet milestones |
 | `07-visual-and-audio-overhaul.md` | Q | Room dioramas, light-spill, title polish, reverb |
 | `08-platform-localization-engine-health.md` | R | GitHub Pages, Electron polish, Czech pass, DE/FR, cleanups |
-| `09-testing-and-release.md` | S | The `?uat=1` test mode, verification debt, release procedure |
+| `09-testing-and-release.md` | S | The `?uat=1` test mode, feature→test traceability matrix, verification debt, release procedure |
+| `10-experience-charter.md` | all | **Binding UX/beauty rules** every spec is implemented under, plus the owner's pre-release feel-pass checklist |
 
 ## Implementation order and dependencies
 
@@ -63,6 +64,12 @@ verification depends on it.
 5. **Honest tracking.** When work lands, update the matching checkbox in
    `UPGRADE_PLAN.md` — and never check a box for partially-done work without
    an amendment note.
+6. **The Experience Charter (`10-experience-charter.md`) is binding.** Where
+   any spec and the charter conflict, the charter wins and the conflict is
+   reported to the owner. Its feel-pass checklist runs before every release.
+7. **No feature without its tests.** Spec 09 §6 carries the feature→test
+   traceability matrix; a feature is done when its matrix row is green, not
+   when its code compiles.
 
 ## Decisions already made (do not re-litigate)
 
