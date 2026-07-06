@@ -1,4 +1,5 @@
 import type { Axis, Effects, RunState, TranscriptEntry } from '../content/schema';
+import { ACT_POOLS } from '../content/graph';
 
 export const MAX_HEARTS = 3;
 export const LUCIDITY_FLOOR = 5;
@@ -88,4 +89,64 @@ export function lastChoiceIn(state: RunState, roomId: string): string | null {
     if (state.transcript[i].roomId === roomId) return state.transcript[i].choiceId;
   }
   return null;
+}
+
+/** `choseIn`, but against a *previous* run's snapshot rather than the live
+ * transcript — used by rooms that read `RunState.prior` (e.g. `the-echo`'s
+ * junction callback). */
+export function choseInPrior(prior: RunState['prior'], roomId: string, choiceId: string): boolean {
+  return (prior?.transcript ?? []).some((e) => e.roomId === roomId && e.choiceId === choiceId);
+}
+
+/** Selects the previous run's single most significant choice for `the-archive`'s
+ * exhibit card: the first entry whose choice cost a heart; else the entry with
+ * the largest lucidity swing; else the final entry. Undefined only when the
+ * previous run's transcript is empty (legacy save with no `effects` data, or
+ * a degenerate empty transcript) — callers must degrade gracefully. */
+export function pickExhibitEntry(transcript: TranscriptEntry[]): TranscriptEntry | undefined {
+  if (transcript.length === 0) return undefined;
+  const heartCost = transcript.find((e) => (e.effects?.hearts ?? 0) < 0);
+  if (heartCost) return heartCost;
+  let best: TranscriptEntry | undefined;
+  let bestSwing = 0;
+  for (const e of transcript) {
+    const swing = Math.abs(e.effects?.lucidity ?? 0);
+    if (swing > bestSwing) {
+      bestSwing = swing;
+      best = e;
+    }
+  }
+  return best ?? transcript[transcript.length - 1];
+}
+
+/** Deterministic pseudo-shuffle key, local to this module (mirrors
+ * storyEngine.ts's door-offer hash — kept separate rather than shared, since
+ * the two callers hash different kinds of input for unrelated purposes). */
+function fnvHash(input: string, salt: number): number {
+  let h = 2166136261 ^ salt;
+  for (let i = 0; i < input.length; i++) {
+    h ^= input.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+/**
+ * Rooms offered by the previous run's Act I-III pools that were never
+ * *entered* — used by `the-unchosen`. Honest approximation, not a precise
+ * record: the engine never tracks which doors were actually *offered* on any
+ * given path, only which were entered, so "pool minus entered" is the proxy.
+ * Every id this returns genuinely went unentered in that run, which is all
+ * the room claims. Deterministically salted by the previous run's `runs`
+ * count, so repeat visits to the same previous-run snapshot see the same 3
+ * candidates and the same "swings open" pick.
+ */
+export function pickUnchosenRooms(prior: RunState['prior']): { candidates: string[]; opens?: string } {
+  const entered = new Set((prior?.transcript ?? []).map((e) => e.roomId));
+  const pool = [...ACT_POOLS[1], ...ACT_POOLS[2], ...ACT_POOLS[3]];
+  const unchosen = pool.filter((id) => !entered.has(id));
+  if (unchosen.length === 0) return { candidates: [] };
+  const salt = fnvHash(`unchosen#${prior?.runs ?? 0}`, 0);
+  const candidates = [...unchosen].sort((a, b) => fnvHash(a, salt) - fnvHash(b, salt)).slice(0, 3);
+  return { candidates, opens: candidates[0] };
 }

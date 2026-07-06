@@ -296,14 +296,52 @@ Continuity nit: the Punchline ending says "twenty rooms"; a run is 15.
       each act's grown open pool with no changes needed (secret rooms are
       correctly excluded from that check).
 
-## Phase L — Act V: The Understory (spec `02-act-five-the-understory.md`)
+## Phase L — Act V: The Understory (spec `02-act-five-the-understory.md`) — shipped
 
-- [ ] L1. `the-archive` (your previous run, exhibited)
-- [ ] L2. `the-unchosen` (the doors you never opened)
-- [ ] L3. `the-echo` (a conversation with who you were last run)
-- [ ] L4. Optional staircase fork at the Act IV threshold, returning-players
-      only, once per run; rejoins Act IV; prior-run snapshot infrastructure;
-      quoted memories re-translated at display time
+- [x] L1. `the-archive` (Paul Ricœur) — a records room; its reading table
+      stages an exhibit card selected by `pickExhibitEntry` (first heart-cost
+      choice; else largest lucidity swing; else the final entry), and one
+      beat gives the persona blurb its first "just a little" use (new
+      `{blurb}` token in `flow.ts`'s `tokens()`, always non-empty).
+- [x] L2. `the-unchosen` (Kierkegaard/Frost) — a corridor of doors from the
+      previous run's Act I-III pools that were never entered
+      (`pickUnchosenRooms`: pool-minus-entered, hash-picks 3 candidates + the
+      one that "swings open"; an honestly-documented approximation, since the
+      engine never records which doors were *offered*, only entered).
+      Entering the opened door plays a condensed vignette, not the real room.
+- [x] L3. `the-echo` (Hume/Strawson) — a voice assembled from 2-3 of the
+      previous run's own choices (reuses `pickShadowMoments` from K4), names
+      the previous ending once flatly, and gives junction's `pushed`/
+      `kept-bridge` flags their first real readers (`choseInPrior`).
+- [x] L4. Staircase fork wired into `offeredDoors`'s act-4 branch
+      (`storyEngine.ts`): offered exactly once, only at the `boulder`
+      threshold, only for `RunState.prior.runs >= 1`; choosing `boulder`
+      there forfeits the descent for the rest of the run; descending walks
+      the-archive → the-unchosen → the-echo before rejoining `ACT4_SEQUENCE`
+      with zero extra state-machine logic (non-gate act-4 rooms already flow
+      through `completeRoom` with no side effects). New `RunState.descended`
+      marker, set in `flow.ts` the instant the staircase door is chosen. The
+      fork door reuses the secret-door violet styling channel without making
+      the room `secret` in content (per spec, to keep it out of act-pool
+      logic). New Usher bark `understory-hint`, shown only at the fork.
+      Codex: the three rooms are filtered from the grid entirely until first
+      walked (`isHiddenFromCodex`) — a different kind of surprise from the
+      game's other secret rooms, which keep a teasing locked card.
+      **Scope note:** the-unchosen's condensed vignette references the
+      target room by its real (re-translated) title, not just its quoted
+      choice text — a deliberate improvement over the spec's minimum, made
+      possible by exporting `ROOM_TITLE_BY_ID`/`ENDING_TITLE_BY_ID` lookups
+      from the new `content/rooms/understory.ts` for reuse by the CS/FA
+      dynamic-beat overrides.
+      Tests: `understory.test.ts` (offering/skipping/sequencing/quit-resume/
+      content-completeness), plus dedicated `pickExhibitEntry`/
+      `pickUnchosenRooms`/`choseInPrior` unit tests (`state.test.ts`) and
+      dynamic-beat i18n coverage in both languages, including empty-prior
+      fallbacks (`dynamicBeats.test.ts`). Full EN+CS+FA content, icons
+      (staircase, ajar-door corridor, two chairs). Live-verified via
+      `?uat=1` + `jump()` in a real browser: all three rooms render
+      correctly, including a live `the-unchosen` run that dynamically named
+      a real unvisited room. `tsc`/full suite green (264 tests).
 
 ## Phase M — The Seventh Ending: "Anamnesis" (spec `03-the-seventh-ending.md`)
 

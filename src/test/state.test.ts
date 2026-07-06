@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { applyEffects, LUCIDITY_FLOOR, MAX_HEARTS, newRun, pickShadowMoments } from '../engine/gameState';
+import {
+  applyEffects,
+  choseInPrior,
+  LUCIDITY_FLOOR,
+  MAX_HEARTS,
+  newRun,
+  pickExhibitEntry,
+  pickShadowMoments,
+  pickUnchosenRooms,
+} from '../engine/gameState';
+import { ACT_POOLS } from '../content/graph';
 
 describe('state reducers', () => {
   it('starts with 3 hearts, 0 lucidity, neutral axes', () => {
@@ -85,5 +95,87 @@ describe('pickShadowMoments — the-cave\'s shadow-play selection (Milestone 5, 
     const transcript = Array.from({ length: 15 }, (_, i) => entry(`room${i}`, 'c'));
     const picked = pickShadowMoments({ runs: 1, endingId: null, transcript });
     expect(picked).toEqual([transcript[0], transcript[7], transcript[14]]);
+  });
+});
+
+describe('choseInPrior — choseIn against a previous run\'s snapshot (Milestone 5, Phase L)', () => {
+  it('is false when prior is undefined', () => {
+    expect(choseInPrior(undefined, 'junction', 'push')).toBe(false);
+  });
+
+  it('is true only for the exact roomId/choiceId pair recorded in prior.transcript', () => {
+    const prior = { runs: 1, endingId: null, transcript: [{ roomId: 'junction', stageIndex: 1, choiceId: 'push', choiceText: 'Push.' }] };
+    expect(choseInPrior(prior, 'junction', 'push')).toBe(true);
+    expect(choseInPrior(prior, 'junction', 'no-push')).toBe(false);
+    expect(choseInPrior(prior, 'ship', 'push')).toBe(false);
+  });
+});
+
+describe('pickExhibitEntry — the-archive\'s exhibit-selection rule (Milestone 5, Phase L)', () => {
+  it('returns undefined for an empty transcript', () => {
+    expect(pickExhibitEntry([])).toBeUndefined();
+  });
+
+  it('a heart-costing choice always wins, even over a larger lucidity swing elsewhere', () => {
+    const transcript = [
+      { roomId: 'a', stageIndex: 0, choiceId: '1', choiceText: 'big lucidity', effects: { lucidity: 40 } },
+      { roomId: 'b', stageIndex: 0, choiceId: '2', choiceText: 'heart cost', effects: { hearts: -1, lucidity: 5 } },
+      { roomId: 'c', stageIndex: 0, choiceId: '3', choiceText: 'small lucidity', effects: { lucidity: 8 } },
+    ];
+    expect(pickExhibitEntry(transcript)?.choiceText).toBe('heart cost');
+  });
+
+  it('with no heart cost anywhere, the largest |lucidity| swing wins', () => {
+    const transcript = [
+      { roomId: 'a', stageIndex: 0, choiceId: '1', choiceText: 'small', effects: { lucidity: 8 } },
+      { roomId: 'b', stageIndex: 0, choiceId: '2', choiceText: 'biggest', effects: { lucidity: -40 } },
+      { roomId: 'c', stageIndex: 0, choiceId: '3', choiceText: 'medium', effects: { lucidity: 20 } },
+    ];
+    expect(pickExhibitEntry(transcript)?.choiceText).toBe('biggest');
+  });
+
+  it('with no heart cost and no lucidity swing anywhere, the final entry wins', () => {
+    const transcript = [
+      { roomId: 'a', stageIndex: 0, choiceId: '1', choiceText: 'first', effects: {} },
+      { roomId: 'b', stageIndex: 0, choiceId: '2', choiceText: 'last', effects: {} },
+    ];
+    expect(pickExhibitEntry(transcript)?.choiceText).toBe('last');
+  });
+
+  it('entries with no recorded effects (legacy transcript) degrade to the final-entry rule', () => {
+    const transcript = [
+      { roomId: 'a', stageIndex: 0, choiceId: '1', choiceText: 'first' },
+      { roomId: 'b', stageIndex: 0, choiceId: '2', choiceText: 'last' },
+    ];
+    expect(pickExhibitEntry(transcript)?.choiceText).toBe('last');
+  });
+});
+
+describe('pickUnchosenRooms — the-unchosen\'s door-corridor selection (Milestone 5, Phase L)', () => {
+  it('with prior undefined, treats the whole pool as "unchosen" (nothing was entered) and still returns up to 3 candidates', () => {
+    const { candidates, opens } = pickUnchosenRooms(undefined);
+    expect(candidates.length).toBe(3);
+    expect(opens).toBe(candidates[0]);
+  });
+
+  it('returns no candidates when every act I-III pool room was visited', () => {
+    const allPoolIds = [...ACT_POOLS[1], ...ACT_POOLS[2], ...ACT_POOLS[3]];
+    const transcript = allPoolIds.map((roomId) => ({ roomId, stageIndex: 0, choiceId: 'x', choiceText: '' }));
+    expect(pickUnchosenRooms({ runs: 1, endingId: null, transcript }).candidates).toEqual([]);
+  });
+
+  it('returns up to 3 candidates drawn only from rooms genuinely absent from the transcript', () => {
+    const allPoolIds = [...ACT_POOLS[1], ...ACT_POOLS[2], ...ACT_POOLS[3]];
+    const visited = new Set(allPoolIds.slice(0, allPoolIds.length - 2)); // leave exactly 2 unchosen
+    const transcript = [...visited].map((roomId) => ({ roomId, stageIndex: 0, choiceId: 'x', choiceText: '' }));
+    const { candidates, opens } = pickUnchosenRooms({ runs: 1, endingId: null, transcript });
+    expect(candidates.length).toBe(2);
+    for (const id of candidates) expect(visited.has(id)).toBe(false);
+    expect(opens).toBe(candidates[0]);
+  });
+
+  it('is deterministic for the same prior.runs value (repeat visits see the same candidates)', () => {
+    const prior = { runs: 3, endingId: null, transcript: [] };
+    expect(pickUnchosenRooms(prior)).toEqual(pickUnchosenRooms(prior));
   });
 });

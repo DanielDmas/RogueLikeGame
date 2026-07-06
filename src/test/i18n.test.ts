@@ -16,6 +16,7 @@ import {
 
 const LANGS = ['cs', 'fa'] as const;
 const USHER_BARK_IDS = [
+  'understory-hint',
   'second-run',
   'reason-low',
   'reason-high',

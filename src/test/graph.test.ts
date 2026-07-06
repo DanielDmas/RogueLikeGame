@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { RunState } from '../content/schema';
 import { allRooms } from '../content/rooms';
-import { ACT4_SEQUENCE, ACT_POOLS, GATES, PROLOGUE } from '../content/graph';
+import { ACT4_SEQUENCE, ACT_POOLS, GATES, PROLOGUE, UNDERSTORY_SEQUENCE } from '../content/graph';
 import { applyEffects, newRun } from '../engine/gameState';
 import { completeRoom, makeRegistry, offeredDoors } from '../engine/storyEngine';
 import { endingIcons, roomIcons } from '../content/icons';
@@ -36,14 +36,15 @@ function simulateRun(seed: number): RunState {
 }
 
 describe('room graph', () => {
-  it('the graph names exactly 29 numbered rooms plus the prologue (Milestone 5, Phase K in progress: +2 Act I, +3 Act II, +3 Act III + the-cave secret rooms so far)', () => {
+  it('the graph names exactly 32 numbered rooms plus the prologue (Milestone 5, Phase K + L so far: +2 Act I, +3 Act II, +3 Act III + the-cave, +3 understory rooms)', () => {
     const graphIds = new Set<string>([
       PROLOGUE,
       ...Object.values(ACT_POOLS).flat(),
       ...Object.values(GATES),
       ...ACT4_SEQUENCE,
+      ...UNDERSTORY_SEQUENCE,
     ]);
-    expect(graphIds.size).toBe(30);
+    expect(graphIds.size).toBe(33);
     const contentIds = new Set(allRooms.map((r) => r.id));
     expect(contentIds).toEqual(graphIds);
   });
@@ -68,7 +69,12 @@ describe('room graph', () => {
       for (const id of simulateRun(seed).visited) seen.add(id);
     }
     for (const room of allRooms) {
-      if (!room.secret) expect(seen, `room ${room.id} unreachable`).toContain(room.id);
+      // The understory rooms aren't marked `secret` in content (they must not
+      // enter act-pool secret-door logic), but they're only reachable with a
+      // `RunState.prior` this simulation never sets — covered instead by
+      // understory.test.ts's dedicated offering/sequencing tests.
+      if (room.secret || UNDERSTORY_SEQUENCE.includes(room.id)) continue;
+      expect(seen, `room ${room.id} unreachable`).toContain(room.id);
     }
   });
 

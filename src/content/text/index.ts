@@ -13,6 +13,8 @@ import './cs-rooms-act3';
 import './fa-rooms-act3';
 import './cs-rooms-act4';
 import './fa-rooms-act4';
+import './cs-rooms-understory';
+import './fa-rooms-understory';
 import './cs-endings';
 import './fa-endings';
 import './cs-dynamic';

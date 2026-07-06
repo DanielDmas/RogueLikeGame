@@ -158,5 +158,81 @@ describe('the 9 v2 dynamic (RunState-dependent) beats resolve translated text in
       }
       expect(seen.size).toBe(3); // three distinct generic vignettes, not one repeated line
     });
+
+    it(`the-archive.stage0.beat3 — the exhibit card quotes the translated choice text (${lang}), and degrades gracefully when empty`, () => {
+      setLocale(lang, 'v2');
+      const key = roomBeatKey('the-archive', 0, 3);
+      const prior = {
+        runs: 1,
+        endingId: null,
+        transcript: [{ roomId: 'wallet', stageIndex: 0, choiceId: 'take', choiceText: 'Take it. No one has to know.' }],
+      };
+      const withEntry = t(key, 'fallback', { ...newRun(), prior });
+      expect(withEntry).not.toBe('fallback');
+      expect(withEntry).toContain(t(roomChoiceTextKey('wallet', 'take'), 'Take it. No one has to know.'));
+
+      const empty = t(key, 'fallback', { ...newRun(), prior: { runs: 1, endingId: null, transcript: [] } });
+      expect(empty).not.toBe('fallback');
+      expect(empty).not.toBe(withEntry);
+    });
+
+    it(`the-unchosen.stage0.beat2/beat3 and its 'enter-it' outcome0 translate to ${lang}, listing/opening a real unvisited room`, () => {
+      setLocale(lang, 'v2');
+      // wallet is act I's first pool room; leaving it out of the transcript
+      // (along with everything else) guarantees a non-empty candidate list.
+      const prior = { runs: 1, endingId: null, transcript: [] };
+      const state = { ...newRun(), prior };
+      const list = t(roomBeatKey('the-unchosen', 0, 2), 'fallback', state);
+      const opens = t(roomBeatKey('the-unchosen', 0, 3), 'fallback', state);
+      const entered = t(roomChoiceOutcomeKey('the-unchosen', 'enter-it', 0), 'fallback', state);
+      expect(list).not.toBe('fallback');
+      expect(opens).not.toBe('fallback');
+      expect(entered).not.toBe('fallback');
+    });
+
+    it(`the-echo.stage0.beat2 — the voice quotes translated past choices to ${lang}, and degrades gracefully when empty`, () => {
+      setLocale(lang, 'v2');
+      const key = roomBeatKey('the-echo', 0, 2);
+      const prior = {
+        runs: 1,
+        endingId: null,
+        transcript: [{ roomId: 'wallet', stageIndex: 0, choiceId: 'take', choiceText: 'Take it. No one has to know.' }],
+      };
+      const withVoice = t(key, 'fallback', { ...newRun(), prior });
+      expect(withVoice).not.toBe('fallback');
+      expect(withVoice).toContain(t(roomChoiceTextKey('wallet', 'take'), 'Take it. No one has to know.'));
+
+      const silent = t(key, 'fallback', { ...newRun(), prior: { runs: 1, endingId: null, transcript: [] } });
+      expect(silent).not.toBe('fallback');
+      expect(silent).not.toBe(withVoice);
+    });
+
+    it(`the-echo.stage0.beat3 — junction's push/no-push callback (first real readers of the 'pushed'/'kept-bridge' flags) translates to ${lang}`, () => {
+      setLocale(lang, 'v2');
+      const key = roomBeatKey('the-echo', 0, 3);
+      const pushed = t(key, 'fallback', {
+        ...newRun(),
+        prior: { runs: 1, endingId: null, transcript: [{ roomId: 'junction', stageIndex: 1, choiceId: 'push', choiceText: 'Push.' }] },
+      });
+      const kept = t(key, 'fallback', {
+        ...newRun(),
+        prior: { runs: 1, endingId: null, transcript: [{ roomId: 'junction', stageIndex: 1, choiceId: 'no-push', choiceText: 'Don’t.' }] },
+      });
+      const neither = t(key, 'fallback', { ...newRun(), prior: { runs: 1, endingId: null, transcript: [] } });
+      expect(pushed).not.toBe('fallback');
+      expect(kept).not.toBe('fallback');
+      expect(neither).not.toBe('fallback');
+      expect(new Set([pushed, kept, neither]).size).toBe(3);
+    });
+
+    it(`the-echo.stage0.beat4 — names the previous ending's translated title to ${lang}, or degrades gracefully`, () => {
+      setLocale(lang, 'v2');
+      const key = roomBeatKey('the-echo', 0, 4);
+      const named = t(key, 'fallback', { ...newRun(), prior: { runs: 1, endingId: 'return', transcript: [] } });
+      const none = t(key, 'fallback', { ...newRun(), prior: { runs: 1, endingId: null, transcript: [] } });
+      expect(named).not.toBe('fallback');
+      expect(none).not.toBe('fallback');
+      expect(named).not.toBe(none);
+    });
   }
 });

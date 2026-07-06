@@ -1,5 +1,5 @@
 import type { ActId, Room, RunState } from '../content/schema';
-import { ACT4_SEQUENCE, ACT_POOLS, GATES, OPTIONAL_PER_ACT, PROLOGUE } from '../content/graph';
+import { ACT4_SEQUENCE, ACT_POOLS, GATES, OPTIONAL_PER_ACT, PROLOGUE, UNDERSTORY_SEQUENCE } from '../content/graph';
 
 export interface RoomRegistry {
   get(id: string): Room;
@@ -40,7 +40,20 @@ export function offeredDoors(state: RunState, registry: RoomRegistry): Room[] {
   }
   if (state.act === 4) {
     const next = ACT4_SEQUENCE.find((id) => !state.visited.includes(id));
-    return next ? [registry.get(next)] : [];
+    if (!next) return [];
+    // The understory fork: offered once, only at the threshold (before Act IV
+    // begins), only to a returning traveler who hasn't already descended this
+    // run. Taking `boulder` here forfeits the descent for the rest of the run
+    // — the fork never reappears, since `next` advances past 'boulder' the
+    // moment it's visited.
+    const eligible =
+      next === 'boulder' &&
+      (state.prior?.runs ?? 0) >= 1 &&
+      !UNDERSTORY_SEQUENCE.some((id) => state.visited.includes(id));
+    if (eligible) return [registry.get(UNDERSTORY_SEQUENCE[0]), registry.get(next)];
+    // Once descended, walk the understory sequence before rejoining ACT4_SEQUENCE.
+    const pendingUnder = state.descended ? UNDERSTORY_SEQUENCE.find((id) => !state.visited.includes(id)) : undefined;
+    return [registry.get(pendingUnder ?? next)];
   }
   return doorsForAct(state, state.act as 1 | 2 | 3, registry);
 }

@@ -3,10 +3,11 @@
 // scripts/extract-v2.ts only lifts plain strings, so these can't be
 // auto-extracted. Branching logic mirrors the English source exactly.
 import { register, t } from './resolver';
-import { choseIn, hasFlag, pickShadowMoments } from '../../engine/gameState';
+import { choseIn, choseInPrior, hasFlag, pickExhibitEntry, pickShadowMoments, pickUnchosenRooms } from '../../engine/gameState';
 import { punchlineUnlocked } from '../../engine/endings';
 import type { RunState } from '../schema';
-import { roomBeatKey, roomChoiceOutcomeKey, roomChoiceTextKey } from './keys';
+import { roomBeatKey, roomChoiceOutcomeKey, roomChoiceTextKey, roomTitleKey, endingTitleKey } from './keys';
+import { ROOM_TITLE_BY_ID, ENDING_TITLE_BY_ID } from '../rooms/understory';
 
 /** Farsi mirror of act3.ts's SHADOW_FALLBACK, index-aligned. */
 const CAVE_SHADOW_FALLBACK_FA: string[] = [
@@ -87,3 +88,64 @@ register(roomBeatKey('door-that-asks', 1, 4), 'v2', 'fa', (s: RunState) =>
     ? 'و آنجاست — تازه حالا متوجهش می‌شوید، و می‌فهمید که همه اجازه‌ی متوجه‌شدنش را ندارند — دری چهارم. کوچک. ساده. نوری گرم زیرش، و از پشتش، بی‌شک: خنده. نگهبان نگاهتان را دنبال می‌کند و اصلاً چیزی نمی‌گوید، که از نگهبان یعنی تشویق ایستاده.'
     : 'جایی کناری، نیمه‌متوجه دری کوچک و ساده می‌شوید که نسبتاً مطمئنید هرگز در نقشه‌ها نبوده. قفل است. از پشتش، بسیار آهسته: خنده. نگهبان نگاهتان را دنبال می‌کند. «این‌بار نه»، آرام می‌گوید، و به‌نوعی هم حکمی است و هم دعوتی برای بازگشت.',
 );
+
+// ---------- Act V (understory) dynamic beats ----------
+
+register(roomBeatKey('the-archive', 0, 3), 'v2', 'fa', (s: RunState) => {
+  const entry = pickExhibitEntry(s.prior?.transcript ?? []);
+  if (!entry) {
+    return 'کارت درون جعبه‌ی باز، خالی است، با لکه‌ی آبی در یک گوشه — هرچه این جعبه زمانی در خود داشت، از سفر به پایین جان سالم به‌در نبرده. دست‌کم بقیه‌ی قفسه خواناست.';
+  }
+  const choice = t(roomChoiceTextKey(entry.roomId, entry.choiceId), entry.choiceText);
+  return `کارت، با دست‌خط خودتان، می‌گوید: «${choice}» بدون هیچ توضیح بیشتری. مجموعه نظر نمی‌دهد. فقط نگه می‌دارد.`;
+});
+
+register(roomBeatKey('the-unchosen', 0, 2), 'v2', 'fa', (s: RunState) => {
+  const { candidates } = pickUnchosenRooms(s.prior);
+  if (candidates.length === 0) {
+    return 'امشب راهرو به‌طرز عجیبی خالی است — هر دری که ممکن بود از دستش بدهید، ظاهراً ندادید. یا سوابقشان صرفاً از سفر به پایین جان سالم به‌در نبرد. مجموعه نمی‌گوید کدام‌یک درست است.';
+  }
+  const titles = candidates.map((id) => t(roomTitleKey(id), ROOM_TITLE_BY_ID[id] ?? id));
+  return `سه‌تا اول توجهتان را جلب می‌کنند: ${titles.join('، ')}. به‌یاد نمی‌آورید هیچ‌کدام باز شده باشند. حالا نسبتاً مطمئنید که دست‌کم یکی‌شان پیشنهاد شده بود — و شما صرفاً از کنارش گذشتید.`;
+});
+
+register(roomBeatKey('the-unchosen', 0, 3), 'v2', 'fa', (s: RunState) => {
+  const { opens } = pickUnchosenRooms(s.prior);
+  if (!opens) {
+    return 'امشب هیچ دری به‌تنهایی متمایز نمی‌شود. راهرو دقیقاً، کاملاً، بسته می‌ماند، و به‌نوعی همین خودش پاسخی است.';
+  }
+  const title = t(roomTitleKey(opens), ROOM_TITLE_BY_ID[opens] ?? opens);
+  return `دری، نزدیک انتهای راهرو، خودش باقیِ راه را باز می‌شود — ${title}. هرچه آنجا منتظر بود، آشکارا، هنوز منتظر است.`;
+});
+
+register(roomChoiceOutcomeKey('the-unchosen', 'enter-it', 0), 'v2', 'fa', (s: RunState) => {
+  const { opens } = pickUnchosenRooms(s.prior);
+  const title = opens ? t(roomTitleKey(opens), ROOM_TITLE_BY_ID[opens] ?? opens) : 'آن اتاق';
+  return `وارد ${title} می‌شوید — یا آنچه از آن باقی مانده. نه آتشی، نه صدای مجموعه‌ای منتظر، نه دوراهی‌ای نیمه‌تمام. فقط اتاقی، مبله، کمی خاک‌گرفته، که کار خاصی نمی‌کند.`;
+});
+
+register(roomBeatKey('the-echo', 0, 2), 'v2', 'fa', (s: RunState) => {
+  const moments = pickShadowMoments(s.prior);
+  if (moments.length === 0) {
+    return 'صندلی دیگر چیزی نمی‌گوید. این‌بار چیزی ثبت نشده که از آن صدایی ساخته شود — و اتاق، به‌اعتبار خودش، وانمود نمی‌کند غیر از این باشد.';
+  }
+  const lines = moments.map((e) => `«${t(roomChoiceTextKey(e.roomId, e.choiceId), e.choiceText)}»`).join(' سپس: ');
+  return `دو یا سه جمله‌ی خودتان را با لحن خودتان، به‌ترتیب، برایتان بازمی‌گوید: ${lines}`;
+});
+
+register(roomBeatKey('the-echo', 0, 3), 'v2', 'fa', (s: RunState) => {
+  if (choseInPrior(s.prior, 'junction', 'push')) {
+    return 'آن پل را هم به‌یاد دارد — نسخه‌ای از شما که هل داد. «سازگاری، با دست‌ها،» می‌گوید، خودش را با نوعی غرور حسرت‌بار نقل‌قول می‌کند.';
+  }
+  if (choseInPrior(s.prior, 'junction', 'no-push')) {
+    return 'آن پل را هم به‌یاد دارد — نسخه‌ای از شما که هل نداد. «برخی ابزارها هرگز فقط ابزار نیستند،» می‌گوید، و برای یک‌بار به‌نظر نمی‌رسد در حال جروبحث باشد.';
+  }
+  return 'اشاره‌ای به پل نمی‌کند. یا هرگز به آن نرسیدید، یا آن بخشی از شما نبود که امشب لازم داشت گفته شود.';
+});
+
+register(roomBeatKey('the-echo', 0, 4), 'v2', 'fa', (s: RunState) => {
+  const id = s.prior?.endingId;
+  if (!id) return 'نمی‌داند دفعه‌ی قبل چگونه رفتید. ظاهراً حتی این را هم اتاق نگه نمی‌دارد.';
+  const title = t(endingTitleKey(id), ENDING_TITLE_BY_ID[id] ?? id);
+  return `این را هم می‌داند که چگونه رفتید — نه بابتش مغرور، نه شرمنده، که به‌نوعی از هر دو بدتر است. «${title}،» می‌گوید، یک‌بار، بی‌روح، و تکرار نمی‌کند.`;
+});

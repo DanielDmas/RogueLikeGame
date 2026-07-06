@@ -13,6 +13,11 @@ export interface TranscriptEntry {
   stageIndex: number;
   choiceId: string;
   choiceText: string;
+  /** The choice's mechanical effects — lets meta-progression features
+   * characterize a past choice (e.g. `the-archive`'s exhibit-selection rule)
+   * without re-deriving it from room content. Optional: absent on transcript
+   * entries recorded before this field existed. */
+  effects?: Effects;
 }
 
 export interface RunState {
@@ -36,6 +41,11 @@ export interface RunState {
    * Undefined on a player's first-ever run, or a save from before this field
    * existed; readers must treat both cases as "no previous run to recall". */
   prior?: { runs: number; endingId: string | null; transcript: TranscriptEntry[] };
+  /** True once the player has entered the Act IV understory this run (the
+   * optional the-archive/the-unchosen/the-echo sequence). Drives which
+   * understory room, if any, is offered next — see `offeredDoors`'s act-4
+   * branch. Undefined/false means "not descended" (the common case). */
+  descended?: boolean;
   act: ActId;
   /** optional (non-gate) rooms completed in the current act */
   actOptionalDone: number;

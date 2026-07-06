@@ -28,6 +28,15 @@ export const GATES: Record<Exclude<ActId, 0>, string> = {
 /** Act IV is a fixed corridor. */
 export const ACT4_SEQUENCE = ['boulder', 'last-message', 'door-that-asks'];
 
+/**
+ * The optional Act V descent (spec `02-act-five-the-understory.md`): offered
+ * as a second, "stranger" door alongside `boulder` only for returning
+ * travelers (`RunState.prior.runs >= 1`) who haven't already descended this
+ * run. These rooms are plain `act: 4` content — not a real `ActId` — and are
+ * sequenced entirely by `offeredDoors`'s act-4 branch, never by `ACT_POOLS`.
+ */
+export const UNDERSTORY_SEQUENCE = ['the-archive', 'the-unchosen', 'the-echo'];
+
 export const PROLOGUE = 'waiting-room';
 
 /**

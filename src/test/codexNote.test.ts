@@ -1,9 +1,10 @@
 import { describe, expect, it, afterEach } from 'vitest';
 import '../content/text'; // registers cs/fa packs
 import { setLocale } from '../content/text/resolver';
-import { translateFieldNoteForCodex } from '../ui/overlays';
+import { isHiddenFromCodex, translateFieldNoteForCodex } from '../ui/overlays';
 import { allRooms } from '../content/rooms';
 import { endings } from '../content/endings';
+import { defaultProfile } from '../engine/saveStore';
 
 describe('translateFieldNoteForCodex — regression test for the codex language bug', () => {
   afterEach(() => setLocale('en', 'v2'));
@@ -43,5 +44,24 @@ describe('translateFieldNoteForCodex — regression test for the codex language 
     const room = allRooms.find((r) => r.id === 'wallet')!;
     const translated = translateFieldNoteForCodex('wallet', room.fieldNote!, false);
     expect(translated).toEqual(room.fieldNote);
+  });
+});
+
+describe('isHiddenFromCodex — the Act V understory is filtered from the grid, unlike other secret rooms (Milestone 5, Phase L)', () => {
+  it('an unwalked understory room is hidden entirely (no locked placeholder card either)', () => {
+    const profile = defaultProfile();
+    expect(isHiddenFromCodex('the-archive', profile)).toBe(true);
+    expect(isHiddenFromCodex('the-unchosen', profile)).toBe(true);
+    expect(isHiddenFromCodex('the-echo', profile)).toBe(true);
+  });
+
+  it('once walked (codexUnlocked includes it), an understory room renders like any other card', () => {
+    const profile = { ...defaultProfile(), codexUnlocked: ['the-archive'] };
+    expect(isHiddenFromCodex('the-archive', profile)).toBe(false);
+  });
+
+  it('non-understory secret rooms (omelas, introduction, the-cave) are never hidden by this rule — they keep their teasing locked card', () => {
+    const profile = defaultProfile();
+    for (const id of ['omelas', 'introduction', 'the-cave']) expect(isHiddenFromCodex(id, profile)).toBe(false);
   });
 });

@@ -2,8 +2,19 @@ import type { RunState } from './schema';
 import { t } from './text/resolver';
 import { usherBarkKey, actIntroKey } from './text/keys';
 
-/** One-line Usher commentary shown at the door-choosing moment. */
-export function usherDoorBark(s: RunState, runsCompleted: number, doorCount = 2): string {
+/** One-line Usher commentary shown at the door-choosing moment. `atUnderstoryFork`
+ * is true exactly once per eligible run — the single moment the Act IV
+ * understory staircase is offered alongside `boulder` (see `offeredDoors`'s
+ * act-4 branch) — and takes priority over every other bark, since it never
+ * recurs. */
+export function usherDoorBark(s: RunState, runsCompleted: number, doorCount = 2, atUnderstoryFork = false): string {
+  if (atUnderstoryFork) {
+    return t(
+      usherBarkKey('understory-hint'),
+      'Usher: That second door is not on my map. It was, once. Take it or don’t; it will not offer twice.',
+    );
+  }
+
   // A single remaining door is a gate, not a choice — explain why, rather
   // than letting it read as an arbitrary shrinking of options. (The very
   // first door of the run — the prologue's threshold — is also doorCount

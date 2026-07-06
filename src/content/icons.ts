@@ -181,6 +181,21 @@ export const roomIcons: Record<string, string> = {
     <circle cx="32" cy="30" r="5"/>
     <path d="M32 35 v6"/>
   `),
+
+  // Act V — The Understory (optional descent; spec 02)
+  'the-archive': svg(`
+    <path d="M8 50 h8 v-8 h8 v-8 h8 v-8 h8 v-8 h8 v-8"/>
+    <rect x="44" y="10" width="12" height="20" rx="1"/>
+  `),
+  'the-unchosen': svg(`
+    <rect x="6" y="18" width="12" height="30"/>
+    <rect x="26" y="18" width="12" height="30"/>
+    <path d="M46 18 h12 v30 h-12 M46 18 l10 4 v22 l-10 4" opacity="0.8"/>
+  `),
+  'the-echo': svg(`
+    <path d="M14 46 v-14 h10 v14 M14 40 h10"/>
+    <path d="M50 46 v-14 h-10 v14 M50 40 h-10" opacity="0.6"/>
+  `),
 };
 
 export const endingIcons: Record<string, string> = {

@@ -2,7 +2,7 @@ import type { Persona, Profile, Settings } from '../engine/saveStore';
 import type { Ending, FieldNote, Room } from '../content/schema';
 import { allRooms } from '../content/rooms';
 import { endings } from '../content/endings';
-import { actName } from '../content/graph';
+import { actName, UNDERSTORY_SEQUENCE } from '../content/graph';
 import { clear, el, HEART_SVG } from './dom';
 import { showFieldNote } from './fieldNote';
 import { roomIcons, endingIcons } from '../content/icons';
@@ -537,6 +537,15 @@ export function translateFieldNoteForCodex(id: string, note: FieldNote, isEnding
       };
 }
 
+/** The Act V understory is a different kind of surprise from the game's other
+ * secret rooms (omelas, introduction, the-cave): those keep a teasing locked
+ * "· · ·" card even before they're unlocked, but the understory rooms are
+ * filtered from the codex grid entirely until first walked — they shouldn't
+ * hint at their own existence. */
+export function isHiddenFromCodex(roomId: string, profile: Profile): boolean {
+  return UNDERSTORY_SEQUENCE.includes(roomId) && !profile.codexUnlocked.includes(roomId);
+}
+
 export function showCodex(ui: HTMLElement, profile: Profile): Promise<void> {
   return new Promise((resolve) => {
     const o = overlay(ui);
@@ -563,6 +572,7 @@ export function showCodex(ui: HTMLElement, profile: Profile): Promise<void> {
     };
 
     for (const room of allRooms) {
+      if (isHiddenFromCodex(room.id, profile)) continue;
       if (room.id === 'last-message') {
         // Room 19's codex entry is the sentence you sent
         const unlocked = profile.codexUnlocked.includes(room.id);

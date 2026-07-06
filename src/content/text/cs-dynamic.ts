@@ -3,10 +3,11 @@
 // scripts/extract-v2.ts only lifts plain strings, so these can't be
 // auto-extracted. Branching logic mirrors the English source exactly.
 import { register, t } from './resolver';
-import { choseIn, hasFlag, pickShadowMoments } from '../../engine/gameState';
+import { choseIn, choseInPrior, hasFlag, pickExhibitEntry, pickShadowMoments, pickUnchosenRooms } from '../../engine/gameState';
 import { punchlineUnlocked } from '../../engine/endings';
 import type { RunState } from '../schema';
-import { roomBeatKey, roomChoiceOutcomeKey, roomChoiceTextKey } from './keys';
+import { roomBeatKey, roomChoiceOutcomeKey, roomChoiceTextKey, roomTitleKey, endingTitleKey } from './keys';
+import { ROOM_TITLE_BY_ID, ENDING_TITLE_BY_ID } from '../rooms/understory';
 
 /** Czech mirror of act3.ts's SHADOW_FALLBACK, index-aligned. */
 const CAVE_SHADOW_FALLBACK_CS: string[] = [
@@ -87,3 +88,64 @@ register(roomBeatKey('door-that-asks', 1, 4), 'v2', 'cs', (s: RunState) =>
     ? 'A je tu — všimnete si toho až teď a chápete, že ne každý si toho smí všimnout — čtvrté dveře. Malé. Prosté. Teplé světlo pod nimi, a zpoza nich, jasně: smích. Uvaděč sleduje váš pohled a neřekne vůbec nic, což je od Uvaděče standing ovation.'
     : 'Někde stranou si napůl všimnete malých prostých dveří, o kterých jste si docela jistí, že nikdy nebyly v plánech. Jsou zamčené. Zpoza nich, velmi tiše: smích. Uvaděč sleduje váš pohled. „Tentokrát ne,“ řekne jemně, a je to nějak zároveň verdikt i pozvání vrátit se.',
 );
+
+// ---------- Act V (understory) dynamic beats ----------
+
+register(roomBeatKey('the-archive', 0, 3), 'v2', 'cs', (s: RunState) => {
+  const entry = pickExhibitEntry(s.prior?.transcript ?? []);
+  if (!entry) {
+    return 'Karta v otevřené krabici je prázdná, na jednom rohu potřísněná vodou — cokoli tahle krabice kdysi obsahovala, cestu dolů nepřežilo. Zbytek police je aspoň čitelný.';
+  }
+  const choice = t(roomChoiceTextKey(entry.roomId, entry.choiceId), entry.choiceText);
+  return `Karta zní, vaší vlastní rukou: „${choice}“ Žádný další komentář. Zařízení nekomentuje. Jen uchovává.`;
+});
+
+register(roomBeatKey('the-unchosen', 0, 2), 'v2', 'cs', (s: RunState) => {
+  const { candidates } = pickUnchosenRooms(s.prior);
+  if (candidates.length === 0) {
+    return 'Chodba je dnes večer podivně prázdná — každé dveře, které jste mohl minout, jste zjevně neminul. Nebo záznam o nich prostě nepřežil cestu dolů. Zařízení neříká, co z toho platí.';
+  }
+  const titles = candidates.map((id) => t(roomTitleKey(id), ROOM_TITLE_BY_ID[id] ?? id));
+  return `Tři vás zaujmou nejdřív: ${titles.join(', ')}. Nepamatujete si, že by se kterékoli z nich otevřely. Jste si teď dost jistý, že aspoň jedny vám byly nabídnuty — a vy jste prostě prošel kolem.`;
+});
+
+register(roomBeatKey('the-unchosen', 0, 3), 'v2', 'cs', (s: RunState) => {
+  const { opens } = pickUnchosenRooms(s.prior);
+  if (!opens) {
+    return 'Žádné jednotlivé dveře se dnes večer nevyčleňují. Chodba zůstává přesně, celá, zavřená, a nějak je to samo o sobě odpověď.';
+  }
+  const title = t(roomTitleKey(opens), ROOM_TITLE_BY_ID[opens] ?? opens);
+  return `Jedny dveře, blízko konce chodby, se samy zbytek cesty otevřou — ${title}. Cokoli tam čekalo, evidentně čeká pořád.`;
+});
+
+register(roomChoiceOutcomeKey('the-unchosen', 'enter-it', 0), 'v2', 'cs', (s: RunState) => {
+  const { opens } = pickUnchosenRooms(s.prior);
+  const title = opens ? t(roomTitleKey(opens), ROOM_TITLE_BY_ID[opens] ?? opens) : 'místnost';
+  return `Vstoupíte do ${title} — nebo do toho, co z ní zbylo. Žádný oheň, žádný hlas zařízení nečeká, žádné dilema uprostřed věty. Jen místnost, zařízená, trochu zaprášená, nedělající nic zvláštního.`;
+});
+
+register(roomBeatKey('the-echo', 0, 2), 'v2', 'cs', (s: RunState) => {
+  const moments = pickShadowMoments(s.prior);
+  if (moments.length === 0) {
+    return 'Druhá židle mlčí. Tentokrát není nic zaznamenáno, z čeho by se dal hlas sestavit — a místnost to ke své cti nepředstírá.';
+  }
+  const lines = moments.map((e) => `„${t(roomChoiceTextKey(e.roomId, e.choiceId), e.choiceText)}“`).join(' Pak: ');
+  return `Řekne vám zpátky dvě nebo tři vaše vlastní věty, vaším vlastním tónem, popořadě: ${lines}`;
+});
+
+register(roomBeatKey('the-echo', 0, 3), 'v2', 'cs', (s: RunState) => {
+  if (choseInPrior(s.prior, 'junction', 'push')) {
+    return 'Vzpomíná i na most — tu verzi vás, která zatlačila. „Konzistence, s rukama,“ říká, citujíc sama sebe s jakousi lítostivou pýchou.';
+  }
+  if (choseInPrior(s.prior, 'junction', 'no-push')) {
+    return 'Vzpomíná i na most — tu verzi vás, která netlačila. „Některé prostředky nikdy nejsou jen prostředky,“ říká, a pro jednou to nezní, že se hádá.';
+  }
+  return 'O mostě se nezmiňuje. Buď jste se k němu nikdy nedostal, nebo to nebyla ta část vás, která to dnes večer potřebovala vyslovit.';
+});
+
+register(roomBeatKey('the-echo', 0, 4), 'v2', 'cs', (s: RunState) => {
+  const id = s.prior?.endingId;
+  if (!id) return 'Neví, jak jste odešel naposledy. Zdá se, že ani tohle si místnost neuchovává.';
+  const title = t(endingTitleKey(id), ENDING_TITLE_BY_ID[id] ?? id);
+  return `Ví i to, jak jste odešel — ani na to hrdý, ani se za to nestydí, což je nějak horší než obojí. „${title},“ řekne, jednou, věcně, a neopakuje se.`;
+});

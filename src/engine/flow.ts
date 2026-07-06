@@ -1,7 +1,7 @@
 import type { Choice, Room, RunState } from '../content/schema';
 import { allRooms } from '../content/rooms';
 import { getEnding } from '../content/endings';
-import { actName } from '../content/graph';
+import { actName, UNDERSTORY_SEQUENCE } from '../content/graph';
 import { actIntroText, usherDoorBark } from '../content/usher';
 import { applyEffects, newRun } from './gameState';
 import { axisTriptych, evaluateEnding } from './endings';
@@ -187,10 +187,14 @@ export class Game {
     this.hud.setLanguage(s.language);
   }
 
-  /** `{name}` (and future tokens) available for interpolation into any displayed text. */
+  /** `{name}`/`{blurb}` (and future tokens) available for interpolation into any displayed text. */
   private tokens(): Record<string, string> {
     const name = this.profile.persona.name.trim();
-    return { name: name || t(uiKey('travellerFallback'), 'traveller') };
+    const blurb = this.profile.persona.blurb.trim();
+    return {
+      name: name || t(uiKey('travellerFallback'), 'traveller'),
+      blurb: blurb || t(uiKey('archiveBlurbFallback'), 'no further description on file'),
+    };
   }
 
   /** Typewriter forced off under `?uat=1`, regardless of the stored setting (which still displays as-is in Settings). */
@@ -361,13 +365,18 @@ export class Game {
         id: r.id,
         hint: t(roomDoorHintKey(r.id), r.doorHint),
         teaser: t(roomTeaserKey(r.id), r.teaser),
-        secret: Boolean(r.secret),
+        // The understory fork's first door reuses the secret-door styling
+        // channel (violet accent) to read as the "stranger" option, without
+        // making the room itself `secret` in content — it must never enter
+        // act-pool secret-door logic.
+        secret: Boolean(r.secret) || r.id === UNDERSTORY_SEQUENCE[0],
         icon: iconFor(r.id),
         unseen: !this.profile.codexUnlocked.includes(r.id),
       }));
       this.director.setMood(null);
       this.director.showDoors(specs);
-      this.text.showBark(usherDoorBark(this.state, this.profile.runsCompleted, doors.length), this.tokens());
+      const atUnderstoryFork = doors.some((d) => d.id === UNDERSTORY_SEQUENCE[0]);
+      this.text.showBark(usherDoorBark(this.state, this.profile.runsCompleted, doors.length, atUnderstoryFork), this.tokens());
       const picker = this.choices.pickDoor(specs, (id) => {
         this.director.highlightDoor(id);
         if (id) sound.hover();
@@ -378,6 +387,7 @@ export class Game {
       sound.choice();
       this.text.hide();
 
+      if (roomId === UNDERSTORY_SEQUENCE[0]) this.state = { ...this.state, descended: true };
       await this.director.walkThrough(roomId);
       await this.fade(true);
       this.director.hideDoors();
@@ -433,6 +443,7 @@ export class Game {
         stageIndex: i,
         choiceId: choice.id,
         choiceText: choice.text,
+        effects: choice.effects,
       });
       this.hud.update(this.state.hearts, this.state.lucidity);
       if (room.id === 'last-message') {
