@@ -133,6 +133,27 @@ export const roomIcons: Record<string, string> = {
     <rect x="14" y="30" width="36" height="12" rx="3"/>
     <path d="M32 24 q4 -6 8 -2 q4 4 -8 12 q-12 -8 -8 -12 q4 -4 8 2 Z"/>
   `),
+  'marys-room': svg(`
+    <rect x="2" y="16" width="12" height="12"/>
+    <rect x="18" y="16" width="12" height="12"/>
+    <rect x="34" y="16" width="12" height="12" fill="currentColor"/>
+    <rect x="50" y="16" width="12" height="12"/>
+    <rect x="2" y="34" width="12" height="12"/>
+    <rect x="18" y="34" width="12" height="12"/>
+    <rect x="34" y="34" width="12" height="12"/>
+    <rect x="50" y="34" width="12" height="12"/>
+  `),
+  'butterfly-dream': svg(`
+    <path d="M8 32 h48"/>
+    <path d="M32 32 L12 12 L52 12 Z" opacity="0.8"/>
+    <path d="M32 32 L12 52 L52 52 Z" opacity="0.5"/>
+  `),
+  swampman: svg(`
+    <circle cx="20" cy="16" r="6"/>
+    <path d="M20 22 v20 M12 34 L20 26 L28 34 M14 50 L20 42 L26 50"/>
+    <circle cx="44" cy="16" r="6" stroke-dasharray="3 3"/>
+    <path d="M44 22 v20 M36 34 L44 26 L52 34 M38 50 L44 42 L50 50" stroke-dasharray="3 3"/>
+  `),
   'free-will': svg(`
     <circle cx="16" cy="32" r="6"/>
     <circle cx="32" cy="32" r="6"/>

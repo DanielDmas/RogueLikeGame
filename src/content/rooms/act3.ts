@@ -296,6 +296,180 @@ export const debtOfDead: Room = {
   },
 };
 
+export const marysRoom: Room = {
+  id: 'marys-room',
+  act: 3,
+  title: "Mary's Room",
+  type: 'INSIGHT',
+  doorHint: 'The door of the grey study',
+  teaser: 'She knows everything about the color she has never seen.',
+  stages: [
+    {
+      beats: [
+        'A cell built entirely in greyscale — walls, floor, the single chair, even the water in the glass on the desk, rendered in shades between white and black. It is the only room in the wing built this way on purpose.',
+        "On the desk: a lifetime's worth of papers, bound and cross-referenced — every wavelength, every retinal response, every neural pathway that fires when a human being looks at the color red. You have read them. You could recite the physics of a sunset from memory, in the dark, backwards.",
+        "You have never seen red. Not once, not by accident, not through a crack in a curtain. The room was built around that absence the way a keyhole is built around the one key it's missing.",
+        'In the corner: a drawer, sealed, labeled in a hand you don’t recognize as anyone’s but somehow trust. THE REST OF IT.',
+        'Usher: Everything in those papers is true, and complete, by any measure physics is willing to offer. I want to be honest about that before you decide anything. Nothing in the drawer will correct the papers. It will only add to them — or so the theory goes.',
+      ],
+      choices: [
+        {
+          id: 'open-drawer',
+          text: 'Open the drawer.',
+          hint: "Let there be one more fact, if that's all it turns out to be.",
+          effects: { lucidity: 12, axes: { reasonFeeling: 7 } },
+          outcome: [
+            'You open the drawer. Inside: light, arranged at the exact wavelength the papers promised, sitting in a shallow dish like something held mid-breath.',
+            'Red.',
+          ],
+        },
+        {
+          id: 'leave-sealed',
+          text: 'Leave it sealed. The facts already suffice — this is completeness with an unopened box.',
+          hint: 'The physics account was supposed to be enough.',
+          effects: { lucidity: 8, axes: { reasonFeeling: -7 } },
+          outcome: [
+            'You close the drawer without opening it, and slide the papers back into their folder, satisfied that a complete physical description has no gaps in it worth this kind of ceremony.',
+            "The drawer seems to hum very faintly for the rest of your time in this room — the particular hum of an unread letter, sitting exactly where you left it, patient in a way unread letters generally aren't.",
+          ],
+        },
+        {
+          id: 'give-away',
+          text: 'Take the drawer, unopened, and carry it to someone who has never read the papers either.',
+          hint: 'Let the seeing belong to someone else, for once.',
+          effects: { lucidity: 8, axes: { selfOthers: 7 } },
+          outcome: [
+            'You lift the drawer — light, and unexpectedly warm — and carry it out past the papers, past the grey walls, without once lifting the lid.',
+            "Usher: An unusual kindness. Most travelers who reach this room want the seeing for themselves — understandably; it's the one experience this wing can't hand you twice. You are giving away something you don't yet have. I don't know what to call that, except generous.",
+          ],
+        },
+      ],
+    },
+  ],
+  fieldNote: {
+    title: "What Mary Didn't Know",
+    thinkers: 'Frank Jackson · Thomas Nagel, the knowledge argument',
+    body: 'Frank Jackson designed Mary to break physicalism\'s confidence outright: raised in a black-and-white room, she learns every physical fact about color vision — wavelengths, cone cells, the visual cortex\'s response curves — without ever seeing a color. Release her, show her a ripe tomato, and something happens no textbook prepared her for. Jackson\'s question: did she learn something new? If a complete physical description leaves out **what red looks like**, physicalism\'s complete list was never complete — some facts, the argument runs, are facts about experience, and no third-person description delivers them, however exhaustive. Thomas Nagel had already sharpened a companion version: you can know everything about a bat\'s echolocation and still not know what it is like to be a bat. Physicalists have replies — Mary gains an ability, not a fact; a new way of representing an old fact, not new information. None fully deflate the intuition in the room with you right now. The drawer was never going to be explained by what came before it. It was going to be met.',
+  },
+};
+
+export const butterflyDream: Room = {
+  id: 'butterfly-dream',
+  act: 3,
+  title: "The Butterfly's Dream",
+  type: 'NO-SOLUTION',
+  doorHint: 'The door of the papered wall',
+  teaser: 'Someone here is dreaming someone. It is not clear which direction.',
+  stages: [
+    {
+      beats: [
+        'A small room papered floor to ceiling in rice-paper panels, softly lit from behind as if the walls themselves were the lamp. A low bed, unmade, still warm.',
+        "Lying down was apparently never optional. You are already lying in it, mid-waking, the way you surface from a nap you didn't mean to take — uncertain, for one long second, which room is the real one and which is the one you're leaving.",
+        (s) =>
+          s.memoryLost
+            ? 'The dream you were having — you can feel its edges dissolving already — offered no seam at all: no photograph, no name, nothing to snag on and prove which side of sleep you are actually standing on. It fit you perfectly, the way a room fits a person who has never lived anywhere else.'
+            : "The dream you were having is fading, but one detail refuses to go: a face from a photograph you're sure you've seen before, worn at edges you didn't dream but remember. It doesn't prove anything. It just itches, a small snag in otherwise seamless cloth.",
+        'You were, in the dream — you’re almost sure — a butterfly. Not symbolically. Wings, weight, the specific unbothered logic of following whatever smelled good. You did not, as the butterfly, dream of being this. You were simply, entirely, a butterfly, the way you are now, entirely, whoever is lying on this bed.',
+        'Usher: Zhuangzi told this one about himself, a long time before this facility existed — dreamed he was a butterfly, woke unsure whether he was a man who had dreamed of being a butterfly, or is now a butterfly dreaming he is a man. He never resolved it. I want to be clear this room does not intend to succeed where he declined to.',
+      ],
+      choices: [
+        {
+          id: 'wake-as-self',
+          text: 'Insist on the waking version. You are the one deciding this, right now, which settles it.',
+          hint: 'Break the tie by fiat.',
+          effects: { lucidity: 8, axes: { controlAcceptance: -6, selfOthers: -3 } },
+          outcome: [
+            'You sit up, plant your feet on the floor, and declare — to the room, to the fading wings, to whichever of you is doing the declaring — that this is the true state and the other was the dream.',
+            'The room accepts the ruling the way a judge accepts a plea it has no grounds to overturn: without agreement, and without further argument. Somewhere, briefly, something with wings had believed exactly the same thing about itself, just as certainly.',
+          ],
+        },
+        {
+          id: 'stay-butterfly',
+          text: "Let it stand. Whichever one is dreaming, it isn't obviously your job to correct it.",
+          hint: "Don't referee a tie you can't see the whole board of.",
+          effects: { lucidity: 6, axes: { controlAcceptance: 7, reasonFeeling: 5 } },
+          outcome: [
+            "You lie back down and let the question keep both its answers, the way you'd let two colors sit unmixed on the same canvas because separating them was never actually necessary to look at the painting.",
+            'Something in your chest that usually insists on knowing which one of you is real goes, for a moment, pleasantly quiet. The papered walls glow the same either way.',
+          ],
+        },
+        {
+          id: 'refuse-distinction',
+          text: 'Refuse the premise. There is no fact of the matter about which one is dreaming — only two experiences, each complete.',
+          hint: 'The costliest answer: no consolation, no verdict, no bed to wake up in.',
+          effects: { lucidity: 12 },
+          outcome: [
+            'You say it plainly: there is no man who dreamed a butterfly, and no butterfly dreaming a man — only transformation, one state becoming another, with no fixed post standing outside both to certify which was the original.',
+            "It is the correct answer, if it's an answer at all, and it comes with nothing to hold — no waking triumph, no butterfly's ease, just the papered walls glowing at exactly the warmth they always were, indifferent to which of you is asking.",
+          ],
+        },
+      ],
+    },
+  ],
+  fieldNote: {
+    title: "The Butterfly's Question",
+    thinkers: 'Zhuangzi, the dream of the butterfly',
+    body: 'Zhuangzi, the Daoist philosopher, describes dreaming he was a butterfly — flitting and content, unaware of any Zhuangzi at all — and waking with a start, unable to decide whether he was a man who had just dreamed he was a butterfly, or is now a butterfly dreaming he is a man. He calls this the transformation of things, and declines, pointedly, to resolve it: the question assumes a fixed observer standing outside both states, checking which one is real, and no such observer is on offer. Each experience, while it lasts, is total and unquestioned from the inside — the butterfly doesn\'t suspect Zhuangzi, and Zhuangzi, mid-dream, didn\'t suspect the butterfly either. Western epistemology tends to want a verdict: which one is the base reality, which the dream. Zhuangzi\'s answer is closer to a shrug elevated to a doctrine — identity is provisional, states transform into one another, and looking for the one true waker underneath all of them may be the only real mistake available. **The wings were not a metaphor for something. They were, entirely, themselves, for exactly as long as they lasted.**',
+  },
+};
+
+export const swampman: Room = {
+  id: 'swampman',
+  act: 3,
+  title: 'Swampman',
+  type: 'DILEMMA',
+  doorHint: 'The door of the second coat',
+  teaser: 'Someone in there is wearing your face, and is very polite about it.',
+  stages: [
+    {
+      beats: [
+        "The storm outside has knocked half the wing's lights into a flicker, and in the strobing half-dark, the room's one chair is occupied. By you.",
+        "Not a copy in the teleporter's clean, mechanical sense — this one arrived by accident, the way a lightning strike arrives: a bog, a body, a bolt, and afterward, standing up from the mud, molecule-for-molecule identical to you, down to the coat you happen to be wearing.",
+        'It has never met you. It has also never met anyone — it formed forty seconds ago in a swamp that isn’t in this building, with your memories intact and running, your handwriting ready in its hand, your mother’s face vivid in a mind that has existed for less time than it takes to read this sentence.',
+        'It looks up, a little sheepish about the whole thing, and says, in your exact voice: “I know how this sounds. I’d feel the same way, in your position. I think I do, actually — feel the same way. That’s rather the problem, isn’t it.”',
+        "Usher: No trick to the physics, this time either. It has your synapses, your scars, your grudges, right down to the one you're currently having about it. The only thing it does not have is a past — no history connects it to the person who grew up with your memories. Whether that disqualifies it from being you is, I'm told, still being litigated. Not by me. By philosophers, mostly at dinner.",
+      ],
+      choices: [
+        {
+          id: 'accept-them',
+          text: '"You\'re me. History was never the load-bearing part — the mind in that chair is doing everything a self does."',
+          hint: 'Identity by pattern, not pedigree.',
+          effects: { lucidity: 8, axes: { controlAcceptance: 6, reasonFeeling: 4 } },
+          outcome: [
+            'You cross the room and shake its hand, which shakes back with your own slight hesitation, and something in the strobing light settles, briefly, into something less like a crime scene and more like a family reunion with unusually short notice.',
+            'Usher: A generous ruling, and a coherent one — if what matters is the pattern rather than the provenance, the swamp is just an unusually dramatic delivery method. The two of you will have to work out, on your own time, whose turn it is to use the name.',
+          ],
+        },
+        {
+          id: 'deny-them',
+          text: '"No causal thread runs from me to you. You are a very convincing stranger."',
+          hint: "History is not optional; it's the whole thing being copied.",
+          effects: { lucidity: 8, axes: { selfOthers: -6, controlAcceptance: -5 } },
+          outcome: [
+            'You keep your distance, and it accepts this with a wince you recognize, because it is, after all, your own wince, deployed by someone with no actual history of ever using it before tonight.',
+            'Usher: Also coherent — if identity requires an unbroken causal chain to the person who lived the life being remembered, this one has memories but no biography, a diary with nobody\'s hand behind the ink. It will go on believing it is you regardless. Belief, unfortunately, has never required a valid pedigree.',
+          ],
+        },
+        {
+          id: 'split-the-coat',
+          text: 'Offer to divide what you have — the room, the name, whatever comes next — between the two of you.',
+          hint: 'Maybe survival was never the thing worth arguing about.',
+          effects: { lucidity: 8, axes: { selfOthers: 7 } },
+          outcome: [
+            'You take off the coat and hand it over, half seriously, and for a moment you are just two people standing in bad light, working out logistics instead of metaphysics, which turns out to be considerably easier.',
+            "Usher: Derek Parfit would have liked this room, I think — he spent a career arguing that survival was never the prize to fight over; what matters is that someone psychologically continuous with you carries what you cared about forward. By that measure, tonight, you both won. Try not to let the coat become a whole new argument.",
+          ],
+        },
+      ],
+    },
+  ],
+  fieldNote: {
+    title: 'The Man From the Marsh',
+    thinkers: 'Donald Davidson · Derek Parfit, causal history and what matters',
+    body: 'Donald Davidson proposed Swampman as a reductio: lightning strikes a swamp and, by cosmic accident, assembles a being molecule-for-molecule identical to Davidson, memories and all, with no causal history connecting it to the original — no childhood, no learning, no actual relationship to the people it "remembers." Davidson\'s own intuition was that Swampman couldn\'t mean anything by its words, since meaning requires a causal history the swamp-creature never had; representation, on this view, isn\'t just structure, it\'s structure plus a story. Derek Parfit, working the same fork from a different angle, argued the story was never the point: what matters in survival is psychological continuity and connectedness — memory, intention, character carried forward — not an unbroken causal thread to a particular hunk of matter. If Parfit is right, the swamp is a strange delivery mechanism for someone who nonetheless is you, in every sense worth wanting. If Davidson is right, the room is occupied by a stranger who arrived pre-loaded with your entire inner life and none of your history. **Both of them can be right about what they are each measuring — they were never actually arguing about the same question.**',
+  },
+};
+
 export const freeWill: Room = {
   id: 'free-will',
   act: 3,
@@ -365,4 +539,13 @@ export const freeWill: Room = {
   },
 };
 
-export const act3Rooms = [teleporter, editor, introduction, debtOfDead, freeWill];
+export const act3Rooms = [
+  teleporter,
+  editor,
+  introduction,
+  debtOfDead,
+  marysRoom,
+  butterflyDream,
+  swampman,
+  freeWill,
+];

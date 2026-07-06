@@ -262,15 +262,23 @@ Continuity nit: the Punchline ending says "twenty rooms"; a run is 15.
       byte-identical to English); fixed the same way, by enriching the EN
       source with a translatable descriptor phrase to match the game-wide
       convention, then translating it.
-- [ ] K3. Act III +3: `marys-room`, `butterfly-dream`, `swampman`
+- [x] K3. Act III +3: `marys-room` (Frank Jackson's knowledge argument —
+      Thomas Nagel descriptor added for the same translation-coverage
+      reason as K2), `butterfly-dream` (Zhuangzi; carries a `memoryLost`-
+      branching dynamic beat, following the `ship`/`door-that-asks`
+      pattern, with its own `dynamicBeats.test.ts` coverage), `swampman`
+      (Davidson/Parfit) — full content, EN+CS+FA, icons, pool-wired.
 - [ ] K4. Secret room `the-cave` (Plato; replays your previous run as shadows;
-      returning travelers only)
+      returning travelers only) — needs the `RunState.prior` mirror and
+      `profile.lastRunTranscript`/`lastRunEndingId` snapshot infrastructure
+      from spec 01 §4 / spec 02 §4; deliberately deferred to its own run
+      since it's shared, cross-cutting engine work, not pure content.
 - [x] K5. Rooms shipped so far are complete (beats/choices/notes/icons/moods)
       in EN+CS+FA, same commit — coverage tests auto-extended and pass.
 - [x] K6. Pool wiring + graph-test invariants updated for rooms shipped so far
-      (25 numbered rooms + prologue after Act I+II growth); the reachability
-      regression test from K1 already covered Act II's grown pool with no
-      changes needed.
+      (28 numbered rooms + prologue after Act I+II+III growth); the
+      reachability regression test from K1 already covered each act's grown
+      pool with no changes needed.
 
 ## Phase L — Act V: The Understory (spec `02-act-five-the-understory.md`)
 

@@ -31,6 +31,39 @@ describe('Milestone 5, Phase K — new rooms land correctly (buridans-queue, the
   });
 });
 
+describe('Milestone 5, Phase K — Act III new rooms land correctly (marys-room, butterfly-dream, swampman)', () => {
+  const ids = ['marys-room', 'butterfly-dream', 'swampman'];
+
+  it('all three resolve in the registry in Act III', () => {
+    for (const id of ids) expect(registry.get(id).act).toBe(3);
+  });
+
+  it("all three are wired into Act III's open pool", () => {
+    for (const id of ids) expect(ACT_POOLS[3]).toContain(id);
+  });
+
+  it('none is a gate or a secret', () => {
+    for (const id of ids) {
+      expect(registry.get(id).gate).toBeFalsy();
+      expect(registry.get(id).secret).toBeUndefined();
+    }
+  });
+
+  it('all three have a schematic icon', () => {
+    for (const id of ids) expect(roomIcons[id]).toContain('<svg');
+  });
+
+  it('all three have at least 3 choices, each with a hint, and a field note', () => {
+    for (const id of ids) {
+      const room = registry.get(id);
+      const choices = room.stages[0].choices;
+      expect(choices.length).toBeGreaterThanOrEqual(3);
+      for (const c of choices) expect(c.hint, `${id}.${c.id}`).toBeTruthy();
+      expect(room.fieldNote, id).toBeTruthy();
+    }
+  });
+});
+
 /**
  * Regression guard for a real bug this phase uncovered: `doorsForAct`
  * (storyEngine.ts) offers only 2 (or 3, with a secret) rooms at a time from

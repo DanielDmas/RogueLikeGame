@@ -6,7 +6,7 @@ import { actNameKey } from './text/keys';
 export const ACT_POOLS: Record<Exclude<ActId, 0 | 4>, string[]> = {
   1: ['wallet', 'dinner-table', 'promotion', 'beggars-math', 'quiet-alarm', 'buridans-queue', 'the-reference'],
   2: ['junction', 'experience-machine', 'ship', 'casino-pascal', 'omelas', 'chinese-room', 'newcomb-annex', 'veil-of-ignorance'],
-  3: ['teleporter', 'editor', 'introduction', 'debt-of-dead'],
+  3: ['teleporter', 'editor', 'introduction', 'debt-of-dead', 'marys-room', 'butterfly-dream', 'swampman'],
 };
 
 export const GATES: Record<Exclude<ActId, 0>, string> = {
@@ -24,7 +24,7 @@ export const PROLOGUE = 'waiting-room';
 /**
  * Rooms the player must complete per act before the gate opens. Kept strictly
  * below each act's open-pool size so a door choice always means skipping a
- * room this run (Act III's open pool is 3, so it takes only 2 of them).
+ * room this run.
  */
 export const OPTIONAL_PER_ACT: Record<1 | 2 | 3, number> = { 1: 3, 2: 3, 3: 2 };
 

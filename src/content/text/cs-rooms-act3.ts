@@ -1,7 +1,7 @@
 // Czech translation of the v2 Act III room prose (beats, choice text/hint/
 // outcome, field notes) for: teleporter, editor, introduction, debt-of-dead,
-// free-will. Registered under version 'v2'. See cs-rooms.ts for the
-// established pattern this file follows.
+// marys-room, butterfly-dream, swampman, free-will. Registered under version
+// 'v2'. See cs-rooms.ts for the established pattern this file follows.
 import { registerAll } from './resolver';
 import {
   roomBeatKey,
@@ -133,6 +133,81 @@ registerAll('v2', 'cs', {
   [roomNoteTitleKey('debt-of-dead')]: 'Odpuštění a účetní kniha',
   [roomNoteThinkersKey('debt-of-dead')]: 'biskup Butler · Hannah Arendtová · Jacques Derrida',
   [roomNoteBodyKey('debt-of-dead')]: 'Biskup Butler definoval odpuštění jako odřeknutí se zášti — nikoli omlouvání, nikoli zapomínání, nikoli usmíření, ale odmítnutí dál platit úroky z rány. Hannah Arendtová nazvala odpuštění jediným skutečným únikem z nevratnosti minulosti: bez něj zůstáváme navždy obětí jednoho činu, a viník navždy jeho autorem; odpuštění osvobozuje obě strany ze zamrzlého rámce. Ale Derrida viděl paradox u postele umírajícího: odpuštění hodné toho jména odpouští neodpustitelné — cokoli menšího je pouhé účetnictví, promíjení dluhů, které si už stejně můžeme dovolit. A smrtelná postel zostří každou hranu: upřímná omluva mění viníka, ne to bezpráví; o vaše odpuštění je žádáno přesně v okamžiku, kdy je jeho odmítnutí kruté a jeho udělení může působit vynuceně. V tom křesle neexistovala žádná správná odpověď. Odpuštění, poctivé odmítnutí, tiché uvolnění a položení nepoložené otázky jsou čtyři různé způsoby, jak brát ránu vážně — což byl, možná, jediný dluh, který jste opravdu měli splatit vy sami.',
+});
+
+// ---------- Act III: Mary's Room ----------
+registerAll('v2', 'cs', {
+  [roomBeatKey('marys-room', 0, 0)]: 'Cela postavená celá v odstínech šedi — stěny, podlaha, jediná židle, dokonce i voda ve sklenici na stole, vykreslené v tónech mezi bílou a černou. Je to jediná místnost v tomhle křídle postavená takhle záměrně.',
+  [roomBeatKey('marys-room', 0, 1)]: 'Na stole: papíry na celý život, svázané a provázané odkazy — každá vlnová délka, každá odezva sítnice, každá nervová dráha, která se rozsvítí, když se člověk podívá na červenou barvu. Přečetli jste je. Dokázali byste odrecitovat fyziku západu slunce zpaměti, potmě, pozpátku.',
+  [roomBeatKey('marys-room', 0, 2)]: 'Nikdy jste neviděli červenou. Ani jednou, ani náhodou, ani skulinou v záclonách. Místnost byla postavena kolem té nepřítomnosti tak, jako je klíčová dírka postavena kolem jediného klíče, který jí chybí.',
+  [roomBeatKey('marys-room', 0, 3)]: 'V rohu: šuplík, zapečetěný, popsaný rukou, kterou nepoznáváte jako ničí, ale přesto jí důvěřujete. ZBYTEK TOHO.',
+  [roomBeatKey('marys-room', 0, 4)]: 'Uvaděč: Všechno v těch papírech je pravda, a úplná, podle jakéhokoli měřítka, které je fyzika ochotná nabídnout. Chci být v tomhle upřímný, než se rozhodnete. Nic v šuplíku ty papíry neopraví. Jen k nim něco přidá — nebo to alespoň tvrdí teorie.',
+  [roomChoiceTextKey('marys-room', 'open-drawer')]: 'Otevřete šuplík.',
+  [roomChoiceHintKey('marys-room', 'open-drawer')]: 'Ať je tu ještě jeden fakt, jestli je to všechno, čím se to nakonec ukáže být.',
+  [roomChoiceOutcomeKey('marys-room', 'open-drawer', 0)]: 'Otevřete šuplík. Uvnitř: světlo, uspořádané na přesně té vlnové délce, kterou papíry slibovaly, ležící v mělké misce jako něco zadrženého uprostřed nádechu.',
+  [roomChoiceOutcomeKey('marys-room', 'open-drawer', 1)]: 'Červená.',
+  [roomChoiceTextKey('marys-room', 'leave-sealed')]: 'Nechte ho zapečetěný. Fakta už stačí — tohle je úplnost s neotevřenou krabicí.',
+  [roomChoiceHintKey('marys-room', 'leave-sealed')]: 'Fyzikální popis měl být dostatečný.',
+  [roomChoiceOutcomeKey('marys-room', 'leave-sealed', 0)]: 'Zavřete šuplík, aniž byste ho otevřeli, a vrátíte papíry zpátky do desek, spokojení, že úplný fyzikální popis nemá žádné mezery, které by stály za tímhle druhem obřadu.',
+  [roomChoiceOutcomeKey('marys-room', 'leave-sealed', 1)]: 'Zavřený šuplík po zbytek vaší doby v této místnosti velmi tiše hučí — tím zvláštním hučením nepřečteného dopisu, ležícího přesně tam, kde jste ho nechali, trpělivého způsobem, jakým nepřečtené dopisy obvykle nebývají.',
+  [roomChoiceTextKey('marys-room', 'give-away')]: 'Vezměte šuplík, neotevřený, a odneste ho někomu, kdo ty papíry taky nikdy nečetl.',
+  [roomChoiceHintKey('marys-room', 'give-away')]: 'Ať to vidění patří pro jednou někomu jinému.',
+  [roomChoiceOutcomeKey('marys-room', 'give-away', 0)]: 'Zvednete šuplík — lehký a překvapivě teplý — a odnesete ho ven, kolem papírů, kolem šedých stěn, aniž byste jednou zvedli víko.',
+  [roomChoiceOutcomeKey('marys-room', 'give-away', 1)]: 'Uvaděč: Neobvyklá laskavost. Většina poutníků, kteří dorazí do téhle místnosti, chce to vidění pro sebe — pochopitelně; je to jediná zkušenost, kterou vám tohle křídlo může dát jen jednou. Vy dáváte pryč něco, co ještě sami nemáte. Nevím, jak to nazvat, jinak než velkoryse.',
+  [roomNoteTitleKey('marys-room')]: 'Co Marie nevěděla',
+  [roomNoteThinkersKey('marys-room')]: 'Frank Jackson · Thomas Nagel, argument poznání',
+  [roomNoteBodyKey('marys-room')]: 'Frank Jackson navrhl Marii, aby otevřeně narušil sebejistotu fyzikalismu: vychovaná v černobílém pokoji se naučí každý fyzikální fakt o barevném vidění — vlnové délky, čípky, křivky odezvy zrakové kůry — aniž by kdy viděla barvu. Propusťte ji, ukažte jí zralé rajče, a stane se něco, na co ji žádná učebnice nepřipravila. Jacksonova otázka: naučila se něco nového? Pokud úplný fyzikální popis vynechává, jak červená vypadá, pak jeho úplný seznam nikdy nebyl úplný — některá fakta, tvrdí argument, jsou fakta o zkušenosti, a žádný popis ze třetí osoby je nedoručí, ať je sebevyčerpávající. Thomas Nagel už dřív vybrousil doprovodnou verzi: můžete vědět všechno o echolokaci netopýra a přesto nevědět, jaké to je být netopýrem. Fyzikalisté mají odpovědi — Marie získává schopnost, ne fakt; nový způsob reprezentace starého faktu, ne novou informaci. Žádná z nich zcela nevyvrací intuici, která je právě teď s vámi v této místnosti. Šuplík se nikdy neměl vysvětlit tím, co bylo předtím. Měl se s ním setkat.',
+});
+
+// ---------- Act III: The Butterfly's Dream ----------
+registerAll('v2', 'cs', {
+  [roomBeatKey('butterfly-dream', 0, 0)]: 'Malá místnost obložená od podlahy ke stropu papírovými panely z rýžového papíru, jemně prosvětlená zezadu, jako by samy stěny byly lampou. Nízká postel, neustlaná, ještě teplá.',
+  [roomBeatKey('butterfly-dream', 0, 1)]: 'Lehnout si zjevně nebylo volitelné. Už v ní ležíte, uprostřed probouzení, tím způsobem, jakým se vynořujete ze spánku, který jste neplánovali — na jednu dlouhou vteřinu nejistí, která místnost je ta skutečná a kterou právě opouštíte.',
+  [roomBeatKey('butterfly-dream', 0, 2)]: (s) =>
+    s.memoryLost
+      ? 'Sen, který se vám zdál — cítíte, jak se jeho okraje už teď rozpouštějí — nenabízel vůbec žádný šev: žádnou fotografii, žádné jméno, nic, o co by se dalo zachytit a dokázat, na které straně spánku vlastně stojíte. Padl na vás dokonale, tak jako místnost padne na člověka, který nikdy nikde jinde nebydlel.'
+      : 'Sen, který se vám zdál, bledne, ale jeden detail odmítá odejít: tvář z fotografie, o které jste si jistí, že jste ji už viděli, obnošená na okrajích, které jste si nevysnili, ale pamatujete si je. Nic to nedokazuje. Jen to svědí, malý zádrhel na jinak bezešvé látce.',
+  [roomBeatKey('butterfly-dream', 0, 3)]: 'Ve snu jste byli — jste si skoro jistí — motýl. Ne symbolicky. Křídla, váha, ta zvláštní nerozrušená logika následování všeho, co vonělo dobře. Jako motýl jste nesnili o tomhle. Byli jste jednoduše, celý, motýl, stejně jako jste teď jednoduše, celý, kdokoli, kdo leží na téhle posteli.',
+  [roomBeatKey('butterfly-dream', 0, 4)]: 'Uvaděč: Tohle o sobě vyprávěl Zhuangzi, dávno předtím, než tohle zařízení existovalo — snil, že je motýl, probudil se nejistý, zda je člověk, kterému se právě zdálo, že je motýl, nebo je teď motýl, kterému se zdá, že je člověk. Nikdy to nevyřešil. Chci mít jasno v tom, že tahle místnost nemá v úmyslu uspět tam, kde on odmítl.',
+  [roomChoiceTextKey('butterfly-dream', 'wake-as-self')]: 'Trvejte na verzi bdělosti. Jste to vy, kdo se právě rozhoduje, a to to rozhoduje.',
+  [roomChoiceHintKey('butterfly-dream', 'wake-as-self')]: 'Rozetněte remízu vyhláškou.',
+  [roomChoiceOutcomeKey('butterfly-dream', 'wake-as-self', 0)]: 'Posadíte se, položíte nohy na podlahu a prohlásíte — místnosti, mizejícím křídlům, ať už kdokoli z vás to prohlašuje — že tohle je pravý stav a to druhé byl sen.',
+  [roomChoiceOutcomeKey('butterfly-dream', 'wake-as-self', 1)]: 'Místnost přijme ten verdikt tak, jako soudce přijímá žalobu, kterou nemá důvod zamítnout: bez souhlasu, a bez další hádky. Někde, na okamžik, něco s křídly věřilo přesně to samé o sobě, stejně jistě.',
+  [roomChoiceTextKey('butterfly-dream', 'stay-butterfly')]: 'Nechte to tak. Ať sní kdokoli z vás, není zjevně vaší povinností to opravovat.',
+  [roomChoiceHintKey('butterfly-dream', 'stay-butterfly')]: 'Nerozhodujte remízu, kterou nevidíte celou.',
+  [roomChoiceOutcomeKey('butterfly-dream', 'stay-butterfly', 0)]: 'Lehnete si zpátky a necháte tu otázku mít obě odpovědi zároveň, tak jako byste nechali dvě barvy ležet nesmíchané na stejném plátně, protože je rozdělit nikdy nebylo skutečně nutné k tomu, abyste se na obraz mohli dívat.',
+  [roomChoiceOutcomeKey('butterfly-dream', 'stay-butterfly', 1)]: 'Něco ve vaší hrudi, co obvykle trvá na vědění, který z vás je skutečný, na okamžik příjemně ztichne. Papírové stěny svítí stejně, ať tak či onak.',
+  [roomChoiceTextKey('butterfly-dream', 'refuse-distinction')]: 'Odmítněte tu premisu. Neexistuje žádný fakt o tom, kdo z vás sní — jen dvě zkušenosti, každá úplná.',
+  [roomChoiceHintKey('butterfly-dream', 'refuse-distinction')]: 'Nejdražší odpověď: žádná útěcha, žádný verdikt, žádná postel, do které se probudit.',
+  [roomChoiceOutcomeKey('butterfly-dream', 'refuse-distinction', 0)]: 'Řeknete to jasně: neexistuje žádný muž, kterému se zdálo o motýlovi, ani motýl, kterému se zdá o muži — jen proměna, jeden stav stávající se druhým, bez pevného sloupu stojícího mimo oba, který by potvrdil, který byl původní.',
+  [roomChoiceOutcomeKey('butterfly-dream', 'refuse-distinction', 1)]: 'Je to správná odpověď, pokud je to vůbec odpověď, a přichází bez ničeho, čeho by se dalo držet — žádné vítězné probuzení, žádná motýlí lehkost, jen papírové stěny svítící přesně tím teplem, jakým vždycky svítily, lhostejné k tomu, kdo z vás se ptá.',
+  [roomNoteTitleKey('butterfly-dream')]: 'Motýlí otázka',
+  [roomNoteThinkersKey('butterfly-dream')]: 'Zhuangzi, sen o motýlovi',
+  [roomNoteBodyKey('butterfly-dream')]: 'Zhuangzi, taoistický filosof, popisuje sen, ve kterém byl motýlem — poletující a spokojený, bez jakéhokoli povědomí o nějakém Zhuangzim — a probuzení plné úleku, neschopný rozhodnout, zda je člověkem, kterému se právě zdálo, že je motýl, nebo je teď motýlem, kterému se zdá, že je člověk. Nazývá to proměnou věcí a odmítá to, záměrně, vyřešit: ta otázka předpokládá pevného pozorovatele stojícího mimo oba stavy, který kontroluje, který z nich je skutečný, a žádný takový pozorovatel není k dispozici. Každá zkušenost je, dokud trvá, úplná a nezpochybněná zevnitř — motýl nepodezírá Zhuangziho, a Zhuangzi, uprostřed snu, nepodezíral motýla. Západní epistemologie obvykle chce verdikt: který z nich je základní realita, který sen. Zhuangziho odpověď je blíž pokrčení ramen povýšenému na doktrínu — identita je prozatímní, stavy se proměňují jeden v druhý, a hledání jednoho pravého probuzeného pod nimi všemi může být jediná skutečná chyba, která je k dispozici. Křídla nebyla metaforou něčeho. Byla, celá, sama sebou, přesně tak dlouho, jak dlouho trvala.',
+});
+
+// ---------- Act III: Swampman ----------
+registerAll('v2', 'cs', {
+  [roomBeatKey('swampman', 0, 0)]: 'Bouře venku vyřadila polovinu osvětlení tohohle křídla do blikání, a v tom stroboskopickém přítmí je jediná židle místnosti obsazená. Vámi.',
+  [roomBeatKey('swampman', 0, 1)]: 'Ne kopie v tom čistém, mechanickém smyslu teleportu — tenhle vznikl náhodou, tak jako přichází úder blesku: bažina, tělo, výboj, a pak, vstávající z bahna, molekulu po molekule identický s vámi, až po kabát, který zrovna máte na sobě.',
+  [roomBeatKey('swampman', 0, 2)]: 'Nikdy vás nepotkal. Nikdy se s nikým nepotkal — vznikl před čtyřiceti vteřinami v bažině, která není v této budově, s vašimi vzpomínkami neporušenými a běžícími, s vaším rukopisem připraveným v jeho ruce, s tváří vaší matky živou v mysli, která existuje kratší dobu, než trvá přečíst tuhle větu.',
+  [roomBeatKey('swampman', 0, 3)]: 'Podívá se nahoru, trochu rozpačitě z celé té situace, a řekne, vaším přesným hlasem: „Vím, jak to zní. Na vašem místě bych cítil totéž. Myslím, že to vlastně cítím — totéž. To je asi ten problém, ne?“',
+  [roomBeatKey('swampman', 0, 4)]: 'Uvaděč: Ani tentokrát žádný trik na fyzice. Má vaše synapse, vaše jizvy, vaše křivdy, až po tu, kterou právě teď máte kvůli němu. Jediné, co nemá, je minulost — žádná historie ho nespojuje s člověkem, který vyrostl s vašimi vzpomínkami. Jestli ho to diskvalifikuje z toho být vámi, je prý pořád předmětem sporu. Ne u mě. U filosofů, většinou při večeři.',
+  [roomChoiceTextKey('swampman', 'accept-them')]: '„Jsi já. Historie nikdy nebyla nosnou částí — mysl v té židli dělá všechno, co dělá já.“',
+  [roomChoiceHintKey('swampman', 'accept-them')]: 'Identita podle vzorce, ne podle rodokmenu.',
+  [roomChoiceOutcomeKey('swampman', 'accept-them', 0)]: 'Přejdete místnost a potřesete si rukou, která vám oplatí s vaším vlastním nepatrným zaváháním, a něco v tom stroboskopickém světle se, na okamžik, usadí do něčeho míň jako místo činu a víc jako rodinné shledání s neobvykle krátkým oznámením.',
+  [roomChoiceOutcomeKey('swampman', 'accept-them', 1)]: 'Uvaděč: Velkorysý verdikt, a koherentní — pokud záleží na vzorci, ne na původu, bažina je jen neobvykle dramatický způsob doručení. Vy dva si budete muset sami vyřešit, na kom je řada používat to jméno.',
+  [roomChoiceTextKey('swampman', 'deny-them')]: '„Ode mě k tobě nevede žádné příčinné vlákno. Jsi velmi přesvědčivý cizinec.“',
+  [roomChoiceHintKey('swampman', 'deny-them')]: 'Historie není volitelná; je to celá ta věc, která se kopíruje.',
+  [roomChoiceOutcomeKey('swampman', 'deny-them', 0)]: 'Držíte si odstup, a on to přijme s úšklebkem, který poznáváte, protože je to koneckonců váš vlastní úšklebek, nasazený někým, kdo ho dnes večer poprvé v životě vůbec použil.',
+  [roomChoiceOutcomeKey('swampman', 'deny-them', 1)]: 'Uvaděč: Taky koherentní — pokud identita vyžaduje nepřerušený příčinný řetězec k člověku, který ten život skutečně žil, tenhle má vzpomínky, ale žádný životopis, deník bez ničí ruky za tím inkoustem. Bude si dál myslet, že je vámi, bez ohledu na to. Víra bohužel nikdy nevyžadovala platný rodokmen.',
+  [roomChoiceTextKey('swampman', 'split-the-coat')]: 'Nabídněte rozdělit to, co máte — místnost, jméno, cokoli přijde dál — mezi vás dva.',
+  [roomChoiceHintKey('swampman', 'split-the-coat')]: 'Možná přežití nikdy nebylo to, o co stálo za to se hádat.',
+  [roomChoiceOutcomeKey('swampman', 'split-the-coat', 0)]: 'Sundáte si kabát a podáte mu ho, napůl vážně, a na okamžik jste jen dva lidé stojící ve špatném světle a řešící logistiku místo metafyziky, což se ukáže být podstatně snazší.',
+  [roomChoiceOutcomeKey('swampman', 'split-the-coat', 1)]: 'Uvaděč: Myslím, že Derek Parfit by měl tuhle místnost rád — strávil kariéru tvrzením, že přežití nikdy nebylo tou cenou, o kterou se bojuje; záleží na tom, aby někdo psychologicky kontinuální s vámi nesl dál to, na čem vám záleželo. Podle tohohle měřítka jste dnes večer vyhráli oba. Snažte se, aby se z kabátu nestala celá nová hádka.',
+  [roomNoteTitleKey('swampman')]: 'Muž z bažiny',
+  [roomNoteThinkersKey('swampman')]: 'Donald Davidson · Derek Parfit, příčinná historie a to, na čem záleží',
+  [roomNoteBodyKey('swampman')]: 'Donald Davidson navrhl Bažinného muže jako reductio: blesk udeří do bažiny a náhodou, kosmickou náhodou, sestaví bytost molekulu po molekule identickou s Davidsonem, se všemi vzpomínkami, ale bez jakékoli příčinné historie spojující ji s originálem — žádné dětství, žádné učení, žádný skutečný vztah k lidem, které si „pamatuje“. Davidsonova vlastní intuice byla, že Bažinný muž nemůže svými slovy nic myslet, protože význam vyžaduje příčinnou historii, kterou bažinné stvoření nikdy nemělo; reprezentace v tomhle pohledu není jen struktura, je to struktura plus příběh. Derek Parfit, pracující se stejnou vidlicí z jiného úhlu, tvrdil, že na příběhu nikdy nezáleželo: na přežití záleží psychologická kontinuita a propojenost — paměť, záměr, charakter nesený dál — ne nepřerušené příčinné vlákno k určitému kusu hmoty. Pokud má pravdu Parfit, bažina je jen zvláštní způsob doručení někoho, kdo přesto je vámi, v každém smyslu, na kterém záleží. Pokud má pravdu Davidson, v místnosti sedí cizinec, který dorazil předem naplněný celým vaším vnitřním životem a žádnou vaší historií. Oba mohou mít pravdu v tom, co každý z nich měří — nikdy se ve skutečnosti nehádali o stejnou otázku.',
 });
 
 // ---------- Act III: The Free Will Waiting Room ----------

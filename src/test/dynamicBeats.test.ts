@@ -1,5 +1,5 @@
 import { describe, expect, it, afterEach } from 'vitest';
-import '../content/text'; // registers all translation packs including the 9 dynamic v2 beats
+import '../content/text'; // registers all translation packs including the 10 dynamic v2 beats
 import { setLocale, t } from '../content/text/resolver';
 import { roomBeatKey, roomChoiceOutcomeKey } from '../content/text/keys';
 import { newRun } from '../engine/gameState';
@@ -107,6 +107,16 @@ describe('the 9 v2 dynamic (RunState-dependent) beats resolve translated text in
       const key = roomBeatKey('door-that-asks', 1, 4);
       const locked = t(key, 'fallback', newRun());
       expect(locked).not.toBe('fallback');
+    });
+
+    it(`butterfly-dream.stage0.beat2 — memoryLost true/false both translate to ${lang}`, () => {
+      setLocale(lang, 'v2');
+      const key = roomBeatKey('butterfly-dream', 0, 2);
+      const lost = t(key, 'fallback', { ...newRun(), memoryLost: true });
+      const intact = t(key, 'fallback', { ...newRun(), memoryLost: false });
+      expect(lost).not.toBe('fallback');
+      expect(intact).not.toBe('fallback');
+      expect(lost).not.toBe(intact);
     });
   }
 });
