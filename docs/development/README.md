@@ -8,12 +8,13 @@ lives in `UPGRADE_PLAN.md` at the repository root; these documents are the
 ground-level detail behind its Milestone 5 phases.
 
 **Status (updated 2026-07-06): implementation in progress.** Shipped: 09-S1
-(uat mode), 01 (rooms), 02 (understory), 03 (seventh ending), 04 (keepsakes);
-05 (examined path) is implemented with Act I content only — Acts II–IV
-reflections are a **release gate** for v0.2.0. Open: 06, 07, 08, 09-S2…S5.
-Ground truth lives in `UPGRADE_PLAN.md`; read `11-production-review.md`
-before starting any new phase — it carries the audit findings and the
-hardening items it added to the plan (R8–R11, S6–S7).
+(uat mode), 01 (rooms), 02 (understory), 03 (seventh ending), 04 (keepsakes),
+05 (examined path — content authoring now complete for every mandatory
+DILEMMA/INSIGHT room across all four acts and the Understory, satisfying
+its v0.2.0 release gate). Open: the hardening batch (S6/S7/R8/R9), 06, 07,
+08, 09-S2…S5. Ground truth lives in `UPGRADE_PLAN.md`; read
+`11-production-review.md` before starting any new phase — it carries the
+audit findings and the hardening items it added to the plan (R8–R11, S6–S7).
 
 ## Documents
 

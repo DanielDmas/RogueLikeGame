@@ -1,6 +1,15 @@
-import type { Room } from '../schema';
+import type { Reflection, Room } from '../schema';
 import { hasFlag } from '../../engine/gameState';
 import { anamnesisAvailable, punchlineUnlocked } from '../../engine/endings';
+
+/** Examined Path (spec 05) shorthand — a Reflection tuple in the fixed
+ * consequence/duty/virtue/care order (shuffled per-display by the UI). */
+const reflect = (consequence: string, duty: string, virtue: string, care: string): Reflection[] => [
+  { tradition: 'consequence', text: consequence },
+  { tradition: 'duty', text: duty },
+  { tradition: 'virtue', text: virtue },
+  { tradition: 'care', text: care },
+];
 
 export const boulder: Room = {
   id: 'boulder',
@@ -95,6 +104,12 @@ export const lastMessage: Room = {
             'You write it, and the sentence does what promises do: it binds the sender. Somewhere in the waking world, someone will pause mid-afternoon at a feeling like a hand on the shoulder, and not know why they suddenly put the kettle on and glanced at the door.',
             'Usher: (stamping it with great ceremony) A promise. The oldest genre. It routes fastest, for what it’s worth — hope has excellent postage.',
           ],
+          reflections: reflect(
+            'The promise reaches them however it arrives — as a hunch, a feeling, a sudden need to put the kettle on — and does what promises do: it binds the sender too.',
+            'A promise made across a fog you cannot cross back through is a debt you knowingly can never collect on.',
+            'Ask whether spending your one sentence on hope was courage, or simply the sentence that was easiest to write.',
+            'Somewhere, someone pauses mid-afternoon at a feeling they can’t name — a small, real weight of care, delivered without a return address.',
+          ),
         },
         {
           id: 'not-a-burden',
@@ -107,6 +122,12 @@ export const lastMessage: Room = {
             'It will arrive as a dream they wake from already crying, unembarrassed for once, lighter in a way they will not examine because examining might break it. They will make breakfast differently. Small things. It compounds.',
             'Usher: (quietly, stamping it twice, which is not procedure) Most travelers send for themselves. The ones who don’t — their letters, I’ve noticed, are the only ones the fog doesn’t touch on the way out.',
           ],
+          reflections: reflect(
+            'One sentence, spent entirely on unweighting someone else’s private ledger, arrives calibrated precisely to loosen exactly that.',
+            'You owed them nothing more with your one sentence, and yet gave it entirely to a debt that was never technically yours to settle.',
+            'Ask what it costs to spend your only outgoing word on someone else’s wound instead of your own goodbye.',
+            'It arrives as a dream they wake from crying, unembarrassed for once — a message addressed entirely to someone else’s need.',
+          ),
         },
         {
           id: 'keep-the-notes',
@@ -119,6 +140,12 @@ export const lastMessage: Room = {
             'It will arrive as a 4 a.m. thought that makes someone sit up and reach for paper — one of those ideas that feels received rather than had. They will spend years on it. It will be good work. It was yours, and now it is theirs, which is how every idea has ever traveled.',
             'Usher: A citation across the void. (stamping it, moved despite himself) It routes slow, but it routes deep. Some sentences take decades to arrive, and land like depth charges when they do.',
           ],
+          reflections: reflect(
+            'The finding outlives the feeling — a thought arriving at four in the morning gets decades of someone else’s life spent proving it true.',
+            'You owed the argument you were building an ending, and this sentence is the only ending available — a report finally filed.',
+            'Ask whether sending the finding instead of the feeling was honesty about what mattered to you, or an old habit of hiding behind an argument.',
+            'Whoever receives this spends years on work that was never truly theirs, and becomes exactly the kind of person who does good with borrowed things.',
+          ),
         },
         {
           id: 'remember-yours',
@@ -131,6 +158,12 @@ export const lastMessage: Room = {
             'It will arrive as a moment in front of a mirror where someone touches their own face and thinks, unaccountably, of you — and feels witnessed, which is the thing photographs were always trying to do.',
             'Usher: (holding the letter a moment before stamping) You lost the picture and kept the seeing. (stamp) For the record, that’s the correct order to lose them in. Most manage it the other way.',
           ],
+          reflections: reflect(
+            'The sentence arrives as recognition rather than information — a moment at a mirror that changes nothing measurable and everything felt.',
+            'You owe no one an accounting of what the fire took — but naming what survived it is a debt you pay to both of you at once.',
+            'Ask whether losing the photograph but keeping the seeing is the correct order to lose things in, or just the order you happened to be handed.',
+            'Someone touches their own face and thinks of you, unaccountably, and feels witnessed — which is the whole thing photographs were ever trying to do.',
+          ),
         },
         {
           id: 'dont-wait',
@@ -143,6 +176,12 @@ export const lastMessage: Room = {
             'It will arrive as permission: a morning where the grief loosens its parking brake and someone does the thing they had been guiltily postponing — moves the furniture, takes the trip, laughs at something all the way through. They will feel briefly disloyal, then unaccountably accompanied. Both feelings will be correct.',
             'Usher: (softly) That one costs the sender the most and the recipient the least. Premium rate, paid in full. It’s the sentence I’d send, if anyone were — (a pause, a small recalibration of the face) — off you go, letter. Mind the fog.',
           ],
+          reflections: reflect(
+            'Releasing them costs you the one sentence that could have asked them to wait, in exchange for one that frees them to actually live.',
+            'You owe them their own life more than you owe yourself their waiting — this sentence pays that debt in full, at your own expense.',
+            'Ask whether letting go this generously is love, or the last way left to control how they grieve you.',
+            'It arrives as permission — a morning the grief loosens its grip and they finally do the thing they’d been guiltily postponing.',
+          ),
         },
         {
           id: 'silence',
@@ -154,6 +193,12 @@ export const lastMessage: Room = {
             'It will arrive as a silence with presence in it: an afternoon where someone stops in a doorway for no reason and feels, for four or five seconds, completely accompanied. They will tell no one, having nothing tellable. It will be one of the better moments of their year.',
             'Usher: The blank ones are the heaviest, you know. Everything unsaid still weighs something — it is the only cargo with negative dimensions and positive mass. (filing it tenderly) I will see that it arrives gently.',
           ],
+          reflections: reflect(
+            'A blank page still arrives as something — a silence with presence in it, weightless cargo that somehow still lands.',
+            'You owe no one a sentence you don’t have — sending nothing honest may discharge the debt better than sending something false.',
+            'Ask whether choosing silence over speech here was restraint, or simply the only version of honesty available to you tonight.',
+            'It arrives as an afternoon someone stops in a doorway and feels, for a few seconds, completely accompanied — for reasons they can never name.',
+          ),
         },
       ],
     },
@@ -200,6 +245,12 @@ export const doorThatAsks: Room = {
             'THE DOOR: Steadiness. It is rarer than it advertises. Most travelers disown at least one room the moment a door asks — you kept the whole ledger, including the entries that cost you.',
             'THE DOOR: I note, without cruelty, that a ledger fully signed can be integrity or armor; from this side of the grille they are identical. You will know which it was later, at some unscheduled hour. They always find out at unscheduled hours.',
           ],
+          reflections: reflect(
+            'Standing by every choice changes nothing about what already happened — it only changes what you’re now willing to say about it.',
+            'You owe your own record an honest signature, whatever it cost — and you just signed all of it, including the entries that cost you the most.',
+            'Ask whether a fully signed ledger is integrity, or armor worn so long it stopped feeling like a choice.',
+            'The door notes this without cruelty — whoever it was for, the signing was yours to give or withhold, and you gave it whole.',
+          ),
         },
         {
           id: 'changed-mind',
@@ -211,6 +262,12 @@ export const doorThatAsks: Room = {
             'THE DOOR: (a sound like a lock deciding to be a hinge) That is the answer I am for. Consistency is respectable; revision with receipts is rarer and better. A self that cannot change its mind is not steady — it is finished, and finished is the one thing you have spent this whole journey declining to be.',
             'THE DOOR: For the record: the traveler who leaves is not the one who arrived, and you are the rare kind who knows it in writing.',
           ],
+          reflections: reflect(
+            'Naming what changed you doesn’t undo the earlier choice — it just adds an honest second entry next to the first.',
+            'You owe the door, and yourself, the receipt as much as the revision — naming the room that changed you is the harder half of the honesty.',
+            'Ask whether revising the record here is growth, or a comfortable way to disown the version of you that chose worse.',
+            'The door treats a self that can change its mind as more alive than one that can’t — a kindness extended to whoever you were before you knew better.',
+          ),
         },
         {
           id: 'dont-remember',
@@ -224,6 +281,12 @@ export const doorThatAsks: Room = {
                 : 'THE DOOR: Hm. Your file shows no fires, no holes — the memories are all present; what’s missing is the willingness to stand next to them. “I don’t remember” from an intact archive is a convenient fog. I will let it pass — I am a door, not a judge — but we both heard it.',
             'THE DOOR: Very well. The interview concludes. What remains is not a question but a threshold.',
           ],
+          reflections: reflect(
+            'Admitting the gap doesn’t fill it — the choices made while dissolving stay exactly as unwitnessed as they were before you said so.',
+            'You owe the door an honest account of your own record, including its holes — admitting the gap discharges that debt more than pretending otherwise would.',
+            'Ask whether the door’s skepticism toward an intact archive claiming amnesia is fair, or whether some gaps are real even without a fire to blame.',
+            'Whatever the door thinks of the excuse, it lets it pass — its own small mercy, extended to a traveler who was, for part of this, genuinely not all there.',
+          ),
         },
       ],
     },
@@ -248,6 +311,12 @@ export const doorThatAsks: Room = {
             'You step toward the light. The threshold has the temperature of a doorway in summer — that half-degree change that means outside.',
             'Usher: (calling after you) Traveler. Whatever you find out there — it will be exactly the same world. That was never the promise. You were the renovation. Mind the gap.',
           ],
+          reflections: reflect(
+            'Stepping through returns you to a world that was never promised to be different — only you were the one being renovated.',
+            'You owe the ordinary world nothing extra for having left it — walking back is simply returning to a claim that was always still open.',
+            'Ask whether walking through this time feels different from any other threshold you’ve crossed, or whether the choosing was the only thing that changed.',
+            'Whoever waits on the other side of the fog gets you back exactly as promised — the same world, and someone who is not quite the same person who left it.',
+          ),
         },
         {
           id: 'stay',
@@ -259,6 +328,12 @@ export const doorThatAsks: Room = {
             'Usher: (not taking it out yet) Be sure. The hours are eternal, the pay is nothing, the travelers are — well, you’ve been one. You’ll watch every one of them face the fire and the lever and the folder, and you may never tell them the answers, chiefly because there aren’t any.',
             'Usher: (handing it over, and the clipboard is warm, and has your name on it — your real one, suddenly legible) ...Welcome aboard. First lesson: the halo and the horns are the same size. It’s on purpose. Everything here is.',
           ],
+          reflections: reflect(
+            'Staying keeps the rooms running for whoever comes next — a cost paid entirely by you, for travelers you will never get to meet.',
+            'No one required this of you — the clipboard was offered, not owed, which is what makes taking it up a gift rather than an obligation.',
+            'Ask whether the keeper’s bargain is generosity, or simply not being ready to find out what the ordinary world does with what you’ve learned.',
+            'Every traveler who comes after inherits a keeper who has personally walked the lever, the folder, and the fire — care they’ll never know to thank you for.',
+          ),
         },
         {
           id: 'lie-down',
@@ -269,6 +344,12 @@ export const doorThatAsks: Room = {
             'You lie down at the threshold with the morning three steps away, and it is not defeat — the room can tell, the Usher can tell, even the fog can tell. It is a choice, made with open eyes, by someone who walked every room to earn the right to make it.',
             'Usher: (sitting down beside you, setting his hat aside for good) Then I will stay until it is done. Nobody dissolves alone on my shift. (a pause) It is not an ending, you know. It is a tide. Everything the rooms filed away goes back to the sea, and the sea — (his voice already sounding like water) — has never once lost a single thing that mattered.',
           ],
+          reflections: reflect(
+            'Lying down here ends nothing that wasn’t always going to end — it only changes the manner and the company you end it in.',
+            'No one is owed your continuing — letting the dissolving finish is a choice made with open eyes, by someone who earned the right to make it honestly.',
+            'Ask whether choosing the quiet is surrender, or the same clear-eyed acceptance the boulder room asked of you, extended to its largest form.',
+            'The Usher stays until it’s done rather than let you go alone — a small, specific mercy, offered to no one else in quite this way.',
+          ),
         },
         {
           id: 'laughing-door',
@@ -280,6 +361,12 @@ export const doorThatAsks: Room = {
             'You cross to the small plain door, and the handle turns before you have quite gripped it, the way a friend opens from the other side.',
             'Usher: (behind you, and for once his voice has neither halo nor horns in it) Very few travelers ever notice this door is here. Fewer still open it. Go on, then. I will get the lights.',
           ],
+          reflections: reflect(
+            'Opening the door you earned the noticing of changes nothing about the two ordinary doors beside it — it just adds a possibility very few ever see.',
+            'No one owed you this door — it had to be earned across an entire journey of choices, which makes opening it a claim on something genuinely yours.',
+            'Ask what it means that the rarest door in this whole facility is the one behind which someone is, simply, laughing.',
+            'The Usher gets the lights and says nothing else — the clearest sign yet that whatever is behind this door was never his to explain, only to make room for.',
+          ),
         },
         {
           id: 'remember-everything',
@@ -291,6 +378,12 @@ export const doorThatAsks: Room = {
             'You do not step toward any of the doors. You say it instead, the way you would say a fact rather than a wish, and the saying is already most of what happens.',
             'The Usher goes very still, hat halfway to his chest, and does not finish taking it off.',
           ],
+          reflections: reflect(
+            'Saying it changes nothing about the world beyond this room and everything about how this conversation ends — the doors stop mattering the moment it’s said.',
+            'You owe no one this admission — remembering everything at once is a private completion, not a debt anyone was waiting to collect.',
+            'Ask what it means that the deepest answer in this whole facility isn’t a choice between doors at all, but the refusal to need one.',
+            'The Usher goes still and doesn’t finish the gesture — for once, the one figure who answers every traveler’s question has nothing further to say.',
+          ),
         },
       ],
     },

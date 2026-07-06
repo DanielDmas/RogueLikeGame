@@ -622,31 +622,34 @@ into their named phases; 8 is watch-and-wait):
       `act 1-4 && examined`), piggybacked onto `syncTheme`'s existing
       once-per-act-transition intro beat. Bark ids `examined-act1..4`,
       EN+CS+FA.
-- [x] O4 (partial). The no-op guarantee is proven — `shouldShowReflections`/
+- [x] O4 (done). The no-op guarantee is proven — `shouldShowReflections`/
       `shouldShowSocraticAside` are both `false` whenever `examined` is
       falsy (the default for every player who never opts in), verified
       against every room/choice in `allRooms` by `examinedPath.test.ts`
       (schema validation, shuffle set-equality, translation coverage, the
-      no-op guard). **Content authoring: Acts I, II, and III done.** Act I —
-      `wallet`, `promotion`, `beggars-math`, `quiet-alarm`, `the-reference`
-      — full 4-tradition reflections, EN+CS+FA
-      (`cs-reflections-act1.ts`/`fa-reflections-act1.ts`). Act II — all 8
-      mandatory DILEMMA/INSIGHT rooms (`junction`, `experience-machine`,
-      `ship`, `casino-pascal`, `chinese-room`, `newcomb-annex`,
-      `veil-of-ignorance`, `court-of-usher`), EN+CS+FA
-      (`cs-reflections-act2.ts`/`fa-reflections-act2.ts`); `omelas` (DOOMED)
-      deliberately skipped. Act III — all 5 mandatory rooms (`teleporter`,
-      `editor`, `debt-of-dead`, `marys-room`, `swampman`), EN+CS+FA
-      (`cs-reflections-act3.ts`/`fa-reflections-act3.ts`); `introduction`,
-      `butterfly-dream`, `the-cave`, `free-will` (all NO-SOLUTION)
-      deliberately skipped. **Act IV's 2 mandatory rooms (`last-message`,
-      `door-that-asks`) and the Understory's 2 (`the-unchosen`, `the-echo`)
-      still need reflections authored** before this item — and the v0.2.0
-      release gate it represents — is fully done. Live-verified via
-      `?uat=1` for Act I (opt-in panel, a reflection card on `wallet`'s
-      `return-all` choice, shuffled row order all render correctly in a
-      real browser); Acts II and III verified via `tsc`/full vitest suite
-      only (371 tests green) since the pattern is proven and unchanged.
+      no-op guard). **Content authoring is complete for every mandatory
+      DILEMMA/INSIGHT room across the whole game.** Act I — `wallet`,
+      `promotion`, `beggars-math`, `quiet-alarm`, `the-reference`
+      (`cs/fa-reflections-act1.ts`). Act II — `junction`,
+      `experience-machine`, `ship`, `casino-pascal`, `chinese-room`,
+      `newcomb-annex`, `veil-of-ignorance`, `court-of-usher`
+      (`cs/fa-reflections-act2.ts`); `omelas` (DOOMED) skipped. Act III —
+      `teleporter`, `editor`, `debt-of-dead`, `marys-room`, `swampman`
+      (`cs/fa-reflections-act3.ts`); `introduction`, `butterfly-dream`,
+      `the-cave`, `free-will` (all NO-SOLUTION) skipped. Act IV —
+      `last-message` and both stages of the gate room `door-that-asks`
+      (`cs/fa-reflections-act4.ts`); `boulder` (NO-SOLUTION) skipped. The
+      Understory — `the-unchosen` and `the-echo` (also in
+      `cs/fa-reflections-act4.ts`); `the-archive` (NO-SOLUTION) skipped.
+      Every authored choice has the full 4-tradition set, EN+CS+FA, with
+      CS/FA translated in-context per the CLAUDE.md rule rather than
+      literally. Live-verified via `?uat=1` for Act I (opt-in panel, a
+      reflection card on `wallet`'s `return-all` choice, shuffled row
+      order all render correctly in a real browser); Acts II–IV and the
+      Understory verified via `tsc`/full vitest suite (371 tests green)
+      since the pattern is proven and unchanged. **This satisfies the
+      v0.2.0 release gate the production review (`11-production-review.md`)
+      declared for Phase O.**
 
 ## Phase P — Traveler's Ledger & Epiphanies (spec `06-ledger-and-epiphanies.md`)
 

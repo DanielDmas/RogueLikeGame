@@ -3,7 +3,7 @@
 // `offeredDoors`'s act-4 branch (see storyEngine.ts) — never by ACT_POOLS.
 // They only ever appear for a returning traveler (RunState.prior.runs >= 1)
 // who takes the staircase fork instead of `boulder`.
-import type { Room, RunState } from '../schema';
+import type { Reflection, Room, RunState } from '../schema';
 import { choseInPrior, pickExhibitEntry, pickShadowMoments, pickUnchosenRooms } from '../../engine/gameState';
 import { act1Rooms } from './act1';
 import { act2Rooms } from './act2';
@@ -17,6 +17,15 @@ export const ROOM_TITLE_BY_ID: Record<string, string> = Object.fromEntries(
   [...act1Rooms, ...act2Rooms, ...act3Rooms].map((r) => [r.id, r.title]),
 );
 export const ENDING_TITLE_BY_ID: Record<string, string> = Object.fromEntries(endings.map((e) => [e.id, e.title]));
+
+/** Examined Path (spec 05) shorthand — a Reflection tuple in the fixed
+ * consequence/duty/virtue/care order (shuffled per-display by the UI). */
+const reflect = (consequence: string, duty: string, virtue: string, care: string): Reflection[] => [
+  { tradition: 'consequence', text: consequence },
+  { tradition: 'duty', text: duty },
+  { tradition: 'virtue', text: virtue },
+  { tradition: 'care', text: care },
+];
 
 const archiveExhibitBeat = (s: RunState): string => {
   const entry = pickExhibitEntry(s.prior?.transcript ?? []);
@@ -147,6 +156,12 @@ export const theUnchosen: Room = {
             'Whatever was going to happen here already happened, presumably, to someone, or to no one, or the question simply expired the way unopened mail eventually stops being urgent. It is smaller than you built it up to be. Most unlived things are.',
             'Usher: That is the going rate on a door left shut. Not tragedy — just a room, waiting past its own occasion. Some travelers find that a relief.',
           ],
+          reflections: reflect(
+            'Whatever waited in there already happened, or didn’t, or the question simply expired — walking in now changes nothing about what was possible then.',
+            'You owe the old possibility nothing except the honesty of finally looking — entering late discharges a private curiosity, not a debt anyone was owed.',
+            'Ask whether entering now, once it can no longer cost you anything, is genuine curiosity honored, or just a safe rehearsal of courage.',
+            'No one was ever waiting in this room for you — the only person this late visit is for is the one standing in the doorway.',
+          ),
         },
         {
           id: 'close-it',
@@ -157,6 +172,12 @@ export const theUnchosen: Room = {
             'You push it shut, gently, the way you’d close a door on a room where someone is finally, actually asleep.',
             'Usher: The correct instinct, arguably. Not every unopened door is a regret in waiting. Some are simply doors you were right to leave alone the first time, whether or not you knew it then.',
           ],
+          reflections: reflect(
+            'Closing it changes nothing about what was inside — the door simply returns to being exactly what it was before you noticed it.',
+            'You owe some doors nothing but the respect of leaving them shut — not every possibility is owed a second look just because it’s finally offered.',
+            'Ask whether closing it was wisdom about which doors were never yours, or a quieter kind of avoidance dressed as restraint.',
+            'No one behind that door needed you to open it — the room lets you leave it exactly as undisturbed as you found it.',
+          ),
         },
         {
           id: 'read-the-hinges',
@@ -167,6 +188,12 @@ export const theUnchosen: Room = {
             'You don’t get an answer, exactly — doors, even here, are not naturally forthcoming — but you notice the hinges are recently oiled. Someone, or something, wanted this door easy to move tonight, specifically.',
             'Usher: A fair question, and I don’t have the honest version of the answer. My best guess: the facility offers you the door you’re now ready to survive not opening. It has never once explained its timing to me either.',
           ],
+          reflections: reflect(
+            'The oiled hinges tell you the door was prepared for tonight specifically — but knowing that changes nothing about whether you walk through it.',
+            'You owe the offering itself an honest question before you owe it an answer — asking why now is its own kind of diligence.',
+            'Ask whether interrogating the door instead of just using it is rigor, or a way to delay the harder choice of entering or refusing.',
+            'The hinges were oiled for you alone — whatever the facility’s timing means, this attention was never meant for anyone else.',
+          ),
         },
       ],
     },
@@ -232,6 +259,12 @@ export const theEcho: Room = {
             'You say it — not a correction, not an apology, just an acknowledgment, the way you’d greet someone at a door you weren’t sure would still recognize you.',
             'The other chair doesn’t answer back, exactly. But something in the room settles the way a held breath does when it’s finally let go on purpose, by two people instead of one.',
           ],
+          reflections: reflect(
+            'Speaking back changes nothing about what was already said — it only changes whether it was heard.',
+            'You owe your former self an acknowledgment, not a correction — greeting it is a debt of recognition, not agreement.',
+            'Ask whether addressing the voice instead of just witnessing it is a kind of courage, or simply an old habit of needing the last word.',
+            'The room settles like a held breath let go by two people instead of one — a small mercy extended to whoever you used to be.',
+          ),
         },
         {
           id: 'sit-in-silence',
@@ -242,6 +275,12 @@ export const theEcho: Room = {
             'You sit. You let it speak, all the way to the end, without correcting a single word — which, you notice, is not a thing you always managed the first time either.',
             'The silence is not empty. It is, if anything, the most complete thing said in the room.',
           ],
+          reflections: reflect(
+            'Letting it finish uninterrupted changes nothing about what it says — only whether, this time, it gets to say all of it.',
+            'You owe your former self the hearing you may not have given it the first time — silence here pays a debt of attention, not agreement.',
+            'Ask whether staying silent is patience, or simply easier than finding out what you’d say back.',
+            'The silence is the most complete thing said in the room — a form of care that asks nothing of the voice except to finish.',
+          ),
         },
         {
           id: 'take-both-chairs',
@@ -252,6 +291,12 @@ export const theEcho: Room = {
             'You sit in the second chair too, briefly, and try the voice on like a coat you used to own — and it fits, exactly, which is either comforting or the whole problem, depending on the hour.',
             'There was never a guest here to entertain. Only a series of you, filed under the same name, taking turns holding the pen.',
           ],
+          reflections: reflect(
+            'Sitting in both chairs changes nothing about which version of you is speaking now — it only removes the pretense that there were ever two.',
+            'You owe no visitor an audience, because admitting there was never one dissolves the very idea of a debt between host and guest.',
+            'Ask whether this is the costliest honesty in the room, or a clever way to avoid the harder work of actually answering the voice.',
+            'There was never a guest to care for here — only a series of you, filed under the same name, and the care was always, quietly, self-directed.',
+          ),
         },
       ],
     },

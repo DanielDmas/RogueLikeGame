@@ -25,6 +25,8 @@ import './cs-reflections-act2';
 import './fa-reflections-act2';
 import './cs-reflections-act3';
 import './fa-reflections-act3';
+import './cs-reflections-act4';
+import './fa-reflections-act4';
 
 export * from './resolver';
 export * from './keys';
