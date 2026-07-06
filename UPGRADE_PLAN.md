@@ -627,20 +627,26 @@ into their named phases; 8 is watch-and-wait):
       falsy (the default for every player who never opts in), verified
       against every room/choice in `allRooms` by `examinedPath.test.ts`
       (schema validation, shuffle set-equality, translation coverage, the
-      no-op guard). **Content authoring is Act I only so far** — `wallet`,
-      `promotion`, `beggars-math`, `quiet-alarm`, `the-reference` (every
-      DILEMMA/INSIGHT room in Act I) have full 4-tradition reflections,
-      EN+CS+FA (`cs-reflections-act1.ts`/`fa-reflections-act1.ts`). Acts
-      II–IV's DILEMMA/INSIGHT rooms (`junction`, `experience-machine`,
-      `casino-pascal`, `chinese-room`, `newcomb-annex`, `veil-of-ignorance`,
-      `teleporter`, `editor`, `debt-of-dead`, `marys-room`,
-      `butterfly-dream`, `swampman`, plus spec 01/02's other DILEMMA/INSIGHT
-      rooms) **still need reflections authored** before this item is fully
-      done — tracked here explicitly so it isn't lost. Live-verified via
-      `?uat=1`: the opt-in panel, a reflection card on `wallet`'s
-      `return-all` choice, and the shuffled row order all render correctly
-      in a real browser. `tsc`/full suite green (367 tests before the
-      session's separate bug-fix audit added more).
+      no-op guard). **Content authoring: Acts I and II done.** Act I —
+      `wallet`, `promotion`, `beggars-math`, `quiet-alarm`, `the-reference`
+      — full 4-tradition reflections, EN+CS+FA
+      (`cs-reflections-act1.ts`/`fa-reflections-act1.ts`). Act II — all 8
+      mandatory DILEMMA/INSIGHT rooms (`junction`, `experience-machine`,
+      `ship`, `casino-pascal`, `chinese-room`, `newcomb-annex`,
+      `veil-of-ignorance`, `court-of-usher`) now have full 4-tradition
+      reflections on every choice, EN+CS+FA
+      (`cs-reflections-act2.ts`/`fa-reflections-act2.ts`); `omelas` (DOOMED)
+      deliberately skipped, matching the Act I precedent. **Act III's 5
+      mandatory rooms (`teleporter`, `editor`, `debt-of-dead`,
+      `marys-room`, `swampman`), Act IV's 2 (`last-message`,
+      `door-that-asks`), and the Understory's 2 (`the-unchosen`,
+      `the-echo`) still need reflections authored** before this item —
+      and the v0.2.0 release gate it represents — is fully done. Live-
+      verified via `?uat=1` for Act I (opt-in panel, a reflection card on
+      `wallet`'s `return-all` choice, shuffled row order all render
+      correctly in a real browser); Act II verified via `tsc`/full
+      vitest suite only (371 tests green) since the pattern is proven and
+      unchanged.
 
 ## Phase P — Traveler's Ledger & Epiphanies (spec `06-ledger-and-epiphanies.md`)
 

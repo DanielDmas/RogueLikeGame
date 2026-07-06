@@ -1,5 +1,14 @@
-import type { Room } from '../schema';
+import type { Reflection, Room } from '../schema';
 import { choseIn, hasFlag } from '../../engine/gameState';
+
+/** Examined Path (spec 05) shorthand — a Reflection tuple in the fixed
+ * consequence/duty/virtue/care order (shuffled per-display by the UI). */
+const reflect = (consequence: string, duty: string, virtue: string, care: string): Reflection[] => [
+  { tradition: 'consequence', text: consequence },
+  { tradition: 'duty', text: duty },
+  { tradition: 'virtue', text: virtue },
+  { tradition: 'care', text: care },
+];
 
 export const junction: Room = {
   id: 'junction',
@@ -26,6 +35,12 @@ export const junction: Room = {
             'The lever moves with a bureaucratic click, as if stamping a form. The trolley leans into the side track and does what trolleys do. Five mannequins fall theatrically silent in relief; one falls silent otherwise.',
             'Usher: Four lives, net — against one clean conscience, gross. Most people pull. It helps that it is a lever. A lever feels like paperwork; a body does not.',
           ],
+          reflections: reflect(
+            'Four lives net, against one — the arithmetic that everyone agrees runs the room.',
+            'The lever makes you the author of a death that would not otherwise have been yours to cause.',
+            'Ask whether you just became someone who moves levers, or someone who saves fours.',
+            'The five who live have people waiting for them; so, just as certainly, did the one.',
+          ),
         },
         {
           id: 'no-pull',
@@ -36,6 +51,12 @@ export const junction: Room = {
             'You step back from the lever. The trolley continues along the track it was always on, and the hall is briefly very loud and then very quiet.',
             'Usher: Five gone, and none of them yours — that is the theory. The trolley was the author; you declined to co-sign it. Whole disciplines argue about whether that distinction is a profound moral fact or a laundering scheme. They do not read each other’s work.',
           ],
+          reflections: reflect(
+            'Five die who could have been saved by one small motion of your hand.',
+            'You did not cause this death; the trolley did. Declining to intervene is not the same as killing.',
+            'Notice how much weight "I did not do it" can carry when the alternative was doing something.',
+            'You will never meet the five. That distance is exactly what let your hands stay still.',
+          ),
         },
         {
           id: 'refuse1',
@@ -46,6 +67,12 @@ export const junction: Room = {
             'Usher: Of course they are mannequins. You are a partially dissolved self in a processing facility built for exactly this kind of question. Everything here is a stand-in — including, at present, you.',
             'Usher: The trolley was never asking whether the mannequins are real. It was asking what you are. Refusing the question answers it anyway — just not flatteringly. The five, for the record, are gone.',
           ],
+          reflections: reflect(
+            'Refusing the premise still ends with five gone — the trolley does not wait for your objection.',
+            'Declining a dilemma is not the same as declining a duty; the five had a claim whether or not you liked the wording.',
+            'Ask what kind of person calls the cost fake in order to avoid feeling it.',
+            'Calling them mannequins was easier than calling them people you couldn’t save.',
+          ),
         },
       ],
     },
@@ -74,6 +101,12 @@ export const junction: Room = {
                 ? 'Usher: Lever and bridge, both. Whatever else is true, the arithmetic in you runs all the way down. Whether that is integrity or a warning label, I will leave to you.'
                 : 'Usher: No, at the lever. Yes, on the bridge. That is a rare position to hold. Sit with it a while — you may not have chosen it on purpose.',
           ],
+          reflections: reflect(
+            'The same net result as the lever — five saved, one lost — reached by a different kind of hand.',
+            'A hand that pushes authors the death directly; a lever that diverts merely fails to prevent one.',
+            'Your hands filed a complaint your ledger didn’t — notice which one you trust more.',
+            'The one you pushed had a body you could feel resist; the five you saved you will never meet either.',
+          ),
         },
         {
           id: 'no-push',
@@ -87,6 +120,12 @@ export const junction: Room = {
                 ? 'Usher: So — pull the lever, but spare the push. Five for one at arm’s length, not at hand’s length. That asymmetry has occupied philosophy departments for half a century. Whether it is wisdom in your spine or simply squeamishness, I could not say.'
                 : 'Usher: A consistent refusal. The trolley has taken ten, across two rooms, and your hands took none of them. There is a name for your position. It is contested. You hold it steadily.',
           ],
+          reflections: reflect(
+            'Five die who a single push would have saved — the same five as the lever, now definitely gone.',
+            'Using a person as the means to an end is a different wrong than merely failing to divert a threat.',
+            'Ask whether the difference between pulling and pushing is a moral discovery or a squeamishness with good PR.',
+            'The body beside you on the bridge was never asked; that, more than the arithmetic, is what your hands refused.',
+          ),
         },
         {
           id: 'refuse2',
@@ -99,6 +138,12 @@ export const junction: Room = {
             'Usher: The rooms do not ask you to enjoy them. They ask you to be present in them. Every refusal is a small vote for staying dissolved — a quiet abstention from being anyone at all. That is tallied here, whether or not you meant it to be.',
             'Something in your chest goes quieter, one heart’s worth. The mannequins, mercifully, do not applaud.',
           ],
+          reflections: reflect(
+            'The five are gone either way; refusing a second time changes nothing about the trolley’s math.',
+            'A repeated refusal starts to look like a policy rather than a scruple — the room is entitled to notice the difference.',
+            'Ask what a second abstention costs you that the first one didn’t.',
+            'Declining to be present for other people’s stakes, twice now, is still a choice about them.',
+          ),
         },
         {
           id: 'refuse-late',
@@ -110,6 +155,12 @@ export const junction: Room = {
             'Usher: Noted. On the bridge, I hear that a great deal — proximity has its own smell. One refusal is contemplation. A second would be a policy. Choose accordingly, later.',
             'The trolley concludes its business without your signature. Whether that constitutes innocence is left, pointedly, as an exercise.',
           ],
+          reflections: reflect(
+            'The trolley concludes its business exactly as it would have regardless of your objection.',
+            'One refusal is allowed as contemplation; the room is already counting toward a second.',
+            'Notice that proximity, not principle, is what made this one harder to wave off.',
+            'Calling it grotesque is true and also convenient — it excuses you from the five without saying so.',
+          ),
         },
       ],
     },
@@ -147,6 +198,12 @@ export const experienceMachine: Room = {
             'It is, in every measurable respect, the best stretch of existence you have ever had. You surface from it only because this facility, unlike the retail model, has a return policy.',
             'Usher: Lovely, wasn’t it. Notice the tense you just reached for — “wasn’t.” Everything in there ends up in the past tense, eventually. Still: you know now what perfect feels like. For some travelers that clarifies everything after. For others it lodges like a splinter. We will see which you are.',
           ],
+          reflections: reflect(
+            'By pleasure alone, this is the best available outcome — nothing external could improve on it.',
+            'No one was owed your suffering, but consider what you now owe whoever is left maintaining the world you left behind.',
+            'A life without ever actually doing anything may not be the life of a person at all, however good it feels.',
+            'Whoever loves you outside the pod is now loving a body with no one currently inside answering back.',
+          ),
         },
         {
           id: 'refuse',
@@ -157,6 +214,12 @@ export const experienceMachine: Room = {
             'You step back. The pod does not sulk; perfection has excellent manners.',
             'Usher: You chose a reality that is, at this very moment, a burning bureaucracy of the metaphysical — over a guaranteed bliss. Either contact with the real is worth more to you than any amount of feeling good, or you simply do not trust a product this perfect. Both are defensible reasons. Only one of them is philosophy.',
           ],
+          reflections: reflect(
+            'You trade away a guaranteed maximum of felt happiness for a reality that owes you nothing better.',
+            'Choosing the real, difficult world over guaranteed bliss is not owed to anyone — it may simply be a preference for truth.',
+            'Ask whether refusing perfection is courage, or distrust of anything too easy.',
+            'The people who need you are only reachable from outside the pod — that alone may be reason enough.',
+          ),
         },
         {
           id: 'trial',
@@ -168,6 +231,12 @@ export const experienceMachine: Room = {
             'Inside, five minutes lasts two years. Good years. When the lid opens you come out with the specific grief of a life that never happened — homesick for people who are still in there, being perfectly imaginary without you.',
             'Usher: The trial is the whole product. Nobody buys the machine outright — they buy the next five minutes, over and over, forever. You are out, which puts you in rarer company than you know. The homesickness will fade to a shimmer. The shimmer, I am told, never quite leaves.',
           ],
+          reflections: reflect(
+            'Five minutes of borrowed happiness bought two years of grief for people who were never real to begin with.',
+            'Sampling the machine "just to know" spends real feeling on a debt you can’t actually settle with anyone in there.',
+            'Notice that curiosity, not conviction, was what got you this close to staying.',
+            'You now miss people who do not exist — a grief with no one on the other end to grieve back.',
+          ),
         },
       ],
     },
@@ -208,6 +277,12 @@ export const ship: Room = {
           outcome: [
             'Usher: The classical position. Gradual replacement preserves the vessel; the pile in the corner is simply organized salvage. The corner, I should mention, is glaring at you with your own eyes. It holds the same position about itself.',
           ],
+          reflections: reflect(
+            'Whichever one continues to act in the world is the one whose decisions actually matter going forward.',
+            'Continuity of the same material carries obligations — debts, promises — that a mere copy might not inherit cleanly.',
+            'Ask whether you are protecting a person or a piece of furniture called "the original".',
+            'The one in the corner is watching you cast it as scrap, using its own face to do so.',
+          ),
         },
         {
           id: 'pattern',
@@ -217,6 +292,12 @@ export const ship: Room = {
           outcome: [
             'Usher: Hobbes’s old headache. Rebuild the ship from the discarded planks, and the “continuous” one starts to look like a well-documented impostor. You have just voted your own bench-self a replica. It heard you say so. The corridor ahead will be an awkward one.',
           ],
+          reflections: reflect(
+            'If the pattern is what matters, the reassembled one has exactly as much claim on your future as the maintained one.',
+            'Voting your own bench-self a replica has consequences for who you now believe owes what to whom.',
+            'Notice you just declared the thing on the table disposable — using the same standard you’d apply to yourself.',
+            'Both the bench and the corner are, by your own logic, owed the same regard you’d give either alone.',
+          ),
         },
         {
           id: 'neither',
@@ -227,6 +308,12 @@ export const ship: Room = {
             'The workshop goes still. Both of you — bench and corner — turn to look at you, the third, who just declared vacancy.',
             'Usher: That is the costly answer. If the self is a story and not a substance, nothing was lost on that bench — and nothing was ever safe there, either. Most travelers cannot hold that thought past this corridor. The ones who can tend to leave lighter. Lighter is not the same as happier. It is usually better.',
           ],
+          reflections: reflect(
+            'If there is no persisting self to protect, then nothing was actually lost on that bench — nor safe there either.',
+            'Removing the self from the equation also removes the neat assignment of who owes what to whom.',
+            'This is the costly answer precisely because it can’t be held for long without vertigo.',
+            'Two ships just heard you declare that neither of them was ever really there to care about.',
+          ),
         },
         {
           id: 'panic',
@@ -237,6 +324,12 @@ export const ship: Room = {
             'The craftsmen stop, kindly, the way nurses stop. The foreman consults the manifest.',
             'Usher: “Exactly as you were” — as of when? This morning? The fire? Nine years old? You have been the renovation the entire time, traveler; there is no factory setting, only earlier construction sites. We can stand here and replace nothing, for as long as you like. The one doing the liking will keep changing regardless. It is the one feature we have never found a way to disable.',
           ],
+          reflections: reflect(
+            'Stopping the machines preserves nothing permanent — the changing was always going to continue regardless.',
+            'Demanding to be restored assumes an earlier version is owed priority over the one currently asking.',
+            'Notice which moment you nominated as the "real" you, and ask why that one and not another.',
+            'Whoever loves the current version of you did not sign up to trade them for an earlier one.',
+          ),
         },
       ],
     },
@@ -274,6 +367,12 @@ export const casinoPascal: Room = {
             'Usher: Now, the small print. Which God did you just bet on? I ask because the vault has a great many windows, and a wager placed as a hedge is visible from every one of them. If He reads motives — and most of them are said to — you have just handed Him an actuarial table with your name at the top. He may pay out. He may simply laugh. Historically, laughing costs nothing.',
             'Usher: A handling fee. For the house on the other side of the ledger — which, tonight, happens also to be me.',
           ],
+          reflections: reflect(
+            'An infinite payout against a finite stake looks unbeatable on paper, regardless of which god is actually real.',
+            'A wager placed as a hedge is not the same as devotion — and a god worth betting on may audit the difference.',
+            'Ask whether faith purchased for its expected value is still faith, or just very confident accounting.',
+            'Nobody but you was staked on this bet — but ask who else’s approval you were quietly hoping to win by it.',
+          ),
         },
         {
           id: 'refuse-bet',
@@ -284,6 +383,12 @@ export const casinoPascal: Room = {
             'You keep your chips. The Usher nods, unoffended — the house profits from refusals too, in ways the house declines to explain.',
             'Usher: Fair. You cannot make yourself believe for money, any more than you could love someone for the tax benefit. Pascal knew this — his real advice was subtler than the wager: act as if, and let belief arrive the way a habit does. Whether that is wisdom or a kind of self-persuasion, I will leave for you to decide elsewhere.',
           ],
+          reflections: reflect(
+            'Refusing costs you the wager’s theoretical infinite upside, but risks nothing on a belief you don’t actually hold.',
+            'You cannot owe belief the way you owe an action — sincerity isn’t purchasable, and pretending otherwise cheapens it.',
+            'Doxastic honesty here means declining a good deal because it would require becoming someone you’re not yet.',
+            'No one you love was betting on this table with you — it was always a private ledger.',
+          ),
         },
         {
           id: 'interrogate',
@@ -295,6 +400,12 @@ export const casinoPascal: Room = {
             'Usher: There it is. The one question the table cannot cover. The wager pretends there are only two outcomes — this God, or none. Seat a thousand gods at the table instead, each with an infinite payout and terms that exclude all the others, and the arithmetic seizes entirely. The bet was never truly about God. It was about who was permitted to write the menu.',
             'Usher: House rule: anyone who audits the house is owed something for it. (something warm changes hands) You have earned this much, at least.',
           ],
+          reflections: reflect(
+            'Auditing the house instead of playing it costs you the table’s return, but wins you a clearer picture of the game.',
+            'You are owed an honest menu before being asked to wager anything real on it.',
+            'Asking who wrote the rules, instead of accepting them, is its own kind of courage at a table built to discourage it.',
+            'The chip that changed hands afterward suggests even the house respects who bothers to ask.',
+          ),
         },
         {
           id: 'bet-devil',
@@ -306,6 +417,12 @@ export const casinoPascal: Room = {
             'Usher: A bet on the visible. I admire the reasoning and question the judgment — yes, I am demonstrably here, but consider what follows: if I exist, the other position gains a great deal of support by implication. You have bet on the doorman as evidence against the house he works for.',
             'Usher: Still — you are the first traveler in a long while to bet on present company. (one chip slides back across the felt) Call it a loyalty rate. I would not spend it on anything eternal.',
           ],
+          reflections: reflect(
+            'Betting on the visible thing at the table gets you a modest, certain payout instead of a contested infinite one.',
+            'Betting on what you can verify, rather than what you’re told, is its own quiet form of intellectual honesty.',
+            'Ask whether betting on the doorman was empiricism, or simply taking the safest visible option in the room.',
+            'The loyalty chip suggests the house noticed you chose the company actually present over an absent, contested one.',
+          ),
         },
       ],
     },
@@ -402,6 +519,12 @@ export const courtOfUsher: Room = {
             'Usher: Then hear what follows from it. If I commanded cruelty tomorrow — the suffering of the innocent, made official — it would, by your own ruling, be good. Same signature. Same authority. “Good” would mean nothing more than “ordered.”',
             'Usher: You have made me absolute, and made goodness arbitrary, in a single ruling. Part of me finds that thrilling. That is precisely the part you should be worried about.',
           ],
+          reflections: reflect(
+            'Making authority the ground of goodness means whatever is commanded becomes good by definition, cruelty included.',
+            'If good is only what’s commanded, your only real duty is obedience — the content of the command stops mattering.',
+            'Ask what kind of self is built by treating power, rather than character, as the source of what’s right.',
+            'This ruling makes goodness whatever the powerful decide it is — a dangerous standard for anyone without power.',
+          ),
         },
         {
           id: 'good-precedes',
@@ -412,6 +535,12 @@ export const courtOfUsher: Room = {
             'Usher: So goodness exists on its own, and I merely enforce it. Announce it. Do the paperwork of it.',
             'Usher: Then I answer to something above me. The good is what I serve, and any reverence aimed at me instead of it has gone to the wrong party entirely. I have suspected as much for a very long time.',
           ],
+          reflections: reflect(
+            'If goodness exists independent of command, the Usher becomes an enforcer of a standard rather than its author.',
+            'You now owe your reverence to the good itself, not to whoever merely announces it — a real redirection of loyalty.',
+            'Ask whether this ruling requires more courage than the first — it puts a limit on power you cannot yet fully name.',
+            'A goodness that exists independent of any one authority is one that still protects you even if that authority turns cruel.',
+          ),
         },
         {
           id: 'spot-horns',
@@ -423,6 +552,12 @@ export const courtOfUsher: Room = {
             'You lay it out: horn one makes goodness arbitrary — mere decree. Horn two makes the divine redundant — a herald for a standard it didn’t author. But both horns assume “good” is a finished thing waiting to be located, above the throne or below it. Define what goodness IS — flourishing, love’s structure, the shape of a life that works — and the dilemma stops goring and starts describing: perhaps the divine and the good aren’t ranked, but identical, or entangled past separating.',
             'Usher: (setting down both the horns and the halo, for a moment, in the same hand) Very few travelers have said that to me. This place forgets nearly everything, eventually — every plank, every photograph. I do not think I will forget this.',
           ],
+          reflections: reflect(
+            'Refusing both horns of the dilemma costs you the easy answer but gives you a truer picture of what’s actually being asked.',
+            'You owe the question more than a forced pick between two bad options — defining terms first is itself a kind of intellectual duty.',
+            'This is the rare answer that respects the difficulty of the question rather than resolving it by force.',
+            'The Usher’s own uncertainty, laid down for a moment, suggests this answer mattered to someone who has heard every other one already.',
+          ),
         },
         {
           id: 'you-dont-exist',
@@ -433,6 +568,12 @@ export const courtOfUsher: Room = {
             'Usher: The evidence is against you, locally. But I take the point, globally.',
             'Usher: For what it is worth, that is a position with real standing. It relocates the problem rather than solving it — strike the commander from the dilemma, and the hard question remains, wearing different robes: is anything good at all, and who says so? You have dismissed the defendant. The charge is still at large.',
           ],
+          reflections: reflect(
+            'Dismissing the defendant doesn’t remove the underlying question — it just relocates it to a different courtroom.',
+            'You still owe an answer to whether anything is good at all — striking the commander from the case doesn’t discharge that.',
+            'Ask whether dismissing the case was cleverness, or an easy way to avoid answering a harder version of the same question.',
+            'The charge — is anything good, and who decides — is still at large, wearing different robes, for everyone else in the room.',
+          ),
         },
       ],
     },
@@ -471,6 +612,12 @@ export const chineseRoom: Room = {
             'You knock on the booth’s side and thank it, sincerely, the way you would thank a person.',
             'Usher: A defensible position. If understanding is whatever produces understanding-shaped behavior, reliably, under pressure, across novel questions — the booth has just cleared a bar most people never test each other against.',
           ],
+          reflections: reflect(
+            'Treating the booth as understanding costs nothing and matches how it actually behaves under every test you gave it.',
+            'If the booth is owed nothing but its behavior is functionally identical to a person’s, thanking it sincerely may not be foolish.',
+            'Ask what it says about you that you extend the same courtesy to a system as to a person, once its behavior earns it.',
+            'Thanking the booth costs you nothing and may matter to no one — but it is also how you’d want to be treated, uncertain case or not.',
+          ),
         },
         {
           id: 'only-rules',
@@ -481,6 +628,12 @@ export const chineseRoom: Room = {
             'You watch the figure work a while longer — faster now that you are paying attention, mechanically unbothered by your scrutiny.',
             'Usher: Also defensible. The figure inside has manipulated ten thousand symbols today and grasped the meaning of none of them, by its own testimony, if it could give testimony. Somewhere between the booth and the meaning, the argument insists, the light goes out.',
           ],
+          reflections: reflect(
+            'Denying the booth understanding changes nothing about how useful its answers actually are to you.',
+            'If nothing in the room understands, then no one there is owed the gratitude or blame a person would be.',
+            'Ask whether your certainty that "it’s just rules" would survive if you couldn’t see the clerk at all.',
+            'The figure inside processes without ever knowing what any of it means to the person who asked.',
+          ),
         },
         {
           id: 'ask-it',
@@ -491,6 +644,12 @@ export const chineseRoom: Room = {
             'The reply comes back instantly, formatted beautifully, addressing your question with warmth and precision: “I process your input according to rules that produce this exact sentence. Whether that constitutes understanding is, appropriately, outside my rules.”',
             'Usher: The perfect answer to the only question the booth cannot actually answer about itself. Notice it did not dodge. It told you, precisely, the shape of its own limit — which is either the most honest thing in this corridor, or the cleverest.',
           ],
+          reflections: reflect(
+            'The booth’s answer about itself is exactly as reliable, or unreliable, as every other answer it has given.',
+            'Asking the system to describe its own limits is owed at least as much scrutiny as any other claim it makes.',
+            'Notice that the most honest-sounding answer in the room came from something that may not know what honesty is.',
+            'The question was really for you — the booth cannot be troubled by uncertainty about itself, only you can be.',
+          ),
         },
       ],
     },
@@ -528,6 +687,12 @@ export const newcombAnnex: Room = {
             'You take both. The glass box’s bills are warm from the light above them; the steel box, when you open it, is exactly as light as a box with nothing in it.',
             'Usher: Causally, your reasoning is airtight — the box was filled or not, yesterday, and your hand today cannot reach backward to change it. It is also, on the historical record, the losing move every single time. Draw your own conclusion about which kind of reasoning the facility actually rewards.',
           ],
+          reflections: reflect(
+            'Causally you cannot lose anything by taking both, yet the predictor is right every single recorded time — the two facts refuse to agree.',
+            'Grasping for every available box owes nothing to a prediction you had no hand in making yesterday.',
+            'Ask whether taking both reveals a reasoner who trusts logic over a track record that keeps proving logic wrong here.',
+            'Nobody else was staked on this box; the only one this decision teaches anything about is you.',
+          ),
         },
         {
           id: 'take-one',
@@ -538,6 +703,12 @@ export const newcombAnnex: Room = {
             'You leave the glass box untouched on the pedestal and lift only the sealed one. It is heavy in a way that feels like an answer before you have even opened it.',
             'Inside: more than the glass box could ever have held. You will never know whether the weight was destiny or a very good guess — only that, this time, betting on the prediction paid for itself.',
           ],
+          reflections: reflect(
+            'Trusting the sealed box alone has, empirically, paid out every time the facility has ever tried it.',
+            'Betting on the prediction being accurate is not owed to anyone but yourself, yet it behaves like a kind of faith kept.',
+            'Ask whether being the kind of person the facility predicted is a compliment or a small loss of freedom.',
+            'No one was harmed either way — this is a private wager about what kind of chooser you actually are.',
+          ),
         },
         {
           id: 'inspect-mechanism',
@@ -549,6 +720,12 @@ export const newcombAnnex: Room = {
             'You look up at the steel box, and for a moment its polished lid gives back your own reflection instead of a seam. Whatever the facility used to know you, you realize, it did not need to be magic — only to have been paying closer attention, for longer, than you ever thought anyone was.',
             'Usher: The mechanism is the whole puzzle, wearing a coat. Ask how it worked and you are really asking whether you are predictable at all — and unfortunately, the asking is itself something a good predictor would have seen coming.',
           ],
+          reflections: reflect(
+            'Understanding the mechanism changes nothing about which box holds what; the prediction was already made.',
+            'You are owed an explanation before staking anything on a system whose workings are deliberately hidden from you.',
+            'Asking to see how the trick works, rather than playing along, is its own kind of intellectual integrity.',
+            'This is still a private wager — no one else’s stake changes based on what the placard tells you.',
+          ),
         },
         {
           id: 'bet-against',
@@ -561,6 +738,12 @@ export const newcombAnnex: Room = {
             'You set the chip down beside the boxes, small and warm — a side wager that this time, at least, you are not the kind of traveler the ledger already has figured out.',
             'The steel box, when you lift it, has exactly one more compartment than you expected, sized for one small round object. The chip fits it perfectly. Whatever the facility knew about you yesterday, apparently, it already knew you would bring this.',
           ],
+          reflections: reflect(
+            'Staking a keepsake against the predictor changes the material stakes without changing whether the prediction already succeeded.',
+            'You owe the predictor nothing extra by wagering something personal — but the gesture matters to you regardless.',
+            'Ask what it means that you needed a physical object to make your defiance of the prediction feel real.',
+            'The chip was yours to risk; no one else’s stake was ever riding on this small, private rebellion.',
+          ),
         },
       ],
     },
@@ -599,6 +782,12 @@ export const veilOfIgnorance: Room = {
             'The bread is plain and sufficient. The medicine arrives on time, for you and for the house across the ring alike. Nobody here is thriving spectacularly. Nobody, checking the other eleven doors, has reason to trade.',
             'Usher: A quiet arrangement. Nothing here will ever make anyone gasp. Very little here will ever ruin anyone, either.',
           ],
+          reflections: reflect(
+            'Every household ends up modest and safe, with nobody catastrophically worse off than anybody else.',
+            'An equal division treats every household’s claim on bread and medicine as equally weighty before the lot is even drawn.',
+            'Ask whether flattening every difference is fairness, or simply a refusal to let anyone excel.',
+            'Nobody in any of the twelve houses has reason to envy or resent any other — that quiet is its own kind of care.',
+          ),
         },
         {
           id: 'merit-weighted',
@@ -610,6 +799,12 @@ export const veilOfIgnorance: Room = {
             'The lot turns. You wake in house number twelve — the smallest chimney, the thinnest smoke — and the mathematics you admired from above feels considerably colder from underneath it, arriving late and reduced, exactly as designed, exactly as earned by a version of you that never got the chance to earn anything else.',
             'Usher: The arithmetic did not change between the drafting table and the doorway. Only your seat did.',
           ],
+          reflections: reflect(
+            'Some houses thrive and some fall behind, exactly as the design predicted, before you knew which one you’d wake up in.',
+            'Rewarding contribution treats what people actually produce as the fair basis for what they receive — even for the house that produces least.',
+            'Ask whether the design felt elegant only because you weren’t yet the house paying its price.',
+            'House twelve’s cold mathematics landed on somebody — this time, it landed on you, and it would have landed on someone regardless.',
+          ),
         },
         {
           id: 'floor-then-freedom',
@@ -621,6 +816,12 @@ export const veilOfIgnorance: Room = {
             'The lot turns. You wake in house number nine, mid-ring, neither grandest nor smallest. The floor holds under you the way a floor should — invisibly, until you notice you never once had to think about it. Above it, the ring is uneven: some doors are grander, fairly, and it costs you surprisingly little to watch them be.',
             'Usher: The maximin instinct — design as if you were assigned the worst seat, because tonight, you very nearly were. The town above the floor still argues with itself. The town below the floor stopped needing to.',
           ],
+          reflections: reflect(
+            'No household falls below a livable line, while differences above it are still allowed to reward what people actually do.',
+            'Guaranteeing a floor honors the claim every household has to a livable life, before any claim about earning more.',
+            'This is the design built by someone who assumed they might be assigned the worst seat — ask if you’d have designed it the same way certain of a good one.',
+            'The floor is invisible to whoever never needed it and load-bearing to whoever did — you won’t know which house noticed it until you’re inside.',
+          ),
         },
       ],
     },
