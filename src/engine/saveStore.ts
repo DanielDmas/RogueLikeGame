@@ -17,6 +17,10 @@ export interface Settings {
   renderScale: 'performance' | 'standard' | 'sharp';
   /** 0.8–1.3, scales the 2D UI layer (not the 3D canvas). */
   uiZoom: number;
+  /** Default offered by the opt-in panel at the start of each new run (spec
+   * 05) — editing this in Settings never touches the current run's own
+   * `RunState.examined` flag, only what gets pre-selected next time. */
+  examinedPathDefault: boolean;
 }
 
 /** Cosmetic only — no mechanical effect. Empty name means "not chosen yet". */
@@ -40,6 +44,12 @@ export interface Profile {
   persona: Persona;
   /** Whether the player has already seen the one-time first-heart-loss explanation. */
   hasSeenHeartLoss: boolean;
+  /** Whether the player has ever seen the "Before you begin" explainer
+   * (why-play/hearts/doors) — shown automatically, once, the very first time
+   * a new run starts, so no one begins not knowing what the game is or why
+   * (non-negotiable). The manual "Before you begin" button in the title menu
+   * remains available afterward for anyone who wants to reread it. */
+  hasSeenAbout: boolean;
   /** Snapshot of the most recently finished run — feeds `RunState.prior` for
    * rooms that remember the previous run (e.g. `the-cave`). Written in
    * `Game.playEnding` just before the profile is persisted. Optional: absent
@@ -78,12 +88,36 @@ export function defaultProfile(): Profile {
       dynamicScenery: false,
       renderScale: 'standard',
       uiZoom: 1,
+      examinedPathDefault: false,
     },
     persona: { preset: '', name: '', blurb: '' },
     hasSeenHeartLoss: false,
+    hasSeenAbout: false,
     keepsakes: [],
     keepsakeChoicesTaken: [],
   };
+}
+
+/**
+ * A legacy save (from before `hasSeenAbout` existed) should not suddenly
+ * show the "Before you begin" explainer to a player who has clearly already
+ * begun — that would read as a bug, not an introduction. Pure so it's
+ * testable without a DOM: any sign of prior play (a run in progress, a
+ * completed run, an unlocked field note, or a chosen persona name) grandfathers
+ * the profile in as already having seen it; a genuinely fresh profile keeps
+ * the false default so the auto-show still fires for real first-time players.
+ */
+export function shouldGrandfatherHasSeenAbout(parsed: {
+  hasSeenAbout?: boolean;
+  run?: Profile['run'];
+  runsCompleted?: number;
+  codexUnlocked?: string[];
+  persona?: Partial<Persona>;
+}): boolean {
+  if (parsed.hasSeenAbout !== undefined) return false;
+  return Boolean(
+    parsed.run || (parsed.runsCompleted ?? 0) > 0 || (parsed.codexUnlocked?.length ?? 0) > 0 || parsed.persona?.name,
+  );
 }
 
 /**

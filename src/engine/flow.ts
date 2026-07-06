@@ -50,7 +50,7 @@ import {
   usherBarkKey,
 } from '../content/text/keys';
 import { applyLocaleToDocument } from '../ui/locale';
-import { toggleFullscreen } from '../ui/fullscreen';
+import { isFullscreen, shouldOpenPauseOnEscape, toggleFullscreen } from '../ui/fullscreen';
 import { applyUiZoom } from '../ui/zoom';
 import { installUatHandle, isJumpableRoom, speedMultiplierFor, type UatHandle } from './uatMode';
 
@@ -138,7 +138,10 @@ export class Game {
 
     addEventListener('keydown', (e) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
-      if (e.key === 'Escape' && this.inGame && !this.ui.querySelector('.overlay, .field-note')) {
+      if (
+        e.key === 'Escape' &&
+        shouldOpenPauseOnEscape(this.inGame, Boolean(this.ui.querySelector('.overlay, .field-note')), isFullscreen())
+      ) {
         this.openPause();
       }
       if (e.key === 'f' || e.key === 'F') void toggleFullscreen();
@@ -237,7 +240,15 @@ export class Game {
   }
 
   private async persist(showToast = false) {
-    this.profile.run = this.state.finished ? null : this.state;
+    // Only stamp profile.run from this.state while an actual run is live.
+    // this.state defaults to a placeholder newRun() at construction time —
+    // before inGame is ever true (persona pick, Settings edits, the
+    // auto-shown "Before you begin" from the title screen), persist() is
+    // only ever asked to save persona/settings/profile-flag changes, and
+    // must not manufacture a phantom resumable run out of that placeholder
+    // (which would make the title screen wrongly offer "Continue the
+    // journey" to a player who never actually started playing).
+    if (this.inGame) this.profile.run = this.state.finished ? null : this.state;
     // Chained rather than a bare `await this.store.save(...)`, so that this
     // call's write is guaranteed to reach the store after every earlier
     // persist() call's write, regardless of whether those earlier calls were
@@ -348,6 +359,16 @@ export class Game {
       } else if (action === 'exit') {
         window.close();
       } else {
+        // Non-negotiable: a player's very first playthrough, ever, sees the
+        // "Before you begin" explainer automatically — no one starts not
+        // knowing what this game is or why. Shown exactly once per profile
+        // (hasSeenAbout), before persona and before the Examined Path offer;
+        // the manual "Before you begin" title button still works afterward.
+        if (action === 'new' && !this.profile.hasSeenAbout) {
+          await showAbout(this.ui);
+          this.profile.hasSeenAbout = true;
+          await this.persist();
+        }
         if (action === 'new' && !this.profile.persona.name) {
           this.profile.persona = await showPersona(this.ui, this.profile.persona);
           await this.persist();

@@ -1,4 +1,4 @@
-import { defaultProfile, type Profile, type SaveStore, type Settings } from './saveStore';
+import { defaultProfile, shouldGrandfatherHasSeenAbout, type Profile, type SaveStore, type Settings } from './saveStore';
 
 const KEY_PREFIX = 'anamnesis:profile:';
 
@@ -26,6 +26,7 @@ export class LocalSaveStore implements SaveStore {
         ...base,
         ...parsed,
         settings: migrateSettings(parsed.settings, base.settings),
+        hasSeenAbout: shouldGrandfatherHasSeenAbout(parsed) ? true : (parsed.hasSeenAbout ?? base.hasSeenAbout),
       };
     } catch {
       return defaultProfile();

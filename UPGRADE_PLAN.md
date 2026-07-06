@@ -26,6 +26,22 @@ diet audit. Key files: `src/scene/director.ts`, `src/ui/fullscreen.ts`,
 `src/ui/zoom.ts`, `src/engine/saveStore.ts`. (Electron window-state memory
 moved to Milestone 5, spec 08.)
 
+**Amendment (Milestone 5):** reported bug — "pressing Escape, or opening
+Settings, resets/disables fullscreen." Root cause: Escape is the Fullscreen
+API's own unblockable exit gesture — every browser exits fullscreen on
+Escape regardless of what the page's JS does, by design (a site can never
+trap a user in fullscreen). The game *also* binds Escape to open the pause
+menu, so a single press did both at once — fullscreen collapsing while the
+pause menu simultaneously snapped open — which reads as fullscreen being
+"reset" for no reason (opening Settings afterward just correctly displays
+the now-off state, which is why it looked settings-related). Fixed with a
+pure, testable guard, `shouldOpenPauseOnEscape` (`src/ui/fullscreen.ts`):
+the first Escape while fullscreen is left to just exit fullscreen; the pause
+menu opens on a distinct, subsequent press. Covered by
+`src/test/fullscreen.test.ts`. This does not, and cannot, prevent the
+browser from exiting fullscreen on Escape — that part of the report is
+expected platform behavior, not a bug, and is now documented as such.
+
 ---
 
 ## Phase B — Saving, Reset & Data Safety — **shipped (v0.1.5-v2-beta)**
@@ -55,6 +71,38 @@ understory, a secret room, and the final gate; the exact reported
 language-switch-then-save sequence; the title screen's continue/no-continue
 gating; and a deliberately constructed race proving the old (unchained)
 pattern *does* reorder writes while the new pattern doesn't.
+
+**Second amendment (same audit, Milestone 5):** a follow-up pass, driven by
+a request to make the save system provably correct "from all parts of the
+game," turned up one more real defect — this time a phantom run rather than
+a lost one. `Game.persist()` unconditionally derived `profile.run` from
+`this.state`, but `this.state` defaults to a placeholder `newRun()` at
+construction time, long before a run actually begins. Any `persist()` call
+made during the title-screen flow — a persona edit, a Settings change, the
+new auto-shown "Before you begin" (below) — stamped that placeholder onto
+`profile.run`, so a player who merely opened Settings or picked a persona
+and then closed the tab would come back to a wrongly-offered "Continue the
+journey" button (resuming a run identical to a fresh one — no data was
+actually lost, but the button lied about there being progress). Fixed by
+gating that assignment on `this.inGame`, which is only ever true once a real
+run has started. Also added, per an explicit, non-negotiable requirement:
+the "Before you begin" explainer (why-play/hearts/doors) now shows itself
+automatically, once, on a player's very first playthrough ever
+(`Profile.hasSeenAbout`, before persona, before the Examined Path offer) —
+no one begins not knowing what the game is or why. A legacy save showing any
+sign of prior play (a run, a completed run, an unlocked note, a chosen
+persona) is grandfathered in as already having seen it
+(`shouldGrandfatherHasSeenAbout`), so returning players are never ambushed
+by it. Both fixes covered by new tests in `src/test/saveScenarios.test.ts`
+(23 tests: continuing/discontinuing from every act/region including the
+understory and a secret room, interleaved language/settings-change
+sequences, Reset run/Reset all progress, "Walk again"'s profile-history
+carry-over, and the phantom-run regression itself) and
+`src/test/settings.test.ts` (the grandfathering predicate). Live-verified in
+a real browser: a truly fresh profile now shows "Before you begin"
+automatically on first Begin, `profile.run` correctly stays `null` until a
+real choice is made, and a second "Begin again" does not re-show the
+explainer.
 
 ---
 
@@ -329,17 +377,22 @@ into their named phases; 8 is watch-and-wait):
    backfill the preceding fixed-sequence rooms itself (small and safe — it
    mirrors state a real player must have). Do one of these before Phase S2
    writes more UAT scripts against Act IV.
-8. **[B, unresolved report] The user-reported "Continue started a new run
-   after mid-run language switch + save" never reproduced** under live
-   Playwright (mid-room and between-rooms saves, EN→CS via the HUD button,
-   exact reported step order). The write-ordering race that *was* found is
-   fixed and regression-tested (`saveRoundTrip.test.ts`). If it recurs:
-   before clicking Continue, capture
-   `localStorage['anamnesis:profile:traveler']` — `run: null` means a write
-   was lost (store side); an intact `run` means a `start()` resolution bug
-   (flow side). That one datum halves the search space. One benign
-   look-alike to rule out with the user: Settings → Data → "Reset run"
-   produces exactly the reported symptom by design.
+8. **[B, unresolved report — UPDATED] The user-reported "Continue started a
+   new run after mid-run language switch + save" never reproduced** under
+   live Playwright (mid-room and between-rooms saves, EN→CS via the HUD
+   button, exact reported step order). The write-ordering race that *was*
+   found is fixed and regression-tested (`saveRoundTrip.test.ts`). A
+   follow-up audit (asked to cover "all possible situations") did find a
+   *related but distinct* real bug in the same area — a phantom run being
+   manufactured during the title-screen flow, the mirror image of the
+   reported symptom — now fixed (`persist()`'s `inGame` guard; see Phase B's
+   second amendment). The originally reported direction (a real run
+   disappearing) still hasn't reproduced. If it recurs: before clicking
+   Continue, capture `localStorage['anamnesis:profile:traveler']` —
+   `run: null` means a write was lost (store side); an intact `run` means a
+   `start()` resolution bug (flow side). That one datum halves the search
+   space. One benign look-alike to rule out with the user: Settings → Data
+   → "Reset run" produces exactly the reported symptom by design.
 9. **[M, bookkeeping] `evaluateEnding` checks `remember-everything` after
    `lie-down`,** not above all final-door checks as spec 03 words it. Both
    are same-stage choices of one room — mutually exclusive in any
@@ -605,7 +658,17 @@ into their named phases; 8 is watch-and-wait):
 
 - [ ] R1. GitHub Pages deploy workflow + play-in-browser link + favicon/tab title
 - [ ] R2. Electron polish: icon, window-state memory, single-instance lock
-- [ ] R3. Czech quality pass (idiomatic reframing; terminology settled)
+- [ ] R3. Czech **and Farsi** quality pass — idiomatic reframing, terminology
+      settled. **Scope note added 2026-07-06:** `CLAUDE.md` now has a binding
+      translation rule (context-first, reread against the English source and
+      the specific room's situation before shipping a line — never a literal/
+      mechanical rendering — and this applies to every string, not just
+      narrative content: UI chrome, settings copy, everything). Everything
+      translated before that rule existed (Milestones 1–5 through at least
+      Phase N/O) was produced without this context pass and must be
+      re-reviewed and corrected against it here — audit it as one dedicated
+      pass over every registered cs/fa string, not opportunistically
+      mid-feature, so nothing is missed.
 - [ ] R4. German + French packs — **lowest priority; may slip to M6**
 - [ ] R5. Content-pipeline validation tests + "twenty rooms" continuity fix
 - [ ] R6. Dead-flag audit: every set flag gains a reader (CI-enforced)

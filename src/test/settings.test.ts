@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { migrateSettings } from '../engine/localSave';
-import { defaultProfile } from '../engine/saveStore';
+import { defaultProfile, shouldGrandfatherHasSeenAbout } from '../engine/saveStore';
+import { newRun } from '../engine/gameState';
 
 describe('settings migration — old single "sound" toggle splits into music + sfx', () => {
   const base = defaultProfile().settings;
@@ -114,5 +115,38 @@ describe('render scale + UI zoom — defaults and migration (Milestone 4)', () =
     const migrated = migrateSettings(saved, base);
     expect(migrated.renderScale).toBe('sharp');
     expect(migrated.uiZoom).toBe(1.2);
+  });
+});
+
+describe('shouldGrandfatherHasSeenAbout — the auto-shown "Before you begin" explainer never ambushes a returning player', () => {
+  it('a genuinely fresh profile (no history at all) is NOT grandfathered — the auto-show fires', () => {
+    expect(shouldGrandfatherHasSeenAbout({})).toBe(false);
+  });
+
+  it('a save that already stamped hasSeenAbout is left alone, whatever its value', () => {
+    expect(shouldGrandfatherHasSeenAbout({ hasSeenAbout: false })).toBe(false);
+    expect(shouldGrandfatherHasSeenAbout({ hasSeenAbout: true })).toBe(false);
+  });
+
+  it('a legacy save with an in-progress run is grandfathered (they have clearly already begun)', () => {
+    expect(shouldGrandfatherHasSeenAbout({ run: newRun() })).toBe(true);
+  });
+
+  it('a legacy save with at least one completed run is grandfathered', () => {
+    expect(shouldGrandfatherHasSeenAbout({ runsCompleted: 1 })).toBe(true);
+  });
+
+  it('a legacy save with any unlocked field note is grandfathered', () => {
+    expect(shouldGrandfatherHasSeenAbout({ codexUnlocked: ['wallet'] })).toBe(true);
+  });
+
+  it('a legacy save with a chosen persona name is grandfathered', () => {
+    expect(shouldGrandfatherHasSeenAbout({ persona: { name: 'Traveler' } })).toBe(true);
+  });
+
+  it('a legacy save with zero signs of play (runsCompleted: 0, empty codex, no persona, no run) is NOT grandfathered', () => {
+    expect(
+      shouldGrandfatherHasSeenAbout({ runsCompleted: 0, codexUnlocked: [], persona: { name: '' }, run: null }),
+    ).toBe(false);
   });
 });
