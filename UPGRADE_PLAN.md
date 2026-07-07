@@ -791,7 +791,26 @@ into their named phases; 8 is watch-and-wait):
       workflow's first run will actually publish anything. The Pages URL in
       the README (`https://danieldmas.github.io/RogueLikeGame/`) will 404
       until that setting is flipped and the workflow runs once.
-- [ ] R2. Electron polish: icon, window-state memory, single-instance lock
+- [x] R2. **Electron polish: icon, window-state memory, single-instance
+      lock.** `build/icon.ico` generated (Pillow, multi-size 16–256px) from
+      the same door-glyph motif as the R1 favicon on `#0a0a0d`; wired into
+      `package.json`'s `build.win.icon` and the `BrowserWindow`'s own `icon`
+      option. `electron/main.cjs` rewritten: window bounds + maximized state
+      are saved to `userData/window-state.json` on `close` and restored on
+      launch, but only if the saved position still intersects a currently
+      connected display (`screen.getAllDisplays()`) — otherwise falls back
+      to the built-in default, so a since-removed monitor can never strand
+      the window off-screen. `app.requestSingleInstanceLock()` added: a
+      second launch attempt quits itself and focuses/restores the existing
+      window instead of opening a duplicate. Fullscreen: verified by code
+      inspection rather than a live Electron run (no display in this
+      session) — the in-game F key (`ui/fullscreen.ts`) uses the standard
+      DOM Fullscreen API with no Electron-specific override, and
+      `fullscreenable` is left unset (defaults true), so no explicit config
+      was needed, per the spec's own "only add if broken" guidance. `node
+      --check electron/main.cjs` confirms valid syntax; `tsc`/`vitest`
+      (419 tests, unaffected since Electron's main process isn't part of
+      the TS test suite) still clean.
 - [ ] R3. Czech **and Farsi** quality pass — idiomatic reframing, terminology
       settled. **Scope note added 2026-07-06:** `CLAUDE.md` now has a binding
       translation rule (context-first, reread against the English source and
