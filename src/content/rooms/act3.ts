@@ -699,6 +699,7 @@ export const freeWill: Room = {
         'Usher: A simple game. Press any button you like, whenever you like, entirely of your own free will. I have already written down, in advance, which one you will press. I have never once lost. I would apologize for that, but you were always going to hear me say so.',
         'You reach — just to test it — and the BLUE button lights up, warmly, a full second before your hand commits. You had not decided yet. You would have sworn you had not decided yet.',
         'Usher: (reading the board) “Blue, first — to test it.” You will now feel briefly rebellious, and consider the red one. Take your time with that. The board already has.',
+        'Usher: Plainly, if it helps: everything you are about to do in this room has, apparently, already been written down. The only open question is whether being predictable and being free were ever actually opposites.',
       ],
       choices: [
         {

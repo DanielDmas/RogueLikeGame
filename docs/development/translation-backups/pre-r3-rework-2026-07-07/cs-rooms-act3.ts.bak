@@ -252,7 +252,6 @@ registerAll('v2', 'cs', {
   [roomBeatKey('free-will', 0, 2)]: 'Uvaděč: Jednoduchá hra. Zmáčkněte kterékoli tlačítko, kdykoli chcete, zcela z vlastní svobodné vůle. Já jsem už předem napsal, které zmáčknete. Nikdy jsem neprohrál. Omluvil bych se za to, ale stejně jste mě vždycky měli slyšet, jak to říkám.',
   [roomBeatKey('free-will', 0, 3)]: 'Natáhnete ruku — jen abyste to otestovali — a MODRÉ tlačítko se rozsvítí, teple, celou vteřinu předtím, než se vaše ruka zaváže. Ještě jste se nerozhodli. Byli byste ochotni odpřísáhnout, že jste se ještě nerozhodli.',
   [roomBeatKey('free-will', 0, 4)]: 'Uvaděč: (čte tabuli) „Modré, nejdřív — aby to otestoval.“ Teď se na chvíli budete cítit vzpurně a zvážíte to červené. Klidně si na to dejte čas. Tabule už ho má.',
-  [roomBeatKey('free-will', 0, 5)]: 'Uvaděč: Prostě řečeno, kdyby to pomohlo: všechno, co se tu chystáte udělat, je prý už napsané. Jediná otevřená otázka je, jestli být předvídatelný a být svobodný byly vůbec někdy protiklady.',
   [roomChoiceTextKey('free-will', 'press-red')]: 'Zmáčkněte ČERVENÉ — právě proto, že tabule říká, že to neuděláte. Přetrumfněte tabuli ve vzpouře.',
   [roomChoiceHintKey('free-will', 'press-red')]: 'Rozbijte tu předpověď silou.',
   [roomChoiceOutcomeKey('free-will', 'press-red', 0)]: 'Praštíte do červeného. Zazvoní zvonek. Tabule, rozvinutá o řádek dál, hlásá: „Červené, vzdorovitě, s vírou, že tohle něco vyvrací.“',

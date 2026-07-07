@@ -355,6 +355,7 @@ export const casinoPascal: Room = {
         'At the center table stands the Usher — horns polished, halo in a coat-check somewhere — dealing cards to nobody with tremendous professionalism.',
         'Usher: One table. One wager. Bet that God exists. If He does, the payout is infinite — eternity, entire. If He does not, you lose nothing at all. A finite stake against an infinite return. Mathematically, you cannot afford not to bet.',
         'The chips are small and warm, and you realize each one is stamped with a year of your life. You appear to have a pocketful.',
+        'Usher: Plainly, if it helps: this is a bet on whether God exists, where winning pays out forever and losing costs nothing. The only real question left is whether a bet like that can ever be placed honestly.',
       ],
       choices: [
         {
@@ -377,7 +378,7 @@ export const casinoPascal: Room = {
         {
           id: 'refuse-bet',
           text: 'Refuse to bet. Belief isn’t a thing a wallet can do.',
-          hint: 'Doxastic honesty.',
+          hint: 'You can’t order yourself to believe something.',
           effects: { lucidity: 12, axes: { reasonFeeling: -6 } },
           outcome: [
             'You keep your chips. The Usher nods, unoffended — the house profits from refusals too, in ways the house declines to explain.',
@@ -508,6 +509,7 @@ export const courtOfUsher: Room = {
         'The Usher occupies every position at once, with visible strain: prosecution (horns forward), defense (halo tilted sympathetically), and defendant (both, flickering).',
         'Usher: The case is existential, and I will keep this brief. You are the judge. Yes — you, the dissolved one. You are the only party in this room without a conflict of interest, which tells you a great deal about this particular court.',
         'Usher: (quieter now, as the defendant) Here is the charge I bring against myself. When I call a thing good — is it good because I have commanded it? Or do I command it because it is already good? Choose carefully. A great deal rests on your answer. Possibly more than you would guess.',
+        'Usher: Plainly, if it helps: either what I say goes, simply because I say it — or I only say it because it was already true before I opened my mouth. There is no third chair at this bench. Unless you can find one.',
       ],
       choices: [
         {
@@ -601,6 +603,7 @@ export const chineseRoom: Room = {
         'Curiosity gets the better of you and you circle the booth. A side panel, unlatched, swings open on a hinge that clearly wanted to be found.',
         'Inside: a figure surrounded by ledgers, matching each symbol on your note to a rulebook entry, copying the corresponding reply-symbols onto a card one at a time, without ever once looking up to know what any of it means.',
         'Usher: The booth has never failed a question. I want to be precise about what that does, and does not, prove.',
+        'Usher: Plainly, if it helps: something in that booth answers every question perfectly, without — perhaps — understanding a single one of them. The question is whether that difference matters, and whether you could ever tell from outside.',
       ],
       choices: [
         {
@@ -676,6 +679,7 @@ export const newcombAnnex: Room = {
         'The second is sealed steel, heavier-looking, unreadable. A brass placard beside it reads: THIS BOX WAS FILLED — OR LEFT EMPTY — YESTERDAY, ACCORDING TO WHAT THE FACILITY PREDICTED YOU WOULD DO HERE TODAY. IF IT PREDICTED YOU WOULD TAKE ONLY THE SEALED BOX, IT IS FULL. IF IT PREDICTED YOU WOULD TAKE BOTH, IT IS EMPTY. THE FACILITY HAS PREDICTED CORRECTLY, IN EVERY RECORDED CASE, SO FAR.',
         'You may take the sealed box alone, or both boxes. The glass one is yours regardless; that part was never the wager.',
         'Usher: (from the doorway, not touching either box) I want to be clear — I did not make this prediction, and I am not permitted to see it. Whatever the facility knew about you yesterday, it did not tell me. I am here only to watch, same as you.',
+        'Usher: Plainly, if it helps: a machine that has never once been wrong has already decided what is in that box. The only question left is whether you trust logic more than you trust its track record.',
       ],
       choices: [
         {
@@ -770,6 +774,7 @@ export const veilOfIgnorance: Room = {
         'A card, propped against the nearest chimney: DESIGN THIS TOWN HOWEVER YOU LIKE. WHEN YOU ARE FINISHED, YOU WILL WAKE INSIDE IT — AS ONE OF THE TWELVE HOUSEHOLDS, DRAWN BY LOT. YOU DO NOT KNOW WHICH ONE YOU WILL BE.',
         'You do not get to design the town and then choose your household afterward. The lot comes first, from your perspective; the design comes first, from the town’s.',
         'Usher: A favorite question of a philosopher who never once had to live under his own answer, and admitted as much. You do not get that exemption tonight.',
+        'Usher: Plainly, if it helps: you are writing the rules for a town before finding out which house in it you will wake up in. Write accordingly.',
       ],
       choices: [
         {

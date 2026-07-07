@@ -762,6 +762,47 @@ into their named phases; 8 is watch-and-wait):
       re-reviewed and corrected against it here — audit it as one dedicated
       pass over every registered cs/fa string, not opportunistically
       mid-feature, so nothing is missed.
+
+      **2026-07-07 — "original rooms" slice done, audited against the rule:**
+      close-read every string in `cs-rooms*.ts`/`fa-rooms*.ts` (prologue +
+      Act I–IV + the Understory, ~1,035 EN-equivalent lines × 2 languages)
+      against its English source and situation, room by room. Verdict: this
+      content was already high-quality, idiomatic, context-aware prose in
+      both languages (not the mechanical rendering the scope note above
+      warned about) — one genuine issue surfaced in each language: the
+      casino-pascal `refuse-bet` choice hint was raw academic jargon
+      ("Doxastic honesty." / Czech "Doxastická poctivost." / Farsi "صداقت
+      باورشناختی") shown live during play, not tucked in the optional field
+      note. Fixed in all three languages to a plain, self-explanatory
+      phrasing.
+
+      **Accessibility additions (same pass, per user request):** added one
+      new trailing Usher beat — "Plainly, if it helps: …" — to the six most
+      conceptually abstract rooms (casino-pascal, chinese-room,
+      newcomb-annex, veil-of-ignorance, court-of-usher, free-will), each a
+      short, jargon-free restatement of the room's actual question for
+      players without a philosophy background. Appended at the end of each
+      room's existing `beats` array (new index, not inserted mid-array) so
+      no existing translation key shifted; translated into CS+FA in the same
+      commit. A door-hint/teaser audit across every room (grep for
+      `doorHint`/`teaser`) found these already plain and evocative —
+      no changes needed there.
+
+      **Backup, per user instruction:** the pre-rework `cs-rooms*.ts`/
+      `fa-rooms*.ts` were copied verbatim to
+      `docs/development/translation-backups/pre-r3-rework-2026-07-07/`
+      (`.bak` extension, outside the build) before any edits, so the
+      original renderings remain diffable/revertible.
+
+      **Still open** (not touched this pass — scoped out as "original
+      rooms" only): UI strings (`cs.ts`/`fa.ts`), dynamic-beat overrides
+      (`cs-dynamic.ts`/`fa-dynamic.ts`), and endings (`cs-endings.ts`/
+      `fa-endings.ts`). Reflections and epiphanies were already written
+      under the rule this milestone and don't need re-auditing. `npx tsc
+      --noEmit` and `npx vitest run` (415 tests, incl. `i18n.test.ts` and
+      `translationCoverage.test.ts`) clean; live-verified in a real browser
+      (English and Czech) that the new beat and fixed hint render correctly
+      in `casino-pascal`.
 - [ ] R4. German + French packs — **lowest priority; may slip to M6**
 - [ ] R5. Content-pipeline validation tests + "twenty rooms" continuity fix
 - [ ] R6. Dead-flag audit: every set flag gains a reader (CI-enforced).
