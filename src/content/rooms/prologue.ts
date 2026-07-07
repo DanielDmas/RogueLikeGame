@@ -50,6 +50,8 @@ export const prologue: Room = {
           ],
         },
       ],
+      explanation:
+        'You just woke up not remembering who you are — and everyone here calls that being "dissolved." The Usher is your guide, not quite good, not quite evil, just doing a strange job. The three questions here don\'t have a right answer; they\'re just your first chance to get your bearings. Think of it like waking up in a hospital after a bad accident, disoriented, with someone kind-but-odd trying to explain where you are before you\'re ready to hear it. Whatever you ask, you\'re not being tested — you\'re just choosing how you want to start finding yourself again.',
     },
   ],
   fieldNote: {

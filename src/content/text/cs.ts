@@ -93,6 +93,8 @@ registerAll('v2', 'cs', {
   [uiKey('doorHelpSingle')]: 'toto je jediná cesta vpřed — klikněte na dveře, nebo stiskněte 1',
   [uiKey('doorUnseenBadge')]: 'nové',
   [uiKey('doorUnseenBadgeTooltip')]: 'Těmito dveřmi jste ještě nikdy neprošli',
+  [uiKey('explainButton')]: 'Vysvětlit jednoduše',
+  [uiKey('explainLabel')]: 'Jednoduše řečeno',
   [uiKey('rememberedTag')]: 'vzpomínka',
   [uiKey('ending')]: 'Konec',
   [uiKey('endingFieldNoteHeader')]: 'Konec · Poznámka',

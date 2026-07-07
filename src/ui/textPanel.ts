@@ -3,6 +3,7 @@ import { clear, el } from './dom';
 import { sound } from '../audio/soundEngine';
 import { t, applyTokens } from '../content/text/resolver';
 import { uiKey } from '../content/text/keys';
+import { showExplanation } from './explanation';
 
 const SPEAKER_PREFIXES = ['Usher:', 'The Room:', 'The Door:', 'USHER:', 'THE ROOM:', 'THE DOOR:'];
 
@@ -21,13 +22,15 @@ function resolveBeat(b: Beat, s: RunState, key?: string, tokens?: Record<string,
 
 export class TextPanel {
   private stage: HTMLElement;
+  private ui: HTMLElement;
   private panel: HTMLElement | null = null;
   private typewriter = true;
   private remembered = false;
   private skipTyping: (() => void) | null = null;
 
-  constructor(stageBottom: HTMLElement) {
+  constructor(stageBottom: HTMLElement, ui: HTMLElement) {
     this.stage = stageBottom;
+    this.ui = ui;
   }
 
   setTypewriter(v: boolean) {
@@ -43,7 +46,15 @@ export class TextPanel {
     beats: Beat[],
     state: RunState,
     header?: { title: string; type?: string; icon?: string },
-    opts?: { keyOf?: (beatIndex: number) => string; tokens?: Record<string, string> },
+    opts?: {
+      keyOf?: (beatIndex: number) => string;
+      tokens?: Record<string, string>;
+      /** Renders a "?" button beside the title that opens a plain-language
+       * explanation of this stage's situation and question (spec: room
+       * explanations). Omit to show no button at all — used only for the
+       * stage's own question beats, never for outcome/bark playbacks. */
+      explain?: { title: string; body: string; icon?: string };
+    },
   ): Promise<void> {
     const resolved = beats
       .map((b, i) => resolveBeat(b, state, opts?.keyOf?.(i), opts?.tokens))
@@ -61,8 +72,23 @@ export class TextPanel {
       }
       const h = el('div', 'room-title');
       h.append(el('span', undefined, header.title));
-      if (header.type) h.append(el('span', 'room-type', header.type));
-      if (this.remembered) h.append(el('span', 'room-remembered-tag', t(uiKey('rememberedTag'), 'remembered')));
+      const right = el('span', 'room-title-right');
+      if (header.type) right.append(el('span', 'room-type', header.type));
+      if (this.remembered) right.append(el('span', 'room-remembered-tag', t(uiKey('rememberedTag'), 'remembered')));
+      if (opts?.explain) {
+        const { title: explainTitle, body: explainBody, icon: explainIcon } = opts.explain;
+        const btn = el('button', 'explain-btn', '?');
+        btn.type = 'button';
+        const label = t(uiKey('explainButton'), 'Explain this simply');
+        btn.setAttribute('aria-label', label);
+        btn.title = label;
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          void showExplanation(this.ui, explainTitle, explainBody, explainIcon);
+        });
+        right.append(btn);
+      }
+      h.append(right);
       panel.appendChild(h);
     }
     const beatEl = el('p', 'beat');

@@ -94,6 +94,8 @@ export const wallet: Room = {
           ),
         },
       ],
+      explanation:
+        "You found a stranger's wallet full of cash, and nobody is watching. This is one of the oldest questions in philosophy: are you only honest because you're afraid of getting caught? Imagine finding cash on an empty street with no cameras, no witnesses — would you still return it? The philosopher Plato told a story about a magic ring that makes you invisible, to ask exactly this: if nothing bad would ever happen to you for keeping it, would you? There's no trick question here — it's just asking what kind of person you are when nobody's grading you.",
     },
   ],
   fieldNote: {
@@ -165,6 +167,8 @@ export const dinnerTable: Room = {
           ],
         },
       ],
+      explanation:
+        "Your grandmother, who is dying, asks if she's going to get better — and you don't know what she truly wants to hear. This is the classic \"kind lie\" problem: is it ever right to lie to someone to protect them, or does real love mean always telling the truth, even when it hurts? Think about a friend who asks whether an outfit looks good right before a big interview they can't reschedule — sometimes honesty helps, sometimes it just wounds without changing anything. There's no clean answer; every option here costs you something different.",
     },
   ],
   fieldNote: {
@@ -259,6 +263,8 @@ export const promotion: Room = {
           ),
         },
       ],
+      explanation:
+        "Your best friend made a costly mistake at work, only you noticed, and reporting it might get you the promotion you're both competing for. This is about what you owe different people at the same time: your employer wants honesty, your friend wants loyalty, and you can't fully give both. It's like finding out your best friend cheated on a test you both needed to pass to get into the same program — do you tell the teacher, warn your friend privately, or stay quiet? Whatever you choose, something you value doesn't get paid in full.",
     },
   ],
   fieldNote: {
@@ -352,6 +358,8 @@ export const beggarsMath: Room = {
           ),
         },
       ],
+      explanation:
+        "A cold, wet stranger asks you for money, and at the same moment you know that the same amount of money could save more lives if sent somewhere far away instead. This is the \"near vs. far\" problem: does someone right in front of you matter more than a stranger you'll never meet, even if helping the stranger technically does more good? It's like choosing between buying lunch for a classmate who's clearly struggling today, or donating that same money to a charity that, on paper, helps more people overall. Both choices are kind. They're just kind in different directions.",
     },
   ],
   fieldNote: {
@@ -446,6 +454,8 @@ export const quietAlarm: Room = {
           ),
         },
       ],
+      explanation:
+        "You hear a scary fight through the wall, then silence — and you don't know if that's a relief or something worse. This is about how far your responsibility for a stranger's safety actually goes: do you get involved, call for help, or mind your own business? Imagine hearing shouting from a neighbor's apartment at 2 a.m. and not knowing if it's a bad argument or something dangerous — every option (knocking, calling the police, waiting, ignoring it) has a real cost, and you'll probably never find out for certain if you did the right thing.",
     },
   ],
   fieldNote: {
@@ -507,6 +517,8 @@ export const photograph: Room = {
           ],
         },
       ],
+      explanation:
+        "A building is on fire, and you can save a stranger's life through one door, or the only proof of who you used to be through the other — not both, cleanly. This is a classic \"impossible choice\" used to test what actually matters to us: is a photograph just a thing, or does losing your only memory-anchor mean losing a piece of yourself? Imagine a house fire where you could grab a family photo album (the only copies, nothing backed up online) or help a stranger trapped nearby — both feel like real losses, and this room is built so that whichever you pick, it costs you something real.",
     },
   ],
   fieldNote: {
@@ -567,6 +579,8 @@ export const buridansQueue: Room = {
           ],
         },
       ],
+      explanation:
+        "Two doors are completely identical in every way, and you have to somehow pick one anyway. This one isn't really a moral dilemma — it's about how we make decisions at all when there's genuinely no good reason to prefer one option over another. There's an old story about a hungry donkey standing exactly between two identical piles of hay, who supposedly starves to death because it can never find a reason to choose one over the other. It's a playful reminder that sometimes \"just picking\" is the only sane move — waiting for a perfect reason that will never come is its own kind of choice.",
     },
   ],
   fieldNote: {
@@ -645,6 +659,8 @@ export const theReference: Room = {
           ),
         },
       ],
+      explanation:
+        "A close friend needs a reference letter from you for a job they're not quite right for, and whatever you write will be read by a stranger who's trusting your honesty. This is about who your loyalty is actually owed to: the friend you love, or the stranger relying on your word? It's like being asked to vouch for a friend's babysitting skills for a family you don't know, when you're pretty sure they're not great with kids — every version of the letter (glowing, honest, or refusing to write it) treats someone unfairly.",
     },
   ],
   fieldNote: {

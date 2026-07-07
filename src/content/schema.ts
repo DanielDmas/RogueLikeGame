@@ -115,6 +115,12 @@ export interface Reflection {
 export interface Stage {
   beats: Beat[];
   choices: Choice[];
+  /** A plain-language explanation of this stage's situation and question —
+   * shown when the player clicks the "?" button beside the text panel.
+   * Written for a reader with no philosophy background: what's actually
+   * being asked, why it's hard, and a concrete everyday example. Never
+   * required reading — the room must stand on its own without it. */
+  explanation?: string;
 }
 
 export interface FieldNote {

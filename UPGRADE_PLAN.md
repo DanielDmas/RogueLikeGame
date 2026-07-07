@@ -739,12 +739,37 @@ into their named phases; 8 is watch-and-wait):
       fades it in/out (lerped) and the arm leans via pure `lanternLeanAngle
       (targetX)`. Wired at every point a door becomes "the" door: raycast
       hover, `highlightDoor`, and `hideDoors` (clears it).
+- [x] Q7. **"Explain this simply" panel — user-requested addition, 2026-07-07,
+      not in the original spec 07 scope.** Every one of the game's 36 room
+      stages (prologue + Act I–IV + the Understory) now carries a plain-
+      language, ELI15 explanation of its situation and question — written
+      for a reader with no philosophy background, with a concrete everyday
+      example, in the game's own voice. A small "?" button
+      (`.explain-btn`) renders beside the room title the instant a stage's
+      own beats start playing (never during outcome beats, act-intro barks,
+      or other incidental `playBeats` calls) and opens a slide-up panel
+      (`ui/explanation.ts`'s `showExplanation`, visually a sibling of the
+      field note — same card, header, and dismiss pattern, just without a
+      "thinkers" line) with the room's title and its explanation. New
+      `Stage.explanation?: string` field (`content/schema.ts`) and
+      `roomExplanationKey(id, stage)` (`content/text/keys.ts`); English
+      lives directly on each room's stage object, Czech and Farsi in new
+      dedicated `cs-explanations.ts`/`fa-explanations.ts` packs (registered
+      in `content/text/index.ts`). Content-completeness enforced by
+      `roomExplanation.test.ts` (every stage has a substantial, non-stub
+      explanation); translation coverage folded into
+      `translationCoverage.test.ts`'s existing per-language loop — both
+      auto-fail if a future room ships without one. `npx tsc --noEmit` and
+      `npx vitest run` (419 tests) clean; live-verified in a real browser in
+      English and Czech (button appears at the right moment, panel opens
+      with correctly translated title/body, dismisses cleanly back to the
+      room underneath).
 
   **Scope note (2026-07-07):** given Q1's size, this pass deliberately built
-  the smaller, well-specified, fully-testable sub-phases (Q2–Q4, Q6) and
+  the smaller, well-specified, fully-testable sub-phases (Q2–Q4, Q6–Q7) and
   left Q1 (dioramas) and Q5 (audio) open, tracked honestly above rather than
-  claiming the phase complete. `npx tsc --noEmit` and `npx vitest run` (415
-  tests) are clean; Q2/Q3/Q4/Q6 were each live-verified with `?uat=1`
+  claiming the phase complete. `npx tsc --noEmit` and `npx vitest run` are
+  clean throughout; Q2/Q3/Q4/Q6/Q7 were each live-verified with `?uat=1`
   screenshots.
 
 ## Phase R — Platform, language & engine health (spec `08-platform-localization-engine-health.md`)

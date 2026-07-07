@@ -39,6 +39,7 @@ import {
   roomDoorHintKey,
   roomTeaserKey,
   roomBeatKey,
+  roomExplanationKey,
   roomChoiceOutcomeKey,
   roomNoteTitleKey,
   roomNoteThinkersKey,
@@ -135,7 +136,7 @@ export class Game {
       this.applySettings();
       void this.persist();
     });
-    this.text = new TextPanel(stageBottom);
+    this.text = new TextPanel(stageBottom, ui);
     this.choices = new ChoicePanel(stageBottom);
     this.reflection = new ReflectionPanel(stageBottom);
 
@@ -573,6 +574,9 @@ export class Game {
       await this.text.playBeats(stage.beats, this.state, { title, type: room.type, icon }, {
         keyOf: (bi) => roomBeatKey(room.id, i, bi),
         tokens,
+        explain: stage.explanation
+          ? { title, body: t(roomExplanationKey(room.id, i), stage.explanation), icon }
+          : undefined,
       });
       const available = stage.choices.filter((c) => !c.available || c.available(this.state));
       const choice: Choice = await this.choices.pick(available, this.state, room.id);

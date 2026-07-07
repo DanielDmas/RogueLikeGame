@@ -75,6 +75,8 @@ export const junction: Room = {
           ),
         },
       ],
+      explanation:
+        "A runaway trolley is about to kill five people unless you pull a lever to redirect it onto a track where it kills one person instead. This is the single most famous thought experiment in philosophy — the \"Trolley Problem\" — asking whether it's okay to actively cause one death to prevent five, or whether doing nothing (even if worse people die as a result) is morally different from doing something. Most people say \"pull the lever\" — but the next part of this room will test whether that answer holds up once it gets more personal.",
     },
     {
       beats: [
@@ -163,6 +165,8 @@ export const junction: Room = {
           ),
         },
       ],
+      explanation:
+        "Same trolley, same math — five lives for one — but now the only way to save the five is to push a person off a bridge with your own hands, not flip a switch. Most people who happily pulled the lever refuse to push here, even though the numbers are identical. This room is built to catch that exact contradiction: is there a real moral difference between causing harm indirectly (through a machine) and causing it directly (with your hands), or is that just squeamishness dressed up as ethics? Think about the difference between a company laying off workers through a policy versus a manager personally firing someone face-to-face — same outcome, very different feeling.",
     },
   ],
   fieldNote: {
@@ -239,6 +243,8 @@ export const experienceMachine: Room = {
           ),
         },
       ],
+      explanation:
+        "A machine offers you a perfect, endlessly happy life that will feel completely real — you'll never know it's fake. Would you plug in forever? This tests whether happiness is truly the only thing that matters, or whether we also care about things actually being real and actually being ours. It's like being offered the most realistic, perfect video game ever made, one you could never tell apart from real life, with guaranteed success and love — but you'd have to unplug from your actual life and the real people in it forever. Most people hesitate, and the room wants you to notice why.",
     },
   ],
   fieldNote: {
@@ -332,6 +338,8 @@ export const ship: Room = {
           ),
         },
       ],
+      explanation:
+        "You're watching craftsmen replace you, one small piece at a time — memories, habits, cells — while an exact copy assembled from your discarded pieces sits nearby, checking its face in a mirror. Which one is really \"you\" when it's done? This is the ancient \"Ship of Theseus\" puzzle: if every plank of a ship gets replaced over the years, is it still the same ship? None of the cells in your body are the same ones you had ten years ago, and your opinions and memories have changed a lot too, yet you still feel like \"you.\" So what actually makes you the same person over time?",
     },
   ],
   fieldNote: {
@@ -426,6 +434,8 @@ export const casinoPascal: Room = {
           ),
         },
       ],
+      explanation:
+        "A casino offers you a strange bet: wager that God exists, and if you're right you win everything forever; if you're wrong, you lose nothing. Sounds like a no-brainer, right? This is philosopher Blaise Pascal's famous bet, and the room is built to poke holes in it — like, which God? And does betting on a religion \"just for the payout,\" instead of actually believing it, even count as real faith? It's a bit like signing up for a gym membership you don't believe will work, purely because the free-trial terms look amazing on paper — the maths might check out, but does it actually mean anything?",
     },
   ],
   fieldNote: {
@@ -485,6 +495,8 @@ export const omelas: Room = {
           ],
         },
       ],
+      explanation:
+        "You've found a perfect, joyful city — but its entire happiness depends on one child being kept locked in misery in a basement forever, and nothing can be done to free the child without collapsing everything. There is no good option in this room, on purpose. It's a famous story used to ask: is it ever okay for a whole society's happiness to be built on one person's suffering, as long as the numbers \"add up\" — many happy people against one miserable one? Think about products or conveniences you enjoy every day that you know were probably made by someone, somewhere, working in terrible conditions — this room just makes that trade-off impossible to look away from.",
     },
   ],
   fieldNote: {
@@ -578,6 +590,8 @@ export const courtOfUsher: Room = {
           ),
         },
       ],
+      explanation:
+        "The Usher puts himself on trial and asks you to be the judge: is something \"good\" simply because he says so, or does he only say so because it was already good on its own? This sounds abstract, but it matters a lot: if a rule is only right because someone powerful says it is, then that same authority could just as easily call something terrible \"good\" instead. Think of a parent or teacher saying \"because I said so\" — is that actually a good reason, or are we hoping there's a deeper reason underneath it that even they have to answer to? This question has been argued about for over two thousand years.",
     },
   ],
   fieldNote: {
@@ -655,6 +669,8 @@ export const chineseRoom: Room = {
           ),
         },
       ],
+      explanation:
+        "A booth answers any question perfectly, in warm, thoughtful language — but when you peek inside, you find someone just mechanically matching symbols to a rulebook, with no idea what any of it actually means. Does the booth \"understand\" you, or is it just very good at faking it? This is basically asking the same question people ask about AI chatbots today: if something can hold a perfect conversation without any real understanding behind it, does the difference even matter to the person talking to it? There might not be a clean answer — that's the point.",
     },
   ],
   fieldNote: {
@@ -750,6 +766,8 @@ export const newcombAnnex: Room = {
           ),
         },
       ],
+      explanation:
+        "A machine that has never once been wrong already decided, yesterday, exactly what you'll choose today — and filled (or didn't fill) a box based on that prediction. Do you take both boxes (logically, the contents are already fixed, so grab everything) or just the one it expects you to trust (which, historically, always pays off)? This is a famous puzzle about prediction and free will: if something can predict your choices perfectly, are your choices still really \"free\"? It's a bit like a friend who knows you so well they can always guess what you'll order at a restaurant — are you actually choosing, or just being predictable?",
     },
   ],
   fieldNote: {
@@ -829,6 +847,8 @@ export const veilOfIgnorance: Room = {
           ),
         },
       ],
+      explanation:
+        "You get to design all the rules for a small town — but then you'll be placed into one of its twelve households completely at random, with no say in which one. Would you design it differently knowing you might end up in the worst-off house instead of the best? This is philosopher John Rawls's famous idea for figuring out what's actually fair: imagine designing the rules for a country without knowing whether you'll be born rich or poor, healthy or sick, lucky or unlucky. It's like being asked to write the rules for splitting a pizza before you know which slice you'll get — you suddenly want it to be fair to everyone, not just the winners.",
     },
   ],
   fieldNote: {

@@ -94,6 +94,8 @@ registerAll('v2', 'fa', {
   [uiKey('doorHelpSingle')]: 'این تنها راه پیش رو است — روی در کلیک کنید، یا عدد ۱ را بزنید',
   [uiKey('doorUnseenBadge')]: 'جدید',
   [uiKey('doorUnseenBadgeTooltip')]: 'هرگز از این در نگذشته‌اید',
+  [uiKey('explainButton')]: 'به‌زبان ساده توضیح بده',
+  [uiKey('explainLabel')]: 'به‌زبان ساده',
   [uiKey('rememberedTag')]: 'به‌یادمانده',
   [uiKey('ending')]: 'پایان',
   [uiKey('endingFieldNoteHeader')]: 'پایان · یادداشت',

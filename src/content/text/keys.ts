@@ -10,6 +10,7 @@ export const roomChoiceTextKey = (id: string, choiceId: string) => `room.${id}.c
 export const roomChoiceHintKey = (id: string, choiceId: string) => `room.${id}.choice.${choiceId}.hint`;
 export const roomChoiceOutcomeKey = (id: string, choiceId: string, beat: number) =>
   `room.${id}.choice.${choiceId}.outcome${beat}`;
+export const roomExplanationKey = (id: string, stage: number) => `room.${id}.stage${stage}.explanation`;
 export const roomNoteTitleKey = (id: string) => `room.${id}.note.title`;
 export const roomNoteThinkersKey = (id: string) => `room.${id}.note.thinkers`;
 export const roomNoteBodyKey = (id: string) => `room.${id}.note.body`;

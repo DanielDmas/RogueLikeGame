@@ -29,6 +29,8 @@ import './cs-reflections-act4';
 import './fa-reflections-act4';
 import './cs-epiphanies';
 import './fa-epiphanies';
+import './cs-explanations';
+import './fa-explanations';
 
 export * from './resolver';
 export * from './keys';

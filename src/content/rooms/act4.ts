@@ -71,6 +71,8 @@ export const boulder: Room = {
           ],
         },
       ],
+      explanation:
+        "You're given a task that can never actually be finished — no matter how well you stack the stones, they always fall back down, forever. This room is built on the ancient myth of Sisyphus, a man condemned to push a boulder uphill forever, watching it roll back down every single time. The question isn't \"how do I win\" — you can't — it's about how you'd choose to spend your energy on something that will never be \"done\": with rage, with jokes, by refusing to try, or by simply making the doing itself feel like it's yours, even knowing it never ends.",
     },
   ],
   fieldNote: {
@@ -201,6 +203,8 @@ export const lastMessage: Room = {
           ),
         },
       ],
+      explanation:
+        "You get to send exactly one sentence back to someone in the waking world — no more, no follow-up, just one message that will somehow reach them as a dream, a feeling, or a sudden thought. This isn't really a puzzle to solve; it's a chance to notice what you'd actually choose to say if you only had one shot and had to make it count, to whoever matters most to you. Think about it like a single text message you could send to someone, guaranteed to arrive and be truly heard, with nothing else you get to add or explain afterward — what would you actually write?",
     },
   ],
   // Room 19 writes its own field note: the message you sent becomes the codex entry.
@@ -289,6 +293,8 @@ export const doorThatAsks: Room = {
           ),
         },
       ],
+      explanation:
+        "Before the final door will open, it interviews you about the choices you made throughout this entire journey and asks whether you still stand by them — not to grade you, but to see if you're being honest about your own story. This room is really asking: is it more admirable to stay perfectly consistent with everything you've ever chosen, or to be able to say \"I was wrong, and here's exactly what changed my mind\"? Think about opinions you held strongly as a kid that you've since changed — is that growth, or does it mean your younger self was simply wrong?",
     },
     {
       beats: [
@@ -386,6 +392,8 @@ export const doorThatAsks: Room = {
           ),
         },
       ],
+      explanation:
+        "The last door is open, and you finally have to choose how this journey actually ends: walk back into your ordinary life, stay here to help the next lost traveler, or let yourself rest completely. There's no \"correct\" ending among these — each one is simply a different, equally honest way of answering what you actually want right now, after everything you've been through. It's a bit like finally finishing a long, hard project and having to decide: do you dive straight into the next thing, take a well-earned rest, or use what you learned to help someone else through the same thing?",
     },
   ],
   fieldNote: {

@@ -84,6 +84,8 @@ export const teleporter: Room = {
           ),
         },
       ],
+      explanation:
+        "A machine offers to get you across an impossible gap by scanning, destroying, and perfectly reprinting you on the other side — the copy will remember everything and feel exactly like it walked through. But did \"you\" die? This is one of the biggest puzzles about personal identity: if every single atom and memory is preserved perfectly, does it matter that the original was destroyed? It's a thought-experiment version of a real fact — your body's cells are constantly dying and being replaced anyway, so what actually makes you \"you\" from one day to the next, if not some unbroken physical thread?",
     },
   ],
   fieldNote: {
@@ -161,6 +163,8 @@ export const editor: Room = {
           ),
         },
       ],
+      explanation:
+        "A pen can permanently erase your single worst memory — no side effects, no catch, it just stops having happened to you. Would you use it? This asks whether painful memories are just suffering we'd be better off without, or whether they've quietly built parts of who you are — your patience, your empathy, your understanding of other people's pain. Think about a hard breakup or a big failure that hurt a lot at the time, but that you can now see taught you something real about yourself. Would erasing that hurt also erase something you'd actually want to keep?",
     },
   ],
   fieldNote: {
@@ -222,6 +226,8 @@ export const introduction: Room = {
           ],
         },
       ],
+      explanation:
+        "A room strips away every possible answer to \"who are you?\" — your name, your job, even your life story — one at a time, and asks what's left. This sounds like a trick, but it's a real and old philosophical question: if you removed every label and every story about yourself, would there be a \"you\" left underneath, or is \"you\" actually made entirely out of those labels and stories? Try it yourself for a second: if you couldn't answer with your name, your job, your family role, or any story about your past, what would even be left to answer with?",
     },
     {
       beats: [
@@ -262,6 +268,8 @@ export const introduction: Room = {
           ],
         },
       ],
+      explanation:
+        "Having already given up your name, your role, and your story, the room asks \"who are you?\" one more time — and this time there's almost nothing obvious left to reach for. This is the hardest version of the same question: most people get uncomfortable or go quiet here, because we're so used to describing ourselves with labels that being asked to answer without any of them feels like standing in an empty room with the lights off. There's no wrong answer, but notice which kind of answer you reach for once all the easy ones are gone.",
     },
   ],
   fieldNote: {
@@ -356,6 +364,8 @@ export const debtOfDead: Room = {
           ),
         },
       ],
+      explanation:
+        "Someone who genuinely wronged you in the past is now dying and sincerely asks, \"can you forgive me?\" — and you can see they mean it, which doesn't erase what they did. This is about whether forgiveness is something you owe someone just because they're sorry and dying, or whether honesty about being hurt matters more than giving them a peaceful ending. Imagine a friend who betrayed your trust badly years ago, now apologizing on their deathbed — do you say what will comfort them, what's honestly true for you, or something in between? There's no wrong feeling here, only different kinds of honesty.",
     },
   ],
   fieldNote: {
@@ -431,6 +441,8 @@ export const marysRoom: Room = {
           ),
         },
       ],
+      explanation:
+        "A woman who has lived her whole life in a black-and-white room knows every scientific fact there is about the color red — the exact wavelength, how eyes and brains process it — but has never actually seen it. If she finally sees red for the first time, does she learn something new, even though she already knew \"everything\" about it? This asks whether experiencing something (like tasting your favorite food, or falling in love) is a totally different kind of knowing than just knowing the facts about it. You could read every scientific paper about the taste of chocolate and still be missing something you'd only get from actually tasting it.",
     },
   ],
   fieldNote: {
@@ -503,6 +515,8 @@ export const butterflyDream: Room = {
           ],
         },
       ],
+      explanation:
+        "You wake up from a dream where you were a butterfly, completely convinced in the dream that you were really a butterfly — and now you can't be 100% sure which one is the dream: are you a person who dreamed of being a butterfly, or a butterfly right now dreaming that it's a person? This isn't meant to be solved — it's a famous old story (from the philosopher Zhuangzi) used to gently poke at how sure we really are that \"right now\" is the real, solid one. Have you ever woken up from a dream so vivid it took you a few seconds to remember which life was the real one?",
     },
   ],
   fieldNote: {
@@ -596,6 +610,8 @@ export const swampman: Room = {
           ),
         },
       ],
+      explanation:
+        "Lightning strikes a swamp and, by pure accident, assembles someone molecule-for-molecule identical to you — same memories, same voice, same love for your mother — except it only came into existence forty seconds ago and has no actual history of living your life. Is it you? This asks whether what makes you \"you\" is your mind and memories (in which case, yes, obviously), or whether it also matters that you actually lived the life that produced them (in which case, no — it's a very convincing stranger). It's like asking whether a perfect AI clone of your personality, trained on everything you've ever said, would really be you, or just something wearing your voice.",
     },
   ],
   fieldNote: {
@@ -674,6 +690,8 @@ export const theCave: Room = {
           ],
         },
       ],
+      explanation:
+        "You're shown your own past choices, played out as shadows on a wall, and asked to just watch — or name them as your own. This room only appears once you've already been through this journey before, and it's built on Plato's famous \"Allegory of the Cave\": people who've only ever seen shadows on a wall mistake the shadows for the whole of reality, and it's genuinely uncomfortable to step back and actually look at what cast them. This is less a dilemma and more an invitation to look honestly at patterns in your own choices without flinching away.",
     },
   ],
   fieldNote: {
@@ -744,6 +762,8 @@ export const freeWill: Room = {
           ],
         },
       ],
+      explanation:
+        "A machine claims to have already written down, in advance, exactly which button you're about to press — and it's never once been wrong. Whatever you do, even trying to prove it wrong on purpose, seems to have been predicted too. This is the big question behind \"free will\": if everything about you (your brain, your past, your habits) causes your choices, are your choices still truly \"free,\" or just the result of things you didn't choose? Think about how predictable you might be to someone who knows you really well — does being predictable mean you're not actually choosing, or can both things be true at once?",
     },
   ],
   fieldNote: {

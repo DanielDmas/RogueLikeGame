@@ -13,6 +13,7 @@ import {
   roomChoiceHintKey,
   roomChoiceOutcomeKey,
   roomChoiceTextKey,
+  roomExplanationKey,
   roomNoteBodyKey,
   roomNoteThinkersKey,
   roomNoteTitleKey,
@@ -60,6 +61,19 @@ describe('deep translation coverage — every room beat/choice/field-note, both 
         }
       }
       expect(missing, `missing ${lang} choice translations:\n${missing.join('\n')}`).toEqual([]);
+    });
+
+    it(`every room stage's plain-language explanation is translated to ${lang}`, () => {
+      setLocale(lang, 'v2');
+      const missing: string[] = [];
+      for (const room of allRooms) {
+        room.stages.forEach((stage, si) => {
+          if (!stage.explanation) return;
+          const resolved = t(roomExplanationKey(room.id, si), stage.explanation);
+          if (resolved === stage.explanation) missing.push(`${room.id}.stage${si}.explanation`);
+        });
+      }
+      expect(missing, `missing ${lang} explanation translations:\n${missing.join('\n')}`).toEqual([]);
     });
 
     it(`every room's field note (title/thinkers/body) is translated to ${lang}`, () => {

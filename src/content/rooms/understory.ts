@@ -96,6 +96,8 @@ export const theArchive: Room = {
           ],
         },
       ],
+      explanation:
+        "You're shown a filed, dated record of a choice you made on your last journey through this place, read back to you cold, without any of the context that made it feel reasonable at the time. Do you still stand by it, distance yourself from it, or just accept that it happened without fully judging it either way? This is about how we relate to our own past mistakes or decisions once time has passed — like reading an old journal entry or an old text message you sent, and not being totally sure the person who wrote it and the person reading it now are quite the same.",
     },
   ],
   fieldNote: {
@@ -196,6 +198,8 @@ export const theUnchosen: Room = {
           ),
         },
       ],
+      explanation:
+        "You're shown the doors you walked past without opening on your last journey here — paths you never took, forever unknown now. One of them creaks open again on its own. This is about the strange pull of \"the road not taken\": do you finally look inside, out of pure curiosity now that it costs you nothing? Or do you leave it closed, deciding that not every unopened door was secretly a missed opportunity? Most people, looking back on their life, wonder about at least one path they didn't take — this room just makes that feeling literal.",
     },
   ],
   fieldNote: {
@@ -299,6 +303,8 @@ export const theEcho: Room = {
           ),
         },
       ],
+      explanation:
+        "Sitting across from you is a voice built entirely out of things you said and chose the last time you were here — not a ghost, just an echo of a version of yourself from before. Do you talk back to it, sit quietly and really listen for once, or realize that there was never really anyone else in the room at all — just you, at two different times? This is about whether the \"you\" from your past and the \"you\" right now are really the same person, or more like two different chapters of the same book meeting for a moment.",
     },
   ],
   fieldNote: {
