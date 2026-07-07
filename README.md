@@ -6,6 +6,8 @@ You wake in a liminal waiting room with no name and no memory of what happened �
 
 Your guide is **the Usher**: a shadow wearing both a halo and a small pair of horns (one of which flickers), who claims to be God on odd days and the Devil on even days and refuses to say what day it is.
 
+**Content note:** the game stages heavy material in the abstract — mortality, memory loss, coercion, moral injury — but never depicts graphic violence; nothing here is jump-scare horror, and every room can be read or skipped at your own pace.
+
 ## Playing
 
 **Play in the browser:** https://danieldmas.github.io/RogueLikeGame/
@@ -19,42 +21,46 @@ npm run dev       # play at the printed local URL
 
 - **Click** doors in the scene or the cards below; **1–9** pick choices; **Space/Enter** advance text; **Esc** pauses.
 - **Hearts** are your grip on reality. Lose all three and the run ends in dissolution — a real ending, not a fail screen.
-- **Lucidity** rewards honest engagement, not any particular morality. It unlocks secret doors and the rarest ending.
-- After every choice, a **Field Note** reveals the actual philosophy behind the room — thinkers, arguments, the real stakes. Notes persist forever in the codex.
-- A run visits ~15 of the 20 authored rooms. Hidden alignment axes (reason↔feeling, self↔others, control↔acceptance), branching doors, and **six endings** reward replay.
+- **Lucidity** rewards honest engagement, not any particular morality. It unlocks secret doors and the rarest endings.
+- After every choice, a **Field Note** reveals the actual philosophy behind the room — thinkers, arguments, the real stakes. Notes persist forever in the **Codex**.
+- A run visits 15 of the 30+3 authored rooms (the "+3" is an optional, hidden Act V — descend once you're offered the stairs, and you won't be nudged back). Hidden alignment axes (reason↔feeling, self↔others, control↔acceptance), branching doors, and six endings — and rumors of a seventh — reward replay.
+- **Keepsakes** are small, optional mementos a handful of choices leave you carrying into future runs — never mandatory, never a mechanical advantage, just a quiet thread between lives.
+- The **Ledger** (from the title or pause menu) tracks your history across every run — hearts spent and kept, endings witnessed, doors never opened — and unlocks short epiphany lines as milestones are reached.
+- The **Examined Path** is an opt-in mode (offered when you start a run) that adds brief plural ethical readings after significant choices, for players who want the philosophy made explicit rather than left implicit.
+- **Typical session length:** a full run takes about 20–30 minutes; ANAMNESIS is designed to be finished, replayed, and abandoned mid-corridor without penalty — quitting and resuming is always safe.
+- **Accessibility:** reduced motion, high-contrast text, a typewriter toggle, and a low-quality renderer tier are all in Settings. The layout is supported down to 1280×720 at up to 130% browser zoom, and the interface is fully mirrored for Farsi (RTL).
 
 ## Structure
 
 | | |
 |---|---|
 | Prologue | The Waiting Room |
-| Act I — The Shallows | everyday dilemmas: the wallet, the kind lie, the promotion, the beggar's math, the quiet alarm → *the burning photograph* |
-| Act II — The Machinery | the trolley junction, the experience machine, the ship, Pascal's casino, Omelas → *the Euthyphro courtroom* |
-| Act III — The Mirror | the teleporter, the memory editor, the small polite room, the deathbed → *the free-will betting parlor* |
+| Act I — The Shallows | the wallet, the dinner table, the promotion, the beggar's math, the quiet alarm, Buridan's queue, the reference letter → *the burning photograph* |
+| Act II — The Machinery | the trolley junction, the experience machine, the ship, Pascal's casino, Omelas, the Chinese Room, Newcomb's annex, the veil of ignorance → *the Euthyphro courtroom* |
+| Act III — The Mirror | the teleporter, the memory editor, the small polite room, the deathbed, Mary's room, the butterfly's dream, the swampman (and a secret door, for those who look) → *the free-will betting parlor* |
 | Act IV — The Threshold | the boulder, the last message, the door that asks |
+| Act V — The Understory *(optional, hidden)* | the archive, the unchosen, the echo — a detour beneath Act IV for runs that have earned it |
 
 ## Development
 
 ```bash
-npm test          # engine tests: endings, graph reachability, reducers, content lint
+npm test          # engine + content tests: endings, graph reachability, reducers, i18n coverage, content lint
 npm run build     # type-check + production bundle
 npm run preview   # serve the production build
 ```
 
 - **Stack:** Vite + TypeScript + Three.js. No framework; DOM overlay for all text (crisp and accessible), WebGL for the scene, parametric geometry only — no downloaded assets.
 - **Content is pure data** (`src/content/rooms/*`): rooms, beats, choices, effects, field notes. The engine (`src/engine/*`) never hardcodes a room.
-- **Saves** are local (`localStorage`) behind an async, server-shaped `SaveStore` interface (`src/engine/saveStore.ts`) so a real backend can drop in later without touching game code.
-- Settings include reduced motion, high-contrast text, typewriter toggle, and a low-quality renderer tier.
+- **Saves** are local (`localStorage`) behind an async, server-shaped `SaveStore` interface (`src/engine/saveStore.ts`) so a real backend can drop in later without touching game code. Profiles can also be exported/imported as JSON from Settings → Data.
+- Fully localized into English, Czech, and Farsi (RTL), each with two text voices (an original v1 and a rewritten v2).
+- `dist/` and `release/` are build output and are gitignored — nothing built is committed.
 
 ## Windows executable
 
-A standalone Windows build is published on the [Releases page](../../releases) as a portable `.exe` (no installer needed — just download and run). It's built automatically by GitHub Actions (`.github/workflows/release-windows.yml`) whenever a `v*` tag is pushed, wrapping the production web bundle in Electron.
+A standalone Windows build is published on the [Releases page](../../releases) as a portable `.exe` (no installer needed — just download and run). It's built by GitHub Actions (`.github/workflows/release-windows.yml`), wrapping the production web bundle in Electron.
 
-To trigger a new release build, push a tag:
+The reliable way to trigger a release build is manually, from the Actions tab: open the "Build and release Windows EXE" workflow, click **Run workflow**, and optionally supply a `tag_name` (it defaults to `nightly-<run number>` if left blank). Pushing a `v*` tag also triggers the same workflow, but tag pushes aren't available in every environment this project is developed from, so `workflow_dispatch` is the path actually exercised and kept working.
 
-```bash
-git tag v0.1.0
-git push origin v0.1.0
-```
+## Also playable in the browser
 
-You can also run the workflow manually from the Actions tab (`workflow_dispatch`).
+A GitHub Pages build deploys automatically on every published release (`.github/workflows/deploy-pages.yml`) — see the browser link at the top of this README.

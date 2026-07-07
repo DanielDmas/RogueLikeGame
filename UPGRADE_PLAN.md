@@ -1020,14 +1020,37 @@ into their named phases; 8 is watch-and-wait):
       4 corrections into `cs-endings.ts`/`fa-endings.ts`/`cs.ts`/`fa.ts`
       (where they're mirrored) when R3's Czech/Farsi quality pass reaches
       these rooms/endings.
-- [ ] R11. **Documentation refresh:** root `README.md` (30+3 rooms; endings
-      phrased without spoiling the display rule — "six endings, and rumors";
-      Act V; fix the release procedure to the proven `workflow_dispatch`
-      path — tag pushes 403 here; add target session length, a one-line
-      content-sensitivity note, the 1280×720 @ ≤130 % zoom support floor;
-      confirm `dist/` is gitignored). Create `CHANGELOG.md` and backfill one
-      line per released version. (docs/development/README status line
-      already fixed with the review.)
+- [x] R11. **Documentation refresh.** Root `README.md` fully rewritten:
+      room count updated to the "30+3 rooms" phrasing (verified against
+      `content/rooms/index.ts`'s `allRooms` composition: 8+9+9+3 main-act
+      rooms + prologue + 3 optional Understory rooms), a full Structure
+      table listing every Act I–IV room including the Phase K additions
+      (Buridan's queue, the reference letter, the Chinese Room, Newcomb's
+      annex, the veil of ignorance, Mary's room, the butterfly's dream,
+      the swampman, the secret room) plus a new Act V row for the
+      Understory; endings described as "six endings — and rumors of a
+      seventh" (spoiler-safe, matches the in-game codex display rule of 6
+      until the seventh is actually witnessed); keepsakes, the Ledger, and
+      the Examined Path each get a line under Playing; a one-line content-
+      sensitivity note (heavy themes handled abstractly, no graphic
+      violence) and a target session length ("about 20–30 minutes",
+      reasoned from the graph's fixed 15-room run length and the
+      experience charter's 2–4-minutes-per-room pacing ceiling — an
+      honest estimate, not a measured average); the 1280×720 @ ≤130% zoom
+      accessibility floor and RTL Farsi support are now stated explicitly;
+      confirmed `dist/`+`release/` are gitignored (`.gitignore` already
+      had both) and said so; the release-procedure section now leads with
+      the proven `workflow_dispatch` + `tag_name` path (the one actually
+      exercised — R1/R2's own release notes hit the same tag-push
+      restriction) and demotes the `git tag && git push` flow to a
+      secondary note about environment variance instead of the primary
+      instruction. New root `CHANGELOG.md`: one entry per released
+      version (v0.1.0, v0.1.5-v2-beta, each dated from `git for-each-ref`
+      on the actual tags) plus an "Unreleased" section summarizing
+      Milestone 5's shipped-so-far scope. `docs/development/README.md`'s
+      status-line wording was already fixed in the 2026-07-06 review, so
+      untouched here. No source changes — `npx tsc --noEmit` and `npx
+      vitest run` (432 tests) unaffected, confirmed still clean.
 
 ## Phase S — Testing, UAT & release (spec `09-testing-and-release.md`)
 
