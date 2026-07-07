@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { applyMood, buildTheme, usherFigure, type MoodType, type ThemeConfig, type ThemeId } from './themes';
 import { createDoors, DOOR_Z, type DoorSet, type DoorSpec } from './doors';
 import { createPost, type Post } from './post';
+import { dioramaFor, type Diorama } from './dioramas';
 
 export interface DirectorEvents {
   onDoorHover(id: string | null): void;
@@ -122,6 +123,11 @@ export class SceneDirector {
   /** Title screen's epitaph wall (spec 07 §Q3.3) — a faint CanvasTexture
    * plane, present only once ≥2 endings are witnessed. */
   private epitaphMesh: THREE.Mesh | null = null;
+  /** Room diorama (spec 07 §Q1) — a small backdrop vignette behind the door
+   * row, keyed by room id; null for rooms without a bespoke motif. */
+  private diorama: Diorama | null = null;
+  private dioramaRoomId: string | null = null;
+  private quality: 'low' | 'high';
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -132,6 +138,7 @@ export class SceneDirector {
   ) {
     this.events = events;
     this.renderScale = renderScale;
+    this.quality = quality;
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: quality === 'high' });
     this.renderer.setPixelRatio(pixelRatioFor(renderScale, devicePixelRatio));
     this.renderer.setSize(innerWidth, innerHeight);
@@ -270,6 +277,35 @@ export class SceneDirector {
     this.epitaphMesh = null;
   }
 
+  /** Room diorama (spec 07 §Q1) — swaps to `roomId`'s bespoke backdrop
+   * vignette, or clears it for rooms with no motif of their own (null falls
+   * back to the plain act theme). No-op if already showing that room. */
+  setDiorama(roomId: string | null) {
+    if (roomId === this.dioramaRoomId) return;
+    this.clearDiorama();
+    this.dioramaRoomId = roomId;
+    if (!roomId) return;
+    const d = dioramaFor(roomId, this.quality);
+    if (!d) return;
+    this.diorama = d;
+    this.scene.add(d.group);
+  }
+
+  /** Forwards to the current diorama's optional accent toggle (spec 07 §Q1 —
+   * `marys-room`'s lit cube); a no-op for dioramas without one, or none active. */
+  setDioramaAccent(on: boolean) {
+    this.diorama?.setAccent?.(on);
+  }
+
+  private clearDiorama() {
+    if (this.diorama) {
+      this.scene.remove(this.diorama.group);
+      this.diorama.dispose();
+      this.diorama = null;
+    }
+    this.dioramaRoomId = null;
+  }
+
   /** Toggles the optional "dynamic scenery" mood system; off = pure static act theme (the original, default behavior). */
   setDynamicScenery(v: boolean) {
     this.dynamicScenery = v;
@@ -291,6 +327,7 @@ export class SceneDirector {
 
   setTheme(id: ThemeId) {
     this.clearEpitaphWall();
+    this.clearDiorama();
     if (this.theme) {
       this.scene.remove(this.theme.group);
       this.theme.group.traverse((o) => {
@@ -471,6 +508,7 @@ export class SceneDirector {
     this.theme?.tick(t);
     this.usher.tick(t);
     this.doors?.tick(t, this.reducedMotion);
+    if (!this.reducedMotion) this.diorama?.tick(t);
 
     if (this.parallaxEnabled && this.theme && !this.reducedMotion) {
       const target = parallaxOffset({ x: this.pointer.x, y: this.pointer.y });

@@ -53,6 +53,37 @@ export function jitterSeconds(min: number, max: number, rng: () => number = Math
   return min + rng() * (max - min);
 }
 
+/** Pentatonic semitone offsets above 880 Hz, one per door index (spec 07
+ * §Q5.3) — cycles if there are more doors than offsets. Pure. */
+const HOVER_PENTATONIC_SEMITONES = [0, 2, 4, 7, 9];
+
+/** The hover tick's pitch for a given door index — undefined/out-of-range
+ * falls back to the base 880 Hz tone. Pure, unit-tested without an
+ * AudioContext. All three hover sources (DOM door cards, the raycast hover,
+ * and the flow layer's own callback) must resolve the same index for a
+ * given door so hovering the same door always plays the same note. */
+export function hoverPitch(index?: number): number {
+  if (index === undefined || index < 0) return 880;
+  const semi = HOVER_PENTATONIC_SEMITONES[index % HOVER_PENTATONIC_SEMITONES.length];
+  return 880 * Math.pow(2, semi / 12);
+}
+
+/** Raw impulse-response samples (mono) for the convolution reverb bus (spec
+ * 07 §Q5.1) — exponentially-decaying white noise. Pure — no AudioContext/
+ * AudioBuffer needed, so it's unit-testable in the node test environment;
+ * `ensureCtx()` wraps this into a real stereo AudioBuffer for the browser. */
+export function makeImpulseSamples(sampleRate: number, durationSeconds: number, decay: number, rng: () => number = Math.random): Float32Array<ArrayBuffer> {
+  const length = Math.max(1, Math.floor(sampleRate * durationSeconds));
+  const data = new Float32Array(new ArrayBuffer(length * Float32Array.BYTES_PER_ELEMENT));
+  for (let i = 0; i < length; i++) {
+    const envelope = Math.pow(1 - i / length, decay);
+    data[i] = (rng() * 2 - 1) * envelope;
+  }
+  return data;
+}
+
+export type RoomAccent = 'junction' | 'casino' | 'ship' | null;
+
 /** Picks a mote frequency from an act's scale. Pure — testable without an AudioContext. */
 export function pickMote(act: ActKey, rng: () => number = Math.random): number {
   const scale = ACT_MOTE_SCALES[act];
@@ -76,6 +107,12 @@ export class SoundEngine {
   private chordTimer: ReturnType<typeof setTimeout> | null = null;
   private moteTimer: ReturnType<typeof setTimeout> | null = null;
   private resumed = false;
+  /** Convolution reverb bus (spec 07 §Q5.1). Every reverb-send gain connects through this bus before the convolver, so a single node's `.gain` can't be found half-wired. */
+  private reverbSend: GainNode | null = null;
+  /** Per-room ambient accent (spec 07 §Q5.4) — at most one active at a time, cleared by `setRoomAccent(null)`. */
+  private roomAccent: RoomAccent = null;
+  private accentDrone: { osc: OscillatorNode; gain: GainNode } | null = null;
+  private accentCreakTimer: ReturnType<typeof setTimeout> | null = null;
 
   private musicTarget(): number {
     return this.musicEnabled ? this.musicVolume : 0;
@@ -140,6 +177,23 @@ export class SoundEngine {
     sfxGain.gain.value = this.sfxTarget();
     sfxGain.connect(master);
     this.sfxGain = sfxGain;
+
+    // Convolution reverb bus (spec 07 §Q5.1): a shared impulse response built
+    // once; individual sounds tap into `reverbSend` at their own wet amount
+    // (heartLoss 0.5, ending 0.35, noteOpen 0.15 — see those methods) rather
+    // than every sound sharing one fixed wetness.
+    const convolver = ctx.createConvolver();
+    const duration = 1.8;
+    const decay = 2.2;
+    const impulse = ctx.createBuffer(2, Math.floor(ctx.sampleRate * duration), ctx.sampleRate);
+    impulse.copyToChannel(makeImpulseSamples(ctx.sampleRate, duration, decay), 0);
+    impulse.copyToChannel(makeImpulseSamples(ctx.sampleRate, duration, decay), 1);
+    convolver.buffer = impulse;
+    convolver.connect(master);
+    const reverbSend = ctx.createGain();
+    reverbSend.gain.value = 1;
+    reverbSend.connect(convolver);
+    this.reverbSend = reverbSend;
 
     // Chord crossfades replace this.chordGain with a fresh node each time,
     // so the tremolo below modulates a stable bus all of them connect
@@ -206,7 +260,10 @@ export class SoundEngine {
     this.progressionIndex = 0;
     this.clearTimers();
     this.ensureCtx();
-    this.crossfadeToChord(ACT_PROGRESSIONS[act][0]);
+    // In-run act transitions get a slower, more deliberate crossfade (spec
+    // 07 §Q5.2) than the ~2.2s default used for cycling chords *within* an
+    // act — the act change is a bigger emotional beat.
+    this.crossfadeToChord(ACT_PROGRESSIONS[act][0], 4.0);
     this.scheduleNextChord();
     this.scheduleNextMote();
   }
@@ -240,7 +297,9 @@ export class SoundEngine {
     if (this.currentAct === null) return;
     const ctx = this.ensureCtx();
     const t = ctx.currentTime;
-    const freq = pickMote(this.currentAct);
+    // The casino room accent (spec 07 §Q5.4) biases the mote scheduler up an
+    // octave while it's the active room, instead of adding its own voice.
+    const freq = pickMote(this.currentAct) * (this.roomAccent === 'casino' ? 2 : 1);
     const osc = ctx.createOscillator();
     osc.type = 'sine';
     osc.frequency.value = freq;
@@ -253,7 +312,7 @@ export class SoundEngine {
     osc.stop(t + 5.7);
   }
 
-  private crossfadeToChord(chord: number[]) {
+  private crossfadeToChord(chord: number[], seconds = 2.2) {
     const ctx = this.ensureCtx();
     const t = ctx.currentTime;
     const oldOscs = this.chordOscs;
@@ -265,7 +324,7 @@ export class SoundEngine {
     const newGain = ctx.createGain();
     newGain.gain.value = 0;
     newGain.connect(this.chordBus!);
-    newGain.gain.setTargetAtTime(0.16, t + 0.2, 2.2);
+    newGain.gain.setTargetAtTime(0.16, t + 0.2, seconds);
     this.chordGain = newGain;
 
     const newOscs: OscillatorNode[] = [];
@@ -305,9 +364,20 @@ export class SoundEngine {
     osc.stop(t + duration + 0.05);
   }
 
-  /** Hovering a door: a soft high glassy tick. */
-  hover() {
-    this.blip(880, 0.18, 'sine', 0.05);
+  /** Taps `source`'s signal into the shared convolution reverb bus at `amount` (spec 07 §Q5.1) — a no-op before the AudioContext exists. */
+  private sendToReverb(source: AudioNode, amount: number) {
+    if (!this.reverbSend || !this.ctx) return;
+    const send = this.ctx.createGain();
+    send.gain.value = amount;
+    source.connect(send).connect(this.reverbSend);
+  }
+
+  /** Hovering a door: a soft high glassy tick. Pitch arpeggiates across doors
+   * (spec 07 §Q5.3, pentatonic above 880 Hz) when a door `index` is given —
+   * every hover source (DOM cards, 3D raycast, the flow-layer callback) must
+   * resolve the same index for a door so hovering it always sounds the same. */
+  hover(index?: number) {
+    this.blip(hoverPitch(index), 0.18, 'sine', 0.05);
   }
 
   /** Committing a choice: a warmer, lower thud. */
@@ -335,6 +405,7 @@ export class SoundEngine {
     gain.gain.linearRampToValueAtTime(0.12, t + 0.06);
     gain.gain.exponentialRampToValueAtTime(0.0006, t + 1.3);
     osc.connect(gain).connect(this.sfxGain!);
+    this.sendToReverb(gain, 0.5);
     osc.start(t);
     osc.stop(t + 1.4);
   }
@@ -353,6 +424,7 @@ export class SoundEngine {
       gain.gain.linearRampToValueAtTime(0.05, t + 0.3 + i * 0.08);
       gain.gain.exponentialRampToValueAtTime(0.0008, t + 1.6 + i * 0.08);
       osc.connect(gain).connect(this.sfxGain!);
+      this.sendToReverb(gain, 0.15);
       osc.start(t + i * 0.06);
       osc.stop(t + 1.8);
     });
@@ -372,9 +444,80 @@ export class SoundEngine {
       gain.gain.linearRampToValueAtTime(0.09, t + 0.6 + i * 0.15);
       gain.gain.exponentialRampToValueAtTime(0.0008, t + 4 + i * 0.15);
       osc.connect(gain).connect(this.sfxGain!);
+      this.sendToReverb(gain, 0.35);
       osc.start(t + i * 0.12);
       osc.stop(t + 4.2);
     });
+  }
+
+  /** Sets (or clears, with `null`) the current room's ambient accent (spec
+   * 07 §Q5.4) — at most one active at a time; everything it plays routes
+   * through `musicGain` so the music toggle governs it. */
+  setRoomAccent(kind: RoomAccent) {
+    if (kind === this.roomAccent) return;
+    this.clearRoomAccent();
+    this.roomAccent = kind;
+    if (!kind) return;
+    const ctx = this.ensureCtx();
+    if (kind === 'junction') {
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = 55;
+      const gain = ctx.createGain();
+      gain.gain.value = 0;
+      gain.gain.setTargetAtTime(0.006, ctx.currentTime, 1.5);
+      osc.connect(gain).connect(this.musicGain!);
+      osc.start();
+      this.accentDrone = { osc, gain };
+    } else if (kind === 'ship') {
+      this.scheduleNextCreak();
+    }
+    // 'casino' has no persistent node of its own — it biases playMote()'s
+    // frequency choice (an octave up) for as long as it's the active accent.
+  }
+
+  private clearRoomAccent() {
+    if (this.accentDrone) {
+      const { osc, gain } = this.accentDrone;
+      const ctx = this.ensureCtx();
+      gain.gain.setTargetAtTime(0, ctx.currentTime, 0.3);
+      osc.stop(ctx.currentTime + 1);
+      this.accentDrone = null;
+    }
+    if (this.accentCreakTimer) {
+      clearTimeout(this.accentCreakTimer);
+      this.accentCreakTimer = null;
+    }
+    this.roomAccent = null;
+  }
+
+  private scheduleNextCreak() {
+    this.accentCreakTimer = setTimeout(() => {
+      this.playCreak();
+      this.scheduleNextCreak();
+    }, jitterSeconds(9, 13) * 1000);
+  }
+
+  /** Ship room accent: a brief filtered-noise creak burst (spec 07 §Q5.4). */
+  private playCreak() {
+    const ctx = this.ensureCtx();
+    const t = ctx.currentTime;
+    const bufferSize = Math.max(1, Math.floor(ctx.sampleRate * 0.4));
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    buffer.copyToChannel(makeImpulseSamples(ctx.sampleRate, 0.4, 3.5), 0);
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 380;
+    filter.Q.value = 3;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(0.01, t + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.0008, t + 0.4);
+    noise.connect(filter).connect(gain).connect(this.musicGain!);
+    noise.start(t);
+    noise.stop(t + 0.45);
   }
 }
 

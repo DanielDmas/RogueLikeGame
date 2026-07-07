@@ -11,6 +11,7 @@ import { evaluateEpiphanies } from './ledger';
 import { backfillVisitedForJump, completeRoom, makeRegistry, offeredDoors } from './storyEngine';
 import { defaultProfile, hydrateProfile, type Profile, type SaveStore } from './saveStore';
 import { SceneDirector } from '../scene/director';
+import type { DoorSpec } from '../scene/doors';
 import { spillColorFor } from '../scene/themes';
 import { Hud } from '../ui/hud';
 import { TextPanel } from '../ui/textPanel';
@@ -31,7 +32,7 @@ import {
   type SettingsActions,
 } from '../ui/overlays';
 import { el } from '../ui/dom';
-import { sound } from '../audio/soundEngine';
+import { sound, type RoomAccent } from '../audio/soundEngine';
 import { endingIcons, iconFor } from '../content/icons';
 import { setLocale, t } from '../content/text';
 import {
@@ -66,6 +67,15 @@ const UAT_AUTOCONTINUE_KEY = 'anamnesis-uat-autocontinue';
 
 const themeForAct = (act: number): 0 | 1 | 2 | 3 | 4 => (act <= 1 ? (act as 0 | 1) : (act as 2 | 3 | 4));
 
+/** The 3 rooms with a bespoke ambient audio accent (spec 07 §Q5.4) — null for
+ * every other room, clearing whatever accent was previously playing. */
+const ROOM_ACCENT_BY_ID: Partial<Record<string, RoomAccent>> = {
+  junction: 'junction',
+  'casino-pascal': 'casino',
+  ship: 'ship',
+};
+const roomAccentFor = (roomId: string): RoomAccent => ROOM_ACCENT_BY_ID[roomId] ?? null;
+
 /** English source for the Examined Path's once-per-act Socratic asides (spec
  * 05) — rhetorical, unscored, no branching. `Usher:` prefix marks it spoken. */
 const EXAMINED_ACT_BARK_FALLBACK: Record<1 | 2 | 3 | 4, string> = {
@@ -89,6 +99,10 @@ export class Game {
   private store: SaveStore;
   private currentTheme = -1;
   private doorClickThrough: ((id: string) => void) | null = null;
+  /** The door specs currently on screen, in door-index order — lets both
+   * hover sources (3D raycast and DOM cards) resolve the same pentatonic
+   * pitch (spec 07 §Q5.3) for a given door id. */
+  private currentDoorSpecs: DoorSpec[] = [];
   private inGame = false;
   private runStartNotes = 0;
   private uat: boolean;
@@ -123,7 +137,7 @@ export class Game {
       ui,
       {
         onDoorHover: (id) => {
-          if (id) sound.hover();
+          if (id) sound.hover(this.doorIndex(id));
         },
         onDoorClick: (id) => this.doorClickThrough?.(id),
       },
@@ -441,6 +455,13 @@ export class Game {
     await this.runLoop();
   }
 
+  /** Resolves a door id to its on-screen index (spec 07 §Q5.3's per-door
+   * hover pitch) against the currently-shown door row; -1 (→ the base 880 Hz
+   * tone) if the row has changed since. */
+  private doorIndex(id: string): number {
+    return this.currentDoorSpecs.findIndex((s) => s.id === id);
+  }
+
   private async syncTheme() {
     const theme = themeForAct(this.state.act);
     if (theme !== this.currentTheme) {
@@ -503,13 +524,16 @@ export class Game {
         icon: iconFor(r.id),
         unseen: !this.profile.codexUnlocked.includes(r.id),
       }));
+      this.currentDoorSpecs = specs;
       this.director.setMood(null);
+      this.director.setDiorama(null);
+      sound.setRoomAccent(null);
       this.director.showDoors(specs);
       const atUnderstoryFork = doors.some((d) => d.id === UNDERSTORY_SEQUENCE[0]);
       this.text.showBark(usherDoorBark(this.state, this.profile.runsCompleted, doors.length, atUnderstoryFork), this.tokens());
       const picker = this.choices.pickDoor(specs, (id) => {
         this.director.highlightDoor(id);
-        if (id) sound.hover();
+        if (id) sound.hover(this.doorIndex(id));
       });
       this.doorClickThrough = picker.chooseExternally;
       const roomId = await picker.promise;
@@ -548,6 +572,8 @@ export class Game {
     const title = t(roomTitleKey(room.id), room.title);
     const tokens = this.tokens();
     this.director.setMood(room.type);
+    this.director.setDiorama(room.id);
+    sound.setRoomAccent(roomAccentFor(room.id));
     // A room already witnessed in an earlier run reads back fast on repeat —
     // no typewriter, and the panel carries a quiet "remembered" mark — so
     // replays stay brisk instead of re-reading beats the player already knows.
@@ -584,6 +610,12 @@ export class Game {
       const heartsBefore = this.state.hearts;
       const flagsBefore = this.state.flags;
       this.state = applyEffects(this.state, choice.effects);
+      // Mary's Room diorama (spec 07 §Q1): the one saturated red cube lights
+      // only once the drawer has actually been opened, matching the room's
+      // own beat (opening the drawer reveals red for the first time).
+      if (room.id === 'marys-room' && choice.id === 'open-drawer') {
+        this.director.setDioramaAccent(true);
+      }
       const firstHeartLoss = this.state.hearts < heartsBefore && !this.profile.hasSeenHeartLoss;
       if (this.state.hearts < heartsBefore) {
         sound.heartLoss();

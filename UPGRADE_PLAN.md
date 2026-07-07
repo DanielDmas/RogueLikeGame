@@ -691,10 +691,29 @@ into their named phases; 8 is watch-and-wait):
 
 ## Phase Q — Visual & audio overhaul (spec `07-visual-and-audio-overhaul.md`)
 
-- [ ] Q1. Room dioramas (`dioramaFor` factory; silhouettes + light; disposal
-      leak-tested; act-theme fallback) — **deferred, not yet started.** By far
-      the largest item in the phase (~19 bespoke room motifs); scoped out of
-      this pass deliberately rather than rushed. Still open.
+- [x] Q1. **Room dioramas.** New `scene/dioramas.ts`: `dioramaFor(roomId,
+      quality): Diorama | null` — 20 bespoke motifs (all of spec 07 §Q1's
+      table, including the Understory trio sharing a family look with a
+      per-room accent light color), each a small generated-geometry vignette
+      (silhouette-style flat-color/emissive `MeshStandardMaterial`, ≤2
+      lights, quality-scaled segment counts) parented at `z ≈ -10`, behind
+      `DOOR_Z` and the Usher's walk path. `marys-room`'s diorama exposes the
+      spec's optional `setAccent(on)` hook — its one saturated cube lights
+      only once the `open-drawer` choice has actually been taken, wired from
+      `flow.ts` right after that choice's effects land. `SceneDirector`
+      gained `setDiorama(roomId | null)` (called from `enterRoom`, after
+      `setMood`) and `setDioramaAccent(on)`; cleared on `setTheme` (act
+      change) and at the door-picker screen (`setDiorama(null)` beside
+      `setMood(null)`), ticked in the render loop (skipped under
+      `reducedMotion`). New `dioramas.test.ts`: every registered id is a real
+      room id, unregistered/no-motif rooms return `null`, every diorama at
+      both quality levels stays within the mesh/light budget, ticks and
+      disposes (including double-dispose) without throwing, and only
+      `marys-room` exposes `setAccent`. Live-verified in a real browser
+      (`?uat=1`, screenshots read): the boulder room's slope+sphere and the
+      junction room's converging rails are visibly present as backdrop
+      vignettes behind the door row; zero console errors walking through six
+      diorama rooms in sequence (exercises the swap/dispose path).
 - [x] Q2. **Doorway light-spill during the walk-through.** `SceneDirector`
       gained a `spillLight` (`THREE.PointLight`) spawned in `walkThrough(id,
       spill)` and tweened in over half the camera-dolly duration
@@ -730,9 +749,44 @@ into their named phases; 8 is watch-and-wait):
       per-door phase-offset pulse. `snapSelected(id)` snaps the chosen door to
       `base+0.35` (`SELECT_SNAP_BOOST`) the instant it's picked, ahead of the
       Q2 light-spill taking over. Static `base+0.15` under `reducedMotion`.
-- [ ] Q5. Audio deepening: convolver reverb bus, heart-loss tail, per-door
-      hover pitch, ~4 s act crossfades, three room accents — **deferred, not
-      yet started.**
+- [x] Q5. **Audio deepening.** `audio/soundEngine.ts` gained a shared
+      convolution reverb bus, built once in `ensureCtx()`
+      (`ConvolverNode` fed a stereo impulse from the pure, unit-tested
+      `makeImpulseSamples(sampleRate, duration, decay, rng)` — 1.8s duration,
+      2.2 decay power — routed `reverbSend(gain 1) → convolver → master`);
+      `heartLoss()`/`ending()`/`noteOpen()` each tap a per-sound send amount
+      (0.5/0.35/0.15) via a new `sendToReverb(source, amount)` helper, sfx
+      stays dry otherwise. `crossfadeToChord` gained a `seconds` parameter;
+      `setAct` now passes 4.0 for in-run act transitions (the internal
+      progression-cycling timer keeps the original ~2.2s default). Hover
+      pitch now arpeggiates per door: pure `hoverPitch(index?)` — pentatonic
+      offsets `[0,2,4,7,9]` semitones above 880 Hz, cycling for indices past
+      the table, falling back to the base 880 Hz with no index — and
+      `hover(index?)` now takes it. All three hover sources agree on the
+      index: the 3D raycast hover (`director.ts` → `flow.ts`'s
+      `onDoorHover`) and the DOM door-card hover both resolve the door id
+      against a new `Game.currentDoorSpecs`/`doorIndex(id)` pair kept in sync
+      with whatever door row is currently shown. Three diorama-linked room
+      accents via new `SoundEngine.setRoomAccent('junction'|'casino'|'ship'|
+      null)`, wired beside `setDiorama` in `enterRoom` and cleared beside it
+      at the door-picker screen: junction gets a persistent low 55 Hz sine
+      drone (gain 0.006, faded in over 1.5s); casino biases the ambient mote
+      scheduler's pitch up an octave for as long as it's active (no
+      persistent node of its own); ship gets a filtered-noise creak burst
+      every 9-13s (reuses `makeImpulseSamples` with a steep 3.5 decay for the
+      burst's noise, bandpass-filtered). All accent audio routes through
+      `musicGain`, so the music toggle governs it, per spec.
+      `audio.test.ts` extended: `hoverPitch` table + cycling + determinism;
+      `makeImpulseSamples` length, `[-1,1]` bounds, decay (front-half vs.
+      back-half RMS), and rng determinism; sfx-disabled `hover(index)` safety
+      (the AudioContext-constructing paths of `hover`/`setRoomAccent`
+      themselves aren't unit-testable in this Node test environment, same
+      constraint the pre-existing volume-slider tests already work around —
+      exercised live instead, see below). Live-verified in a real browser
+      (`?uat=1`): walked through junction/casino-pascal/ship/the-cave/
+      marys-room/boulder in sequence with zero console errors, confirming
+      the accent set/clear and diorama swap paths run cleanly back-to-back
+      without throwing.
 - [x] Q6. **The Usher's lantern** (leans toward the hovered/chosen door).
       `usherFigure()` (`scene/themes.ts`) gained a small lantern arm + glow
       sphere + `PointLight`, off by default; `setLanternTarget(x | null)`
