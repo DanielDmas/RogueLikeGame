@@ -4,7 +4,7 @@ import { nextLang, t } from '../content/text/resolver';
 import { uiKey } from '../content/text/keys';
 import type { Lang } from '../content/text/resolver';
 
-const LANG_SHORT: Record<Lang, string> = { en: 'EN', cs: 'CS', fa: 'FA' };
+const LANG_SHORT: Record<Lang, string> = { en: 'EN', cs: 'CS', fa: 'FA', de: 'DE', fr: 'FR' };
 
 export class Hud {
   private root: HTMLElement;

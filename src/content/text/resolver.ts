@@ -8,13 +8,13 @@
 // string quietly resolves to the closest available variant instead of
 // breaking, so the catalog can be filled in incrementally.
 
-export type Lang = 'en' | 'cs' | 'fa';
+export type Lang = 'en' | 'cs' | 'fa' | 'de' | 'fr';
 export type TextVersion = 'v1' | 'v2';
 
-export const LANGS: Lang[] = ['en', 'cs', 'fa'];
+export const LANGS: Lang[] = ['en', 'cs', 'fa', 'de', 'fr'];
 export const VERSIONS: TextVersion[] = ['v1', 'v2'];
 
-/** The next language in the cycle (en → cs → fa → en), used by both the HUD's quick-switch button and the Settings screen. Pure — testable without a DOM. */
+/** The next language in the cycle (en → cs → fa → de → fr → en), used by both the HUD's quick-switch button and the Settings screen. Pure — testable without a DOM. */
 export function nextLang(current: Lang): Lang {
   return LANGS[(LANGS.indexOf(current) + 1) % LANGS.length];
 }

@@ -40,7 +40,7 @@ function extractUiKeys(): string[] {
   return [...keys];
 }
 
-const LANGS = ['cs', 'fa'] as const;
+const LANGS = ['cs', 'fa', 'de', 'fr'] as const;
 const allKeys = extractUiKeys();
 
 describe('uiKey coverage — every ui.* string actually used in the app is translated', () => {

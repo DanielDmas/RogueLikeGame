@@ -5,6 +5,8 @@ import './v1-en-dynamic';
 import './v1-en-usher';
 import './cs';
 import './fa';
+import './de';
+import './fr';
 import './cs-rooms';
 import './fa-rooms';
 import './cs-rooms-act2';
@@ -29,6 +31,8 @@ import './cs-reflections-act4';
 import './fa-reflections-act4';
 import './cs-epiphanies';
 import './fa-epiphanies';
+import './de-epiphanies';
+import './fr-epiphanies';
 import './cs-explanations';
 import './fa-explanations';
 

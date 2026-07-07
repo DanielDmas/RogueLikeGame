@@ -19,7 +19,7 @@ import { EPIPHANY_IDS } from '../engine/ledger';
 import { actIntroText, usherDoorBark } from '../content/usher';
 import { newRun } from '../engine/gameState';
 
-const LANGS = ['cs', 'fa'] as const;
+const LANGS = ['cs', 'fa', 'de', 'fr'] as const;
 const USHER_BARK_IDS = [
   'understory-hint',
   'second-run',
@@ -49,7 +49,7 @@ const USHER_BARK_IDS = [
   'examined-act4',
 ];
 
-describe('i18n — Czech and Farsi coverage of navigation/structural text', () => {
+describe('i18n — Czech, Farsi, German, and French coverage of navigation/structural text', () => {
   afterEach(() => setLocale('en', 'v2'));
 
   for (const lang of LANGS) {
@@ -192,9 +192,11 @@ describe('resolver — locale fallback chain', () => {
 });
 
 describe('nextLang — the HUD quick-switch and Settings screen share this cycle', () => {
-  it('cycles en -> cs -> fa -> en', () => {
+  it('cycles en -> cs -> fa -> de -> fr -> en', () => {
     expect(nextLang('en')).toBe('cs');
     expect(nextLang('cs')).toBe('fa');
-    expect(nextLang('fa')).toBe('en');
+    expect(nextLang('fa')).toBe('de');
+    expect(nextLang('de')).toBe('fr');
+    expect(nextLang('fr')).toBe('en');
   });
 });

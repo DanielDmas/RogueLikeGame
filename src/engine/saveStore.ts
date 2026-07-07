@@ -1,4 +1,5 @@
 import type { RunState, TranscriptEntry } from '../content/schema';
+import type { Lang } from '../content/text/resolver';
 
 export interface Settings {
   typewriter: boolean;
@@ -11,7 +12,7 @@ export interface Settings {
   musicVolume: number;
   sfxVolume: number;
   textVersion: 'v1' | 'v2';
-  language: 'en' | 'cs' | 'fa';
+  language: Lang;
   dynamicScenery: boolean;
   /** Render resolution scale — independent of `quality` (which only controls AA/bloom). */
   renderScale: 'performance' | 'standard' | 'sharp';
