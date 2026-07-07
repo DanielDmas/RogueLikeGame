@@ -1261,19 +1261,20 @@ into their named phases; 8 is watch-and-wait):
       `ledger.test.ts`, `usherMotion.test.ts`, `flagAudit.test.ts`,
       `i18n.test.ts`, `uatMode.test.ts`, `contentPipeline.test.ts`,
       `translationCoverage.test.ts`, `uiKeyCoverage.test.ts` — all present.
-      Suite is 432 tests (target was ~240+), all green; `npx tsc --noEmit`
-      clean. The matrix's rows for dioramas (Q1), audio deepening (Q5),
-      and DE/FR (R4) have no tests because those features are themselves
-      still deliberately deferred (per the production review's build
-      order) — not a completeness gap, since there's nothing yet to test.
+      Suite was 432 tests at the time this row was written; grew to 471 once
+      dioramas (Q1), audio deepening (Q5), and DE/FR (R4) landed in later
+      passes — `dioramas.test.ts` and `audio.test.ts`'s extended hover-pitch/
+      impulse-samples/room-accent coverage now fill those rows too.
 - [ ] S4. **Full regression + owner feel-pass (charter checklist).**
-      Automatable half done: `npx tsc --noEmit` clean, `npx vitest run`
-      green (432 tests), all six S2 scripts (`tests/uat/06`–`11.mjs`)
-      re-run and passing against the finished milestone. **Still open, by
-      design:** the manual feel pass itself — Usher walk/dolly pacing,
-      lantern behavior, reverb tail taste, title parallax restraint — the
-      spec is explicit that "screenshots/video cannot judge these"; this
-      requires the owner (or a developer with a real display) actually
+      Automatable half done, re-verified after Q1/Q5/R4 landed: `npx tsc
+      --noEmit` clean, `npx vitest run` green (471 tests), all six S2
+      scripts (`tests/uat/06`–`11.mjs`) re-run and passing against the
+      finished milestone, including the new diorama/audio code paths (a
+      six-room diorama walkthrough produced zero console errors). **Still
+      open, by design:** the manual feel pass itself — Usher walk/dolly
+      pacing, lantern behavior, reverb tail taste, title parallax restraint
+      — the spec is explicit that "screenshots/video cannot judge these";
+      this requires the owner (or a developer with a real display) actually
       playing the build, not a session with no display to self-certify
       from. Not marked done until that pass happens.
 - [ ] S5. Release v0.2.0-beta EXE + first Pages deploy; checkboxes updated.
