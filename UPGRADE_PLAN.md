@@ -926,8 +926,32 @@ into their named phases; 8 is watch-and-wait):
       state — the persona layer stays read-only, per docs README
       convention 9. `npx tsc --noEmit` clean; `npx vitest run` — 429 tests
       passing (425 prior + 4 new).
-- [ ] R7. Persona whisper pass: exactly four `{name}`/blurb touches, never on
-      door screens
+- [x] R7. **Persona whisper pass: exactly four `{name}`/blurb touches, never
+      on door screens.** Three new insertions, all using the already-live
+      `{name}` token plumbing (`Game.tokens()` → `playBeats`/`showBark`'s
+      `tokens` param → `applyTokens`): (1) Act III's intro
+      (`content/usher.ts`'s `actIntroText`) gains a clause — "The facility
+      calls this wing archival. It means: yours, {name}." (2) a new
+      low-frequency Usher bark, `generic7`, added to the generic door-bark
+      rotation and to `USHER_BARK_IDS` — "The doors already know your name,
+      {name}. It is the rest of you they are curious about." (3) the
+      `return` ending's final beat now closes on "...was never a road,
+      {name}. It was a renovation." The fourth touch — the-archive's
+      `{blurb}` echo of the player's own self-description — was already
+      shipped in Phase L (per spec 02 §6); listed here for the audit trail
+      only, not implemented twice. None of the three new sites is a door
+      screen. All translated EN+CS+FA in the same commit, following
+      CLAUDE.md's context-first rule (Czech/Farsi already have an
+      established comma-address convention for direct address — e.g.
+      `travellerFallback`'s vocative "poutníku" in Czech — reused here
+      rather than inventing a new construction). New test
+      (`i18n.test.ts`, "persona whisper pass") asserts `{name}` survives
+      translation verbatim at all three sites in all three languages,
+      including a `generic7`-selecting `RunState` (`visited.length % 8 ===
+      7`, no axis/heart/lucidity bark competing) so the rotation-picked
+      case is actually exercised, not just the raw string. `npx tsc
+      --noEmit` clean; `npx vitest run` — 432 tests passing (429 prior +
+      3 new).
 
 ### Production-review additions (2026-07-06 — see `docs/development/11-production-review.md`)
 

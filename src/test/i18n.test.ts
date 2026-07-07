@@ -6,6 +6,7 @@ import { getLocale, nextLang, register, setLocale, t } from '../content/text/res
 import {
   actIntroKey,
   actNameKey,
+  endingBeatKey,
   endingEpitaphKey,
   endingTitleKey,
   epiphanyKey,
@@ -15,6 +16,8 @@ import {
   usherBarkKey,
 } from '../content/text/keys';
 import { EPIPHANY_IDS } from '../engine/ledger';
+import { actIntroText, usherDoorBark } from '../content/usher';
+import { newRun } from '../engine/gameState';
 
 const LANGS = ['cs', 'fa'] as const;
 const USHER_BARK_IDS = [
@@ -35,6 +38,7 @@ const USHER_BARK_IDS = [
   'generic4',
   'generic5',
   'generic6',
+  'generic7',
   'gate-single-door',
   'first-choice-explainer',
   'first-heart-loss',
@@ -95,6 +99,40 @@ describe('i18n — Czech and Farsi coverage of navigation/structural text', () =
       }
     });
   }
+});
+
+describe('Milestone 5, Phase R7 — persona whisper pass ({name} token survives translation)', () => {
+  afterEach(() => setLocale('en', 'v2'));
+
+  const ALL_LANGS = ['en', 'cs', 'fa'] as const;
+
+  it("Act III's intro addresses {name}, in every language", () => {
+    for (const lang of ALL_LANGS) {
+      setLocale(lang, 'v2');
+      expect(actIntroText(3), `act 3 intro missing {name} in ${lang}`).toContain('{name}');
+    }
+  });
+
+  it("the new generic7 Usher bark addresses {name}, in every language", () => {
+    // A RunState with no axis-reactive/one-heart/high-lucidity bark
+    // triggered, runsCompleted 0, and visited.length % 8 === 7 selects
+    // exactly the 8th (index 7) generic bark — generic7.
+    const s = { ...newRun(), act: 2 as const, visited: Array(15).fill('room') };
+    for (const lang of ALL_LANGS) {
+      setLocale(lang, 'v2');
+      expect(usherDoorBark(s, 0), `generic7 bark missing {name} in ${lang}`).toContain('{name}');
+    }
+  });
+
+  it("the return ending's final beat addresses {name}, in every language", () => {
+    const raw = endings.find((e) => e.id === 'return')!.beats[5] as string;
+    for (const lang of ALL_LANGS) {
+      setLocale(lang, 'v2');
+      expect(t(endingBeatKey('return', 5), raw), `return ending final beat missing {name} in ${lang}`).toContain(
+        '{name}',
+      );
+    }
+  });
 });
 
 describe('resolver — locale fallback chain', () => {

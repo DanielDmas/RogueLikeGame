@@ -72,6 +72,7 @@ export function usherDoorBark(s: RunState, runsCompleted: number, doorCount = 2,
     t(usherBarkKey('generic4'), 'Usher: There is no hurry. Time, in this place, is ornamental.'),
     t(usherBarkKey('generic5'), 'Usher: Whichever you skip stays here, unopened, for a different visit. That is not a loss. It is simply not this story.'),
     t(usherBarkKey('generic6'), 'Usher: Read the hint before you decide. It is not decoration — it is the only honest preview you will get.'),
+    t(usherBarkKey('generic7'), 'Usher: The doors already know your name, {name}. It is the rest of you they are curious about.'),
   ];
   return generic[s.visited.length % generic.length];
 }
@@ -81,7 +82,7 @@ export function actIntroText(act: number): string | undefined {
   const fallback: Record<number, string> = {
     1: 'Ahead: a corridor of apartment doors, each leaking the warm light of homes that were never yours. The ordinary rooms, you will find, go deepest. A caution, traveler: a few of these doors cost more than time — choose against yourself, and a heart may go.',
     2: 'The corridor gives way to machinery — gears the size of moons, and slow belts carrying small, indifferent stars. Here the old thought experiments are staged nightly, for a skeleton crew of one. Some of the old experiments still charge admission. The currency, here, is hearts.',
-    3: 'The floor turns to black mirror. Your own memories hang in the dark like dioramas, their faces softened past recognition. The facility calls this wing archival. It means: yours. Some of what you find here has a price you will feel, not merely see — and yes, that price can be a heart.',
+    3: 'The floor turns to black mirror. Your own memories hang in the dark like dioramas, their faces softened past recognition. The facility calls this wing archival. It means: yours, {name}. Some of what you find here has a price you will feel, not merely see — and yes, that price can be a heart.',
     4: 'The fog thins. Beyond it, unmistakably, morning. Three doors remain, and then the threshold. What happens from here counts twice over — though the Usher would say it always did. Even this close to the end, a careless choice can still cost a heart.',
   };
   const text = fallback[act];

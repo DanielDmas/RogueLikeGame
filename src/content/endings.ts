@@ -11,7 +11,7 @@ export const endings: Ending[] = [
       'The world has not improved. Traffic is traffic. The unfinished arguments kept your seat warm. The people you love are exactly as difficult and as luminous as filed.',
       'But you catch yourself, in the following weeks, doing small strange things: standing a moment longer in doorways. Reading faces like letters. Treating your own memories as a place you have visited rather than a country you rule.',
       'You will lose almost all of it — the rooms, the fog, the particular dry patience of the Usher’s voice. It goes the way dreams go. What stays is subtler: a kind of weather. Whoever dissolved on the way in is not the one who walked out — and the strangest part, the part you never manage to say out loud, is that you would not trade the dissolving away.',
-      'The way back to reality, it turns out, was never a road. It was a renovation. You live there now.',
+      'The way back to reality, it turns out, was never a road, {name}. It was a renovation. You live there now.',
     ],
     fieldNote: {
       title: 'On Coming Back',
