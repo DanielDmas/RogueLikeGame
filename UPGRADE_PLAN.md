@@ -1159,7 +1159,16 @@ into their named phases; 8 is watch-and-wait):
       and DE/FR (R4) have no tests because those features are themselves
       still deliberately deferred (per the production review's build
       order) — not a completeness gap, since there's nothing yet to test.
-- [ ] S4. Full regression + owner feel-pass (charter checklist)
+- [ ] S4. **Full regression + owner feel-pass (charter checklist).**
+      Automatable half done: `npx tsc --noEmit` clean, `npx vitest run`
+      green (432 tests), all six S2 scripts (`tests/uat/06`–`11.mjs`)
+      re-run and passing against the finished milestone. **Still open, by
+      design:** the manual feel pass itself — Usher walk/dolly pacing,
+      lantern behavior, reverb tail taste, title parallax restraint — the
+      spec is explicit that "screenshots/video cannot judge these"; this
+      requires the owner (or a developer with a real display) actually
+      playing the build, not a session with no display to self-certify
+      from. Not marked done until that pass happens.
 - [ ] S5. Release v0.2.0-beta EXE + first Pages deploy; checkboxes updated.
       **Release blockers extended per production review (doc 11, §B4):**
       S6/S7 done · R8 backup live · Phase O release gate satisfied (Acts
