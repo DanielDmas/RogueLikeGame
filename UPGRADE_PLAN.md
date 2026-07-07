@@ -1145,7 +1145,20 @@ into their named phases; 8 is watch-and-wait):
         translated).
       `npx tsc --noEmit` clean; `npx vitest run` (432 tests) unaffected —
       these are plain Node/Playwright scripts, not part of the TS build.
-- [ ] S3. Feature→test traceability matrix green (~240+ tests expected)
+- [x] S3. **Feature→test traceability matrix green.** The matrix itself
+      already lives in `docs/development/09-testing-and-release.md` §6
+      (written during planning); verified every named unit/simulation test
+      file it lists actually exists and passes: `newRooms.test.ts`,
+      `graph.test.ts`, `difficultyGuardRail.test.ts`, `understory.test.ts`,
+      `anamnesis.test.ts`, `keepsakes.test.ts`, `examinedPath.test.ts`,
+      `ledger.test.ts`, `usherMotion.test.ts`, `flagAudit.test.ts`,
+      `i18n.test.ts`, `uatMode.test.ts`, `contentPipeline.test.ts`,
+      `translationCoverage.test.ts`, `uiKeyCoverage.test.ts` — all present.
+      Suite is 432 tests (target was ~240+), all green; `npx tsc --noEmit`
+      clean. The matrix's rows for dioramas (Q1), audio deepening (Q5),
+      and DE/FR (R4) have no tests because those features are themselves
+      still deliberately deferred (per the production review's build
+      order) — not a completeness gap, since there's nothing yet to test.
 - [ ] S4. Full regression + owner feel-pass (charter checklist)
 - [ ] S5. Release v0.2.0-beta EXE + first Pages deploy; checkboxes updated.
       **Release blockers extended per production review (doc 11, §B4):**
