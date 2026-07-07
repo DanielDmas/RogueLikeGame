@@ -19,7 +19,7 @@ import {
   roomNoteTitleKey,
 } from '../content/text/keys';
 
-const LANGS = ['cs', 'fa'] as const;
+const LANGS = ['cs', 'fa', 'de', 'fr'] as const;
 
 describe('deep translation coverage — every room beat/choice/field-note, both languages (v2)', () => {
   afterEach(() => setLocale('en', 'v2'));

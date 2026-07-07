@@ -896,50 +896,60 @@ into their named phases; 8 is watch-and-wait):
       mirroring the English R10 fix. `npx tsc --noEmit` clean; `npx vitest
       run` — 432 tests passing, unchanged (this was a content-only pass,
       no new tests).
-- [ ] R4. **German + French packs — infrastructure + full UI/structural
-      layer shipped this pass; long-form room/ending prose still open,
-      explicitly deferred to M6.** Lowest priority, per spec. Full scope per spec is ~1,500
-      strings per language (UI chrome, acts, barks, *all room prose*,
-      endings, notes, plus every M5 addition) — comparable to the original
-      multi-session Czech/Farsi content effort. Shipped this pass, at full
-      translation quality (from the English v2 source directly, never via
-      Czech, per CLAUDE.md's context-first rule): the infrastructure
-      (`Lang = 'en'|'cs'|'fa'|'de'|'fr'`, `LANGS`, `nextLang` cycle
-      `en→cs→fa→de→fr→en`, `Settings.language` widened via the shared
-      `Lang` type rather than a duplicated union — no schema-version bump
-      needed, since this widens a type rather than renaming/retyping a
-      persisted field) and the full UI/structural layer: `de.ts`/`fr.ts`
-      (~200 keys each — UI chrome, act names/intros, all 25 Usher barks,
-      every room's title/doorHint/teaser including the Understory, all 6
-      main endings' title/epitaph + the hidden 7th's, keepsake
+- [x] R4. **German + French packs — full scope shipped, including
+      long-form room/ending prose.** Full scope per spec is ~1,500 strings
+      per language (UI chrome, acts, barks, all room prose, endings,
+      notes, plus every M5 addition) — comparable to the original
+      multi-session Czech/Farsi content effort. Shipped across two passes,
+      at full translation quality throughout (from the English v2 source
+      directly, never via Czech, per CLAUDE.md's context-first rule):
+      infrastructure (`Lang = 'en'|'cs'|'fa'|'de'|'fr'`, `LANGS`,
+      `nextLang` cycle `en→cs→fa→de→fr→en`, `Settings.language` widened
+      via the shared `Lang` type — no schema-version bump needed); the
+      UI/structural layer (`de.ts`/`fr.ts`, ~200 keys each — UI chrome,
+      act names/intros, all 25 Usher barks, every room's
+      title/doorHint/teaser, all 7 endings' title/epitaph, keepsake
       names/origins) plus `de-epiphanies.ts`/`fr-epiphanies.ts` (all 12
-      Ledger epiphany lines). Fonts: verified programmatically (no live
-      render needed) that Fontsource Inter/Spectral's bundled subset
-      covers ß/ü/ä/é/è/ê/ç/œ (`unicode-range: U+0000-00FF,...,U+0152-0153`
-      in the shipped CSS) — no new font added, per the spec's own
-      expectation. `i18n.test.ts` and `uiKeyCoverage.test.ts`'s `LANGS`
-      loops extended to include `de`/`fr` (both fully pass); `nextLang`'s
-      own cycle test updated for 5 languages.
-      **Deliberately NOT done — the large remainder:** long-form room
-      prose (beats, choice text/hints/outcomes, field notes, ~33 rooms)
-      and ending beats/field notes — the `cs-rooms*.ts`/`cs-endings.ts`
-      equivalents. These gracefully fall back to English v2 (the same
-      documented pattern `cs.ts`'s own header comment describes), so
-      German/French are fully navigable and playable now, just with
-      English narrative prose until a dedicated future pass — exactly the
-      spec's own "lowest priority, may slip to M6" framing.
-      `translationCoverage.test.ts` (the deep room-prose coverage suite)
-      intentionally left at `['cs','fa']` — extending it to `de`/`fr`
-      today would correctly fail on the undone room-prose tier; extend it
-      once that content lands.
-      Live-verified in a real browser (`?uat=1`, screenshots read): title
-      screen, act intro, and in-room HUD in both German and French —
-      umlauts/accents (Räume, Tür, für, à, é, ê, É) render correctly, HUD
-      shows "DE"/"FR", document stays LTR in both, zero console/page
-      errors. `npx tsc --noEmit` clean; `npx vitest run` — 444 tests
-      passing (up from 432; net new/changed assertions from the
-      `de`/`fr`-extended `LANGS` loops and the widened `nextLang` cycle
-      test).
+      Ledger epiphany lines); and — completing the scope this pass — the
+      full long-form room prose for every act
+      (`de/fr-rooms.ts` for the prologue + Act I,
+      `de/fr-rooms-act2.ts` through `-act4.ts`, `de/fr-rooms-understory.ts`
+      for Act V) and all 7 endings' beats + field notes
+      (`de/fr-endings.ts`), each room's beats, choice
+      text/hints/outcomes, plain-language explanation, and field-note
+      title/thinkers/body translated in full. State-reactive (dynamic)
+      beats — the `choseIn`/`hasFlag`/`memoryLost`/prior-run-mirror
+      branches in `junction`, `ship`, `teleporter`, `door-that-asks`, and
+      the three Understory rooms — are handled separately in
+      `de-dynamic.ts`/`fr-dynamic.ts`, mirroring the exact branching logic
+      and English source text of the established `cs-dynamic.ts`/
+      `fa-dynamic.ts` pattern. Terminology fixed for consistency: "Usher"
+      → German "Platzanweiser", French "Le Placeur", used as a
+      proper-noun-style dialogue tag throughout; formal register (Sie/
+      vous) maintained project-wide. Fonts: verified programmatically that
+      Fontsource Inter/Spectral's bundled subset covers
+      ß/ü/ä/é/è/ê/ç/œ — no new font needed.
+      `i18n.test.ts` and `uiKeyCoverage.test.ts`'s `LANGS` loops include
+      `de`/`fr`; `translationCoverage.test.ts` (the deep room-prose
+      coverage suite covering every room's beats/choice
+      text/hint/outcomes/explanations/field-notes and every ending's
+      beats/field-notes) extended from `['cs','fa']` to
+      `['cs','fa','de','fr']` and passes in full — two coverage gaps found
+      and fixed along the way (the `quiet-alarm` and `teleporter` field
+      notes' `thinkers` lines were untranslated proper-noun strings
+      identical to the English source, tripping the coverage check;
+      fixed by translating "Darley & Latané" → "Darley und Latané"/"Darley
+      et Latané" and "Reasons and Persons" → "Gründe und Personen"/
+      "Raisons et personnes").
+      Live-verified in a real browser (`?uat=1`, screenshots read):
+      confirmed newly-translated room prose (not English fallback)
+      renders correctly in both languages mid-run — German "Die Weiche"
+      (`junction`) and French "Le rocher" (`boulder`) both show fully
+      translated beat text, correct HUD language indicator, zero
+      console/page errors.
+      `npx tsc --noEmit` clean; `npx vitest run` — 456 tests passing.
+      Reflections (Examined Path per-tradition readings) remain
+      intentionally out of scope for this pass, as before.
 - [x] R5. **Content-pipeline validation tests + "twenty rooms" continuity
       fix.** New `src/test/contentPipeline.test.ts` walks `allRooms` and
       asserts, for every room: at least one stage; every stage has at least
