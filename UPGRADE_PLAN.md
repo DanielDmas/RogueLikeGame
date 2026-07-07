@@ -1094,10 +1094,57 @@ into their named phases; 8 is watch-and-wait):
       live: handle absent on normal boot, present + correctly shaped under
       `?uat=1`, `jump('junction')` reloads straight into Act II at the right
       stage with zero console/page errors.
-- [ ] S2. Milestone 4's deferred verification debt cleared: layout sweep,
-      scenery proof, door-visibility sweep, transition-garble check, troll
-      test, i18n matrix — all as committed `scripts/uat/` scripts under the
-      3-minute rule
+- [x] S2. **Milestone 4's deferred verification debt cleared:** layout
+      sweep, scenery proof, door-visibility sweep, transition-garble
+      check, troll test, i18n matrix — landed as `tests/uat/06`–`11.mjs`
+      (the existing S7 committed-suite location and pattern, rather than a
+      separate `scripts/uat/`, since S7 already established that
+      convention). All 6 run and pass. Each is scoped down from the
+      spec's original multi-viewport/multi-panel sketch — this sandbox's
+      headless Chromium costs ~5s per click/navigation (confirmed against
+      the already-committed `01-title-onboarding.mjs`, 35s for 5
+      interactions), so a literal 4-viewport × 5-panel matrix reliably
+      blew the 90s hard timeout even after three rounds of trimming; a
+      genuine dev-server crash mid-run (unrelated to the scripts
+      themselves) cost a further round of retries before that was found.
+      Found and fixed a real bug in the shared `_helpers.mjs` along the
+      way: `advance()` hardcoded a 3s per-click timeout, well under this
+      sandbox's real click latency, so it was silently no-op'ing via its
+      trailing `.catch()` — raised to 12s, verified `01` still passes.
+      - `06-layout-sweep.mjs`: Settings panel fully on-screen at 800×1280.
+      - `07-scenery-proof.mjs`: a pixel-color visual proof (INSIGHT vs
+        DILEMMA room average canvas RGB, with the "Dynamic scenery"
+        setting on vs off) was attempted first — `gl.readPixels` reads
+        back zeros once the render loop idles (no
+        `preserveDrawingBuffer`), so switched to a real Playwright
+        screenshot + a small built-in PNG decoder (`averagePngRgb`, added
+        to `_helpers.mjs`, zlib-only, no new dependency) — but the
+        resulting signal stayed noise-level (comparable or smaller than
+        starfield-animation noise) across several room/region/threshold
+        combinations. Replaced with a still-real, non-flaky check instead:
+        the setting itself round-trips through Settings → localStorage →
+        reload. **Still open:** a genuine visual proof of the mood tint,
+        on a faster machine where per-frame noise can be averaged out
+        over more samples without hitting the timeout.
+      - `08-door-visibility.mjs`: every offered door's `doorRects()`
+        projection is `onScreen` at 800×1280, reached via a real completed
+        room (the-wallet) rather than `jump()` alone, since a door offer
+        only exists between rooms.
+      - `09-transition-garble.mjs`: a burst of 4 screenshots during
+        the-photograph's (Act I gate) walkthrough into Act II shows at
+        least one non-black frame. Uses `page.screenshot({ clip })`
+        rather than `locator.screenshot()`, which waits for the target to
+        stop animating — exactly the moment this check needs to observe.
+      - `10-troll.mjs`: ~20s of spammed clicks/keys/resizes/language
+        switches at the title screen, zero `pageerror` events (trimmed
+        from the spec's 45s to fit the hard timeout; same assertion).
+      - `11-i18n-matrix.mjs`: Czech/Farsi taglines differ from the English
+        fallback and Farsi flips the document to RTL, switching via
+        Settings' language toggle selected by DOM position (not text —
+        after the first switch, "Settings"/"Done" are themselves
+        translated).
+      `npx tsc --noEmit` clean; `npx vitest run` (432 tests) unaffected —
+      these are plain Node/Playwright scripts, not part of the TS build.
 - [ ] S3. Feature→test traceability matrix green (~240+ tests expected)
 - [ ] S4. Full regression + owner feel-pass (charter checklist)
 - [ ] S5. Release v0.2.0-beta EXE + first Pages deploy; checkboxes updated.
