@@ -1,7 +1,8 @@
 import { describe, expect, it, afterEach } from 'vitest';
 import '../content/text'; // registers cs/fa packs
 import { setLocale } from '../content/text/resolver';
-import { isHiddenFromCodex, translateFieldNoteForCodex } from '../ui/overlays';
+import { translateFieldNoteForCodex } from '../ui/overlays';
+import { isHiddenFromCodex } from '../engine/ledger';
 import { allRooms } from '../content/rooms';
 import { endings } from '../content/endings';
 import { defaultProfile } from '../engine/saveStore';

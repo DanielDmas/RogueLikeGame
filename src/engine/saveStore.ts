@@ -72,6 +72,20 @@ export interface Profile {
   /** Ids of keepsake-gated choices actually taken, ever — feeds the seventh
    * ending's unlock predicate (spec 03). Deduped; never removed. */
   keepsakeChoicesTaken: string[];
+  /** Lifetime hearts lost, across every run — a Ledger stat only (spec 06);
+   * never read by any gameplay predicate. */
+  heartsLost: number;
+  /** Per-room completion counts, incremented once per actual room
+   * completion (never on a quit-and-resume replay of the same room) —
+   * feeds the Ledger's "most-walked door" stat and one epiphany. Ledger-only. */
+  roomVisits: Record<string, number>;
+  /** Completed descents into the Understory (spec 02), lifetime. Ledger-only. */
+  understoryDescents: number;
+  /** Completed runs taken on the Examined Path (spec 05), lifetime. Ledger-only. */
+  examinedRuns: number;
+  /** Epiphany ids earned, in earn order — never removed. Ledger-only;
+   * displayed, never read by any gameplay predicate. */
+  epiphanies: string[];
 }
 
 export function defaultProfile(): Profile {
@@ -105,6 +119,11 @@ export function defaultProfile(): Profile {
     hasSeenAbout: false,
     keepsakes: [],
     keepsakeChoicesTaken: [],
+    heartsLost: 0,
+    roomVisits: {},
+    understoryDescents: 0,
+    examinedRuns: 0,
+    epiphanies: [],
   };
 }
 

@@ -7,8 +7,8 @@
 > detail lives in git history — but **open items are never deleted**.
 
 **Current milestone: 5 — THE DEEPER FACILITY (in progress, see bottom of
-file — S1, K, L, N, M, O, and the hardening batch (S6/S7/R8/R9) all
-shipped; next up: P, Q, R, S2–S5).** A full production review (2026-07-06)
+file — S1, K, L, N, M, O, the hardening batch (S6/S7/R8/R9), and P all
+shipped; next up: Q, R, S2–S5).** A full production review (2026-07-06)
 lives at `docs/development/11-production-review.md` — read it before
 starting any new phase; its action items are tracked as R8–R11 and S6–S7
 below.
@@ -652,9 +652,42 @@ into their named phases; 8 is watch-and-wait):
 
 ## Phase P — Traveler's Ledger & Epiphanies (spec `06-ledger-and-epiphanies.md`)
 
-- [ ] P1. Ledger screen (title + pause): runs, rooms, endings, hearts lost,
-      most-walked door, keepsakes, descents, examined runs
-- [ ] P2. Twelve quiet epiphanies — Ledger + one soft end-screen line only
+- [x] P1. Ledger screen reachable from both title (after Field Notes) and
+      pause (after Field Notes, small variant) — `showLedger` (`ui/overlays.ts`),
+      backed by pure `ledgerStats(profile, registry)` (`engine/ledger.ts`):
+      runs completed, rooms witnessed (`visibleRoomCount` — same
+      codex-visible denominator as the Field Notes grid, sharing
+      `isHiddenFromCodex` which moved from `overlays.ts` to `engine/ledger.ts`
+      so both the codex and the Ledger use one rule), endings witnessed,
+      hearts lost lifetime, the most-walked door (translated title, ties →
+      first-inserted), keepsakes on the shelf, descents/examined-runs rows
+      (hidden entirely below 1 — never advertise the understory), last
+      message (quoted, once sent). New `Profile` fields (`heartsLost`,
+      `roomVisits`, `understoryDescents`, `examinedRuns`, `epiphanies`, all
+      spread-merge-safe additive defaults) written at their natural sites in
+      `flow.ts`: `heartsLost` and `roomVisits` at the exact points that
+      already fire `sound.heartLoss()` / complete a room (so a
+      quit-and-resume never double-counts), `understoryDescents`/
+      `examinedRuns` in `playEnding`. EN+CS+FA. Live-verified in a real
+      browser with a seeded profile.
+- [x] P2. Twelve quiet epiphanies — pure `evaluateEpiphanies(profile,
+      finishedRun, registry)` (`engine/ledger.ts`), called once in
+      `playEnding` after every other counter for the run has already been
+      applied; newly-earned ids append to `profile.epiphanies` (never
+      removed) and are passed to `EndScreenData.newEpiphanies`, rendered as
+      one soft "filed tonight" block after the run recap — no sound, no
+      extra animation. Unearned epiphanies are invisible everywhere (no
+      locked slots, no counts). `refused-machine-twice`'s predicate is
+      deliberately derived from existing data (≥2 Experience Machine visits,
+      the `release-form` keepsake never held) rather than new tracking, per
+      spec. EN+CS+FA (`cs/fa-epiphanies.ts`), `i18n.test.ts` extended with a
+      coverage loop over `EPIPHANY_IDS`. Full test suite in `ledger.test.ts`
+      (19 tests): every predicate positive+negative, idempotency, the
+      codex-visible room-count denominator, and — the production review's
+      explicit requirement — a keepsakes-style **hard-guarantee test**
+      statically proving no room content file or gameplay-predicate module
+      (`storyEngine`/`gameState`/`endings`) ever references a Ledger-only
+      `Profile` field: the Ledger is read-only, never mechanical.
 
 ## Phase Q — Visual & audio overhaul (spec `07-visual-and-audio-overhaul.md`)
 

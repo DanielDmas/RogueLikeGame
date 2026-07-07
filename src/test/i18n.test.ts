@@ -8,11 +8,13 @@ import {
   actNameKey,
   endingEpitaphKey,
   endingTitleKey,
+  epiphanyKey,
   roomDoorHintKey,
   roomTeaserKey,
   roomTitleKey,
   usherBarkKey,
 } from '../content/text/keys';
+import { EPIPHANY_IDS } from '../engine/ledger';
 
 const LANGS = ['cs', 'fa'] as const;
 const USHER_BARK_IDS = [
@@ -83,6 +85,13 @@ describe('i18n — Czech and Farsi coverage of navigation/structural text', () =
       setLocale(lang, 'v2');
       for (const id of USHER_BARK_IDS) {
         expect(t(usherBarkKey(id), `__missing_${id}`), `usher bark ${id} missing ${lang}`).not.toBe(`__missing_${id}`);
+      }
+    });
+
+    it(`every epiphany line has a ${lang} translation (Milestone 5, Phase P)`, () => {
+      setLocale(lang, 'v2');
+      for (const id of EPIPHANY_IDS) {
+        expect(t(epiphanyKey(id), `__missing_${id}`), `epiphany ${id} missing ${lang}`).not.toBe(`__missing_${id}`);
       }
     });
   }

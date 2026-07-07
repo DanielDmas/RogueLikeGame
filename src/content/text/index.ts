@@ -27,6 +27,8 @@ import './cs-reflections-act3';
 import './fa-reflections-act3';
 import './cs-reflections-act4';
 import './fa-reflections-act4';
+import './cs-epiphanies';
+import './fa-epiphanies';
 
 export * from './resolver';
 export * from './keys';

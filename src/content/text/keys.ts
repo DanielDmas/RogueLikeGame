@@ -35,3 +35,6 @@ export const keepsakeKey = (id: string, field: 'name' | 'origin') => `keepsake.$
 export const reflectionKey = (roomId: string, choiceId: string, tradition: string) =>
   `reflection.${roomId}.${choiceId}.${tradition}`;
 export const traditionLabelKey = (tradition: string) => `ui.tradition.${tradition}`;
+
+/** Spec 06 — The Traveler's Ledger & Epiphanies. */
+export const epiphanyKey = (id: string) => `epiphany.${id}`;

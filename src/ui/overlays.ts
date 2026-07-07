@@ -3,7 +3,9 @@ import type { Ending, FieldNote, Room } from '../content/schema';
 import { allRooms } from '../content/rooms';
 import { endings } from '../content/endings';
 import { endingsTotal } from '../engine/endings';
-import { actName, UNDERSTORY_SEQUENCE } from '../content/graph';
+import { epiphanyLine, epiphanyLines, isHiddenFromCodex, ledgerStats } from '../engine/ledger';
+import type { RoomRegistry } from '../engine/storyEngine';
+import { actName } from '../content/graph';
 import { clear, el, HEART_SVG } from './dom';
 import { showFieldNote } from './fieldNote';
 import { roomIcons, endingIcons } from '../content/icons';
@@ -29,7 +31,7 @@ import { sound } from '../audio/soundEngine';
 import { isElectron, isFullscreen, toggleFullscreen } from './fullscreen';
 import { applyUiZoom } from './zoom';
 
-export type TitleAction = 'new' | 'continue' | 'codex' | 'settings' | 'persona' | 'about' | 'exit';
+export type TitleAction = 'new' | 'continue' | 'codex' | 'ledger' | 'settings' | 'persona' | 'about' | 'exit';
 
 function overlay(ui: HTMLElement): HTMLElement {
   const o = el('div', 'overlay fade-in');
@@ -78,6 +80,8 @@ export function showTitle(ui: HTMLElement, profile: Profile): Promise<TitleActio
       `${t(uiKey('fieldNotes'), 'Field Notes')} · ${profile.codexUnlocked.length} ${t(uiKey('collected'), 'collected')}`,
     );
     cx.addEventListener('click', () => done('codex'));
+    const lg = el('button', 'title-btn small', t(uiKey('ledger'), "Traveler's Ledger"));
+    lg.addEventListener('click', () => done('ledger'));
     const pe = el(
       'button',
       'title-btn small',
@@ -90,7 +94,7 @@ export function showTitle(ui: HTMLElement, profile: Profile): Promise<TitleActio
     st.addEventListener('click', () => done('settings'));
     const ab = el('button', 'title-btn small', t(uiKey('aboutTitle'), 'Before you begin'));
     ab.addEventListener('click', () => done('about'));
-    menu.append(cx, pe, st, ab);
+    menu.append(cx, lg, pe, st, ab);
     // Only the Electron build can actually close its own window — a browser
     // tab can't quit itself, so the button only appears there.
     if (isElectron()) {
@@ -650,15 +654,6 @@ export function translateFieldNoteForCodex(id: string, note: FieldNote, isEnding
       };
 }
 
-/** The Act V understory is a different kind of surprise from the game's other
- * secret rooms (omelas, introduction, the-cave): those keep a teasing locked
- * "· · ·" card even before they're unlocked, but the understory rooms are
- * filtered from the codex grid entirely until first walked — they shouldn't
- * hint at their own existence. */
-export function isHiddenFromCodex(roomId: string, profile: Profile): boolean {
-  return UNDERSTORY_SEQUENCE.includes(roomId) && !profile.codexUnlocked.includes(roomId);
-}
-
 export function showCodex(ui: HTMLElement, profile: Profile): Promise<void> {
   return new Promise((resolve) => {
     const o = overlay(ui);
@@ -759,7 +754,45 @@ export function showCodex(ui: HTMLElement, profile: Profile): Promise<void> {
   });
 }
 
-export type PauseAction = 'resume' | 'codex' | 'settings' | 'persona' | 'about' | 'title' | 'exit';
+/**
+ * The Traveler's Ledger (spec 06): a single quiet screen of stats, plus
+ * whichever epiphanies have been earned so far, in earn order. No locked
+ * slots, no counts for unearned epiphanies — quiet means quiet.
+ */
+export function showLedger(ui: HTMLElement, profile: Profile, registry: RoomRegistry): Promise<void> {
+  return new Promise((resolve) => {
+    const o = overlay(ui);
+    const panel = el('div', 'codex-panel');
+    panel.append(el('h2', undefined, t(uiKey('ledger'), "Traveler's Ledger")));
+
+    const stats = el('div', 'ledger-stats');
+    for (const row of ledgerStats(profile, registry)) {
+      const r = el('div', 'ledger-row');
+      r.append(el('span', 'ledger-label', row.label), el('span', 'ledger-value', row.value));
+      stats.appendChild(r);
+    }
+    panel.append(stats);
+
+    const lines = epiphanyLines(profile);
+    if (lines.length > 0) {
+      panel.append(el('h2', 'ledger-epiphanies-title', t(uiKey('epiphaniesTitle'), 'Epiphanies')));
+      const epiphanies = el('div', 'ledger-epiphanies');
+      for (const line of lines) epiphanies.append(el('div', 'ledger-epiphany-line', line));
+      panel.append(epiphanies);
+    }
+
+    const back = el('button', 'title-btn', t(uiKey('back'), 'Back'));
+    back.style.marginTop = '26px';
+    back.addEventListener('click', () => {
+      o.remove();
+      resolve();
+    });
+    panel.append(back);
+    o.appendChild(panel);
+  });
+}
+
+export type PauseAction = 'resume' | 'codex' | 'ledger' | 'settings' | 'persona' | 'about' | 'title' | 'exit';
 
 export function showPauseMenu(ui: HTMLElement): Promise<PauseAction> {
   return new Promise((resolve) => {
@@ -779,6 +812,7 @@ export function showPauseMenu(ui: HTMLElement): Promise<PauseAction> {
     mk(t(uiKey('resume'), 'Resume'), 'resume');
     mk(t(uiKey('saveAndExit'), 'Save & exit to title'), 'title', true);
     mk(t(uiKey('fieldNotes'), 'Field Notes'), 'codex', true);
+    mk(t(uiKey('ledger'), "Traveler's Ledger"), 'ledger', true);
     mk(t(uiKey('settings'), 'Settings'), 'settings', true);
     mk(t(uiKey('whoAreYou'), 'Who are you?'), 'persona', true);
     mk(t(uiKey('aboutTitle'), 'Before you begin'), 'about', true);
@@ -802,6 +836,9 @@ export interface EndScreenData {
   lucidity: number;
   hearts: number;
   newNotes: number;
+  /** Epiphany ids newly earned by this run (spec 06), already translated at
+   * render time below — empty/absent renders nothing extra. */
+  newEpiphanies?: string[];
 }
 
 export function showEndScreen(ui: HTMLElement, data: EndScreenData): Promise<'again' | 'codex' | 'title'> {
@@ -828,6 +865,13 @@ export function showEndScreen(ui: HTMLElement, data: EndScreenData): Promise<'ag
     const stats = el('div', 'run-stats');
     stats.innerHTML = `<span>${t(uiKey('statLucidity'), 'lucidity')} <b>${data.lucidity}</b></span><span>${t(uiKey('statHearts'), 'hearts kept')} <b>${data.hearts}</b></span><span>${t(uiKey('statNewNotes'), 'new field notes')} <b>${data.newNotes}</b></span>`;
     inner.append(stats);
+
+    if (data.newEpiphanies && data.newEpiphanies.length > 0) {
+      const block = el('div', 'epiphany-block');
+      block.append(el('h4', undefined, t(uiKey('epiphanyEarned'), 'filed tonight')));
+      for (const id of data.newEpiphanies) block.append(el('div', 'epiphany-line', epiphanyLine(id)));
+      inner.append(block);
+    }
 
     const menu = el('div', 'title-menu');
     const mk = (label: string, action: 'again' | 'codex' | 'title', small = false) => {

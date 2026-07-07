@@ -7,6 +7,7 @@ import { keepsakesEarnedByFlags } from '../content/keepsakes';
 import { applyEffects, newRun } from './gameState';
 import { axisTriptych, computeAnamnesisEligible, evaluateEnding } from './endings';
 import { shouldShowReflections, shouldShowSocraticAside } from './reflections';
+import { evaluateEpiphanies } from './ledger';
 import { backfillVisitedForJump, completeRoom, makeRegistry, offeredDoors } from './storyEngine';
 import { defaultProfile, hydrateProfile, type Profile, type SaveStore } from './saveStore';
 import { SceneDirector } from '../scene/director';
@@ -21,6 +22,7 @@ import {
   showCodex,
   showEndScreen,
   showExaminedPathOffer,
+  showLedger,
   showPauseMenu,
   showPersona,
   showSettings,
@@ -338,6 +340,7 @@ export class Game {
     this.stageBottom.classList.add('overlay-hidden');
     const action = await showPauseMenu(this.ui);
     if (action === 'codex') await showCodex(this.ui, this.profile);
+    if (action === 'ledger') await showLedger(this.ui, this.profile, registry);
     if (action === 'persona') {
       this.profile.persona = await showPersona(this.ui, this.profile.persona);
       await this.persist();
@@ -383,6 +386,8 @@ export class Game {
       const action = await showTitle(this.ui, this.profile);
       if (action === 'codex') {
         await showCodex(this.ui, this.profile);
+      } else if (action === 'ledger') {
+        await showLedger(this.ui, this.profile, registry);
       } else if (action === 'persona') {
         this.profile.persona = await showPersona(this.ui, this.profile.persona);
         await this.persist();
@@ -569,7 +574,10 @@ export class Game {
       const flagsBefore = this.state.flags;
       this.state = applyEffects(this.state, choice.effects);
       const firstHeartLoss = this.state.hearts < heartsBefore && !this.profile.hasSeenHeartLoss;
-      if (this.state.hearts < heartsBefore) sound.heartLoss();
+      if (this.state.hearts < heartsBefore) {
+        sound.heartLoss();
+        this.profile.heartsLost += heartsBefore - this.state.hearts;
+      }
       // Keepsakes (spec 04): earned silently, once per profile ever, the
       // instant their trigger flag is first set — no toast, no interruption.
       // Not retroactive: a flag set by a run before keepsakes shipped grants
@@ -644,6 +652,10 @@ export class Game {
     if (!this.profile.codexUnlocked.includes(room.id)) {
       this.profile.codexUnlocked.push(room.id);
     }
+    // Ledger stat only (spec 06) — incremented exactly once per actual room
+    // completion, never on a quit-and-resume replay of the same room, since
+    // this line only runs after the stage loop above has fully finished.
+    this.profile.roomVisits[room.id] = (this.profile.roomVisits[room.id] ?? 0) + 1;
     this.state = completeRoom(this.state, room.id, registry);
     await this.persist(true);
   }
@@ -696,6 +708,12 @@ export class Game {
     this.profile.lastRunTranscript = this.state.transcript;
     this.profile.lastRunEndingId = endingId;
     this.profile.runsCompleted += 1;
+    if (this.state.descended) this.profile.understoryDescents += 1;
+    if (this.state.examined) this.profile.examinedRuns += 1;
+    // Epiphanies (spec 06): evaluated last, once every other counter above
+    // has this run's contribution already applied.
+    const newEpiphanies = evaluateEpiphanies(this.profile, this.state, registry);
+    this.profile.epiphanies.push(...newEpiphanies);
     await this.persist();
 
     const recap = this.state.visited
@@ -716,6 +734,7 @@ export class Game {
         lucidity: this.state.lucidity,
         hearts: Math.max(0, this.state.hearts),
         newNotes: this.profile.codexUnlocked.length - this.runStartNotes,
+        newEpiphanies,
       });
       if (action === 'codex') {
         await showCodex(this.ui, this.profile);
