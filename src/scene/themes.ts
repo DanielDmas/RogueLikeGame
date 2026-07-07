@@ -54,8 +54,20 @@ export function silhouette(color = 0x060608, rimEmissive = 0x000000, rimIntensit
   return g;
 }
 
+/** The lantern's arm-lean angle toward a hovered door's world x (spec 07
+ * §Q6) — null (no hover) means no lean. Pure, unit-tested. */
+export function lanternLeanAngle(targetX: number | null): number {
+  if (targetX === null) return 0;
+  return targetX >= 0 ? 0.2 : -0.2;
+}
+
 /** The Usher: a silhouette with an emissive halo AND horns; one horn flickers. */
-export function usherFigure(): { group: THREE.Group; tick(t: number): void; setPresence(v: number): void } {
+export function usherFigure(): {
+  group: THREE.Group;
+  tick(t: number): void;
+  setPresence(v: number): void;
+  setLanternTarget(x: number | null): void;
+} {
   // a warm rim-light lift so the body reads as a figure, not a bare floating
   // halo — raised from the original 0.35 (the figure read as too hidden/dim
   // against the darker act themes).
@@ -99,6 +111,23 @@ export function usherFigure(): { group: THREE.Group; tick(t: number): void; setP
   spot.target = spotTarget;
   group.add(spot);
 
+  // The lantern (spec 07 §Q6): a small hand-carried light that leans toward
+  // whichever door the player is considering — a quiet guidance cue, not a
+  // spotlight. Dark and unlit until a door is actually hovered.
+  const lanternArm = new THREE.Group();
+  lanternArm.position.set(0.24, 0.92, 0.16);
+  const lanternGlow = new THREE.Mesh(
+    new THREE.SphereGeometry(0.1, 10, 8),
+    new THREE.MeshStandardMaterial({ color: 0xf0d9a0, emissive: 0xf0d9a0, emissiveIntensity: 0, roughness: 0.4 }),
+  );
+  const lanternLight = new THREE.PointLight(0xf0d9a0, 0, 4, 1.8);
+  lanternArm.add(lanternGlow, lanternLight);
+  group.add(lanternArm);
+  const LANTERN_TARGET_INTENSITY = 0.9;
+  let lanternTargetX: number | null = null;
+  let lanternIntensity = 0;
+  let lastLanternT = 0;
+
   // presence: a multiplier on how visible/lit the Usher reads right now —
   // boosted briefly while walking a player through a chosen door, so the
   // figure registers as thematic guidance rather than idle set-dressing.
@@ -115,9 +144,21 @@ export function usherFigure(): { group: THREE.Group; tick(t: number): void; setP
       // idle life: a slow, gentle glance toward the room every ~20s, rather
       // than standing perfectly still the whole scene
       head.rotation.y = Math.sin((t * 2 * Math.PI) / 20) * 0.16;
+
+      const dt = Math.max(0, Math.min(0.05, t - lastLanternT));
+      lastLanternT = t;
+      const targetIntensity = lanternTargetX !== null ? LANTERN_TARGET_INTENSITY : 0;
+      lanternIntensity += (targetIntensity - lanternIntensity) * Math.min(1, dt * 4);
+      lanternGlow.material.emissiveIntensity = lanternIntensity * presence;
+      lanternLight.intensity = lanternIntensity * presence;
+      const targetLean = lanternLeanAngle(lanternTargetX);
+      lanternArm.rotation.y += (targetLean - lanternArm.rotation.y) * Math.min(1, dt * 4);
     },
     setPresence(v: number) {
       presence = v;
+    },
+    setLanternTarget(x: number | null) {
+      lanternTargetX = x;
     },
   };
 }
@@ -298,6 +339,27 @@ function endingTheme(): ThemeConfig {
     group, fogColor: 0xcfc4ae, fogDensity: 0.05, background: 0xcfc4ae,
     tick(t) { motes.rotation.y = t * 0.012; },
   };
+}
+
+/** Each theme's base fog color, without constructing its (expensive) 3D
+ * group — used by the doorway light-spill (spec 07 §Q2) to pick a fallback
+ * tint for a mood with no color of its own (DILEMMA), without needing to
+ * build a whole scene just to read one number. Keep in sync with `buildTheme`. */
+export const FOG_COLOR_BY_THEME: Record<ThemeId, number> = {
+  0: 0x322a1d,
+  1: 0x322a1d,
+  2: 0x20242f,
+  3: 0x1c2036,
+  4: 0x2a1d14,
+  5: 0xcfc4ae,
+};
+
+/** The doorway light-spill's color (spec 07 §Q2): the destination room
+ * type's mood tint, or the next act's base fog color when the mood has none
+ * of its own (DILEMMA rooms — the common case). Pure — no THREE side effects. */
+export function spillColorFor(roomType: MoodType, nextActTheme: ThemeId): number {
+  const tint = MOOD_TINTS[roomType].tint;
+  return tint !== 0 ? tint : FOG_COLOR_BY_THEME[nextActTheme];
 }
 
 export function buildTheme(id: ThemeId): ThemeConfig {

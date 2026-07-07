@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
 import { buildTheme, silhouette, usherFigure } from '../scene/themes';
-import { createDoors, DOOR_Z } from '../scene/doors';
+import { createDoors, DOOR_Z, hoverPulseIntensity, SELECT_SNAP_BOOST } from '../scene/doors';
 import { GradeShader } from '../scene/post';
 
 function ambientIntensity(group: THREE.Group): number {
@@ -63,11 +63,14 @@ describe('the Usher figure — reads as a person, not a floating ring', () => {
     const { group } = usherFigure();
     let bodyMat: THREE.MeshStandardMaterial | null = null;
     group.traverse((o) => {
-      if (o instanceof THREE.Mesh && (o.geometry instanceof THREE.CylinderGeometry || o.geometry instanceof THREE.SphereGeometry)) {
+      // the body silhouette is the only mesh built on a cylinder — the lantern
+      // glow (Q6) is a sphere too, but starts at emissiveIntensity 0, so it
+      // must not be mistaken for the body here.
+      if (o instanceof THREE.Mesh && o.geometry instanceof THREE.CylinderGeometry) {
         bodyMat = o.material as THREE.MeshStandardMaterial;
       }
     });
-    expect(bodyMat, 'expected a body mesh (cylinder/sphere)').not.toBeNull();
+    expect(bodyMat, 'expected a body mesh (cylinder)').not.toBeNull();
     const body = bodyMat as unknown as THREE.MeshStandardMaterial;
     // the body must not be emissive-black-on-black: it should carry some emissive lift now
     expect(body.emissive.getHex()).toBeGreaterThan(0);
@@ -179,15 +182,33 @@ describe('doors — real interactive doors read as unmistakably alive', () => {
     set.dispose();
   });
 
-  it('brightens distinctly on hover, overriding the idle pulse', () => {
+  it('the hovered door breathes within its subtle pulse band, distinct from the idle door (spec 07 §Q4)', () => {
     const set = createDoors([{ id: 'a', hint: 'a' }, { id: 'b', hint: 'b' }]);
     set.setHover('a');
     set.tick(1.234);
     const hovered = slabOf(set, 'a').emissiveIntensity;
     const idle = slabOf(set, 'b').emissiveIntensity;
-    expect(hovered).toBeGreaterThan(idle * 1.5);
-    expect(hovered).toBeGreaterThan(0.6);
+    expect(hovered).toBeGreaterThanOrEqual(0.42);
+    expect(hovered).toBeLessThanOrEqual(0.42 + 0.15 + 1e-9);
+    expect(hovered).not.toBe(idle);
     set.dispose();
+  });
+
+  it('snapSelected immediately boosts the chosen door past its hover pulse (spec 07 §Q4)', () => {
+    const set = createDoors([{ id: 'a', hint: 'a' }]);
+    set.snapSelected('a');
+    expect(slabOf(set, 'a').emissiveIntensity).toBeCloseTo(0.42 + SELECT_SNAP_BOOST);
+    set.dispose();
+  });
+
+  it('hoverPulseIntensity stays within [base, base+0.15] and is constant under reduced motion', () => {
+    for (let t = 0; t < 10; t += 0.37) {
+      const v = hoverPulseIntensity(t, 0.42, false);
+      expect(v).toBeGreaterThanOrEqual(0.42);
+      expect(v).toBeLessThanOrEqual(0.42 + 0.15 + 1e-9);
+    }
+    expect(hoverPulseIntensity(0, 0.42, true)).toBe(0.57);
+    expect(hoverPulseIntensity(5, 0.42, true)).toBe(0.57);
   });
 
   it('has a floor light pool beneath each door in addition to the door-height glow', () => {

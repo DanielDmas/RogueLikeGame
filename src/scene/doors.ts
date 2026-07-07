@@ -16,7 +16,9 @@ export interface DoorSet {
   /** the 4 world-space corners of the door's frame (outer jamb edges, floor to lintel top) — for UAT screen-bounds checks */
   frameCorners(id: string): THREE.Vector3[] | null;
   /** per-frame idle pulse so real, clickable doors read as alive against the dim decorative corridor doors */
-  tick(t: number): void;
+  tick(t: number, reducedMotion?: boolean): void;
+  /** Snaps a chosen door's glow up immediately on selection, ahead of the doorway light-spill (spec 07 §Q2). */
+  snapSelected(id: string): void;
   dispose(): void;
 }
 
@@ -27,8 +29,16 @@ const CAMERA_HOME = new THREE.Vector3(0, 1.6, 7.6);
 export const DOOR_Z = -5.6;
 
 const BASE_INTENSITY = 0.42;
-const HOVER_INTENSITY = 0.85;
 const PULSE_AMPLITUDE = 0.08;
+/** How far a door snaps up on selection, before the doorway light-spill (spec 07 §Q2) takes over. */
+export const SELECT_SNAP_BOOST = 0.35;
+
+/** A hovered door's glow, subtly breathing rather than pinned flat (spec 07
+ * §Q4) — bounded to `[base, base + 0.15]`; constant under reduced motion. */
+export function hoverPulseIntensity(t: number, base: number, reducedMotion: boolean): number {
+  if (reducedMotion) return base + 0.15;
+  return base + 0.15 * ((Math.sin(t * 2.2) + 1) / 2);
+}
 
 export function createDoors(specs: DoorSpec[]): DoorSet {
   const group = new THREE.Group();
@@ -109,15 +119,19 @@ export function createDoors(specs: DoorSpec[]): DoorSet {
       ];
       return local.map((v) => door.localToWorld(v.clone()));
     },
-    tick(t) {
+    tick(t, reducedMotion = false) {
       for (const [doorId, mat] of slabs) {
         if (doorId === hoveredId) {
-          mat.emissiveIntensity = HOVER_INTENSITY;
+          mat.emissiveIntensity = hoverPulseIntensity(t, BASE_INTENSITY, reducedMotion);
         } else {
           const phase = phases.get(doorId) ?? 0;
           mat.emissiveIntensity = BASE_INTENSITY + Math.sin(t * 1.4 + phase) * PULSE_AMPLITUDE;
         }
       }
+    },
+    snapSelected(id) {
+      const mat = slabs.get(id);
+      if (mat) mat.emissiveIntensity = BASE_INTENSITY + SELECT_SNAP_BOOST;
     },
     dispose() {
       group.traverse((o) => {

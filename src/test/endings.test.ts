@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { RunState } from '../content/schema';
 import { newRun } from '../engine/gameState';
-import { axisTriptych, evaluateEnding, punchlineUnlocked, PUNCHLINE_LUCIDITY } from '../engine/endings';
+import { axisTriptych, epitaphLines, evaluateEnding, punchlineUnlocked, PUNCHLINE_LUCIDITY } from '../engine/endings';
 import { endings, getEnding } from '../content/endings';
 
 function finalChoice(s: RunState, choiceId: string): RunState {
@@ -79,5 +79,19 @@ describe('endings evaluator', () => {
     const lines = axisTriptych(s);
     expect(lines).toHaveLength(3);
     for (const l of lines) expect(l.length).toBeGreaterThan(10);
+  });
+
+  it('epitaph wall needs at least two witnessed endings, and renders one line per ending', () => {
+    expect(epitaphLines([])).toEqual([]);
+    expect(epitaphLines(['return'])).toEqual([]);
+    const lines = epitaphLines(['return', 'open-hand']);
+    expect(lines).toHaveLength(2);
+  });
+
+  it('epitaph wall silently ignores stale/unknown ending ids rather than throwing (spec 09 §R9 import safety)', () => {
+    expect(() => epitaphLines(['return', 'not-a-real-ending', 'open-hand'])).not.toThrow();
+    expect(epitaphLines(['return', 'not-a-real-ending', 'open-hand'])).toHaveLength(2);
+    // two unknowns alongside one real ending: still below the two-known threshold
+    expect(epitaphLines(['not-a-real-ending', 'also-fake', 'return'])).toEqual([]);
   });
 });

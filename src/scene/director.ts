@@ -47,6 +47,13 @@ export function shouldRenderFrame(nowMs: number, lastFrameMs: number, targetFps 
   return nowMs - lastFrameMs >= 1000 / targetFps;
 }
 
+/** Title-screen fog parallax (spec 07 §Q3.2): how far the theme group should
+ * shift toward the pointer, clamped to `±max` on each axis. Pure, unit-tested. */
+export function parallaxOffset(pointer: { x: number; y: number }, max = 0.15): { x: number; y: number } {
+  const clamp = (v: number) => Math.max(-1, Math.min(1, v)) * max;
+  return { x: clamp(pointer.x), y: clamp(pointer.y) };
+}
+
 /** Smoothstep-style ease-in-out on [0,1] — slow start, fast middle, slow finish. Pure, unit-tested. */
 export function easeInOutCubic(t: number): number {
   const c = Math.max(0, Math.min(1, t));
@@ -89,6 +96,9 @@ export class SceneDirector {
   private hovered: string | null = null;
   private clock = new THREE.Clock();
   private dollyTween: { from: THREE.Vector3; to: THREE.Vector3; startT: number; duration: number; done: () => void } | null = null;
+  /** Doorway light-spill (spec 07 §Q2) — spawned in `walkThrough`, killed in `hideDoors`. */
+  private spillLight: THREE.PointLight | null = null;
+  private spillTween: { startT: number; duration: number; target: number } | null = null;
   private usherWalk: { from: THREE.Vector3; to: THREE.Vector3; startT: number; duration: number } | null = null;
   private tooltip: HTMLDivElement;
   private events: DirectorEvents;
@@ -106,6 +116,12 @@ export class SceneDirector {
   private speedMultiplier = 1;
   /** Timestamps (ms) of recently-presented frames, for the UAT fps() probe — trimmed to the last ~2s. */
   private frameTimestamps: number[] = [];
+  /** Title-screen-only fog parallax (spec 07 §Q3.2) — off everywhere else. */
+  private parallaxEnabled = false;
+  private parallaxCurrent = { x: 0, y: 0 };
+  /** Title screen's epitaph wall (spec 07 §Q3.3) — a faint CanvasTexture
+   * plane, present only once ≥2 endings are witnessed. */
+  private epitaphMesh: THREE.Mesh | null = null;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -204,6 +220,56 @@ export class SceneDirector {
     this.post.resize(innerWidth, innerHeight);
   }
 
+  /** Title-screen-only fog parallax (spec 07 §Q3.2) — pointer-driven drift of
+   * the current theme group. Disabling snaps the offset back to zero so
+   * leaving the title screen never leaves the scene subtly shifted. */
+  setParallax(v: boolean) {
+    this.parallaxEnabled = v;
+    if (!v) {
+      this.parallaxCurrent = { x: 0, y: 0 };
+      this.theme?.group.position.set(0, 0, 0);
+    }
+  }
+
+  /** Rebuilds (or clears, if `lines` is empty) the title screen's epitaph
+   * wall — a large, near-transparent plane of witnessed endings' epitaphs,
+   * like carvings behind fog. Called fresh on every title-loop entry (title
+   * re-entry after a locale change is sufficient — no reactive rebuild). */
+  setEpitaphWall(lines: string[]) {
+    this.clearEpitaphWall();
+    if (lines.length === 0 || !this.theme) return;
+    const canvas = document.createElement('canvas');
+    canvas.width = 1024;
+    canvas.height = 512;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = '28px Georgia, serif';
+    const lineHeight = 46;
+    const startY = canvas.height / 2 - ((lines.length - 1) * lineHeight) / 2;
+    lines.forEach((line, i) => ctx.fillText(line, canvas.width / 2, startY + i * lineHeight, canvas.width - 80));
+    const texture = new THREE.CanvasTexture(canvas);
+    const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, opacity: 0.06, depthWrite: false });
+    const geometry = new THREE.PlaneGeometry(30, 15);
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(0, 4, -14);
+    mesh.rotation.z = ((Math.random() - 0.5) * 2 * Math.PI) / 180;
+    this.epitaphMesh = mesh;
+    this.theme.group.add(mesh);
+  }
+
+  private clearEpitaphWall() {
+    if (!this.epitaphMesh) return;
+    this.epitaphMesh.geometry.dispose();
+    const mat = this.epitaphMesh.material as THREE.MeshBasicMaterial;
+    mat.map?.dispose();
+    mat.dispose();
+    this.epitaphMesh.removeFromParent();
+    this.epitaphMesh = null;
+  }
+
   /** Toggles the optional "dynamic scenery" mood system; off = pure static act theme (the original, default behavior). */
   setDynamicScenery(v: boolean) {
     this.dynamicScenery = v;
@@ -224,6 +290,7 @@ export class SceneDirector {
   }
 
   setTheme(id: ThemeId) {
+    this.clearEpitaphWall();
     if (this.theme) {
       this.scene.remove(this.theme.group);
       this.theme.group.traverse((o) => {
@@ -272,17 +339,48 @@ export class SceneDirector {
     }
     this.setTooltip(null);
     this.hovered = null;
+    this.usher.setLanternTarget(null);
+    this.clearSpillLight();
+  }
+
+  private spawnSpillLight(id: string, color: number) {
+    if (!this.doors) return;
+    this.clearSpillLight();
+    const doorPos = this.doors.lintel(id).clone();
+    const light = new THREE.PointLight(color, 0, 8, 1.8);
+    light.position.set(doorPos.x, 1.6, DOOR_Z - 0.6);
+    this.scene.add(light);
+    this.spillLight = light;
+  }
+
+  private clearSpillLight() {
+    if (this.spillLight) {
+      this.scene.remove(this.spillLight);
+      this.spillLight = null;
+    }
+    this.spillTween = null;
   }
 
   /** external hover (from DOM door cards) */
   highlightDoor(id: string | null) {
     this.doors?.setHover(id);
     this.setTooltip(id);
+    this.usher.setLanternTarget(id ? this.doors?.lintel(id).x ?? null : null);
   }
 
-  /** dolly toward a door on a fixed, eased tween; resolves when arrived (or instantly under reduced motion) */
-  walkThrough(id: string): Promise<void> {
-    if (!this.doors || this.reducedMotion) return Promise.resolve();
+  /** dolly toward a door on a fixed, eased tween; resolves when arrived (or instantly under reduced motion).
+   * `spill` (spec 07 §Q2), when given, spawns a colored point light just
+   * behind the chosen door — brightened over the dolly's first half (or
+   * instantly, under reduced motion), killed by the next `hideDoors()`. */
+  walkThrough(id: string, spill?: { color: number }): Promise<void> {
+    if (!this.doors) return Promise.resolve();
+    this.doors.snapSelected(id);
+    this.usher.setLanternTarget(this.doors.lintel(id).x);
+    if (spill) this.spawnSpillLight(id, spill.color);
+    if (this.reducedMotion) {
+      if (this.spillLight) this.spillLight.intensity = 2.5;
+      return Promise.resolve();
+    }
     const target = this.doors.lintel(id).clone();
     target.y = 1.6;
     target.z += 1.2;
@@ -297,6 +395,10 @@ export class SceneDirector {
     const usherTarget = new THREE.Vector3(doorPos.x + side * 1.3, -0.05, doorPos.z + 0.6);
     this.usherWalk = { from: this.usher.group.position.clone(), to: usherTarget, startT: now, duration: USHER_WALK_SECONDS * this.speedMultiplier };
     this.usherPresenceTarget = 1.7;
+
+    if (this.spillLight) {
+      this.spillTween = { startT: now, duration: (CAMERA_DOLLY_SECONDS / 2) * this.speedMultiplier, target: 2.5 };
+    }
 
     return new Promise((done) => {
       this.dollyTween = {
@@ -351,8 +453,12 @@ export class SceneDirector {
     requestAnimationFrame(this.loop);
     // A full DOM overlay or a backgrounded tab means nothing on screen needs
     // a new frame; skip the whole render+tick (rAF keeps running so we wake
-    // up cleanly the instant either condition clears).
-    if (this.paused || document.hidden) return;
+    // up cleanly the instant either condition clears). The title screen is
+    // the one paused overlay that still needs a live frame underneath it —
+    // fog parallax and the epitaph wall (spec 07 §Q3) only read as "alive"
+    // if the loop keeps ticking, so `parallaxEnabled` (title-only) opts out
+    // of the suspend.
+    if ((this.paused && !this.parallaxEnabled) || document.hidden) return;
     const now = performance.now();
     if (!shouldRenderFrame(now, this.lastFrameTime)) return;
     this.lastFrameTime = now;
@@ -364,7 +470,15 @@ export class SceneDirector {
 
     this.theme?.tick(t);
     this.usher.tick(t);
-    this.doors?.tick(t);
+    this.doors?.tick(t, this.reducedMotion);
+
+    if (this.parallaxEnabled && this.theme && !this.reducedMotion) {
+      const target = parallaxOffset({ x: this.pointer.x, y: this.pointer.y });
+      this.parallaxCurrent.x += (target.x - this.parallaxCurrent.x) * Math.min(1, dt * 2);
+      this.parallaxCurrent.y += (target.y - this.parallaxCurrent.y) * Math.min(1, dt * 2);
+      this.theme.group.position.x = this.parallaxCurrent.x;
+      this.theme.group.position.y = this.parallaxCurrent.y;
+    }
 
     if (this.usherWalk) {
       const elapsed = t - this.usherWalk.startT;
@@ -377,6 +491,16 @@ export class SceneDirector {
     }
     this.usherPresence += (this.usherPresenceTarget - this.usherPresence) * Math.min(1, dt * 2.5);
     this.usher.setPresence(this.usherPresence);
+
+    if (this.spillTween && this.spillLight) {
+      const elapsed = t - this.spillTween.startT;
+      const p = easeInOutCubic(elapsed / this.spillTween.duration);
+      this.spillLight.intensity = this.spillTween.target * p;
+      if (elapsed >= this.spillTween.duration) {
+        this.spillLight.intensity = this.spillTween.target;
+        this.spillTween = null;
+      }
+    }
 
     if (this.dollyTween) {
       const elapsed = t - this.dollyTween.startT;
@@ -402,6 +526,7 @@ export class SceneDirector {
         this.hovered = id;
         this.doors.setHover(id);
         this.setTooltip(id);
+        this.usher.setLanternTarget(id ? this.doors.lintel(id).x : null);
         this.events.onDoorHover(id);
         document.body.style.cursor = id ? 'pointer' : '';
       }

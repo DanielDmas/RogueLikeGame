@@ -112,6 +112,9 @@ export function showTitle(ui: HTMLElement, profile: Profile): Promise<TitleActio
       );
     }
     o.appendChild(menu);
+    if (typeof __APP_VERSION__ === 'string' && __APP_VERSION__) {
+      o.append(el('div', 'title-version', `v${__APP_VERSION__}`));
+    }
   });
 }
 

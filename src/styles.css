@@ -322,6 +322,10 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
   font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--ink-dim);
 }
 .how-to-play b { color: var(--gold); font-style: normal; }
+.title-version {
+  position: absolute; right: 18px; bottom: 14px; font-family: var(--mono, monospace);
+  font-size: 10px; letter-spacing: 0.05em; color: var(--ink-faint); opacity: 0.6;
+}
 
 .title-menu { margin-top: 40px; display: flex; flex-direction: column; gap: 12px; align-items: center; }
 

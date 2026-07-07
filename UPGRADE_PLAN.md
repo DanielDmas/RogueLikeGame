@@ -692,13 +692,60 @@ into their named phases; 8 is watch-and-wait):
 ## Phase Q — Visual & audio overhaul (spec `07-visual-and-audio-overhaul.md`)
 
 - [ ] Q1. Room dioramas (`dioramaFor` factory; silhouettes + light; disposal
-      leak-tested; act-theme fallback)
-- [ ] Q2. Doorway light-spill during the walk-through
-- [ ] Q3. Title polish: version number, fog parallax, epitaph wall (2+ endings)
-- [ ] Q4. Door hover emissive pulse + pre-walk brighten
+      leak-tested; act-theme fallback) — **deferred, not yet started.** By far
+      the largest item in the phase (~19 bespoke room motifs); scoped out of
+      this pass deliberately rather than rushed. Still open.
+- [x] Q2. **Doorway light-spill during the walk-through.** `SceneDirector`
+      gained a `spillLight` (`THREE.PointLight`) spawned in `walkThrough(id,
+      spill)` and tweened in over half the camera-dolly duration
+      (`spillTween`, eased); color comes from the pure, tested
+      `spillColorFor(roomType, nextActTheme)` (`scene/themes.ts` — the next
+      room's mood tint, or its act's fog color as fallback). Instant at full
+      intensity under `reducedMotion`. Disposed (`clearSpillLight`) whenever
+      doors hide or the theme changes.
+- [x] Q3. **Title polish: version number, fog parallax, epitaph wall (2+
+      endings).** Q3.1 reused the `__APP_VERSION__` Vite define already added
+      in S1 — `.title-version`, bottom-right, dim mono. Q3.2: pure
+      `parallaxOffset(pointer, max=0.15)` (`director.ts`) lerped into
+      `theme.group.position` while `director.setParallax(true)` is active
+      (title only); off under `reducedMotion`. Q3.3: `epitaphLines(endingsSeen)`
+      (`engine/endings.ts`) builds a faint (`opacity 0.06`) `CanvasTexture`
+      plane at z ≈ -14 once 2+ endings are witnessed, rebuilt on every title
+      entry, disposed with the theme. **Bug found and fixed during
+      live-verification:** the title screen has always called
+      `director.setPaused(true)` to fully suspend the render loop (a
+      pre-existing perf optimization, since the title previously had nothing
+      animating behind it) — that suspend happens *before* the theme tick,
+      parallax lerp, or render call, so Q3.2/Q3.3 were being built into the
+      scene graph but never actually drawn. Fixed by exempting the loop's
+      pause-skip when `parallaxEnabled` (title-only) is set (`director.ts`
+      `loop()`), so the title keeps a live (if very subtle) frame while every
+      other paused-overlay screen (settings/codex/pause menu) still fully
+      freezes as before. Verified live: door/jamb silhouettes are now visibly
+      present through the title overlay, and a pixel-diff between screenshots
+      at opposite pointer extremes shows real (if small, by design) movement.
+- [x] Q4. **Door hover emissive pulse + pre-walk brighten.** Pure
+      `hoverPulseIntensity(t, base, reducedMotion)` (`scene/doors.ts`):
+      hovered door breathes in `[base, base+0.15]`; idle doors keep their old
+      per-door phase-offset pulse. `snapSelected(id)` snaps the chosen door to
+      `base+0.35` (`SELECT_SNAP_BOOST`) the instant it's picked, ahead of the
+      Q2 light-spill taking over. Static `base+0.15` under `reducedMotion`.
 - [ ] Q5. Audio deepening: convolver reverb bus, heart-loss tail, per-door
-      hover pitch, ~4 s act crossfades, three room accents
-- [ ] Q6. The Usher's lantern (leans toward the hovered/chosen door)
+      hover pitch, ~4 s act crossfades, three room accents — **deferred, not
+      yet started.**
+- [x] Q6. **The Usher's lantern** (leans toward the hovered/chosen door).
+      `usherFigure()` (`scene/themes.ts`) gained a small lantern arm + glow
+      sphere + `PointLight`, off by default; `setLanternTarget(x | null)`
+      fades it in/out (lerped) and the arm leans via pure `lanternLeanAngle
+      (targetX)`. Wired at every point a door becomes "the" door: raycast
+      hover, `highlightDoor`, and `hideDoors` (clears it).
+
+  **Scope note (2026-07-07):** given Q1's size, this pass deliberately built
+  the smaller, well-specified, fully-testable sub-phases (Q2–Q4, Q6) and
+  left Q1 (dioramas) and Q5 (audio) open, tracked honestly above rather than
+  claiming the phase complete. `npx tsc --noEmit` and `npx vitest run` (415
+  tests) are clean; Q2/Q3/Q4/Q6 were each live-verified with `?uat=1`
+  screenshots.
 
 ## Phase R — Platform, language & engine health (spec `08-platform-localization-engine-health.md`)
 

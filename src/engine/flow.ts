@@ -5,12 +5,13 @@ import { actName, UNDERSTORY_SEQUENCE } from '../content/graph';
 import { actIntroText, usherDoorBark } from '../content/usher';
 import { keepsakesEarnedByFlags } from '../content/keepsakes';
 import { applyEffects, newRun } from './gameState';
-import { axisTriptych, computeAnamnesisEligible, evaluateEnding } from './endings';
+import { axisTriptych, computeAnamnesisEligible, epitaphLines, evaluateEnding } from './endings';
 import { shouldShowReflections, shouldShowSocraticAside } from './reflections';
 import { evaluateEpiphanies } from './ledger';
 import { backfillVisitedForJump, completeRoom, makeRegistry, offeredDoors } from './storyEngine';
 import { defaultProfile, hydrateProfile, type Profile, type SaveStore } from './saveStore';
 import { SceneDirector } from '../scene/director';
+import { spillColorFor } from '../scene/themes';
 import { Hud } from '../ui/hud';
 import { TextPanel } from '../ui/textPanel';
 import { ChoicePanel } from '../ui/choices';
@@ -382,7 +383,11 @@ export class Game {
     this.director.setTheme(0);
     sound.setAct(0);
     this.director.setPaused(true);
+    this.director.setParallax(true);
     for (;;) {
+      // Rebuilt fresh on every loop entry rather than reactively — covers a
+      // locale change made mid-title-loop without any extra plumbing.
+      this.director.setEpitaphWall(epitaphLines(this.profile.endingsSeen));
       const action = await showTitle(this.ui, this.profile);
       if (action === 'codex') {
         await showCodex(this.ui, this.profile);
@@ -427,6 +432,7 @@ export class Game {
         break;
       }
     }
+    this.director.setParallax(false);
     this.director.setPaused(false);
     this.inGame = true;
     this.runStartNotes = this.profile.codexUnlocked.length;
@@ -511,7 +517,8 @@ export class Game {
       this.text.hide();
 
       if (roomId === UNDERSTORY_SEQUENCE[0]) this.state = { ...this.state, descended: true };
-      await this.director.walkThrough(roomId);
+      const nextRoom = registry.get(roomId);
+      await this.director.walkThrough(roomId, { color: spillColorFor(nextRoom.type, themeForAct(nextRoom.act)) });
       await this.fade(true);
       this.director.hideDoors();
       await this.fade(false);

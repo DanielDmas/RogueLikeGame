@@ -1,5 +1,8 @@
 import type { RunState } from '../content/schema';
 import { choseIn, hasFlag } from './gameState';
+import { endings } from '../content/endings';
+import { t } from '../content/text/resolver';
+import { endingEpitaphKey } from '../content/text/keys';
 
 export type EndingId =
   | 'return'
@@ -70,6 +73,21 @@ export function evaluateEnding(s: RunState): EndingId {
  * Keeps the hidden seventh ending from advertising its own existence. */
 export function endingsTotal(endingsSeen: string[]): number {
   return endingsSeen.includes('anamnesis') ? 7 : 6;
+}
+
+/** The title screen's epitaph wall (spec 07 §Q3.3): translated epitaphs of
+ * every ending actually witnessed, in witness order — including "anamnesis"
+ * if (and only if) it has genuinely been seen. Empty until a second ending
+ * is witnessed, so the wall never appears as a single lonely line. */
+/** Skips any id not in the current `endings` list — `endingsSeen` is persisted,
+ * user-editable (profile import, spec 09 §R9), and may go stale across a
+ * schema change, so this must never throw on an unrecognized id. */
+export function epitaphLines(endingsSeen: string[]): string[] {
+  const known = endingsSeen
+    .map((id) => endings.find((e) => e.id === id))
+    .filter((e): e is (typeof endings)[number] => e != null);
+  if (known.length < 2) return [];
+  return known.map((e) => t(endingEpitaphKey(e.id), e.epitaph));
 }
 
 /** Poetic triptych of the run's axis profile, shown on the end screen. */
