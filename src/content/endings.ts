@@ -16,7 +16,7 @@ export const endings: Ending[] = [
     fieldNote: {
       title: 'On Coming Back',
       thinkers: 'the night-sea journey · integration',
-      body: 'Every wisdom tradition has a name for it: the descent that returns. Innana into the underworld, Jonah into the fish, the dark night of the soul, the hero into the labyrinth — the pattern is not the going down but the coming back changed, carrying something the surface could not have produced. Psychology calls the last step integration: an ego death matters only as much as the life rebuilt after it. **The danger was never the dissolving. It was refusing to return — mistaking the depths for home — or returning and refusing to be different, sealing over.** To come back ordinary, but rearranged: that was always the whole assignment.',
+      body: 'Every wisdom tradition has a name for it: the descent that returns. Inanna into the underworld, Jonah into the fish, the dark night of the soul, the hero into the labyrinth — the pattern is not the going down but the coming back changed, carrying something the surface could not have produced. Psychology calls the last step integration: an ego death matters only as much as the life rebuilt after it. **The danger was never the dissolving. It was refusing to return — mistaking the depths for home — or returning and refusing to be different, sealing over.** To come back ordinary, but rearranged: that was always the whole assignment.',
     },
   },
   {
@@ -52,7 +52,7 @@ export const endings: Ending[] = [
     fieldNote: {
       title: 'On Armor',
       thinkers: 'stoic fortification · Rilke · defended selves',
-      body: 'The Stoics built the original inner citadel: make your judgments the only thing you value, and no fortune can breach you. It is a real technology and it genuinely works — that is its danger. Psychology finds the same structure in defended selves: armor laid down against a real threat, kept on long after the war, until protection and imprisonment share a wall. Rilke’s warning was exact: “our deepest fears are like dragons guarding our deepest treasure” — seal the vault against the dragons and the treasure seals too. **A self that nothing can wound is also a self nothing can astonish.** The fortress ending is not a failure; it is a trade, honestly priced. The sting is only this: the door locks from the inside, and the keyholder is the one person who never checks whether the siege ended.',
+      body: 'The Stoics built the original inner citadel: make your judgments the only thing you value, and no fortune can breach you. It is a real technology and it genuinely works — that is its danger. Psychology finds the same structure in defended selves: armor laid down against a real threat, kept on long after the war, until protection and imprisonment share a wall. Rilke’s own dragons ran the opposite errand: in his Letters to a Young Poet, he suggested our dragons are secretly princesses, waiting only to see us act once with courage. Seal the gate against the dragons on principle, refusing the encounter altogether, and you seal it against whatever they were guarding too. **A self that nothing can wound is also a self nothing can astonish.** The fortress ending is not a failure; it is a trade, honestly priced. The sting is only this: the door locks from the inside, and the keyholder is the one person who never checks whether the siege ended.',
     },
   },
   {

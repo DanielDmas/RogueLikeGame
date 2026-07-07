@@ -982,9 +982,44 @@ into their named phases; 8 is watch-and-wait):
       browser: export downloads the current profile; importing a different
       profile JSON and confirming replaces `localStorage` with the
       hydrated, imported data.
-- [ ] R10. **Citation-accuracy audit** of every field note and ending note:
-      verify each named attribution/quote; soften anything unverifiable
-      into honest paraphrase. EN first; propagate to cs/fa inside R3.
+- [x] R10. **Citation-accuracy audit** of every field note and ending note,
+      EN first (per spec, cs/fa propagate inside R3, still open). Read all
+      39 field notes/ending notes (8 in Act I, 9 in Act II, 9 in Act III, 2
+      in Act IV, 3 in the Understory, 7 endings) against what I know of
+      each named source, checking every attribution, date, and quoted
+      line. The large majority held up (Foot 1967, Thomson's footbridge,
+      Nozick 1974/1969, Rawls/Harsanyi, the verified Nozick "divide almost
+      evenly" quote in the-predictors-ledger, the Camus/Frost/Nietzsche
+      quotes, etc. — all checked, none changed). Four issues found and
+      fixed:
+      1. `content/endings.ts` (`return`'s field note): "Innana" → "Inanna"
+         (Sumerian goddess, Descent of Inanna) — a misspelling.
+      2. `content/rooms/act2.ts` (casino-pascal's field note): "Pascal,
+         inventor of probability theory" overstated his role — Fermat
+         co-developed it via their 1654 correspondence — softened to
+         "Pascal, a founding father of probability theory."
+      3. `content/endings.ts` (`fortress`'s field note): the line
+         attributed to Rilke — "our deepest fears are like dragons
+         guarding our deepest treasure" — does not match his verified text
+         and is a commonly-circulated internet misattribution. Replaced
+         with a paraphrase of his actual, verifiable dragon image from
+         *Letters to a Young Poet* (dragons who are secretly princesses,
+         waiting for courage), reframed to keep the ending's point about
+         self-protection walling off the good along with the threat.
+      4. `content/rooms/act1.ts` (the-photograph's field note): the Kitty
+         Genovese framing ("attacked within earshot of dozens") repeated
+         the now-disputed original *New York Times* witness count;
+         reworded to flag it as "widely reported (and, later reporting
+         found, partly exaggerated)" rather than asserting the old figure
+         as settled fact, while keeping Darley & Latané's actual bystander-
+         effect research (which is solid) intact.
+      No test added — this is a content-accuracy pass, not new testable
+      behavior — but confirmed no existing test asserts the old (now
+      corrected) English strings. `npx tsc --noEmit` clean; `npx vitest
+      run` — 432 tests passing, unchanged. **Still open:** propagate these
+      4 corrections into `cs-endings.ts`/`fa-endings.ts`/`cs.ts`/`fa.ts`
+      (where they're mirrored) when R3's Czech/Farsi quality pass reaches
+      these rooms/endings.
 - [ ] R11. **Documentation refresh:** root `README.md` (30+3 rooms; endings
       phrased without spoiling the display rule — "six endings, and rumors";
       Act V; fix the release procedure to the proven `workflow_dispatch`
