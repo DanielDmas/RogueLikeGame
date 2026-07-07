@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { migrateSettings } from '../engine/localSave';
-import { defaultProfile, shouldGrandfatherHasSeenAbout } from '../engine/saveStore';
+import { defaultProfile, migrateSettings, shouldGrandfatherHasSeenAbout } from '../engine/saveStore';
 import { newRun } from '../engine/gameState';
 
 describe('settings migration — old single "sound" toggle splits into music + sfx', () => {

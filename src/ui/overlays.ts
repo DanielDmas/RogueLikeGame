@@ -118,6 +118,12 @@ export interface SettingsActions {
   onResetRun: () => void;
   /** Wipes the entire profile back to defaults and reloads. */
   onResetProgress: () => void;
+  /** R9: returns the current profile serialized as JSON, for a client-side download. */
+  onExportProfile: () => string;
+  /** R9: attempts to replace the profile with `raw` (pasted JSON). Returns
+   * false without changing anything if `raw` isn't valid JSON; on success it
+   * persists and reloads, so the caller never needs to handle that half. */
+  onImportProfile: (raw: string) => boolean;
 }
 
 /** A row: label + control on one line, a short explanatory line underneath. */
@@ -354,6 +360,52 @@ export function showSettings(ui: HTMLElement, settings: Settings, actions: Setti
       () => actions.onResetProgress(),
     );
     dataBody.append(settingRow(t(uiKey('resetProgress'), 'Reset all progress'), t(uiKey('resetProgressDesc'), 'Wipes everything — field notes, endings, settings, your current run — back to the very start.'), resetProgressBtn));
+
+    const exportBtn = el('button', 'toggle', t(uiKey('exportProfileButton'), 'Download'));
+    exportBtn.addEventListener('click', () => {
+      const json = actions.onExportProfile();
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = el('a') as HTMLAnchorElement;
+      a.href = url;
+      a.download = `anamnesis-profile-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+    dataBody.append(
+      settingRow(
+        t(uiKey('exportProfile'), 'Export profile'),
+        t(uiKey('exportProfileDesc'), 'Downloads your whole profile as a file — a personal backup, or something to send if you ever need help.'),
+        exportBtn,
+      ),
+    );
+
+    const importWrap = el('div', 'setting-row');
+    const importTop = el('div', 'setting-row-top');
+    importTop.append(el('span', 'lbl', t(uiKey('importProfile'), 'Import profile')));
+    const importArea = el('textarea', 'import-textarea') as HTMLTextAreaElement;
+    importArea.placeholder = t(uiKey('importProfilePlaceholder'), 'Paste an exported profile file’s contents here');
+    const importStatus = el('div', 'setting-desc', '');
+    const importBtn = confirmButton(
+      t(uiKey('importProfileButton'), 'Import'),
+      t(uiKey('confirmAgain'), 'Click again to confirm'),
+      () => {
+        const ok = actions.onImportProfile(importArea.value);
+        importStatus.textContent = ok
+          ? t(uiKey('importProfileSuccess'), 'Imported — reloading…')
+          : t(uiKey('importProfileError'), 'That doesn’t look like a valid profile file — nothing was changed.');
+      },
+    );
+    importTop.append(importBtn);
+    importWrap.append(
+      importTop,
+      el('div', 'setting-desc', t(uiKey('importProfileDesc'), 'Replaces your entire profile with the pasted file. Your current progress is overwritten — export it first if you want to keep it.')),
+      importArea,
+      importStatus,
+    );
+    dataBody.append(importWrap);
 
     sections.append(displaySection, audioSection, textSection, dataSection);
     scroll.append(sections);

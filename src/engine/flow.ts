@@ -8,7 +8,7 @@ import { applyEffects, newRun } from './gameState';
 import { axisTriptych, computeAnamnesisEligible, evaluateEnding } from './endings';
 import { shouldShowReflections, shouldShowSocraticAside } from './reflections';
 import { backfillVisitedForJump, completeRoom, makeRegistry, offeredDoors } from './storyEngine';
-import { defaultProfile, type Profile, type SaveStore } from './saveStore';
+import { defaultProfile, hydrateProfile, type Profile, type SaveStore } from './saveStore';
 import { SceneDirector } from '../scene/director';
 import { Hud } from '../ui/hud';
 import { TextPanel } from '../ui/textPanel';
@@ -294,11 +294,38 @@ export class Game {
     location.reload();
   }
 
+  /** R9: the profile as a downloadable JSON string — a personal backup, a
+   * cross-build (web ↔ Electron) transfer, and a bug-repro channel. */
+  private exportProfile(): string {
+    return JSON.stringify(this.profile, null, 2);
+  }
+
+  /** R9: replaces the whole profile with a pasted export, spread-merged over
+   * defaults exactly like a normal load (so a file exported from an older
+   * version still backfills cleanly). Returns false, changing nothing, if
+   * `raw` isn't valid JSON; reloads on success so the game and its on-screen
+   * UI can never disagree about which profile is current. */
+  private importProfile(raw: string): boolean {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      return false;
+    }
+    if (typeof parsed !== 'object' || parsed === null) return false;
+    const hydrated = hydrateProfile(parsed as Partial<Profile>);
+    this.persistChain = this.persistChain.then(() => this.store.save(PROFILE_ID, hydrated));
+    void this.persistChain.then(() => location.reload());
+    return true;
+  }
+
   private settingsActions(): SettingsActions {
     return {
       hasRun: this.inGame || Boolean(this.profile.run && !this.profile.run.finished),
       onResetRun: () => void this.resetRun(),
       onResetProgress: () => void this.resetProgress(),
+      onExportProfile: () => this.exportProfile(),
+      onImportProfile: (raw) => this.importProfile(raw),
     };
   }
 

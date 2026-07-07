@@ -7,9 +7,8 @@
 > detail lives in git history — but **open items are never deleted**.
 
 **Current milestone: 5 — THE DEEPER FACILITY (in progress, see bottom of
-file — S1, K, L, N, M shipped; O partial (Act I content only — Acts II–IV
-are a v0.2.0 release gate); next up: O completion, hardening batch
-(S6/S7/R8/R9), P, Q, R, S2–S5).** A full production review (2026-07-06)
+file — S1, K, L, N, M, O, and the hardening batch (S6/S7/R8/R9) all
+shipped; next up: P, Q, R, S2–S5).** A full production review (2026-07-06)
 lives at `docs/development/11-production-review.md` — read it before
 starting any new phase; its action items are tracked as R8–R11 and S6–S7
 below.
@@ -713,9 +712,18 @@ into their named phases; 8 is watch-and-wait):
       persisted field without a version bump + fixture test. Live-verified:
       a corrupted primary payload in a real browser correctly restores from
       backup and shows the toast with the right text.
-- [ ] R9. **Profile export/import** in Settings → Data: download the profile
-      as JSON; paste-import with a confirm step. Doubles as the player
-      backup, cross-build (web ↔ Electron) transfer, and bug-repro channel.
+- [x] R9. **Profile export/import** in Settings → Data: "Download" saves the
+      profile as a JSON file (`Game.exportProfile`, `flow.ts`); "Import"
+      pastes a profile into a textarea behind the same double-click confirm
+      pattern as the reset buttons, reusing `hydrateProfile` (moved to
+      `saveStore.ts` so both the normal load path and import share one
+      merge path) so an older export still backfills cleanly, then persists
+      and reloads. Invalid JSON changes nothing and shows an inline error
+      instead. EN+CS+FA. Doubles as the player backup, cross-build (web ↔
+      Electron) transfer, and bug-repro channel. Live-verified in a real
+      browser: export downloads the current profile; importing a different
+      profile JSON and confirming replaces `localStorage` with the
+      hydrated, imported data.
 - [ ] R10. **Citation-accuracy audit** of every field note and ending note:
       verify each named attribution/quote; soften anything unverifiable
       into honest paraphrase. EN first; propagate to cs/fa inside R3.

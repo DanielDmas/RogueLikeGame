@@ -130,6 +130,36 @@ export function shouldGrandfatherHasSeenAbout(parsed: {
   );
 }
 
+/** Pre-v2 saves stored a single `sound` toggle covering both music and effects. */
+interface LegacySettings extends Partial<Settings> {
+  sound?: boolean;
+}
+
+/** Migrates a legacy `settings.sound` toggle into the new split `music`/`sfx` fields. Pure — testable. */
+export function migrateSettings(raw: LegacySettings | undefined, base: Settings): Settings {
+  const { sound, ...rest } = raw ?? {};
+  const migrated = sound !== undefined ? { music: sound, sfx: sound } : {};
+  return { ...base, ...migrated, ...rest };
+}
+
+/** Spread-merges a parsed (possibly legacy, possibly hand-edited/imported)
+ * payload over fresh defaults, so additive fields introduced since the
+ * payload was written are backfilled. Always stamps the current schema
+ * version — a payload's own recorded version is informational for future
+ * migrations, never load-bearing on its own. Storage-agnostic (pure JSON
+ * shape logic) so both `LocalSaveStore.load()` and profile import (R9)
+ * share exactly one merge path instead of two that could drift apart. */
+export function hydrateProfile(parsed: Partial<Omit<Profile, 'settings'>> & { settings?: LegacySettings }): Profile {
+  const base = defaultProfile();
+  return {
+    ...base,
+    ...parsed,
+    settings: migrateSettings(parsed.settings, base.settings),
+    hasSeenAbout: shouldGrandfatherHasSeenAbout(parsed) ? true : (parsed.hasSeenAbout ?? base.hasSeenAbout),
+    schemaVersion: PROFILE_SCHEMA_VERSION,
+  };
+}
+
 /**
  * Server-shaped async save API. LocalStorage today; a Node backend can
  * implement this same interface later without touching game code.

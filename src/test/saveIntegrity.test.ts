@@ -2,7 +2,7 @@ import { describe, expect, it, beforeEach } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { LocalSaveStore } from '../engine/localSave';
-import { defaultProfile, PROFILE_SCHEMA_VERSION } from '../engine/saveStore';
+import { defaultProfile, hydrateProfile, PROFILE_SCHEMA_VERSION } from '../engine/saveStore';
 
 const PROFILE_ID = 'traveler';
 const KEY = `anamnesis:profile:${PROFILE_ID}`;
@@ -133,5 +133,28 @@ describe('backup + restore-on-corruption (Milestone 5, Phase R §R8)', () => {
     const profile = await store.load(PROFILE_ID);
     expect(profile).toEqual(defaultProfile());
     expect(store.wasRestoredFromBackup()).toBe(false);
+  });
+});
+
+describe('profile export/import (Milestone 5, Phase R §R9)', () => {
+  it('a profile exported as JSON and re-hydrated round-trips its data unchanged', () => {
+    const original = { ...defaultProfile(), runsCompleted: 5, persona: { preset: 'wanderer', name: 'Iris', blurb: 'looking' } };
+    const exported = JSON.stringify(original, null, 2);
+    const reimported = hydrateProfile(JSON.parse(exported));
+    expect(reimported).toEqual(original);
+  });
+
+  it('importing an older exported profile backfills fields it never had', () => {
+    const legacyExport = JSON.stringify({ runsCompleted: 2, settings: { sound: true } });
+    const reimported = hydrateProfile(JSON.parse(legacyExport));
+    expect(reimported.schemaVersion).toBe(PROFILE_SCHEMA_VERSION);
+    expect(reimported.keepsakes).toEqual([]);
+    expect(reimported.settings.music).toBe(true);
+    expect(reimported.settings.sfx).toBe(true);
+    expect(reimported.runsCompleted).toBe(2);
+  });
+
+  it('garbage input never reaches hydrateProfile — JSON.parse throws first, which callers must guard', () => {
+    expect(() => JSON.parse('not valid json at all')).toThrow();
   });
 });
