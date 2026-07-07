@@ -55,6 +55,7 @@ registerAll('v2', 'cs', {
   [uiKey('recoveryTitle')]: 'Zařízení zablikalo',
   [uiKey('recoveryBody')]: 'Něco v soukolí ztratilo rovnováhu. Váš soubor je v bezpečí — nic z toho, co jste tu udělali, se neztratilo.',
   [uiKey('recoveryReturn')]: 'Zpět na titulní obrazovku',
+  [uiKey('restoredFromBackup')]: 'Vaše poslední uložení se nepodařilo načíst — obnoveno z předchozí zálohy. Nic by nemělo chybět.',
   [uiKey('aboutDoors')]: '<b>Dveře.</b> Každé dveře za chodbou skrývají jinou situaci a v jednom průchodu jimi nemůžete projít všemi. Volba dveří znamená volbu toho, čemu budete čelit — a co tentokrát vynecháte. Další hra vám ukáže zbytek.',
   [uiKey('aboutHearts')]: '<b>Srdce.</b> Tři srdce jsou váš úchop reality. Hrstka obzvlášť nákladných voleb — vždy předem oznámená Uvaděčem — stojí jedno srdce přímo, stejně jako když vaše lucidita zcela dojde. Ztráta všech tří není obrazovka prohry — je to opravdový konec, a tak je i napsán.',
   [uiKey('aboutTitle')]: 'Než začnete',

@@ -1,0 +1,50 @@
+{
+  "run": null,
+  "codexUnlocked": [
+    "waiting-room",
+    "wallet",
+    "dinner-table",
+    "promotion",
+    "beggars-math",
+    "quiet-alarm",
+    "the-reference",
+    "junction",
+    "experience-machine",
+    "ship",
+    "casino-pascal",
+    "chinese-room",
+    "newcomb-annex",
+    "veil-of-ignorance",
+    "court-of-usher",
+    "teleporter",
+    "editor",
+    "debt-of-dead",
+    "marys-room",
+    "swampman",
+    "free-will",
+    "boulder",
+    "last-message",
+    "door-that-asks"
+  ],
+  "endingsSeen": ["walk-through", "stay"],
+  "lastMessage": "Don't wait. Live. I'll find you where you are.",
+  "runsCompleted": 3,
+  "settings": {
+    "typewriter": true,
+    "reducedMotion": false,
+    "highContrast": false,
+    "quality": "high",
+    "sound": true,
+    "textVersion": "v2",
+    "language": "en",
+    "dynamicScenery": true,
+    "renderScale": "standard",
+    "uiZoom": 1
+  },
+  "persona": {
+    "preset": "wanderer",
+    "name": "Marek",
+    "blurb": "Still looking for the exit that isn't a door."
+  },
+  "hasSeenHeartLoss": true
+}

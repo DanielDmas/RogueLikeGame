@@ -30,7 +30,16 @@ export interface Persona {
   blurb: string;
 }
 
+/** Bump this, write a migration in `localSave.ts`, and add a fixture test
+ * with a captured pre-change payload (docs/development README convention 9)
+ * whenever a persisted `Profile`/`RunState` field is renamed or re-typed —
+ * never for a purely additive, optional field (those survive spread-merge
+ * for free). */
+export const PROFILE_SCHEMA_VERSION = 1;
+
 export interface Profile {
+  /** Bumped only on a breaking rename/re-type, never on additive fields. */
+  schemaVersion: number;
   /** in-progress run, if any */
   run: RunState | null;
   /** persistent Field Notes codex (room ids + ending note ids) */
@@ -67,6 +76,7 @@ export interface Profile {
 
 export function defaultProfile(): Profile {
   return {
+    schemaVersion: PROFILE_SCHEMA_VERSION,
     run: null,
     codexUnlocked: [],
     endingsSeen: [],

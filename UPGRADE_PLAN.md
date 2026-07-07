@@ -698,13 +698,21 @@ into their named phases; 8 is watch-and-wait):
 
 ### Production-review additions (2026-07-06 — see `docs/development/11-production-review.md`)
 
-- [ ] R8. **Save integrity:** `Profile.schemaVersion` int; keep the previous
-      good payload under a `:backup` localStorage key on each successful
-      load; on parse failure restore from backup (quiet one-time title
-      notice), only then fall back to defaults. Capture a real
-      `v0.1.5-v2-beta` profile blob as a committed migration fixture.
-      Binding rule (docs README convention 9): never rename/re-type a
-      persisted field without a version bump + fixture test.
+- [x] R8. **Save integrity:** `Profile.schemaVersion` int (`PROFILE_SCHEMA_VERSION`,
+      `engine/saveStore.ts`); `LocalSaveStore.load()` (`engine/localSave.ts`)
+      keeps the previous good payload under a `:backup` localStorage key on
+      each successful load; on parse failure it restores from backup
+      (`wasRestoredFromBackup()` drives a one-time, quiet title-screen toast,
+      `ui/toast.ts`'s `showRestoredFromBackupToast`, EN+CS+FA), only then
+      falls back to defaults. A captured `v0.1.5-v2-beta` profile blob
+      (`test/fixtures/v0.1.5-v2-beta-profile.json`, pre-split `sound`
+      toggle, no `schemaVersion`/`keepsakes`/`examinedPathDefault`) is a
+      committed migration fixture, asserted to load cleanly and backfill
+      every current field (`saveIntegrity.test.ts`, 9 tests). Binding rule
+      (docs README convention 9, already in place): never rename/re-type a
+      persisted field without a version bump + fixture test. Live-verified:
+      a corrupted primary payload in a real browser correctly restores from
+      backup and shows the toast with the right text.
 - [ ] R9. **Profile export/import** in Settings → Data: download the profile
       as JSON; paste-import with a confirm step. Doubles as the player
       backup, cross-build (web ↔ Electron) transfer, and bug-repro channel.
