@@ -604,6 +604,13 @@ export class Game {
           ? { title, body: t(roomExplanationKey(room.id, i), stage.explanation), icon }
           : undefined,
       });
+      // The stage's beats just finished (the player clicked past the final
+      // "continue"); hide that text panel before mounting the choice cards.
+      // Without this, the two stack in `.stage-bottom`'s flex column at
+      // once — the leftover beat text (with its stale "continue" hint)
+      // sits directly above the choices instead of the choices taking the
+      // panel's place, silently misplacing everything below it.
+      this.text.hide();
       const available = stage.choices.filter((c) => !c.available || c.available(this.state));
       const choice: Choice = await this.choices.pick(available, this.state, room.id);
       sound.choice();
@@ -669,7 +676,13 @@ export class Game {
       // just made — after the outcome has fully landed, never before. A
       // no-op for every player who hasn't opted in (shouldShowReflections
       // is false whenever state.examined is falsy, which is the default).
+      // The outcome beats just finished (its "continue" was clicked); hide
+      // that panel first — TextPanel and ReflectionPanel each track and
+      // remove only their own element, so without this the reflection card
+      // (freshly prepended) lands *above* the now-stale outcome text instead
+      // of replacing it, the same misordering bug as the choice-cards case.
       if (shouldShowReflections(this.state, choice)) {
+        this.text.hide();
         await this.reflection.show(room.id, choice.id, choice.reflections!, this.profile.settings.reducedMotion);
       }
       if (this.state.hearts <= 0) break;

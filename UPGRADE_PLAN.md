@@ -1310,6 +1310,67 @@ into their named phases; 8 is watch-and-wait):
       straight to e.g. `door-that-asks` no longer re-offers `boulder`
       afterward. All five scripts verified green in this session.
 
+## Post-milestone bugfix — stage-bottom panel stacking (2026-07-07)
+
+Reported by the owner: "the text / descriptions of the doors are not in
+the right positions." Live verification in a real browser (`?uat=1`,
+screenshots + DOM rect dumps read) found a real bug, not a perception
+issue: `TextPanel`, `ChoicePanel`, and `ReflectionPanel` are three separate
+class instances that all mount their element into the same
+`.stage-bottom` flex column, and each only ever tracks/removes *its own*
+previously-mounted element. `engine/flow.ts` calling `choices.pick(...)`
+or `reflection.show(...)` immediately after a `text.playBeats(...)`
+resolves — without an intervening `text.hide()` — left the stale beat text
+(with its already-clicked "continue" hint) mounted while the new panel
+was `prepend()`ed next to or above it. Two call sites had this bug:
+
+1. **In-room choices** (the reported symptom): after a stage's beats
+   finished, `choices.pick(...)` was called with no `text.hide()` first —
+   screenshotted live, the leftover beat panel (with "CONTINUE") sat
+   directly above the 4 choice cards, pushing everything down and reading
+   as misplaced/duplicated text.
+2. **Examined Path reflection card** (found via the same audit, not
+   separately reported): `reflection.show(...)` was likewise called with
+   no `text.hide()` first. Since both `TextPanel.replacePanel` and
+   `ReflectionPanel.replacePanel` call `prepend()`, the reflection card
+   landed *above* the outcome text it was commenting on — screenshotted
+   live showing "The Annex Files" rendered above "THE JUNCTION"'s own
+   outcome beat, backwards from the intended reading order.
+
+The door picker's `text.showBark(...)` immediately before
+`choices.pickDoor(...)` is the one *intentional* case of two stage-bottom
+panels coexisting (a one-line Usher bark stays visible above the door
+row) — confirmed not a bug and left alone. Audited every other
+`.prepend()`/`.appendChild()` site in `src/ui/*.ts`; no other component
+shares `.stage-bottom` with these three, so the bug was fully contained to
+the two call sites above.
+
+**Fix:** one `this.text.hide()` added immediately before each of the two
+call sites (`engine/flow.ts`).
+
+**Tests added, per the owner's request to catch "these and other things
+and issues" broadly:**
+- `src/test/panelLifecycle.test.ts` — a fast, browser-free source-level
+  invariant (mirrors `flagAudit.test.ts`'s "generated registry" pattern):
+  scans `flow.ts` and asserts every `choices.pick(...)`/`reflection.show(
+  ...)` call is immediately preceded by `text.hide()` (never a dangling
+  `playBeats()`), and `choices.pickDoor(...)` is preceded by `text.hide()`
+  or the intentional `text.showBark()`. Verified this test genuinely
+  catches the regression (reverted the fix locally, confirmed the test
+  fails with the exact diagnostic, reapplied the fix, confirmed green).
+- `tests/uat/12-choice-panel-replaces-text.mjs` and
+  `tests/uat/13-reflection-panel-replaces-text.mjs` — the genuine
+  browser-rendered checks, one script each (a combined single script was
+  tried first, matching the shape of the fix's two call sites, but a
+  second sequential `withPage()` browser launch in one Node process
+  destabilized this sandbox's headless Chromium after several minutes of
+  interaction; split into two single-`withPage()` scripts, both verified
+  green, matching every other script in the suite and CLAUDE.md's
+  "small, focused scripts" rule).
+
+`npx tsc --noEmit` clean; `npx vitest run` — 476 tests passing (up from
+471). `tests/uat/README.md` updated (13 scripts now).
+
 ## Implementation order
 
 **S1 first**, then **K → N → M → L → O → P → Q → R (except R4) → S → R4

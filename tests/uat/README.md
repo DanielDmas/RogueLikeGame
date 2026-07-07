@@ -1,12 +1,12 @@
 # Committed UAT suite (Milestone 5, Phase S §S7, §S2)
 
-Eleven stable Playwright scripts, each verifying one thing this milestone's
-ad hoc scratchpad scripts kept re-deriving from scratch every session. They
-are plain Node scripts (not a test-runner suite) — each is self-contained,
-prints one `PASS` line on success, and throws on the first failed
-assertion.
+Thirteen stable Playwright scripts, each verifying one thing this
+milestone's ad hoc scratchpad scripts kept re-deriving from scratch every
+session. They are plain Node scripts (not a test-runner suite) — each is
+self-contained, prints one `PASS` line on success, and throws on the first
+failed assertion.
 
-## Why these eleven
+## Why these thirteen
 
 | Script | Verifies |
 |---|---|
@@ -21,6 +21,17 @@ assertion.
 | `09-transition-garble.mjs` (M4 H3) | A burst of screenshots during an act-gate door walkthrough shows at least one non-black frame (no fully-disposed/garbled frame). |
 | `10-troll.mjs` | Spamming clicks/keys/resizes/language switches at the title screen for ~20s raises zero uncaught page errors. |
 | `11-i18n-matrix.mjs` | Czech and Farsi taglines differ from the English fallback, and Farsi correctly flips the document to RTL. |
+| `12-choice-panel-replaces-text.mjs` | The in-room choice cards fully replace the beat text panel — no stale `.text-panel` left stacked with `.choices` in `.stage-bottom` (regression for a real bug: a missing `text.hide()` before `choices.pick(...)`). |
+| `13-reflection-panel-replaces-text.mjs` | The Examined Path's reflection card fully replaces the outcome text panel — sibling regression to 12 (a missing `text.hide()` before `reflection.show(...)` let the commentary render *above* the outcome it was about). |
+
+`src/test/panelLifecycle.test.ts` guards the same two invariants at the
+source level (fast, no browser) — 12 and 13 are the genuine rendered
+checks. Both were built as *one* script initially, matching the shape of
+the other twelve, but a second sequential `withPage()` browser launch in
+one Node process was observed to destabilize this sandbox's headless
+Chromium (hangs/crashes after several minutes of interaction) — split into
+two single-`withPage()` scripts instead, matching every other script in
+this suite and the "small, focused scripts" rule below.
 
 Scripts 06-11 (Milestone 5 Phase S2, "M4's deferred verification debt")
 are each scoped down from the spec's original sketch (see each script's
@@ -51,6 +62,8 @@ multi-viewport/multi-panel coverage the spec originally sketched.
    node tests/uat/09-transition-garble.mjs
    node tests/uat/10-troll.mjs
    node tests/uat/11-i18n-matrix.mjs
+   node tests/uat/12-choice-panel-replaces-text.mjs
+   node tests/uat/13-reflection-panel-replaces-text.mjs
    ```
    Each opens its own fresh, isolated browser context (no shared
    `localStorage` between scripts) and finishes in well under CLAUDE.md's
