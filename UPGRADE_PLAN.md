@@ -811,7 +811,7 @@ into their named phases; 8 is watch-and-wait):
       --check electron/main.cjs` confirms valid syntax; `tsc`/`vitest`
       (419 tests, unaffected since Electron's main process isn't part of
       the TS test suite) still clean.
-- [ ] R3. Czech **and Farsi** quality pass — idiomatic reframing, terminology
+- [x] R3. Czech **and Farsi** quality pass — idiomatic reframing, terminology
       settled. **Scope note added 2026-07-06:** `CLAUDE.md` now has a binding
       translation rule (context-first, reread against the English source and
       the specific room's situation before shipping a line — never a literal/
@@ -854,15 +854,48 @@ into their named phases; 8 is watch-and-wait):
       (`.bak` extension, outside the build) before any edits, so the
       original renderings remain diffable/revertible.
 
-      **Still open** (not touched this pass — scoped out as "original
-      rooms" only): UI strings (`cs.ts`/`fa.ts`), dynamic-beat overrides
-      (`cs-dynamic.ts`/`fa-dynamic.ts`), and endings (`cs-endings.ts`/
-      `fa-endings.ts`). Reflections and epiphanies were already written
-      under the rule this milestone and don't need re-auditing. `npx tsc
-      --noEmit` and `npx vitest run` (415 tests, incl. `i18n.test.ts` and
+      Reflections and epiphanies were already written under the rule this
+      milestone and don't need re-auditing. `npx tsc --noEmit` and `npx
+      vitest run` (415 tests, incl. `i18n.test.ts` and
       `translationCoverage.test.ts`) clean; live-verified in a real browser
       (English and Czech) that the new beat and fixed hint render correctly
       in `casino-pascal`.
+
+      **2026-07-07 — remaining slice done: UI strings, dynamic beats,
+      endings.** Read `cs.ts`/`fa.ts` (UI chrome, act intros, Usher barks,
+      room titles/hints/teasers, keepsakes), `cs-dynamic.ts`/`fa-dynamic.ts`
+      (state-reactive beat overrides), and `cs-endings.ts`/`fa-endings.ts`
+      (all 7 endings' beats and field notes) in full, line by line, against
+      their English source and each line's actual on-screen situation.
+      Verdict: also already high-quality, idiomatic, correctly-registered
+      prose (formal address consistently used in both languages;
+      Czech's vocative `travellerFallback` ("poutníku") and Farsi's
+      comma-address convention both correctly reused for the new R7
+      `{name}` insertions) — no mistranslations or tone breaks found in
+      either language across any of the six files. Two fixes carried over
+      from R10's citation-accuracy audit, propagated to their CS/FA
+      mirrors in the same pass (R10 was EN-first by design; this is the
+      "propagate inside R3" step the R10 entry promised):
+      1. `cs-endings.ts`'s `return` field note had the same "Innana" typo
+         as the English source — fixed to "Inanna" (Farsi's transliteration
+         was already correct, no fix needed there).
+      2. The fabricated Rilke "dragons guarding our deepest treasure"
+         quote in the `fortress` ending's field note — replaced in both
+         `cs-endings.ts` and `fa-endings.ts` with the same paraphrase of
+         Rilke's actual, verifiable dragon/princess image used in the
+         English fix.
+      Two more R10 corrections live in room field notes translated
+      separately from the endings/UI files (`cs-rooms-act2.ts`/
+      `fa-rooms-act2.ts` for casino-pascal's Pascal attribution;
+      `cs-rooms.ts`/`fa-rooms.ts` for quiet-alarm's Kitty Genovese framing)
+      — found and fixed the same way: "Pascal, vynálezce/مخترع teorie
+      pravděpodobnosti/نظریه‌ی احتمال" (inventor) softened to "jeden ze
+      zakladatelů/یکی از بنیان‌گذاران" (a founder/founding figure) in both
+      languages; the Genovese witness-count framing reworded in both
+      languages to flag it as exaggerated rather than settled fact,
+      mirroring the English R10 fix. `npx tsc --noEmit` clean; `npx vitest
+      run` — 432 tests passing, unchanged (this was a content-only pass,
+      no new tests).
 - [ ] R4. German + French packs — **lowest priority; may slip to M6**
 - [x] R5. **Content-pipeline validation tests + "twenty rooms" continuity
       fix.** New `src/test/contentPipeline.test.ts` walks `allRooms` and
