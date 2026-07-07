@@ -896,14 +896,36 @@ into their named phases; 8 is watch-and-wait):
       construction) rather than a blander word-for-word fix. Did not touch
       the deliberately-frozen legacy `v1-en.ts` text. `npx tsc --noEmit`
       clean; `npx vitest run` — 425 tests passing (419 prior + 6 new).
-- [ ] R6. Dead-flag audit: every set flag gains a reader (CI-enforced).
-      **Wording extended per production review (doc 11, §A4):** implement as
-      a *generated registry test*, not a one-off — collect every
-      `effects.flags` writer and every `hasFlag`/`choseIn`/`choseInPrior`
-      reader from content+engine, assert the sets match (explicit allowlist
-      for intentional one-ways). The registry then *is* the test and cannot
-      rot. Also record the Usher invariant here: he reads state, never
-      changes it (docs README convention 9).
+- [x] R6. **Dead-flag audit: every set flag gains a reader (CI-enforced).**
+      Implemented as a generated registry test, not a one-off snapshot —
+      `src/test/flagAudit.test.ts` recomputes both sides from source on
+      every run. "Written" = every literal in some choice's `effects.flags`
+      across `allRooms`. "Read" = every literal passed to `hasFlag(state,
+      '...')` anywhere under `src/content`/`src/engine` (scanned as text via
+      the same `readdirSync`/`readFileSync` walk `uiKeyCoverage.test.ts`
+      already uses, so it also catches the per-language dynamic-beat
+      override files, which read flags but don't import `allRooms`), plus
+      every flag consumed as a keepsake earn-trigger
+      (`KEEPSAKE_TRIGGERS`, read positionally in `flow.ts`, not via
+      `hasFlag`). Found 11 flags ever written; 9 have a reader (6 via
+      `hasFlag`, 4 via `KEEPSAKE_TRIGGERS`, one — `saved-photo` — via both).
+      The remaining 2 (`pushed`, `kept-bridge`, both set by the Junction's
+      trolley choices) are genuinely never read via `hasFlag` — the
+      Junction's outcome is instead queried by room+choice id via
+      `choseIn`/`choseInPrior` (understory.ts's `the-echo`, act4.ts's
+      door-that-asks, and the per-language dynamic beats), so the flag
+      itself is redundant for lookups but still correct to keep as the
+      canonical record of "this happened." Recorded as an explicit,
+      reasoned `ALLOWLIST` entry rather than deleted or silently ignored;
+      a second test asserts the allowlist itself can't go stale (every
+      entry must still be an actually-written flag), and a third confirms
+      the reverse direction — no `hasFlag` call reads a flag that no room
+      ever writes (would catch a typo). **Usher invariant recorded:**
+      re-verified by inspection that `content/usher.ts` only ever *reads*
+      `RunState` (`s.hearts`) and never calls `applyEffects` or mutates
+      state — the persona layer stays read-only, per docs README
+      convention 9. `npx tsc --noEmit` clean; `npx vitest run` — 429 tests
+      passing (425 prior + 4 new).
 - [ ] R7. Persona whisper pass: exactly four `{name}`/blurb touches, never on
       door screens
 
