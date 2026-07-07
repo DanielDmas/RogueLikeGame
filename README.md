@@ -8,6 +8,10 @@ Your guide is **the Usher**: a shadow wearing both a halo and a small pair of ho
 
 ## Playing
 
+**Play in the browser:** https://danieldmas.github.io/RogueLikeGame/
+
+Or run it locally:
+
 ```bash
 npm install
 npm run dev       # play at the printed local URL

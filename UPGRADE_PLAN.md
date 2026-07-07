@@ -774,7 +774,23 @@ into their named phases; 8 is watch-and-wait):
 
 ## Phase R — Platform, language & engine health (spec `08-platform-localization-engine-health.md`)
 
-- [ ] R1. GitHub Pages deploy workflow + play-in-browser link + favicon/tab title
+- [x] R1. **GitHub Pages deploy workflow + play-in-browser link + favicon/tab
+      title.** New `.github/workflows/deploy-pages.yml` (`workflow_dispatch` +
+      `release: published`, `actions/configure-pages` →
+      `upload-pages-artifact` → `deploy-pages`, matching the spec's sketch
+      exactly). `index.html` already had a proper `<title>` and
+      `<meta name="description">`; added a `<link rel="icon">` — an inline
+      SVG data-URI door glyph (gold stroke on a near-black rounded square,
+      matching the game's palette) so no asset pipeline is needed. README
+      gained a "Play in the browser" line with the Pages URL. `vite.config.ts`
+      already has `base: './'`, so the build is Pages-compatible unchanged.
+      Verified: `npm run build` succeeds and the favicon/title/meta all land
+      correctly in `dist/index.html`; full `tsc`/`vitest` suite still green.
+      **Owner action still required (cannot be done from this session):**
+      repo Settings → Pages → Source: **GitHub Actions**, one-time, before the
+      workflow's first run will actually publish anything. The Pages URL in
+      the README (`https://danieldmas.github.io/RogueLikeGame/`) will 404
+      until that setting is flipped and the workflow runs once.
 - [ ] R2. Electron polish: icon, window-state memory, single-instance lock
 - [ ] R3. Czech **and Farsi** quality pass — idiomatic reframing, terminology
       settled. **Scope note added 2026-07-06:** `CLAUDE.md` now has a binding
