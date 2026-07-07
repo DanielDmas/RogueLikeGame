@@ -151,7 +151,7 @@ registerAll('v2', 'fa', {
   [uiKey('statLucidity')]: 'هوشیاری',
   [uiKey('statNewNotes')]: 'یادداشت‌های جدید',
   [uiKey('title')]: 'صفحه‌ی عنوان',
-  [uiKey('titleTagline')]: 'سفری در بیست اتاق · هر در یک پرسش است · راه بازگشت از میان آن‌هاست',
+  [uiKey('titleTagline')]: 'سفری میان اتاق‌ها · هر در یک پرسش است · راه بازگشت از میان آن‌هاست',
   [uiKey('travelerLabel')]: 'مسافر',
   [uiKey('travellerFallback')]: 'مسافر',
   [uiKey('archiveBlurbFallback')]: 'در پرونده توضیح بیشتری ثبت نشده',

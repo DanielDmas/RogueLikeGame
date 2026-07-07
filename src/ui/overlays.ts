@@ -47,7 +47,7 @@ export function showTitle(ui: HTMLElement, profile: Profile): Promise<TitleActio
       el(
         'div',
         'title-sub',
-        t(uiKey('titleTagline'), 'a journey of twenty rooms · every door is a question · the way back is through'),
+        t(uiKey('titleTagline'), 'a journey through the rooms · every door is a question · the way back is through'),
       ),
     );
     const how = el('div', 'how-to-play');

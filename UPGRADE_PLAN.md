@@ -864,7 +864,38 @@ into their named phases; 8 is watch-and-wait):
       (English and Czech) that the new beat and fixed hint render correctly
       in `casino-pascal`.
 - [ ] R4. German + French packs — **lowest priority; may slip to M6**
-- [ ] R5. Content-pipeline validation tests + "twenty rooms" continuity fix
+- [x] R5. **Content-pipeline validation tests + "twenty rooms" continuity
+      fix.** New `src/test/contentPipeline.test.ts` walks `allRooms` and
+      asserts, for every room: at least one stage; every stage has at least
+      two choices; every choice has non-empty `text` and at least one
+      `outcome` beat; every choice in a non-gate room has a non-empty
+      `hint`; every `keepsakeId` referenced by a choice resolves against
+      `KEEPSAKES` (`content/keepsakes.ts`); every `reflections` entry uses a
+      legal `Reflection.tradition` value (`consequence`/`duty`/`virtue`/
+      `care`) and non-empty text. 6 new tests, all passing.
+      **Continuity fix — wider than the spec's literal scope:** the spec
+      named only `src/content/endings.ts`'s Punchline ending, but the same
+      stale "twenty rooms" claim (verified via `content/rooms/index.ts`'s
+      `allRooms` composition: 33 rooms total — prologue + 8 + 9 + 9 + 3 +
+      3 understory — not twenty) also appeared in the title-screen tagline
+      (`uiKey('titleTagline')`), which is far higher-visibility than the
+      ending text. Fixed all 7 occurrences found across EN/CS/FA:
+      `src/content/endings.ts` (Punchline's beat 5 and field-note body),
+      `src/ui/overlays.ts` (English tagline fallback), `src/content/text/
+      cs.ts` + `fa.ts` (tagline translations), `src/content/text/
+      cs-endings.ts` + `fa-endings.ts` (both Punchline occurrences in each
+      language). Followed the project's existing "evergreen phrasing over
+      numbers that need upkeep" convention (matching how endings are
+      described as "six endings, and rumors" elsewhere) rather than
+      substituting a new hardcoded numeral — e.g. English "It took you
+      twenty rooms" (a deliberate category mistake, treating rooms as a
+      duration) became "It took you every room", preserving the same
+      rhetorical device without the number; the Czech and Farsi
+      field-note bodies were given an equivalent non-literal substitute
+      ("the whole building", matching the same category-mistake
+      construction) rather than a blander word-for-word fix. Did not touch
+      the deliberately-frozen legacy `v1-en.ts` text. `npx tsc --noEmit`
+      clean; `npx vitest run` — 425 tests passing (419 prior + 6 new).
 - [ ] R6. Dead-flag audit: every set flag gains a reader (CI-enforced).
       **Wording extended per production review (doc 11, §A4):** implement as
       a *generated registry test*, not a one-off — collect every

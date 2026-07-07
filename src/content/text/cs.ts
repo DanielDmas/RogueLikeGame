@@ -150,7 +150,7 @@ registerAll('v2', 'cs', {
   [uiKey('statLucidity')]: 'lucidita',
   [uiKey('statNewNotes')]: 'nové poznámky',
   [uiKey('title')]: 'Titulní obrazovka',
-  [uiKey('titleTagline')]: 'cesta dvaceti místnostmi · každé dveře jsou otázkou · cesta zpět vede skrz',
+  [uiKey('titleTagline')]: 'cesta všemi místnostmi · každé dveře jsou otázkou · cesta zpět vede skrz',
   [uiKey('travelerLabel')]: 'Poutník',
   [uiKey('travellerFallback')]: 'poutníku',
   [uiKey('archiveBlurbFallback')]: 've spisu není žádný další popis',
