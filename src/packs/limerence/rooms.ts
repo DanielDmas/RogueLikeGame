@@ -23,18 +23,21 @@ export const limerenceRooms: Room[] = [
           {
             id: 'ask-what-is-this-place',
             text: '"What is this place?"',
+            hint: 'a question about the hotel itself',
             effects: {},
             outcome: ['Porter: A place between one heartbeat and the next. That is all a hotel is.'],
           },
           {
             id: 'ask-whose-side',
             text: '"Whose side are you on?"',
+            hint: 'a question about the Porter',
             effects: {},
             outcome: ['Porter: The rooms’, mostly. They remember what people do in them.'],
           },
           {
             id: 'just-go-home',
             text: '"I just want to go home."',
+            hint: 'refuse the frame outright',
             effects: {},
             outcome: ['Porter: You will. Everyone does, eventually. The floors are simply on the way.'],
           },
@@ -53,8 +56,8 @@ export const limerenceRooms: Room[] = [
       {
         beats: ['The Room: This door leads somewhere real, eventually. Not tonight.'],
         choices: [
-          { id: 'placeholder-a', text: 'Placeholder choice A', effects: {}, outcome: ['The outcome is not yet written.'] },
-          { id: 'placeholder-b', text: 'Placeholder choice B', effects: {}, outcome: ['The outcome is not yet written.'] },
+          { id: 'placeholder-a', text: 'Placeholder choice A', hint: 'placeholder hint A', effects: {}, outcome: ['The outcome is not yet written.'] },
+          { id: 'placeholder-b', text: 'Placeholder choice B', hint: 'placeholder hint B', effects: {}, outcome: ['The outcome is not yet written.'] },
         ],
       },
     ],
@@ -88,8 +91,8 @@ export const limerenceRooms: Room[] = [
       {
         beats: ['The Room: This door leads somewhere real, eventually. Not tonight.'],
         choices: [
-          { id: 'placeholder-a', text: 'Placeholder choice A', effects: {}, outcome: ['The outcome is not yet written.'] },
-          { id: 'placeholder-b', text: 'Placeholder choice B', effects: {}, outcome: ['The outcome is not yet written.'] },
+          { id: 'placeholder-a', text: 'Placeholder choice A', hint: 'placeholder hint A', effects: {}, outcome: ['The outcome is not yet written.'] },
+          { id: 'placeholder-b', text: 'Placeholder choice B', hint: 'placeholder hint B', effects: {}, outcome: ['The outcome is not yet written.'] },
         ],
       },
     ],
@@ -123,8 +126,8 @@ export const limerenceRooms: Room[] = [
       {
         beats: ['The Room: This door leads somewhere real, eventually. Not tonight.'],
         choices: [
-          { id: 'placeholder-a', text: 'Placeholder choice A', effects: {}, outcome: ['The outcome is not yet written.'] },
-          { id: 'placeholder-b', text: 'Placeholder choice B', effects: {}, outcome: ['The outcome is not yet written.'] },
+          { id: 'placeholder-a', text: 'Placeholder choice A', hint: 'placeholder hint A', effects: {}, outcome: ['The outcome is not yet written.'] },
+          { id: 'placeholder-b', text: 'Placeholder choice B', hint: 'placeholder hint B', effects: {}, outcome: ['The outcome is not yet written.'] },
         ],
       },
     ],
@@ -158,8 +161,8 @@ export const limerenceRooms: Room[] = [
       {
         beats: ['Porter: The Top Floor is a fixed corridor. Coffee going cold. Kids asleep upstairs.'],
         choices: [
-          { id: 'stay-for-them', text: 'Stay, for them', effects: {}, outcome: ['You stay. The work starts tomorrow.'] },
-          { id: 'separate-well', text: 'Separate well', effects: {}, outcome: ['You leave with as much grace as the night allows.'] },
+          { id: 'stay-for-them', text: 'Stay, for them', hint: 'commit to the hard, unglamorous work', effects: {}, outcome: ['You stay. The work starts tomorrow.'] },
+          { id: 'separate-well', text: 'Separate well', hint: 'end it with as much grace as the night allows', effects: {}, outcome: ['You leave with as much grace as the night allows.'] },
         ],
       },
     ],
@@ -175,8 +178,8 @@ export const limerenceRooms: Room[] = [
       {
         beats: ['Porter: One message may leave the hotel tonight. Who is it for?'],
         choices: [
-          { id: 'write-it', text: 'Write it', effects: {}, outcome: ['You write one true sentence, and let it go.'] },
-          { id: 'leave-it-blank', text: 'Leave the page blank', effects: {}, outcome: ['Some things are said by never being sent.'] },
+          { id: 'write-it', text: 'Write it', hint: 'send the one message the hotel allows', effects: {}, outcome: ['You write one true sentence, and let it go.'] },
+          { id: 'leave-it-blank', text: 'Leave the page blank', hint: 'say it by never sending it', effects: {}, outcome: ['Some things are said by never being sent.'] },
         ],
       },
     ],

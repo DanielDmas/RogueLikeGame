@@ -1,24 +1,33 @@
 import { describe, expect, it } from 'vitest';
-import { allRooms } from '../content/rooms';
-import { KEEPSAKES } from '../content/keepsakes';
+import { anamnesisPack } from '../packs/anamnesis';
+import { limerencePack } from '../packs/limerence';
+import type { ContentPack } from '../packs/types';
 
 // M5 Phase R5 — content pipeline & continuity (spec 08 §7). Schema-validation
 // sweep over every authored room: catches broken content (a missing hint, an
 // empty outcome, a keepsakeId typo, an illegal reflections tradition) at
-// `vitest run` time instead of at playtest time.
+// `vitest run` time instead of at playtest time. Parameterized over every
+// pack (spec 09 §2) — LIMERENCE's L1 skeleton is small but held to the same
+// bar as ANAMNESIS's full room set, not exempted as a stub.
 
 const LEGAL_TRADITIONS = new Set(['consequence', 'duty', 'virtue', 'care']);
-const KEEPSAKE_IDS = new Set(KEEPSAKES.map((k) => k.id));
 
-describe('Milestone 5, Phase R5 — content pipeline validation', () => {
+const packs: { name: string; pack: ContentPack }[] = [
+  { name: 'anamnesis', pack: anamnesisPack },
+  { name: 'limerence', pack: limerencePack },
+];
+
+describe.each(packs)('Milestone 5, Phase R5 — content pipeline validation ($name)', ({ pack }) => {
+  const KEEPSAKE_IDS = new Set(pack.keepsakes.map((k) => k.id));
+
   it('every room has at least one stage', () => {
-    for (const room of allRooms) {
+    for (const room of pack.rooms) {
       expect(room.stages.length, `${room.id} has no stages`).toBeGreaterThanOrEqual(1);
     }
   });
 
   it('every stage has at least two choices', () => {
-    for (const room of allRooms) {
+    for (const room of pack.rooms) {
       room.stages.forEach((stage, i) => {
         expect(
           stage.choices.length,
@@ -29,7 +38,7 @@ describe('Milestone 5, Phase R5 — content pipeline validation', () => {
   });
 
   it('every choice has non-empty text and at least one outcome beat', () => {
-    for (const room of allRooms) {
+    for (const room of pack.rooms) {
       room.stages.forEach((stage, si) => {
         for (const choice of stage.choices) {
           expect(
@@ -46,7 +55,7 @@ describe('Milestone 5, Phase R5 — content pipeline validation', () => {
   });
 
   it('every choice in a non-gate room has a hint', () => {
-    for (const room of allRooms) {
+    for (const room of pack.rooms) {
       if (room.gate) continue;
       room.stages.forEach((stage, si) => {
         for (const choice of stage.choices) {
@@ -60,7 +69,7 @@ describe('Milestone 5, Phase R5 — content pipeline validation', () => {
   });
 
   it('every keepsakeId referenced by a choice is a defined keepsake', () => {
-    for (const room of allRooms) {
+    for (const room of pack.rooms) {
       for (const stage of room.stages) {
         for (const choice of stage.choices) {
           if (!choice.keepsakeId) continue;
@@ -74,7 +83,7 @@ describe('Milestone 5, Phase R5 — content pipeline validation', () => {
   });
 
   it('every reflections entry uses a legal tradition value', () => {
-    for (const room of allRooms) {
+    for (const room of pack.rooms) {
       for (const stage of room.stages) {
         for (const choice of stage.choices) {
           if (!choice.reflections) continue;
