@@ -8,6 +8,7 @@
 import type { ActId, Ending, Room, RunState, Axis, Reflection } from '../engine/schema';
 import type { Diorama } from '../scene/dioramas';
 import type { ThemeConfig, ThemeId, MoodType, MoodTint, GuideFigure } from '../scene/themes';
+import type { DoorStyle } from '../scene/doors';
 import type { ActKey, RoomAccent } from '../audio/soundEngine';
 import type { KeepsakeDef } from '../content/keepsakes';
 
@@ -98,6 +99,9 @@ export interface ContentPack {
      * this pack (`Settings.theme`). ANAMNESIS's single dark tone is
      * authored, not a default awaiting a light variant — false for it. */
     supportsLightTheme: boolean;
+    /** Door frame/slab styling — omit to inherit ANAMNESIS's own carved-wood
+     * defaults (spec 08 §3 row 16 pattern: engine default, pack override). */
+    doorStyle?: DoorStyle;
   };
 
   audio: {

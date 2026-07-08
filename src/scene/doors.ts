@@ -22,8 +22,6 @@ export interface DoorSet {
   dispose(): void;
 }
 
-const FRAME_MAT = new THREE.MeshStandardMaterial({ color: 0x241d14, roughness: 0.75 });
-
 /** Matches SceneDirector's camera home position — doors face the viewer, not a point behind them. */
 const CAMERA_HOME = new THREE.Vector3(0, 1.6, 7.6);
 export const DOOR_Z = -5.6;
@@ -40,7 +38,43 @@ export function hoverPulseIntensity(t: number, base: number, reducedMotion: bool
   return base + 0.15 * ((Math.sin(t * 2.2) + 1) / 2);
 }
 
-export function createDoors(specs: DoorSpec[]): DoorSet {
+export interface DoorStyle {
+  frameColor?: number;
+  /** jamb/lintel thickness (ANAMNESIS's carved-wood frame is thick; a
+   * sleeker pack can go thin). */
+  frameWidth?: number;
+  slabColor?: number;
+  slabColorSecret?: number;
+  glowColor?: number;
+  glowColorSecret?: number;
+  /** Extra per-door rotation jitter, radians, seeded per door index — 0
+   * (ANAMNESIS's default) keeps every door perfectly plumb; a small value
+   * reads as "not quite plumb," an intentionally unsettling asymmetry. */
+  skewJitter?: number;
+  /** Adds a second, slower/odd-frequency sine layered on the idle pulse —
+   * 0 (ANAMNESIS's default) is the original single-wave breathing; a small
+   * value reads as a faintly unsteady, "faulty fluorescent" quality.
+   * Always disabled under reducedMotion, same as the base pulse. */
+  unsteadyPulse?: number;
+}
+
+/** Deterministic pseudo-random in [-1, 1] from an integer seed — no Math.random
+ * so a door's skew is stable across re-renders of the same door row. */
+function seededSigned(seed: number): number {
+  const x = Math.sin(seed * 12.9898) * 43758.5453;
+  return (x - Math.floor(x)) * 2 - 1;
+}
+
+export function createDoors(specs: DoorSpec[], style: DoorStyle = {}): DoorSet {
+  const frameColor = style.frameColor ?? 0x241d14;
+  const frameWidth = style.frameWidth ?? 0.18;
+  const slabColor = style.slabColor ?? 0x2a2014;
+  const slabColorSecret = style.slabColorSecret ?? 0x241d33;
+  const glowColor = style.glowColor ?? 0xd4b36a;
+  const glowColorSecret = style.glowColorSecret ?? 0x8a6fd4;
+  const skewJitter = style.skewJitter ?? 0;
+  const unsteadyPulse = style.unsteadyPulse ?? 0;
+  const FRAME_MAT = new THREE.MeshStandardMaterial({ color: frameColor, roughness: 0.75 });
   const group = new THREE.Group();
   const meshes: THREE.Mesh[] = [];
   const slabs = new Map<string, THREE.MeshStandardMaterial>();
@@ -57,17 +91,19 @@ export function createDoors(specs: DoorSpec[]): DoorSet {
     const door = new THREE.Group();
     door.position.set(x, 0, DOOR_Z);
     door.lookAt(CAMERA_HOME);
+    if (skewJitter) door.rotation.z += seededSigned(i * 7.31) * skewJitter;
 
-    const jambL = new THREE.Mesh(new THREE.BoxGeometry(0.18, 3.1, 0.3), FRAME_MAT);
+    const jambL = new THREE.Mesh(new THREE.BoxGeometry(frameWidth, 3.1, 0.3), FRAME_MAT);
     jambL.position.set(-0.85, 1.55, 0);
     const jambR = jambL.clone();
     jambR.position.x = 0.85;
-    const lintel = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.18, 0.3), FRAME_MAT);
+    const lintel = new THREE.Mesh(new THREE.BoxGeometry(1.9, frameWidth, 0.3), FRAME_MAT);
     lintel.position.set(0, 3.15, 0);
 
+    const doorGlow = spec.secret ? glowColorSecret : glowColor;
     const slabMat = new THREE.MeshStandardMaterial({
-      color: spec.secret ? 0x241d33 : 0x2a2014,
-      emissive: spec.secret ? 0x8a6fd4 : 0xd4b36a,
+      color: spec.secret ? slabColorSecret : slabColor,
+      emissive: doorGlow,
       emissiveIntensity: BASE_INTENSITY,
       roughness: 0.55,
     });
@@ -78,11 +114,11 @@ export function createDoors(specs: DoorSpec[]): DoorSet {
     phases.set(spec.id, i * 1.7);
     meshes.push(slab);
 
-    const glow = new THREE.PointLight(spec.secret ? 0x8a6fd4 : 0xd4b36a, 1.5, 6, 1.9);
+    const glow = new THREE.PointLight(doorGlow, 1.5, 6, 1.9);
     glow.position.set(0, 1.6, 0.7);
 
     // a soft pool of light on the floor beneath the door — unmistakably an interactive threshold
-    const pool = new THREE.PointLight(spec.secret ? 0x8a6fd4 : 0xd4b36a, 0.8, 4.5, 2.1);
+    const pool = new THREE.PointLight(doorGlow, 0.8, 4.5, 2.1);
     pool.position.set(0, 0.05, 0.9);
 
     door.add(jambL, jambR, lintel, slab, glow, pool);
@@ -95,9 +131,10 @@ export function createDoors(specs: DoorSpec[]): DoorSet {
   });
 
   // Outer jamb edge (half-width) and lintel-top height, matching the frame
-  // geometry above (jamb centers at ±0.85, width 0.18; lintel at y 3.15, height 0.18).
-  const FRAME_HALF_WIDTH = 0.94;
-  const FRAME_TOP_Y = 3.24;
+  // geometry above (jamb centers at ±0.85, lintel at y 3.15) plus half the
+  // (possibly overridden) frame thickness.
+  const FRAME_HALF_WIDTH = 0.85 + frameWidth / 2;
+  const FRAME_TOP_Y = 3.15 + frameWidth / 2;
 
   return {
     group,
@@ -125,7 +162,14 @@ export function createDoors(specs: DoorSpec[]): DoorSet {
           mat.emissiveIntensity = hoverPulseIntensity(t, BASE_INTENSITY, reducedMotion);
         } else {
           const phase = phases.get(doorId) ?? 0;
-          mat.emissiveIntensity = BASE_INTENSITY + Math.sin(t * 1.4 + phase) * PULSE_AMPLITUDE;
+          let intensity = BASE_INTENSITY + Math.sin(t * 1.4 + phase) * PULSE_AMPLITUDE;
+          // A second, slower, odd-frequency wave layered on top — a small,
+          // continuous unsteadiness, never a strobe. Disabled under
+          // reducedMotion, same guarantee the base pulse already gives.
+          if (unsteadyPulse && !reducedMotion) {
+            intensity += Math.sin(t * 0.37 + phase * 2.3) * unsteadyPulse;
+          }
+          mat.emissiveIntensity = intensity;
         }
       }
     },

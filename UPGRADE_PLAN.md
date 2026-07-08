@@ -1477,7 +1477,30 @@ ANAMNESIS's exact values so its five scenes are pixel-unchanged) plus two
 new small builders for the Top Floor and the ending space.
 `SoundEngine.configurePack()` lets LIMERENCE override its chord
 progressions/mote scales — minor-leaning per floor, resolving to a held
-major chord at the ending. **Still real L5 work, not pulled forward:**
+major chord at the ending.
+
+**Further pulled forward from L5, on explicit owner request (2026-07-08,
+round 2):** door and "window" (panel) chrome now diverges by pack too, not
+just color. `scene/doors.ts` gained a `DoorStyle` param (frame
+color/width, slab/glow colors, `skewJitter`, `unsteadyPulse` — all
+optional, defaulting to ANAMNESIS's exact original carved-wood geometry
+and gold/violet glow) threaded through `SceneDirector.showDoors()` via
+`pack.visuals.doorStyle`. LIMERENCE's doors are a thin steel-dark frame
+with amber/teal glow, each sitting a fraction of a degree off plumb and
+carrying a second, slower wave under the idle breathing pulse — small,
+continuous, never a strobe, fully off under reducedMotion, reading as
+21st-century-modern and quietly unsettling rather than gothic. `styles.css`
+gives LIMERENCE's text panels/field notes/reflection cards/choice cards
+their own geometry under `body.pack-limerence`: `--serif` redefined to the
+sans stack, asymmetric single-corner `clip-path` cuts (a different cut per
+element type) instead of ANAMNESIS's uniform rounding, a hard offset
+`box-shadow` instead of the soft gold glow, and a one-shot CSS scan-line
+sweep on choice-card hover/focus (disabled under `.reduced-motion`, same
+guarantee every other animation in the file already gives). Covered by 79
+new tests this round: `packDoors.test.ts` (16, incl. an ANAMNESIS
+regression pin and a LIMERENCE-distinctness suite), plus the prior
+`packGraph`/`packScene`/`packAudio`/`limerenceAct1` batch (63) — full suite
+at 593/593 green throughout. **Still real L5 work, not pulled forward:**
 bespoke room dioramas (two phones on one bed, the migrating wall/window,
 etc.), the Porter's own figure rig (currently reuses the Usher's), the
 hearts→Trust visual re-skin, door-bark dread pass, UAT pack matrix.

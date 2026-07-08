@@ -599,3 +599,81 @@ body.rtl .choice-card, body.rtl .about-body, body.rtl .persona-blurb-btn, body.r
   text-align: right;
 }
 body.rtl .door-tip { text-align: center; }
+
+/* ---------- LIMERENCE: modern chrome, artistically unsettling ----------
+   ANAMNESIS's windows are classical: soft gold glow, rounded corners, a
+   literary serif. LIMERENCE asked for the opposite register — 21st-century
+   clean, not gothic-warm, with a deliberate, small wrongness in the
+   geometry so ambiguity is felt in the frame, not just read in the text.
+   Three moves, each restrained on purpose:
+     1. Typography: --serif is redefined to the sans stack for this pack
+        only, so every beat/choice/title (all already written with
+        var(--serif)) goes modern-grotesque without touching those rules.
+     2. Geometry: near-square corners plus one corner of every panel is cut
+        on a diagonal (clip-path) — a clean rectangle with a single
+        deliberate imperfection, rather than ANAMNESIS's uniform rounding.
+     3. Motion: a single one-shot "scan" line sweeps a choice card on
+        hover/focus (a modern-UI micro-interaction, not a loop) — no
+        flashing, no strobing, fully removed under .reduced-motion, same
+        guarantee every other animation in this file already gives. */
+body.pack-limerence {
+  --serif: var(--sans);
+}
+
+body.pack-limerence .text-panel,
+body.pack-limerence .field-note,
+body.pack-limerence .reflection-card {
+  border-radius: 3px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 22px 100%, 0 calc(100% - 22px));
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px);
+}
+body.pack-limerence.theme-light .text-panel,
+body.pack-limerence.theme-light .field-note,
+body.pack-limerence.theme-light .reflection-card {
+  box-shadow: 4px 4px 0 rgba(60, 50, 35, 0.12);
+}
+
+body.pack-limerence .room-title {
+  letter-spacing: 0.38em;
+}
+
+body.pack-limerence .choice-card {
+  border-radius: 2px;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%);
+  position: relative;
+  overflow: hidden;
+}
+body.pack-limerence .choice-card::after {
+  content: '';
+  position: absolute; left: -30%; top: 0; bottom: 0; width: 30%;
+  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  transform: translateX(0);
+  opacity: 0;
+  pointer-events: none;
+}
+body.pack-limerence .choice-card:hover::after,
+body.pack-limerence .choice-card:focus-visible::after {
+  animation: limerence-scan 0.6s var(--ease) forwards;
+}
+@keyframes limerence-scan {
+  0% { transform: translateX(0); opacity: 0; }
+  15% { opacity: 0.6; }
+  100% { transform: translateX(430%); opacity: 0; }
+}
+body.pack-limerence.reduced-motion .choice-card::after {
+  display: none;
+}
+
+body.pack-limerence .choice-card.door.secret {
+  border-color: rgba(90, 168, 168, 0.4);
+}
+body.pack-limerence .choice-card.door.secret .txt,
+body.pack-limerence .choice-card.door.secret .door-rune {
+  color: #6fc2c2;
+}
+
+body.pack-limerence .title-word {
+  letter-spacing: 0.3em;
+  font-weight: 600;
+}

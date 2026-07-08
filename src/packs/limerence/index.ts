@@ -174,6 +174,22 @@ export const limerencePack: ContentPack = {
     dioramaFor: () => null, // bespoke room dioramas are L5 work
     dioramaAccentHooks: [],
     supportsLightTheme: true,
+    // A sleeker, cooler modern-hotel door — thin steel-dark frame instead of
+    // carved wood, amber/teal glow instead of gold/violet, and two small
+    // "artistically unsettling" touches: every door sits a fraction of a
+    // degree off plumb (skewJitter), and its idle glow carries a second,
+    // slower wave under the normal breathing pulse (unsteadyPulse) — never
+    // a strobe, always off under reducedMotion, just faintly not-quite-still.
+    doorStyle: {
+      frameColor: 0x15171a,
+      frameWidth: 0.09,
+      slabColor: 0x1c2226,
+      slabColorSecret: 0x1a1520,
+      glowColor: 0xd89055,
+      glowColorSecret: 0x5aa8a8,
+      skewJitter: 0.018,
+      unsteadyPulse: 0.025,
+    },
   },
 
   audio: {

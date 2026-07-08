@@ -357,7 +357,7 @@ export class SceneDirector {
 
   showDoors(specs: DoorSpec[]) {
     this.hideDoors();
-    this.doors = createDoors(specs);
+    this.doors = createDoors(specs, this.visuals.doorStyle);
     this.scene.add(this.doors.group);
     this.doorSpecs = new Map(specs.map((s) => [s.id, s]));
     // Always frame from a consistent, correctly-centered position — not
