@@ -1,15 +1,61 @@
 // The LIMERENCE ContentPack — L1 skeleton (spec
-// docs/design-limerence/09-milestones-testing.md, milestone L1). Boots a
-// second, structurally-real pack through the same engine as ANAMNESIS,
-// proving the ContentPack seam; the visuals/guide fields below borrow
-// ANAMNESIS's rig as an explicit placeholder — LIMERENCE's own hotel skin
-// (sodium-lamp amber, the Porter's desk-lamp lantern) is L5 work.
+// docs/design-limerence/09-milestones-testing.md, milestone L1), now
+// carrying LIMERENCE's own 3D scene palette (theme.ts) and generative music
+// identity (below) — real, not placeholder. Still borrowed as an explicit
+// placeholder: the Usher rig (the Porter's own desk-lamp-lantern figure is
+// L5 work) and the hearts SVG (the Trust re-skin is also L5).
+import type { ActKey } from '../../audio/soundEngine';
 import type { ContentPack, EpiphanyDef } from '../types';
 import type { ActId, RunState } from '../../engine/schema';
 import { limerenceRooms } from './rooms';
 import { limerenceEndings } from './endings';
-import { usherFigure, buildTheme, MOOD_TINTS } from '../../scene/themes';
+import { usherFigure } from '../../scene/themes';
+import { limerenceBuildTheme, LIMERENCE_FOG_COLOR_BY_THEME, LIMERENCE_MOOD_TINTS } from './theme';
 import { HEART_SVG } from '../../ui/dom';
+
+/** Minor-leaning progressions per floor (spec `docs/design-limerence/`
+ * creative bible: "act progressions in minor-leaning keys"), warming toward
+ * a held major chord at the very end — melancholic through most of a run,
+ * resolving rather than staying bleak, matching the charter's "uplift, but
+ * never false comfort" register. */
+const LIMERENCE_ACT_PROGRESSIONS: Record<ActKey, number[][]> = {
+  0: [
+    [110, 130.81, 164.81], // A minor — the Front Desk, half-asleep
+    [73.42, 87.31, 110], // D minor
+  ],
+  1: [
+    [110, 130.81, 164.81], // A minor — Ground Floor
+    [130.81, 164.81, 196], // C major (relative major — a little hope)
+    [82.41, 98, 123.47], // E minor
+  ],
+  2: [
+    [82.41, 98, 123.47], // E minor — Second Floor, colder
+    [92.5, 110, 138.59], // F# minor
+    [73.42, 87.31, 110], // D minor
+  ],
+  3: [
+    [73.42, 87.31, 110], // D minor — Long-Stay Wing, settled and melancholic
+    [87.31, 103.83, 130.81], // F minor
+    [110, 130.81, 164.81], // A minor
+  ],
+  4: [
+    [87.31, 110, 130.81], // F major — Top Floor, nearing dawn
+    [110, 130.81, 164.81], // A minor
+    [130.81, 164.81, 196], // C major
+  ],
+  5: [
+    [130.81, 164.81, 196], // C major, held — the morning after
+  ],
+};
+
+const LIMERENCE_ACT_MOTE_SCALES: Record<ActKey, number[]> = {
+  0: [220, 246.94, 261.63, 293.66, 329.63],
+  1: [220, 261.63, 293.66, 329.63, 392],
+  2: [196, 220, 246.94, 293.66, 329.63],
+  3: [174.61, 196, 220, 261.63, 293.66],
+  4: [174.61, 220, 261.63, 293.66, 349.23],
+  5: [261.63, 329.63, 392, 440, 523.25],
+};
 
 const ACT_NAMES_EN: Record<ActId, string> = {
   0: 'The Front Desk',
@@ -100,14 +146,18 @@ export const limerencePack: ContentPack = {
   visuals: {
     iconFor: () => undefined,
     endingIcons: {},
-    buildTheme, // placeholder — the hotel palette lands at L5
-    moodTints: MOOD_TINTS,
-    dioramaFor: () => null,
+    buildTheme: limerenceBuildTheme,
+    moodTints: LIMERENCE_MOOD_TINTS,
+    fogColorByTheme: LIMERENCE_FOG_COLOR_BY_THEME,
+    dioramaFor: () => null, // bespoke room dioramas are L5 work
     dioramaAccentHooks: [],
+    supportsLightTheme: true,
   },
 
   audio: {
     roomAccents: {},
+    actProgressions: LIMERENCE_ACT_PROGRESSIONS,
+    actMoteScales: LIMERENCE_ACT_MOTE_SCALES,
   },
 
   hooks: {

@@ -11,6 +11,42 @@
   --panel-edge: rgba(212, 179, 106, 0.18);
   --danger: #b3543f;
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --field-note-grad: linear-gradient(180deg, #171410 0%, #100e0b 100%);
+  --overlay-grad: radial-gradient(ellipse at 50% 40%, rgba(16, 15, 18, 0.88) 0%, rgba(5, 5, 7, 0.97) 100%);
+}
+
+/* ---------- LIMERENCE: "The Interval" — a hotel at 3 a.m. shading toward
+   dawn. Sodium-lamp amber + corridor teal, distinct from ANAMNESIS's warm
+   gothic gold. ANAMNESIS keeps its single authored tone — no override here
+   applies to it. Dark is the default register (the hotel at night); the
+   optional light variant is the morning-after read of the same palette,
+   not a different game. */
+body.pack-limerence {
+  --ink: #ede7dd;
+  --ink-dim: #b8ab9a;
+  --ink-faint: #7a6f60;
+  --gold: #e0995a;
+  --gold-dim: rgba(224, 153, 106, 0.35);
+  --bg: #0d1116;
+  --panel: rgba(13, 17, 22, 0.84);
+  --panel-edge: rgba(90, 168, 168, 0.2);
+  --danger: #b3543f;
+  --field-note-grad: linear-gradient(180deg, #171d20 0%, #0e1215 100%);
+  --overlay-grad: radial-gradient(ellipse at 50% 40%, rgba(15, 19, 24, 0.9) 0%, rgba(6, 8, 10, 0.97) 100%);
+}
+
+body.pack-limerence.theme-light {
+  --ink: #2b2620;
+  --ink-dim: #5c5346;
+  --ink-faint: #8a8071;
+  --gold: #b8763a;
+  --gold-dim: rgba(184, 118, 58, 0.28);
+  --bg: #f2ece0;
+  --panel: rgba(255, 251, 244, 0.9);
+  --panel-edge: rgba(90, 140, 140, 0.3);
+  --danger: #a13f2e;
+  --field-note-grad: linear-gradient(180deg, #fffaf2 0%, #f3ecdf 100%);
+  --overlay-grad: radial-gradient(ellipse at 50% 40%, rgba(246, 240, 228, 0.92) 0%, rgba(234, 224, 206, 0.97) 100%);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -245,7 +281,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
   width: min(1040px, calc(100% - 40px));
   position: absolute; left: 50%; bottom: 0; transform: translate(-50%, 105%);
   z-index: 55; /* above .overlay (50): the codex screen opens field notes on top of itself */
-  background: linear-gradient(180deg, #171410 0%, #100e0b 100%);
+  background: var(--field-note-grad);
   border: 1px solid var(--gold-dim); border-bottom: none;
   border-radius: 16px 16px 0 0;
   padding: 30px 38px 26px;
@@ -314,7 +350,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 .overlay {
   position: absolute; inset: 0; z-index: 50;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  background: radial-gradient(ellipse at 50% 40%, rgba(16, 15, 18, 0.88) 0%, rgba(5, 5, 7, 0.97) 100%);
+  background: var(--overlay-grad);
   backdrop-filter: blur(6px);
   padding: 30px; overflow-y: auto;
 }

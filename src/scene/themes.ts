@@ -12,7 +12,7 @@ export interface ThemeConfig {
 
 export type ThemeId = 0 | 1 | 2 | 3 | 4 | 5; // 5 = ending space
 
-function floor(color: number, roughness = 0.85, metalness = 0): THREE.Mesh {
+export function floor(color: number, roughness = 0.85, metalness = 0): THREE.Mesh {
   const m = new THREE.Mesh(
     new THREE.PlaneGeometry(120, 120),
     new THREE.MeshStandardMaterial({ color, roughness, metalness }),
@@ -22,7 +22,7 @@ function floor(color: number, roughness = 0.85, metalness = 0): THREE.Mesh {
   return m;
 }
 
-function particles(count: number, color: number, spread: number, size = 0.05): THREE.Points {
+export function particles(count: number, color: number, spread: number, size = 0.05): THREE.Points {
   const pos = new Float32Array(count * 3);
   for (let i = 0; i < count; i++) {
     pos[i * 3] = (Math.random() - 0.5) * spread;
@@ -166,22 +166,47 @@ export function usherFigure(): GuideFigure {
 }
 
 /** Blend a hex color toward neutral grey — used to desaturate the decorative corridor doors. */
-function desaturate(hex: number, amount: number): number {
+export function desaturate(hex: number, amount: number): number {
   const c = new THREE.Color(hex);
   const grey = c.getHSL({ h: 0, s: 0, l: 0 }).l;
   return c.lerp(new THREE.Color(grey, grey, grey), amount).getHex();
 }
 
 /** Act I (and prologue): endless dim corridor, doors leaking warm domestic light. */
-function corridorTheme(warmth: number): ThemeConfig {
-  const group = new THREE.Group();
-  group.add(floor(0x201c16, 0.9));
+export interface CorridorPalette {
+  floorColor?: number;
+  wallColor?: number;
+  doorBase?: number;
+  fog?: number;
+  ambient?: number;
+  keyLight?: number;
+  dustColor?: number;
+}
 
-  const wallMat = new THREE.MeshStandardMaterial({ color: 0x2b2620, roughness: 0.95 });
+/** A corridor of decorative background doors + one warm key light + drifting
+ * dust — ANAMNESIS's Acts 0/1 shape, reused verbatim by default (every field
+ * of `palette` defaults to ANAMNESIS's own tuned values, so
+ * `corridorTheme(warmth)` alone is behavior-identical to before this was
+ * parameterized). A pack that's also a corridor of doors — LIMERENCE's
+ * hotel floors are exactly that — can recolor the whole thing via `palette`
+ * without duplicating the geometry. */
+export function corridorTheme(warmth: number, palette: CorridorPalette = {}): ThemeConfig {
+  const floorColor = palette.floorColor ?? 0x201c16;
+  const wallColor = palette.wallColor ?? 0x2b2620;
+  const doorBase = palette.doorBase ?? 0x241f18;
+  const fog = palette.fog ?? 0x322a1d;
+  const ambient = palette.ambient ?? 0x4a3c28;
+  const keyLight = palette.keyLight ?? 0xc9a06a;
+  const dustColor = palette.dustColor ?? 0xc9a06a;
+
+  const group = new THREE.Group();
+  group.add(floor(floorColor, 0.9));
+
+  const wallMat = new THREE.MeshStandardMaterial({ color: wallColor, roughness: 0.95 });
   // decorative background doors: dim and desaturated, so they read as scenery, not choices
   const decorativeWarmth = desaturate(warmth, 0.55);
   const doorGlowMat = new THREE.MeshStandardMaterial({
-    color: 0x241f18, emissive: decorativeWarmth, emissiveIntensity: 0.32, roughness: 0.8,
+    color: doorBase, emissive: decorativeWarmth, emissiveIntensity: 0.32, roughness: 0.8,
   });
   // The nearest decorative slab must sit clearly behind the real doors
   // (DOOR_Z) so background scenery never renders larger/closer than an
@@ -205,14 +230,14 @@ function corridorTheme(warmth: number): ThemeConfig {
   ceiling.rotation.x = Math.PI / 2;
   ceiling.position.set(0, 6.4, -30);
   group.add(ceiling);
-  group.add(new THREE.AmbientLight(0x4a3c28, 2.0));
-  const key = new THREE.PointLight(0xc9a06a, 9, 26, 1.5);
+  group.add(new THREE.AmbientLight(ambient, 2.0));
+  const key = new THREE.PointLight(keyLight, 9, 26, 1.5);
   key.position.set(0, 4.4, -2);
   group.add(key);
-  const dust = particles(240, 0xc9a06a, 24, 0.035);
+  const dust = particles(240, dustColor, 24, 0.035);
   group.add(dust);
   return {
-    group, fogColor: 0x322a1d, fogDensity: 0.036, background: 0x322a1d,
+    group, fogColor: fog, fogDensity: 0.036, background: fog,
     tick(t) { dust.rotation.y = t * 0.008; },
   };
 }
@@ -358,10 +383,17 @@ export const FOG_COLOR_BY_THEME: Record<ThemeId, number> = {
 
 /** The doorway light-spill's color (spec 07 §Q2): the destination room
  * type's mood tint, or the next act's base fog color when the mood has none
- * of its own (DILEMMA rooms — the common case). Pure — no THREE side effects. */
-export function spillColorFor(roomType: MoodType, nextActTheme: ThemeId): number {
-  const tint = MOOD_TINTS[roomType].tint;
-  return tint !== 0 ? tint : FOG_COLOR_BY_THEME[nextActTheme];
+ * of its own (DILEMMA rooms — the common case). Pure — no THREE side effects.
+ * `moodTints`/`fogColors` default to ANAMNESIS's own (the engine-wide
+ * default), overridable per pack. */
+export function spillColorFor(
+  roomType: MoodType,
+  nextActTheme: ThemeId,
+  moodTints: Record<MoodType, MoodTint> = MOOD_TINTS,
+  fogColors: Record<ThemeId, number> = FOG_COLOR_BY_THEME,
+): number {
+  const tint = moodTints[roomType].tint;
+  return tint !== 0 ? tint : fogColors[nextActTheme];
 }
 
 export function buildTheme(id: ThemeId): ThemeConfig {

@@ -8,7 +8,7 @@
 import type { ActId, Ending, Room, RunState, Axis, Reflection } from '../engine/schema';
 import type { Diorama } from '../scene/dioramas';
 import type { ThemeConfig, ThemeId, MoodType, MoodTint, GuideFigure } from '../scene/themes';
-import type { RoomAccent } from '../audio/soundEngine';
+import type { ActKey, RoomAccent } from '../audio/soundEngine';
 import type { KeepsakeDef } from '../content/keepsakes';
 
 export type Quality = 'low' | 'high';
@@ -87,13 +87,25 @@ export interface ContentPack {
     endingIcons: Record<string, string>;
     buildTheme(id: ThemeId): ThemeConfig;
     moodTints: Record<MoodType, MoodTint>;
+    /** Each act theme's base fog/background color, without constructing the
+     * (expensive) 3D group — used by the doorway light-spill. Keep in sync
+     * with `buildTheme`. */
+    fogColorByTheme: Record<ThemeId, number>;
     dioramaFor(roomId: string, quality: Quality): Diorama | null;
     /** The `marys-room`/`open-drawer`-style per-choice diorama-accent hooks. */
     dioramaAccentHooks: { roomId: string; choiceId: string }[];
+    /** Whether the Settings panel offers a light/dark UI-chrome toggle for
+     * this pack (`Settings.theme`). ANAMNESIS's single dark tone is
+     * authored, not a default awaiting a light variant — false for it. */
+    supportsLightTheme: boolean;
   };
 
   audio: {
     roomAccents: Partial<Record<string, RoomAccent>>;
+    /** Chord progressions/mote scales per act (Hz) — omit to inherit the
+     * engine's ANAMNESIS-authored defaults (spec 08 §3 row 16). */
+    actProgressions?: Record<ActKey, number[][]>;
+    actMoteScales?: Record<ActKey, number[]>;
   };
 
   hooks: {

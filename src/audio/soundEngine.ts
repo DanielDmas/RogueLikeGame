@@ -85,8 +85,8 @@ export function makeImpulseSamples(sampleRate: number, durationSeconds: number, 
 export type RoomAccent = 'junction' | 'casino' | 'ship' | null;
 
 /** Picks a mote frequency from an act's scale. Pure — testable without an AudioContext. */
-export function pickMote(act: ActKey, rng: () => number = Math.random): number {
-  const scale = ACT_MOTE_SCALES[act];
+export function pickMote(act: ActKey, rng: () => number = Math.random, scales: Record<ActKey, number[]> = ACT_MOTE_SCALES): number {
+  const scale = scales[act];
   return scale[Math.floor(rng() * scale.length) % scale.length];
 }
 
@@ -104,6 +104,11 @@ export class SoundEngine {
   private sfxVolume = 0.8;
   private currentAct: ActKey | null = null;
   private progressionIndex = 0;
+  /** Act progressions/mote scales in play — default to ANAMNESIS's own
+   * (the engine-wide default per spec 08 §3 row 16); `configurePack`
+   * overrides them once, at boot, if the active pack supplies its own. */
+  private progressions: Record<ActKey, number[][]> = ACT_PROGRESSIONS;
+  private moteScales: Record<ActKey, number[]> = ACT_MOTE_SCALES;
   private chordTimer: ReturnType<typeof setTimeout> | null = null;
   private moteTimer: ReturnType<typeof setTimeout> | null = null;
   private resumed = false;
@@ -127,6 +132,15 @@ export class SoundEngine {
   }
   getSfxLevel(): number {
     return this.sfxTarget();
+  }
+
+  /** Called once at boot with the active pack's audio identity — swaps in
+   * its chord progressions/mote scales if it supplies its own, otherwise
+   * leaves ANAMNESIS's as the default. Safe to call before `currentAct`
+   * is set (pure data swap; takes effect on the next `setAct`). */
+  configurePack(audio: { actProgressions?: Record<ActKey, number[][]>; actMoteScales?: Record<ActKey, number[]> }) {
+    this.progressions = audio.actProgressions ?? ACT_PROGRESSIONS;
+    this.moteScales = audio.actMoteScales ?? ACT_MOTE_SCALES;
   }
 
   setMusicEnabled(v: boolean) {
@@ -263,7 +277,7 @@ export class SoundEngine {
     // In-run act transitions get a slower, more deliberate crossfade (spec
     // 07 §Q5.2) than the ~2.2s default used for cycling chords *within* an
     // act — the act change is a bigger emotional beat.
-    this.crossfadeToChord(ACT_PROGRESSIONS[act][0], 4.0);
+    this.crossfadeToChord(this.progressions[act][0], 4.0);
     this.scheduleNextChord();
     this.scheduleNextMote();
   }
@@ -277,9 +291,9 @@ export class SoundEngine {
 
   private scheduleNextChord() {
     const act = this.currentAct;
-    if (act === null || ACT_PROGRESSIONS[act].length <= 1) return;
+    if (act === null || this.progressions[act].length <= 1) return;
     this.chordTimer = setTimeout(() => {
-      const progression = ACT_PROGRESSIONS[act];
+      const progression = this.progressions[act];
       this.progressionIndex = (this.progressionIndex + 1) % progression.length;
       this.crossfadeToChord(progression[this.progressionIndex]);
       this.scheduleNextChord();
@@ -299,7 +313,7 @@ export class SoundEngine {
     const t = ctx.currentTime;
     // The casino room accent (spec 07 §Q5.4) biases the mote scheduler up an
     // octave while it's the active room, instead of adding its own voice.
-    const freq = pickMote(this.currentAct) * (this.roomAccent === 'casino' ? 2 : 1);
+    const freq = pickMote(this.currentAct, Math.random, this.moteScales) * (this.roomAccent === 'casino' ? 2 : 1);
     const osc = ctx.createOscillator();
     osc.type = 'sine';
     osc.frequency.value = freq;

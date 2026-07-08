@@ -22,6 +22,10 @@ export interface Settings {
    * 05) — editing this in Settings never touches the current run's own
    * `RunState.examined` flag, only what gets pre-selected next time. */
   examinedPathDefault: boolean;
+  /** UI chrome light/dark skin — only has a visible effect for packs whose
+   * `visuals.supportsLightTheme` is true; ANAMNESIS ignores it and keeps
+   * its single fitting tone. */
+  theme: 'dark' | 'light';
 }
 
 /** Cosmetic only — no mechanical effect. Empty name means "not chosen yet". */
@@ -114,6 +118,7 @@ export function defaultProfile(): Profile {
       renderScale: 'standard',
       uiZoom: 1,
       examinedPathDefault: false,
+      theme: 'dark',
     },
     persona: { preset: '', name: '', blurb: '' },
     hasSeenHeartLoss: false,

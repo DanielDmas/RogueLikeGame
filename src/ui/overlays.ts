@@ -129,6 +129,8 @@ export interface SettingsActions {
   onImportProfile: (raw: string) => boolean;
   /** Download filename prefix for the exported profile (pack.meta.exportPrefix). */
   exportPrefix: string;
+  /** Whether to offer the light/dark toggle (pack.visuals.supportsLightTheme). */
+  themeSelectable: boolean;
 }
 
 /** A row: label + control on one line, a short explanatory line underneath. */
@@ -195,16 +197,21 @@ export function showSettings(ui: HTMLElement, settings: Settings, actions: Setti
         | 'highContrast'
         | 'quality'
         | 'dynamicScenery'
-        | 'examinedPathDefault',
+        | 'examinedPathDefault'
+        | 'theme',
       label: string,
       desc: string,
     ) => {
-      const isOn = () => (key === 'quality' ? current.quality === 'high' : Boolean(current[key]));
+      const isOn = () =>
+        key === 'quality' ? current.quality === 'high' : key === 'theme' ? current.theme === 'light' : Boolean(current[key]);
       const btn = el('button', 'toggle', isOn() ? onLabel : offLabel);
       btn.classList.toggle('on', isOn());
       btn.addEventListener('click', () => {
         if (key === 'quality') current.quality = current.quality === 'high' ? 'low' : 'high';
-        else (current[key] as boolean) = !current[key];
+        else if (key === 'theme') {
+          current.theme = current.theme === 'light' ? 'dark' : 'light';
+          document.body.classList.toggle('theme-light', current.theme === 'light');
+        } else (current[key] as boolean) = !current[key];
         btn.textContent = isOn() ? onLabel : offLabel;
         btn.classList.toggle('on', isOn());
       });
@@ -273,6 +280,9 @@ export function showSettings(ui: HTMLElement, settings: Settings, actions: Setti
     displayBody.append(zoomRow);
 
     toggleRow(displayBody, 'quality', t(uiKey('settingQuality'), 'High visual quality'), t(uiKey('settingQualityDesc'), 'Glow and smoothing effects; needs a stronger graphics card. Applies on next load.'));
+    if (actions.themeSelectable) {
+      toggleRow(displayBody, 'theme', t(uiKey('settingLightMode'), 'Light mode'), t(uiKey('settingLightModeDesc'), 'The morning-after read of the same hotel — same rooms, softer light.'));
+    }
     toggleRow(displayBody, 'dynamicScenery', t(uiKey('settingDynamicScenery'), 'Dynamic scenery (experimental)'), t(uiKey('settingDynamicSceneryDesc'), 'Rooms subtly tint the light and fog to match their mood.'));
     toggleRow(displayBody, 'reducedMotion', t(uiKey('settingReducedMotion'), 'Reduced motion'), t(uiKey('settingReducedMotionDesc'), 'Cuts camera drift and easing to near-instant — kinder to motion sensitivity.'));
 

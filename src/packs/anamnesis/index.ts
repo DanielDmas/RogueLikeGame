@@ -35,7 +35,7 @@ import { HEART_SVG } from '../../ui/dom';
 import { KEEPSAKES, KEEPSAKE_TRIGGERS, keepsakeIcons } from '../../content/keepsakes';
 import { EPIPHANY_IDS, EPIPHANY_EN_FALLBACK } from '../../engine/ledger';
 import { iconFor, endingIcons } from '../../content/icons';
-import { buildTheme, MOOD_TINTS } from '../../scene/themes';
+import { buildTheme, MOOD_TINTS, FOG_COLOR_BY_THEME } from '../../scene/themes';
 import { dioramaFor } from '../../scene/dioramas';
 
 // Formerly private to `engine/flow.ts` — the pack now owns this content data;
@@ -110,8 +110,10 @@ export const anamnesisPack: ContentPack = {
     endingIcons,
     buildTheme,
     moodTints: MOOD_TINTS,
+    fogColorByTheme: FOG_COLOR_BY_THEME,
     dioramaFor,
     dioramaAccentHooks: [{ roomId: 'marys-room', choiceId: 'open-drawer' }],
+    supportsLightTheme: false,
   },
 
   audio: {

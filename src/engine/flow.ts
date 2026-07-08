@@ -113,6 +113,8 @@ export class Game {
     this.uatAutocontinueKey = `${pack.meta.id}-uat-autocontinue`;
     this.uat = uat;
     this.speedMultiplier = speedMultiplierFor(uat);
+    sound.configurePack(pack.audio);
+    document.body.classList.add(`pack-${pack.meta.id}`);
 
     this.veil = el('div', 'veil');
     ui.appendChild(this.veil);
@@ -226,6 +228,7 @@ export class Game {
     const s = this.profile.settings;
     document.body.classList.toggle('reduced-motion', s.reducedMotion);
     document.body.classList.toggle('high-contrast', s.highContrast);
+    document.body.classList.toggle('theme-light', this.pack.visuals.supportsLightTheme && s.theme === 'light');
     this.text.setTypewriter(this.effectiveTypewriter());
     this.director.setReducedMotion(s.reducedMotion);
     this.director.setDynamicScenery(s.dynamicScenery);
@@ -336,6 +339,7 @@ export class Game {
       onExportProfile: () => this.exportProfile(),
       onImportProfile: (raw) => this.importProfile(raw),
       exportPrefix: this.pack.meta.exportPrefix,
+      themeSelectable: this.pack.visuals.supportsLightTheme,
     };
   }
 
@@ -535,7 +539,9 @@ export class Game {
 
       if (roomId === this.pack.graph.understorySequence[0]) this.state = { ...this.state, descended: true };
       const nextRoom = this.registry.get(roomId);
-      await this.director.walkThrough(roomId, { color: spillColorFor(nextRoom.type, themeForAct(nextRoom.act)) });
+      await this.director.walkThrough(roomId, {
+        color: spillColorFor(nextRoom.type, themeForAct(nextRoom.act), this.pack.visuals.moodTints, this.pack.visuals.fogColorByTheme),
+      });
       await this.fade(true);
       this.director.hideDoors();
       await this.fade(false);
