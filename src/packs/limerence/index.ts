@@ -106,7 +106,17 @@ export const limerencePack: ContentPack = {
         'the-confession',
         'the-other-side-of-the-door',
       ],
-      3: ['placeholder-room-3'],
+      3: [
+        'the-colleague',
+        'the-metamour',
+        'the-veto',
+        'the-drift',
+        'the-second-account',
+        'the-discovery',
+        'the-wedding-eve',
+        'the-therapist',
+        'the-usual-suite',
+      ],
     },
     gates: {
       1: 'the-rumor',
@@ -116,7 +126,7 @@ export const limerencePack: ContentPack = {
     },
     act4Sequence: ['the-kitchen-table', 'the-unsent', 'the-morning-desk'],
     understorySequence: [],
-    optionalPerAct: { 1: 3, 2: 3, 3: 0 },
+    optionalPerAct: { 1: 3, 2: 3, 3: 2 },
     actNamesEn: ACT_NAMES_EN,
   },
 
@@ -165,10 +175,22 @@ export const limerencePack: ContentPack = {
       name: 'The Unsent Letter',
       origin: 'a confession carried alone, never sent, never delivered',
     },
+    {
+      id: 'the-keycard',
+      name: 'The Keycard',
+      origin: 'a hotel room you didn’t open, at the end of a conference',
+    },
+    {
+      id: 'the-sim',
+      name: 'The SIM',
+      origin: 'a second account, deleted, that took a week to stop reaching for',
+    },
   ],
   keepsakeTriggers: {
     'refused-the-dare': 'the-cheap-ring',
     'carried-alone': 'the-unsent-letter',
+    'walked-away': 'the-keycard',
+    'deleted-the-account': 'the-sim',
   },
   keepsakeIcons: {
     'the-cheap-ring': `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -179,6 +201,15 @@ export const limerencePack: ContentPack = {
     'the-unsent-letter': `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
       <rect x="12" y="18" width="40" height="28" rx="2"/>
       <path d="M12 20 L32 36 L52 20"/>
+    </svg>`,
+    'the-keycard': `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="10" y="16" width="44" height="32" rx="3"/>
+      <circle cx="22" cy="32" r="5"/>
+      <path d="M32 26 H46 M32 32 H42 M32 38 H46"/>
+    </svg>`,
+    'the-sim': `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 12 H42 L48 18 V52 H16 V12 Z"/>
+      <path d="M22 24 H38 M22 32 H38 M22 40 H32"/>
     </svg>`,
   },
 

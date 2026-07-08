@@ -1492,8 +1492,53 @@ non-explicit, adult acts frank-never-graphic, ~PEGI 16 posture).
       keepsake wiring, dynamic-beat/doorSeed-branch non-throwing across
       fixtures and seeds, field-note substance). Full suite 610/610 green;
       live-verified via Playwright that all 8 new rooms + the gate render
-      real content through `jump()`. **Act III + the secret room
-      (`the-usual-suite`) still placeholder**, not yet started.
+      real content through `jump()`.
+
+      **Act III done (2026-07-08):** 8 real rooms (`the-colleague`,
+      `the-metamour`, `the-veto`, `the-drift`, `the-second-account`,
+      `the-discovery`, `the-wedding-eve`, `the-therapist`) + the secret
+      room (`the-usual-suite`, `secret: (s) => (s.prior?.runs ?? 0) >= 1`,
+      reusing the pack-generic `pickShadowMoments` engine function —
+      ANAMNESIS's `the-cave` mechanism, needing zero new engine code) + the
+      `the-usual-room` gate, matching spec `04-rooms-act3.md`. Two new
+      keepsakes (`the-keycard` earned by `the-colleague`'s `walk-away`,
+      `the-sim` earned by `the-second-account`'s `delete-it`).
+      `the-therapist` is the pack's first 2-stage LIMERENCE room (stage 1:
+      four "door" choices standing in for Gottman's Four Horsemen; stage 2:
+      a repair-attempt accept/miss beat, reading which door stage 1 took).
+      Six more doorSeed-branched outcomes across `the-metamour`,
+      `the-discovery` (×2 branch points), and `the-wedding-eve` (×2),
+      using a second, independently-offset `seedSplit2` helper so multiple
+      branch points in one room don't always resolve in lockstep. The
+      spec's "mechanically complex" beats — flooding's fragmenting
+      sentences in `the-discovery`, the four-doors-as-diagnosis in
+      `the-therapist` — are rendered through beat prose and the engine's
+      existing stage/choice primitives rather than new engine machinery,
+      matching this session's content-authoring scope (no new engine code
+      needed anywhere in Act III beyond content). `optionalPerAct[3]`
+      raised from 0 to 2 (matching ANAMNESIS's own Act III convention: the
+      secret room only ever appears as a bonus third door alongside two
+      regularly-offered ones). Covered by 22 new tests in
+      `limerenceAct3.test.ts` (pool-matches-graph, secret-predicate
+      correctness, choice distinctness, reflection completeness, keepsake
+      wiring, 2-stage room shape, dynamic-beat/doorSeed-branch
+      non-throwing across fixtures and seeds, shadow-moment rendering with
+      and without a prior run, field-note substance). Full suite 632/632
+      green; live-verified via Playwright that 7 of the 8 new rooms + the
+      gate render real content through `jump()`.
+
+      **Still not started: Act IV real content + all 7 endings.** The
+      graph's Act IV sequence and final gate remain the L2-era structural
+      placeholders (`the-kitchen-table`/`the-unsent`/`the-morning-desk`),
+      and only 2 of 7 endings (`the-morning-after`, `the-ghost`) are wired.
+      A full run is fully playable end-to-end today; only its ending and
+      Act IV are still placeholder-depth.
+
+      **Release status (2026-07-08):** v0.2.0-beta is committed and pushed
+      to the working branch, tagged locally, but not yet cut as a public
+      GitHub Release — owner decision was to keep developing toward a more
+      complete state before publishing rather than release from a
+      part-finished, unmerged branch. Revisit once Act IV lands.
 - [ ] L4. Act IV + Records Office + all 7 endings + full meta-systems.
 - [ ] L5. Hotel visual/audio identity (**partially pulled forward,
       2026-07-08** — see below) + UAT pack matrix + docs.

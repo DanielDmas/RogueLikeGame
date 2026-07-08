@@ -33,12 +33,14 @@ Milestone 5 for ANAMNESIS (finished this release):
   packs (`ContentPack`) — ANAMNESIS unchanged and behavior-neutral
   throughout the split.
 - LIMERENCE: a roguelike about relationships at their breaking points,
-  guided by the Night Porter. The Prologue, Act I (7 rooms + a gate), and
-  Act II (8 rooms + a gate) are real, authored content, each choice
-  carrying plural ethical reflections and a field note citing real
-  psychology research; a full run is playable start to finish today. Acts
-  III–IV and the Understory are structural placeholders for now, so no run
-  ever dead-ends while the remaining content is written.
+  guided by the Night Porter. The Prologue, Act I (7 rooms + a gate), Act
+  II (8 rooms + a gate), and Act III (8 rooms + a secret room + a gate)
+  are real, authored content, each choice carrying plural ethical
+  reflections and a field note citing real psychology research; a full
+  run is playable start to finish today. Act IV and the Records Office
+  (Understory) are structural placeholders for now, and only 2 of 7
+  endings are wired, so no run ever dead-ends while the remaining content
+  is written.
 - Its own visual and audio identity: a sodium-amber/corridor-teal hotel
   palette with an optional light/dark theme toggle (LIMERENCE only), a
   minor-leaning generative score resolving to a held major chord at the

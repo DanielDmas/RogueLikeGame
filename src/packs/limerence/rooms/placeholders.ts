@@ -1,48 +1,11 @@
-// Structural placeholders for the acts not yet written — Act III
-// (docs/design-limerence/04-rooms-act3.md) and Act IV
-// (05-rooms-act4-understory.md). Act II (03-rooms-act2.md) shipped real
-// content in act2.ts. Real Act III/IV content lands at L3/L4 per the
-// milestone plan; these exist only so the graph is complete and every gate
-// is reachable. Each choice still carries a hint so contentPipeline.test.ts
-// holds this to the same structural bar as real content.
+// Structural placeholders for the act not yet written — Act IV
+// (docs/design-limerence/05-rooms-act4-understory.md). Acts II
+// (03-rooms-act2.md) and III (04-rooms-act3.md) shipped real content in
+// act2.ts/act3.ts. Real Act IV content lands at L4 per the milestone plan;
+// these exist only so the graph is complete and every gate is reachable.
+// Each choice still carries a hint so contentPipeline.test.ts holds this to
+// the same structural bar as real content.
 import type { Room } from '../../../engine/schema';
-
-export const placeholderRoom3: Room = {
-  id: 'placeholder-room-3',
-  act: 3,
-  title: '[Act III placeholder room]',
-  type: 'DILEMMA',
-  doorHint: 'placeholder — see docs/design-limerence/04-rooms-act3.md',
-  teaser: 'a Long-Stay Wing room not yet written',
-  stages: [
-    {
-      beats: ['The Room: This door leads somewhere real, eventually. Not tonight.'],
-      choices: [
-        { id: 'placeholder-a', text: 'Placeholder choice A', hint: 'placeholder hint A', effects: {}, outcome: ['The outcome is not yet written.'] },
-        { id: 'placeholder-b', text: 'Placeholder choice B', hint: 'placeholder hint B', effects: {}, outcome: ['The outcome is not yet written.'] },
-      ],
-    },
-  ],
-};
-
-export const theUsualRoom: Room = {
-  id: 'the-usual-room',
-  act: 3,
-  title: 'The Usual Room',
-  type: 'NO-SOLUTION',
-  gate: true,
-  doorHint: 'the door that saw you coming',
-  teaser: 'the room the hotel always gives you',
-  stages: [
-    {
-      beats: ['Porter: The Long-Stay Wing ends here. The ledger already has tonight’s room number written in.'],
-      choices: [
-        { id: 'take-different-room', text: 'Take a different room, defiantly', hint: 'refuse the room you were given', effects: {}, outcome: ['The ledger expected that too.'] },
-        { id: 'take-usual-room', text: 'Take the usual room, knowingly', hint: 'accept the pattern, out loud', effects: {}, outcome: ['It was always going to be this room. And you chose it.', 'A pattern named out loud starts to loosen.'] },
-      ],
-    },
-  ],
-};
 
 export const theKitchenTable: Room = {
   id: 'the-kitchen-table',

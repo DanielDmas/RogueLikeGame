@@ -76,13 +76,14 @@ every scene cuts at the threshold. As with ANAMNESIS, nothing here is a
 substitute for real support: if any of this is your actual life right now,
 a game is not the tool.
 
-**Status: early/testing build.** The Prologue, Act I (7 rooms + gate), and
-Act II (8 rooms + gate) are real, authored content — a full run is fully
-playable start to finish today. Act III, Act IV, and the Understory are
-currently structural placeholders (a real room and gate exist for every
-required beat, so no run ever dead-ends), with their real content landing
-in later milestones — see `UPGRADE_PLAN.md`'s LIMERENCE section for exactly
-what's done versus placeholder.
+**Status: early/testing build.** The Prologue, Act I (7 rooms + gate), Act
+II (8 rooms + gate), and Act III (8 rooms + a secret room + gate) are real,
+authored content — a full run is fully playable start to finish today. Act
+IV and the Records Office (Understory) are currently structural
+placeholders (a real room and gate exist for every required beat, so no
+run ever dead-ends), and only 2 of 7 endings are wired, with the rest
+landing in later milestones — see `UPGRADE_PLAN.md`'s LIMERENCE section for
+exactly what's done versus placeholder.
 
 ```bash
 npm run dev:limerence   # play LIMERENCE at the printed local URL
