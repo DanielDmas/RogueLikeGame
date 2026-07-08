@@ -194,7 +194,7 @@ export class Game {
       currentStage: 0,
       finished: false,
       endingId: null,
-      visited: backfillVisitedForJump(base.visited, roomId),
+      visited: backfillVisitedForJump(base.visited, roomId, this.pack.graph),
       descended: this.pack.graph.understorySequence.includes(roomId) ? true : base.descended,
     };
     this.profile.run = next;
@@ -497,7 +497,7 @@ export class Game {
         continue;
       }
 
-      const doors = offeredDoors(this.state, this.registry);
+      const doors = offeredDoors(this.state, this.registry, this.pack.graph);
       if (doors.length === 0) return this.playEnding(this.pack.endingRules.evaluate(this.state));
 
       await this.syncTheme();
@@ -704,7 +704,7 @@ export class Game {
     // completion, never on a quit-and-resume replay of the same room, since
     // this line only runs after the stage loop above has fully finished.
     this.profile.roomVisits[room.id] = (this.profile.roomVisits[room.id] ?? 0) + 1;
-    this.state = completeRoom(this.state, room.id, this.registry);
+    this.state = completeRoom(this.state, room.id, this.registry, this.pack.graph);
     await this.persist(true);
   }
 
