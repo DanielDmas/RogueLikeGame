@@ -96,7 +96,16 @@ export const limerencePack: ContentPack = {
         'the-best-friends-girl',
         'the-summer-ends',
       ],
-      2: ['placeholder-room-2'],
+      2: [
+        'the-distance',
+        'the-hall-pass',
+        'the-rebound',
+        'the-unicorn',
+        'just-friends',
+        'the-ex',
+        'the-confession',
+        'the-other-side-of-the-door',
+      ],
       3: ['placeholder-room-3'],
     },
     gates: {
@@ -107,7 +116,7 @@ export const limerencePack: ContentPack = {
     },
     act4Sequence: ['the-kitchen-table', 'the-unsent', 'the-morning-desk'],
     understorySequence: [],
-    optionalPerAct: { 1: 3, 2: 0, 3: 0 },
+    optionalPerAct: { 1: 3, 2: 3, 3: 0 },
     actNamesEn: ACT_NAMES_EN,
   },
 
@@ -151,15 +160,25 @@ export const limerencePack: ContentPack = {
       name: 'The Cheap Ring',
       origin: 'won at a party, for thirty seconds of being laughed at',
     },
+    {
+      id: 'the-unsent-letter',
+      name: 'The Unsent Letter',
+      origin: 'a confession carried alone, never sent, never delivered',
+    },
   ],
   keepsakeTriggers: {
     'refused-the-dare': 'the-cheap-ring',
+    'carried-alone': 'the-unsent-letter',
   },
   keepsakeIcons: {
     'the-cheap-ring': `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="32" cy="38" r="16"/>
       <path d="M24 22 L32 10 L40 22 Z"/>
       <circle cx="32" cy="16" r="2.4" fill="currentColor"/>
+    </svg>`,
+    'the-unsent-letter': `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="12" y="18" width="40" height="28" rx="2"/>
+      <path d="M12 20 L32 36 L52 20"/>
     </svg>`,
   },
 

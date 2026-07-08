@@ -1389,14 +1389,31 @@ listed in doc 11 §B6 (save-safety confirmation, citation-softening policy,
 target session length, whether Q hard-gates v0.2.0, telemetry-never
 confirmation, accessibility scope).
 
-# LIMERENCE — second title (design phase; implementation not started)
+# LIMERENCE — second title (in active development, playable in part)
 
 A second game on this engine: relationships at their breaking points —
 infidelity, polyamory, jealousy, disclosure, coercion, drift — cast aged
 15–35, G.R.R. Martin × Maxime Chattam × modern psychology, built so players
-experience the traps before life springs them. Requires first refactoring
-this repo into one content-agnostic engine + two content packs (ANAMNESIS
+experience the traps before life springs them. Built on top of a
+refactored, content-agnostic engine + two content packs (ANAMNESIS
 unchanged, behavior-neutral).
+
+**The collection name (decided 2026-07-08): "The Vestibule."** With two
+titles now sharing one engine, the repo needed a name for the pair —
+ANAMNESIS and LIMERENCE stay their own self-contained games (own guide,
+palette, stakes, save namespace); "The Vestibule" is the umbrella the
+README now uses to introduce both from one page. Chosen over "Threshold"
+(too generic a word to brand) and "The Interval" (already LIMERENCE's own
+in-fiction frame name — reusing it for the collection would blur which is
+which): a vestibule is precisely the liminal antechamber both games are
+staged in — the space behind a hard door, before whatever's on the other
+side. Same branding grammar as the two game titles: one precise, faintly
+architectural word that names the shared thesis rather than either game's
+specific content. Surfaced in `README.md` (top-level framing + cross-links)
+and `package.json`'s `description`; the npm package name itself
+(`"anamnesis"`) is left alone — it's an internal build identifier, not
+player-facing branding, and renaming it risks breaking tooling for no
+player-visible benefit.
 
 **Full design specifications live in `docs/design-limerence/`** (creative
 bible, 31 room briefs with psychology anchors, 7 endings, keepsakes/
@@ -1456,7 +1473,27 @@ non-explicit, adult acts frank-never-graphic, ~PEGI 16 posture).
       *tooltip copy* — "grip on reality" — is still ANAMNESIS's own words,
       since `ContentPack.skin` doesn't yet carry per-pack UI copy overrides).
       Do the advisory layer before any real playtesting of LIMERENCE.
-- [ ] L3. Acts II–III + gates + secret room.
+- [~] L3. Acts II–III + gates + secret room. **Act II done (2026-07-08):**
+      8 real rooms (`the-distance`, `the-hall-pass`, `the-rebound`,
+      `the-unicorn`, `just-friends`, `the-ex`, `the-confession`,
+      `the-other-side-of-the-door`) + the `the-scoreboard` gate, matching
+      spec `03-rooms-act2.md` in full — 4 choices apiece, 4-tradition
+      reflections, field notes citing real research, cross-act flag
+      callbacks (`the-distance`/`the-ex`/`the-scoreboard` read Act I and
+      each other's flags), a new `the-unsent-letter` keepsake (earned by
+      `the-confession`'s `carry-it`), and three doorSeed-branched outcomes
+      (`the-rebound`, `the-unicorn`, `the-other-side-of-the-door`) — a
+      deterministic-per-run 50/50 split used, for the first time in either
+      pack, where the spec explicitly calls for a genuinely ambiguous
+      third-party response rather than an authorial one.
+      `optionalPerAct[2]` raised from 0 to 3 now that a real 8-room pool
+      exists. Covered by 17 new tests in `limerenceAct2.test.ts`
+      (pool-matches-graph, choice distinctness, reflection completeness,
+      keepsake wiring, dynamic-beat/doorSeed-branch non-throwing across
+      fixtures and seeds, field-note substance). Full suite 610/610 green;
+      live-verified via Playwright that all 8 new rooms + the gate render
+      real content through `jump()`. **Act III + the secret room
+      (`the-usual-suite`) still placeholder**, not yet started.
 - [ ] L4. Act IV + Records Office + all 7 endings + full meta-systems.
 - [ ] L5. Hotel visual/audio identity (**partially pulled forward,
       2026-07-08** — see below) + UAT pack matrix + docs.

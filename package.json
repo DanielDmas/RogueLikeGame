@@ -1,8 +1,8 @@
 {
   "name": "anamnesis",
   "private": true,
-  "version": "0.1.5-v2-beta",
-  "description": "A 2.5D philosophical roguelike about finding your way back to yourself.",
+  "version": "0.2.0-beta",
+  "description": "The Vestibule — a collection of 2.5D roguelikes sharing one engine: ANAMNESIS (finding your way back to yourself) and LIMERENCE (relationships at their breaking points).",
   "type": "module",
   "main": "electron/main.cjs",
   "scripts": {

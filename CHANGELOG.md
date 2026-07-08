@@ -4,7 +4,13 @@ One line of history per released version. Full detail for every change
 lives in `UPGRADE_PLAN.md` and git history; this file is the short public
 summary.
 
-## Unreleased (Milestone 5 — The Deeper Facility, in progress)
+## v0.2.0-beta — 2026-07-08
+
+**The Vestibule.** This repo now ships a collection of two games sharing
+one content-agnostic engine, rather than a single title — see the README
+for the collection framing.
+
+Milestone 5 for ANAMNESIS (finished this release):
 
 - New rooms and a hidden Act V: Buridan's queue, the reference letter,
   the Chinese Room, Newcomb's annex, the veil of ignorance, Mary's room,
@@ -20,6 +26,26 @@ summary.
 - GitHub Pages web build, Electron window-state memory and single-instance
   lock, a generated dead-flag audit test, a content-pipeline validation
   test, and a citation-accuracy pass over every field note.
+
+**LIMERENCE joins as a second title (early/testing build):**
+
+- The engine split into one content-agnostic core plus per-title content
+  packs (`ContentPack`) — ANAMNESIS unchanged and behavior-neutral
+  throughout the split.
+- LIMERENCE: a roguelike about relationships at their breaking points,
+  guided by the Night Porter. The Prologue, Act I (7 rooms + a gate), and
+  Act II (8 rooms + a gate) are real, authored content, each choice
+  carrying plural ethical reflections and a field note citing real
+  psychology research; a full run is playable start to finish today. Acts
+  III–IV and the Understory are structural placeholders for now, so no run
+  ever dead-ends while the remaining content is written.
+- Its own visual and audio identity: a sodium-amber/corridor-teal hotel
+  palette with an optional light/dark theme toggle (LIMERENCE only), a
+  minor-leaning generative score resolving to a held major chord at the
+  ending, and its own door and panel geometry — a thinner steel-dark door
+  frame and sans-serif, asymmetrically-cut panels reading as
+  21st-century-modern rather than gothic.
+- Run `npm run dev:limerence` to play it locally.
 
 ## v0.1.5-v2-beta — 2026-07-05
 

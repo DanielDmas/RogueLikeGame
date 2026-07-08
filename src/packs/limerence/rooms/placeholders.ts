@@ -1,47 +1,11 @@
-// Structural placeholders for the acts not yet written — Acts II-III
-// (docs/design-limerence/03-rooms-act2.md, 04-rooms-act3.md) and Act IV
-// (05-rooms-act4-understory.md). Real content lands at L3/L4 per the
+// Structural placeholders for the acts not yet written — Act III
+// (docs/design-limerence/04-rooms-act3.md) and Act IV
+// (05-rooms-act4-understory.md). Act II (03-rooms-act2.md) shipped real
+// content in act2.ts. Real Act III/IV content lands at L3/L4 per the
 // milestone plan; these exist only so the graph is complete and every gate
 // is reachable. Each choice still carries a hint so contentPipeline.test.ts
 // holds this to the same structural bar as real content.
 import type { Room } from '../../../engine/schema';
-
-export const placeholderRoom2: Room = {
-  id: 'placeholder-room-2',
-  act: 2,
-  title: '[Act II placeholder room]',
-  type: 'DILEMMA',
-  doorHint: 'placeholder — see docs/design-limerence/03-rooms-act2.md',
-  teaser: 'a Second Floor room not yet written',
-  stages: [
-    {
-      beats: ['The Room: This door leads somewhere real, eventually. Not tonight.'],
-      choices: [
-        { id: 'placeholder-a', text: 'Placeholder choice A', hint: 'placeholder hint A', effects: {}, outcome: ['The outcome is not yet written.'] },
-        { id: 'placeholder-b', text: 'Placeholder choice B', hint: 'placeholder hint B', effects: {}, outcome: ['The outcome is not yet written.'] },
-      ],
-    },
-  ],
-};
-
-export const theScoreboard: Room = {
-  id: 'the-scoreboard',
-  act: 2,
-  title: 'The Scoreboard',
-  type: 'DOOMED',
-  gate: true,
-  doorHint: 'the door that counts',
-  teaser: 'a number, and what it does to you at night',
-  stages: [
-    {
-      beats: ['Porter: The Second Floor ends here, at a door that keeps score.'],
-      choices: [
-        { id: 'prosecute', text: 'Prosecute the past', effects: { hearts: -1 }, outcome: ['Each question costs something.'] },
-        { id: 'dismiss', text: 'Dismiss the case, and mean it', effects: {}, outcome: ['You let it go. It takes a while to believe you.'] },
-      ],
-    },
-  ],
-};
 
 export const placeholderRoom3: Room = {
   id: 'placeholder-room-3',

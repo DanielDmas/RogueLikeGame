@@ -1,5 +1,10 @@
 # ANAMNESIS
 
+*Part of* ***The Vestibule*** *— a collection of 2.5D roguelikes about the
+rooms behind hard doors, sharing one engine. This repo also contains
+[**LIMERENCE**](#limerence), a second title about relationships at their
+breaking points — jump to its section below.*
+
 *A 2.5D philosophical roguelike about finding your way back to yourself.*
 
 You wake in a liminal waiting room with no name and no memory of what happened — a breakdown, a trip, an accident, a death; the game never says. Your self has been dissolved and filed into **rooms**, and the only way back to reality is through them. Each room stages a situation — a lost wallet, a dying grandmother's question, the trolley problem, the Ship of Theseus, the city of Omelas — and every choice either re-collects you or dissolves you further.
@@ -41,7 +46,60 @@ npm run dev       # play at the printed local URL
 | Act IV — The Threshold | the boulder, the last message, the door that asks |
 | Act V — The Understory *(optional, hidden)* | the archive, the unchosen, the echo — a detour beneath Act IV for runs that have earned it |
 
+---
+
+# LIMERENCE
+
+*Also part of* ***The Vestibule*** *— see [ANAMNESIS](#anamnesis) above for
+the collection's shared engine.*
+
+*A roguelike about relationships at their breaking points.*
+
+You check in, at 3 a.m., to a hotel that isn't on any map — **the
+Interval**, the night between when it happened and when everyone finds
+out. Every room on every floor holds a relationship mid-crisis, and you
+don't watch it happen — you wake up inside it, as one of the people
+living it. Across a run you'll be, in different rooms, the tempted, the
+betrayed, the betrayer, the third person, and the friend who knew and said
+nothing: culpability rotates by design, because perspective-taking is the
+one thing research shows reliably softens how people handle conflict.
+
+Your guide is **the Night Porter**: courteous, unshockable, tired in a
+centuries-deep way — his one visual tell (a wedding band on the wrong
+hand) goes unexplained until a hidden ending.
+
+**Content note:** ages 15–35 are staged across the floors. Minors' scenes
+(Act I) are strictly non-explicit — emotional and digital dynamics only.
+Adult scenes (Acts II–IV) are frank about attraction, sex, and their
+consequences, in the register of a prestige drama, but never graphic —
+every scene cuts at the threshold. As with ANAMNESIS, nothing here is a
+substitute for real support: if any of this is your actual life right now,
+a game is not the tool.
+
+**Status: early/testing build.** The Prologue, Act I (7 rooms + gate), and
+Act II (8 rooms + gate) are real, authored content — a full run is fully
+playable start to finish today. Act III, Act IV, and the Understory are
+currently structural placeholders (a real room and gate exist for every
+required beat, so no run ever dead-ends), with their real content landing
+in later milestones — see `UPGRADE_PLAN.md`'s LIMERENCE section for exactly
+what's done versus placeholder.
+
+```bash
+npm run dev:limerence   # play LIMERENCE at the printed local URL
+```
+
+LIMERENCE has its own visual and audio identity, not a reskinned
+ANAMNESIS: a sodium-amber/corridor-teal hotel palette with an optional
+light/dark theme toggle (Settings → Display), minor-leaning generative
+music resolving to a held major chord at the ending, and its own door and
+panel geometry — a thinner, cooler steel-dark door frame and sans-serif,
+asymmetrically-cut panels meant to read as 21st-century and quietly
+unsettling rather than gothic.
+
 ## Development
+
+```bash
+npm test          # engine + content tests: endings, graph reachability, reducers, i18n coverage, content lint
 
 ```bash
 npm test          # engine + content tests: endings, graph reachability, reducers, i18n coverage, content lint
