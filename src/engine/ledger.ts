@@ -117,7 +117,7 @@ export const EPIPHANY_IDS = [
 
 export type EpiphanyId = (typeof EPIPHANY_IDS)[number];
 
-const EPIPHANY_EN_FALLBACK: Record<EpiphanyId, string> = {
+export const EPIPHANY_EN_FALLBACK: Record<EpiphanyId, string> = {
   'first-return': 'You came back.',
   'kept-every-heart': 'You kept every heart, once.',
   'spent-every-heart': 'You learned what the bottom of the ledger looks like.',

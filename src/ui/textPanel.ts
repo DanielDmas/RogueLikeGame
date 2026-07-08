@@ -5,7 +5,7 @@ import { t, applyTokens } from '../engine/text/resolver';
 import { uiKey } from '../engine/text/keys';
 import { showExplanation } from './explanation';
 
-const SPEAKER_PREFIXES = ['Usher:', 'The Room:', 'The Door:', 'USHER:', 'THE ROOM:', 'THE DOOR:'];
+export const SPEAKER_PREFIXES = ['Usher:', 'The Room:', 'The Door:', 'USHER:', 'THE ROOM:', 'THE DOOR:'];
 
 /**
  * Resolves a beat to display text. `key`, if given, looks up a translated/

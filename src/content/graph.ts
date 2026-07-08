@@ -46,7 +46,7 @@ export const PROLOGUE = 'waiting-room';
  */
 export const OPTIONAL_PER_ACT: Record<1 | 2 | 3, number> = { 1: 3, 2: 3, 3: 2 };
 
-const ACT_NAMES_EN: Record<ActId, string> = {
+export const ACT_NAMES_EN: Record<ActId, string> = {
   0: 'Prologue — The Waiting Room',
   1: 'Act I — The Shallows',
   2: 'Act II — The Machinery',

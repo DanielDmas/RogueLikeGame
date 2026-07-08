@@ -61,13 +61,15 @@ export function lanternLeanAngle(targetX: number | null): number {
   return targetX >= 0 ? 0.2 : -0.2;
 }
 
-/** The Usher: a silhouette with an emissive halo AND horns; one horn flickers. */
-export function usherFigure(): {
+export interface GuideFigure {
   group: THREE.Group;
   tick(t: number): void;
   setPresence(v: number): void;
   setLanternTarget(x: number | null): void;
-} {
+}
+
+/** The Usher: a silhouette with an emissive halo AND horns; one horn flickers. */
+export function usherFigure(): GuideFigure {
   // a warm rim-light lift so the body reads as a figure, not a bare floating
   // halo — raised from the original 0.35 (the figure read as too hidden/dim
   // against the darker act themes).
@@ -380,7 +382,7 @@ export function buildTheme(id: ThemeId): ThemeConfig {
 // through. Off by default; static (pure act theme) is the baseline behavior.
 export type MoodType = 'DILEMMA' | 'INSIGHT' | 'NO-SOLUTION' | 'DOOMED';
 
-interface MoodTint {
+export interface MoodTint {
   /** color blended into the base fog/background */
   tint: number;
   /** 0..1 blend strength toward the tint */
@@ -389,7 +391,7 @@ interface MoodTint {
   densityMul: number;
 }
 
-const MOOD_TINTS: Record<MoodType, MoodTint> = {
+export const MOOD_TINTS: Record<MoodType, MoodTint> = {
   // the common case: no perceptible shift, so most rooms feel exactly as before
   DILEMMA: { tint: 0x000000, blend: 0, densityMul: 1 },
   // a warmer, clearer gold lift — an "aha" room
