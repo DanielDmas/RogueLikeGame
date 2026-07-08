@@ -143,6 +143,15 @@ export class SoundEngine {
     this.moteScales = audio.actMoteScales ?? ACT_MOTE_SCALES;
   }
 
+  /** Testable without an AudioContext: the progressions/scales currently in
+   * effect for `act`, after any `configurePack` call. */
+  getActProgressions(act: ActKey): number[][] {
+    return this.progressions[act];
+  }
+  getActMoteScales(act: ActKey): number[] {
+    return this.moteScales[act];
+  }
+
   setMusicEnabled(v: boolean) {
     this.musicEnabled = v;
     if (this.musicGain) this.musicGain.gain.setTargetAtTime(this.musicTarget(), this.now(), 0.4);

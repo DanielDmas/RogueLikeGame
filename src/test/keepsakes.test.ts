@@ -78,6 +78,17 @@ describe('keepsakesEarnedByFlags — earn-trigger mapping (Milestone 5, Phase N)
   it('is idempotent: applying the same flag repeatedly still yields the keepsake exactly once', () => {
     expect(keepsakesEarnedByFlags(['sharp-gambler', 'sharp-gambler', 'sharp-gambler'])).toEqual(['casino-chip']);
   });
+
+  it('with no triggers arg, uses ANAMNESIS’s own KEEPSAKE_TRIGGERS (the default param)', () => {
+    expect(keepsakesEarnedByFlags(['sharp-gambler'])).toEqual(['casino-chip']);
+  });
+
+  it('accepts an explicit triggers map — a different pack’s flags earn that pack’s keepsakes', () => {
+    const customTriggers = { 'refused-the-dare': 'the-cheap-ring' };
+    expect(keepsakesEarnedByFlags(['refused-the-dare'], customTriggers)).toEqual(['the-cheap-ring']);
+    // and ANAMNESIS's own trigger flag earns nothing against a pack that doesn't define it
+    expect(keepsakesEarnedByFlags(['sharp-gambler'], customTriggers)).toEqual([]);
+  });
 });
 
 describe('RunState.keepsakesHeld — the run-start mirror (Milestone 5, Phase N)', () => {
