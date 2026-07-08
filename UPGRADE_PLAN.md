@@ -1526,12 +1526,6 @@ non-explicit, adult acts frank-never-graphic, ~PEGI 16 posture).
       and without a prior run, field-note substance). Full suite 632/632
       green; live-verified via Playwright that 7 of the 8 new rooms + the
       gate render real content through `jump()`.
-
-      **Release status (2026-07-08):** v0.2.0-beta is committed and pushed
-      to the working branch, tagged locally, but not yet cut as a public
-      GitHub Release — owner decision was to keep developing toward a more
-      complete state before publishing rather than release from a
-      part-finished, unmerged branch. Revisit once L4 is further along.
 - [~] L4. Act IV + Records Office + all 7 endings + full meta-systems.
       **Act IV + Records Office + endings done (2026-07-08):** real content
       for `the-kitchen-table` (4 choices + a ✧ `the-unsent-letter` bonus,
@@ -1586,6 +1580,40 @@ non-explicit, adult acts frank-never-graphic, ~PEGI 16 posture).
       dedicated unit rather than folded into an already-very-large L4
       commit. Flagging clearly rather than silently shipping half of L4's
       "full meta-systems" as if it were the whole thing.
+
+      **Dual-pack production deploy + rozcestník, done (2026-07-08):**
+      until this pass, the live GitHub Pages site could only ever serve
+      ANAMNESIS — `npm run build`/`deploy-pages.yml` had no pack switch,
+      so LIMERENCE existed only via `npm run dev:limerence` (localhost).
+      Added `build:anamnesis`/`build:limerence` (→ `dist-web/anamnesis/`,
+      `dist-web/limerence/`) and `build:web` (both, plus
+      `scripts/assemble-web-dist.mjs` copying `landing/index.html` in as
+      `dist-web/index.html`) — a small, self-contained static chooser page
+      ("The Vestibule", linking to both titles) that is the new deployed
+      site root. `index.html` gained `%VITE_TITLE%`/`%VITE_DESCRIPTION%`/
+      `%VITE_FAVICON%` tokens (Vite's built-in HTML env replacement) fed
+      by a new base `.env` (ANAMNESIS defaults) and the existing
+      `.env.limerence` (extended with its own title/description/favicon,
+      the last recolored to LIMERENCE's actual steel/amber/teal door
+      palette) — each pack's build now has its own browser tab title and
+      favicon, not ANAMNESIS's leaking into LIMERENCE's build.
+      `deploy-pages.yml` now runs `build:web` and uploads `dist-web`
+      instead of `dist`. The existing plain `npm run build` (→ `dist/`,
+      still ANAMNESIS-only, no `--mode`) is untouched and still exactly
+      what `release-windows.yml`'s Electron packaging uses — verified by
+      rebuilding it after this change and confirming `dist/index.html`
+      unchanged in content. Live-verified via Playwright: the rozcestník
+      renders both doors with correct hrefs, and each subpath boots its
+      own game with the correct `<title>` and in-game title-word.
+      `dist-web/` added to `.gitignore` alongside the existing `dist/`.
+
+      **Release status (2026-07-08):** with L4 content-complete, both
+      titles playable end-to-end, and a working dual-pack deploy path now
+      built and verified, the main remaining blockers to a public release
+      are the epiphanies gap above and the L5 polish items below — neither
+      breaks anything, both are honestly flagged. `v0.2.0-beta` is
+      committed and pushed, tagged locally, still not cut as a public
+      GitHub Release pending an explicit owner go-ahead.
 - [ ] L5. Hotel visual/audio identity (**partially pulled forward,
       2026-07-08** — see below) + UAT pack matrix + docs.
 

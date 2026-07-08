@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="The Vestibule — a collection of 2.5D roguelikes about the rooms behind hard doors." />
+    <title>The Vestibule</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230b0c0e'/%3E%3Crect x='14' y='16' width='16' height='34' rx='2' fill='none' stroke='%23d4b36a' stroke-width='2.2'/%3E%3Crect x='34' y='16' width='16' height='34' rx='2' fill='none' stroke='%23d89055' stroke-width='2.2'/%3E%3C/svg%3E"
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0a0a0b;
+        --ink: #e7e2d8;
+        --ink-faint: #8b877e;
+        --gold: #d4b36a;
+        --gold-dim: rgba(212, 179, 106, 0.35);
+        --amber: #d89055;
+        --amber-dim: rgba(216, 144, 85, 0.35);
+      }
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        padding: 0;
+        min-height: 100%;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 48px 20px;
+        text-align: center;
+        background:
+          radial-gradient(ellipse 60% 40% at 30% 20%, rgba(212, 179, 106, 0.06), transparent),
+          radial-gradient(ellipse 60% 40% at 70% 80%, rgba(216, 144, 85, 0.06), transparent),
+          var(--bg);
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(28px, 5vw, 44px);
+        font-weight: 300;
+        letter-spacing: 0.35em;
+        text-transform: uppercase;
+      }
+      p.tagline {
+        margin: 0 0 56px;
+        color: var(--ink-faint);
+        font-size: 15px;
+        letter-spacing: 0.02em;
+        max-width: 46ch;
+      }
+      .doors {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 28px;
+        justify-content: center;
+        max-width: 880px;
+        width: 100%;
+      }
+      .door {
+        flex: 1 1 320px;
+        max-width: 380px;
+        display: block;
+        text-decoration: none;
+        color: inherit;
+        border: 1px solid var(--card-accent-dim, var(--gold-dim));
+        border-radius: 4px;
+        padding: 36px 28px;
+        background: rgba(255, 255, 255, 0.015);
+        transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+      }
+      .door:hover, .door:focus-visible {
+        transform: translateY(-3px);
+        background: rgba(255, 255, 255, 0.03);
+        border-color: var(--card-accent, var(--gold));
+        outline: none;
+      }
+      .door--anamnesis { --card-accent: var(--gold); --card-accent-dim: var(--gold-dim); }
+      .door--limerence { --card-accent: var(--amber); --card-accent-dim: var(--amber-dim); }
+      .door-title {
+        font-size: 22px;
+        letter-spacing: 0.2em;
+        color: var(--card-accent);
+        margin: 0 0 14px;
+      }
+      .door-desc {
+        margin: 0 0 18px;
+        font-size: 14px;
+        line-height: 1.6;
+        color: var(--ink);
+      }
+      .door-note {
+        margin: 0;
+        font-size: 12px;
+        color: var(--ink-faint);
+        letter-spacing: 0.02em;
+      }
+      footer {
+        margin-top: 56px;
+        font-size: 12px;
+        color: var(--ink-faint);
+      }
+      footer a { color: var(--ink-faint); }
+    </style>
+  </head>
+  <body>
+    <h1>The Vestibule</h1>
+    <p class="tagline">Two 2.5D roguelikes about the rooms behind hard doors, sharing one engine. Choose a door.</p>
+    <div class="doors">
+      <a class="door door--anamnesis" href="./anamnesis/">
+        <p class="door-title">ANAMNESIS</p>
+        <p class="door-desc">A philosophical roguelike about finding your way back to yourself — the trolley problem, the Ship of Theseus, and thirty other rooms you relive instead of read about.</p>
+        <p class="door-note">Complete · 5 languages · 7 endings</p>
+      </a>
+      <a class="door door--limerence" href="./limerence/">
+        <p class="door-title">LIMERENCE</p>
+        <p class="door-desc">A roguelike about relationships at their breaking points — infidelity, jealousy, disclosure, drift — built so you can feel the trap before life springs it.</p>
+        <p class="door-note">Content-complete beta · frank/mature themes</p>
+      </a>
+    </div>
+    <footer>
+      Both titles are free, no accounts, nothing tracked. <a href="https://github.com/DanielDmas/RogueLikeGame">Source</a>
+    </footer>
+  </body>
+</html>

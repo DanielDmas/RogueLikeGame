@@ -3,7 +3,9 @@
 *Part of* ***The Vestibule*** *— a collection of 2.5D roguelikes about the
 rooms behind hard doors, sharing one engine. This repo also contains
 [**LIMERENCE**](#limerence), a second title about relationships at their
-breaking points — jump to its section below.*
+breaking points — jump to its section below. The live site's root URL is
+a small rozcestník (chooser page) linking to both titles — see "Play in
+the browser" just below.*
 
 *A 2.5D philosophical roguelike about finding your way back to yourself.*
 
@@ -15,7 +17,9 @@ Your guide is **the Usher**: a shadow wearing both a halo and a small pair of ho
 
 ## Playing
 
-**Play in the browser:** https://danieldmas.github.io/RogueLikeGame/
+**Play in the browser:** https://danieldmas.github.io/RogueLikeGame/ is a
+rozcestník (chooser page) linking to both titles — ANAMNESIS directly at
+`.../anamnesis/`, LIMERENCE at `.../limerence/`.
 
 Or run it locally:
 
@@ -102,26 +106,26 @@ unsettling rather than gothic.
 ## Development
 
 ```bash
-npm test          # engine + content tests: endings, graph reachability, reducers, i18n coverage, content lint
-
-```bash
-npm test          # engine + content tests: endings, graph reachability, reducers, i18n coverage, content lint
-npm run build     # type-check + production bundle
-npm run preview   # serve the production build
+npm test               # engine + content tests: endings, graph reachability, reducers, i18n coverage, content lint
+npm run build           # type-check + production bundle (ANAMNESIS, dist/) — what the Windows/Electron build uses
+npm run build:anamnesis # type-check + production bundle → dist-web/anamnesis/
+npm run build:limerence # type-check + production bundle → dist-web/limerence/
+npm run build:web       # both of the above, plus the rozcestník → dist-web/index.html — what GitHub Pages deploys
+npm run preview         # serve the production build
 ```
 
 - **Stack:** Vite + TypeScript + Three.js. No framework; DOM overlay for all text (crisp and accessible), WebGL for the scene, parametric geometry only — no downloaded assets.
 - **Content is pure data** (`src/content/rooms/*`): rooms, beats, choices, effects, field notes. The engine (`src/engine/*`) never hardcodes a room.
 - **Saves** are local (`localStorage`) behind an async, server-shaped `SaveStore` interface (`src/engine/saveStore.ts`) so a real backend can drop in later without touching game code. Profiles can also be exported/imported as JSON from Settings → Data.
-- Fully localized into English, Czech, and Farsi (RTL), each with two text voices (an original v1 and a rewritten v2).
-- `dist/` and `release/` are build output and are gitignored — nothing built is committed.
+- Fully localized into English, Czech, and Farsi (RTL), each with two text voices (an original v1 and a rewritten v2) — ANAMNESIS only; LIMERENCE is English-only so far (Czech is L6, per `UPGRADE_PLAN.md`).
+- `dist/`, `dist-web/`, and `release/` are build output and are gitignored — nothing built is committed.
 
 ## Windows executable
 
-A standalone Windows build is published on the [Releases page](../../releases) as a portable `.exe` (no installer needed — just download and run). It's built by GitHub Actions (`.github/workflows/release-windows.yml`), wrapping the production web bundle in Electron.
+A standalone Windows build is published on the [Releases page](../../releases) as a portable `.exe` (no installer needed — just download and run). It's built by GitHub Actions (`.github/workflows/release-windows.yml`), wrapping the production web bundle in Electron. ANAMNESIS only, for now — LIMERENCE has no Electron packaging yet.
 
 The reliable way to trigger a release build is manually, from the Actions tab: open the "Build and release Windows EXE" workflow, click **Run workflow**, and optionally supply a `tag_name` (it defaults to `nightly-<run number>` if left blank). Pushing a `v*` tag also triggers the same workflow, but tag pushes aren't available in every environment this project is developed from, so `workflow_dispatch` is the path actually exercised and kept working.
 
 ## Also playable in the browser
 
-A GitHub Pages build deploys automatically on every published release (`.github/workflows/deploy-pages.yml`) — see the browser link at the top of this README.
+A GitHub Pages build deploys automatically on every published release (`.github/workflows/deploy-pages.yml`, running `npm run build:web`) — see the browser link at the top of this README. The deployed site's root is the rozcestník (`landing/index.html`); `/anamnesis/` and `/limerence/` are each pack's own independent build, assembled by `scripts/assemble-web-dist.mjs`.
