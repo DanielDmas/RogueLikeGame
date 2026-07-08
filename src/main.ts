@@ -22,7 +22,7 @@ async function boot() {
   const canvas = document.getElementById('scene') as HTMLCanvasElement;
   const ui = document.getElementById('ui') as HTMLElement;
   installRecoveryHandlers(ui, canvas);
-  const store = new LocalSaveStore();
+  const store = new LocalSaveStore(pack.meta.id);
   const profile = await store.load('traveler');
   setLocale(profile.settings.language, profile.settings.textVersion);
   applyLocaleToDocument(profile.settings.language);

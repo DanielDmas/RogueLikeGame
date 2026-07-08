@@ -47,7 +47,15 @@ export interface UatHandle {
 /** Assigns the debug handle onto `target` (in practice `window`) iff `uat` is
  * true — the object must never exist for a normal player. Takes a plain
  * target object (rather than reaching for `window` itself) so the guarantee
- * is testable without a DOM. */
-export function installUatHandle(target: { __anamnesisUat?: UatHandle }, uat: boolean, handle: UatHandle): void {
-  if (uat) target.__anamnesisUat = handle;
+ * is testable without a DOM. Installs under the engine-generic `__gameUat`
+ * name and the original `__anamnesisUat` name (back-compat: existing UAT
+ * scripts and docs reference it) — both point at the same handle. */
+export function installUatHandle(
+  target: { __gameUat?: UatHandle; __anamnesisUat?: UatHandle },
+  uat: boolean,
+  handle: UatHandle,
+): void {
+  if (!uat) return;
+  target.__gameUat = handle;
+  target.__anamnesisUat = handle;
 }

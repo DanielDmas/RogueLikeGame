@@ -1,14 +1,21 @@
 import { defaultProfile, hydrateProfile, PROFILE_SCHEMA_VERSION, type Profile, type SaveStore } from './saveStore';
 
-const KEY_PREFIX = 'anamnesis:profile:';
 const BACKUP_SUFFIX = ':backup';
 
 export class LocalSaveStore implements SaveStore {
   private restoredFromBackup = false;
+  private keyPrefix: string;
+
+  /** `packId` namespaces storage so two packs (ANAMNESIS, LIMERENCE) never
+   * collide in the same browser profile — defaults to 'anamnesis' so every
+   * existing call site (and every save on disk today) is unaffected. */
+  constructor(packId = 'anamnesis') {
+    this.keyPrefix = `${packId}:profile:`;
+  }
 
   async load(profileId: string): Promise<Profile> {
     this.restoredFromBackup = false;
-    const key = KEY_PREFIX + profileId;
+    const key = this.keyPrefix + profileId;
     const backupKey = key + BACKUP_SUFFIX;
     const raw = localStorage.getItem(key);
     if (!raw) return defaultProfile();
@@ -42,6 +49,6 @@ export class LocalSaveStore implements SaveStore {
   }
 
   async save(profileId: string, profile: Profile): Promise<void> {
-    localStorage.setItem(KEY_PREFIX + profileId, JSON.stringify({ ...profile, schemaVersion: PROFILE_SCHEMA_VERSION }));
+    localStorage.setItem(this.keyPrefix + profileId, JSON.stringify({ ...profile, schemaVersion: PROFILE_SCHEMA_VERSION }));
   }
 }

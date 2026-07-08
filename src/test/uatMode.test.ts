@@ -77,21 +77,23 @@ describe('isJumpableRoom — UAT jump() target validation (Phase S1)', () => {
 
 describe('installUatHandle — the debug handle must not exist for a normal player (Phase S1)', () => {
   it('does not install the handle when uat is false', () => {
-    const target: { __anamnesisUat?: UatHandle } = {};
+    const target: { __gameUat?: UatHandle; __anamnesisUat?: UatHandle } = {};
     installUatHandle(target, false, stubHandle);
+    expect(target.__gameUat).toBeUndefined();
     expect(target.__anamnesisUat).toBeUndefined();
   });
 
   it('installs exactly the given handle when uat is true', () => {
-    const target: { __anamnesisUat?: UatHandle } = {};
+    const target: { __gameUat?: UatHandle; __anamnesisUat?: UatHandle } = {};
     installUatHandle(target, true, stubHandle);
+    expect(target.__gameUat).toBe(stubHandle);
     expect(target.__anamnesisUat).toBe(stubHandle);
   });
 
   it('the handle exposes the full documented surface', () => {
-    const target: { __anamnesisUat?: UatHandle } = {};
+    const target: { __gameUat?: UatHandle; __anamnesisUat?: UatHandle } = {};
     installUatHandle(target, true, stubHandle);
-    const handle = target.__anamnesisUat!;
+    const handle = target.__gameUat!;
     expect(typeof handle.version).toBe('string');
     expect(typeof handle.doorRects).toBe('function');
     expect(typeof handle.state).toBe('function');

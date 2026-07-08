@@ -56,9 +56,6 @@ import { applyUiZoom } from '../ui/zoom';
 import { installUatHandle, isJumpableRoom, speedMultiplierFor, type UatHandle } from './uatMode';
 
 const PROFILE_ID = 'traveler';
-/** sessionStorage marker: set by jump() right before a reload, so start() knows to
- * skip the title screen and resume `profile.run` directly instead of waiting for a click. */
-const UAT_AUTOCONTINUE_KEY = 'anamnesis-uat-autocontinue';
 
 const themeForAct = (act: number): 0 | 1 | 2 | 3 | 4 => (act <= 1 ? (act as 0 | 1) : (act as 2 | 3 | 4));
 
@@ -76,6 +73,9 @@ export class Game {
   private store: SaveStore;
   private pack: ContentPack;
   private registry: RoomRegistry;
+  /** sessionStorage marker: set by jump() right before a reload, so start() knows to
+   * skip the title screen and resume `profile.run` directly instead of waiting for a click. */
+  private uatAutocontinueKey: string;
   private currentTheme = -1;
   private doorClickThrough: ((id: string) => void) | null = null;
   /** The door specs currently on screen, in door-index order — lets both
@@ -110,6 +110,7 @@ export class Game {
     this.store = store;
     this.pack = pack;
     this.registry = makeRegistry(pack.rooms);
+    this.uatAutocontinueKey = `${pack.meta.id}-uat-autocontinue`;
     this.uat = uat;
     this.speedMultiplier = speedMultiplierFor(uat);
 
@@ -158,7 +159,7 @@ export class Game {
 
     this.applySettings();
 
-    installUatHandle(window as unknown as { __anamnesisUat?: UatHandle }, this.uat, {
+    installUatHandle(window as unknown as { __gameUat?: UatHandle; __anamnesisUat?: UatHandle }, this.uat, {
       version: typeof __APP_VERSION__ === 'string' ? __APP_VERSION__ : '',
       doorRects: () => this.director.getDoorRects(),
       state: () => ({
@@ -198,7 +199,7 @@ export class Game {
     };
     this.profile.run = next;
     void this.store.save(PROFILE_ID, this.profile).then(() => {
-      sessionStorage.setItem(UAT_AUTOCONTINUE_KEY, '1');
+      sessionStorage.setItem(this.uatAutocontinueKey, '1');
       location.reload();
     });
   }
@@ -376,8 +377,8 @@ export class Game {
   async start() {
     // jump() left a marker + a fully-formed run before reloading — resume it
     // directly instead of making a scripted test click through the title.
-    if (this.uat && sessionStorage.getItem(UAT_AUTOCONTINUE_KEY) && this.profile.run) {
-      sessionStorage.removeItem(UAT_AUTOCONTINUE_KEY);
+    if (this.uat && sessionStorage.getItem(this.uatAutocontinueKey) && this.profile.run) {
+      sessionStorage.removeItem(this.uatAutocontinueKey);
       this.director.setTheme(0);
       this.state = this.profile.run;
       this.director.setPaused(false);
