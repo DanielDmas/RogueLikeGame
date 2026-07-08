@@ -1388,3 +1388,29 @@ schedule honestly) → S2–S5 → R4 last. Six open questions for the owner are
 listed in doc 11 §B6 (save-safety confirmation, citation-softening policy,
 target session length, whether Q hard-gates v0.2.0, telemetry-never
 confirmation, accessibility scope).
+
+# LIMERENCE — second title (design phase; implementation not started)
+
+A second game on this engine: relationships at their breaking points —
+infidelity, polyamory, jealousy, disclosure, coercion, drift — cast aged
+15–35, G.R.R. Martin × Maxime Chattam × modern psychology, built so players
+experience the traps before life springs them. Requires first refactoring
+this repo into one content-agnostic engine + two content packs (ANAMNESIS
+unchanged, behavior-neutral).
+
+**Full design specifications live in `docs/design-limerence/`** (creative
+bible, 31 room briefs with psychology anchors, 7 endings, keepsakes/
+epiphanies/Examined Path re-skins, citation-honesty rules, the
+`ContentPack` engine architecture with a 23-point coupling inventory, the
+L0–L6 milestone roadmap, and a binding safety/education charter — Act I
+non-explicit, adult acts frank-never-graphic, ~PEGI 16 posture).
+
+- [x] L0. Design specifications committed (documentation only — this entry).
+- [ ] L1. Engine/pack split (`docs/design-limerence/08-…`); ANAMNESIS
+      behavior-neutral, tests parameterized, both packs boot.
+- [ ] L2. LIMERENCE playable skeleton EN (frame, prologue, Act I, 2 endings,
+      advisory layer).
+- [ ] L3. Acts II–III + gates + secret room.
+- [ ] L4. Act IV + Records Office + all 7 endings + full meta-systems.
+- [ ] L5. Hotel visual/audio identity + UAT pack matrix + docs.
+- [ ] L6. Czech translation.
