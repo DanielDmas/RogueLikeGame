@@ -130,6 +130,8 @@ export class Game {
         onDoorClick: (id) => this.doorClickThrough?.(id),
       },
       profile.settings.quality,
+      pack.visuals,
+      pack.guide.figure,
       profile.settings.renderScale,
     );
     this.director.setSpeedMultiplier(this.speedMultiplier);
@@ -332,6 +334,7 @@ export class Game {
       onResetProgress: () => void this.resetProgress(),
       onExportProfile: () => this.exportProfile(),
       onImportProfile: (raw) => this.importProfile(raw),
+      exportPrefix: this.pack.meta.exportPrefix,
     };
   }
 
@@ -343,7 +346,7 @@ export class Game {
     // that promise.
     this.stageBottom.classList.add('overlay-hidden');
     const action = await showPauseMenu(this.ui);
-    if (action === 'codex') await showCodex(this.ui, this.profile);
+    if (action === 'codex') await showCodex(this.ui, this.profile, this.pack);
     if (action === 'ledger') await showLedger(this.ui, this.profile, this.registry);
     if (action === 'persona') {
       this.profile.persona = await showPersona(this.ui, this.profile.persona);
@@ -391,9 +394,9 @@ export class Game {
       // Rebuilt fresh on every loop entry rather than reactively — covers a
       // locale change made mid-title-loop without any extra plumbing.
       this.director.setEpitaphWall(this.pack.endingRules.epitaphLines(this.profile.endingsSeen));
-      const action = await showTitle(this.ui, this.profile);
+      const action = await showTitle(this.ui, this.profile, this.pack);
       if (action === 'codex') {
-        await showCodex(this.ui, this.profile);
+        await showCodex(this.ui, this.profile, this.pack);
       } else if (action === 'ledger') {
         await showLedger(this.ui, this.profile, this.registry);
       } else if (action === 'persona') {
@@ -791,7 +794,7 @@ export class Game {
         newEpiphanies,
       });
       if (action === 'codex') {
-        await showCodex(this.ui, this.profile);
+        await showCodex(this.ui, this.profile, this.pack);
         continue;
       }
       if (action === 'again') {

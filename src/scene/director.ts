@@ -1,8 +1,9 @@
 import * as THREE from 'three';
-import { applyMood, buildTheme, usherFigure, type MoodType, type ThemeConfig, type ThemeId } from './themes';
+import { applyMood, type GuideFigure, type MoodType, type ThemeConfig, type ThemeId } from './themes';
 import { createDoors, DOOR_Z, type DoorSet, type DoorSpec } from './doors';
 import { createPost, type Post } from './post';
-import { dioramaFor, type Diorama } from './dioramas';
+import type { Diorama } from './dioramas';
+import type { ContentPack } from '../packs/types';
 
 export interface DirectorEvents {
   onDoorHover(id: string | null): void;
@@ -90,7 +91,8 @@ export class SceneDirector {
   private camera: THREE.PerspectiveCamera;
   private post: Post;
   private theme: ThemeConfig | null = null;
-  private usher = usherFigure();
+  private usher: GuideFigure;
+  private visuals: ContentPack['visuals'];
   private doors: DoorSet | null = null;
   private raycaster = new THREE.Raycaster();
   private pointer = new THREE.Vector2(-10, -10);
@@ -134,11 +136,15 @@ export class SceneDirector {
     ui: HTMLElement,
     events: DirectorEvents,
     quality: 'low' | 'high',
+    visuals: ContentPack['visuals'],
+    guideFigure: () => GuideFigure,
     renderScale: RenderScale = 'standard',
   ) {
     this.events = events;
     this.renderScale = renderScale;
     this.quality = quality;
+    this.visuals = visuals;
+    this.usher = guideFigure();
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: quality === 'high' });
     this.renderer.setPixelRatio(pixelRatioFor(renderScale, devicePixelRatio));
     this.renderer.setSize(innerWidth, innerHeight);
@@ -285,7 +291,7 @@ export class SceneDirector {
     this.clearDiorama();
     this.dioramaRoomId = roomId;
     if (!roomId) return;
-    const d = dioramaFor(roomId, this.quality);
+    const d = this.visuals.dioramaFor(roomId, this.quality);
     if (!d) return;
     this.diorama = d;
     this.scene.add(d.group);
@@ -334,7 +340,7 @@ export class SceneDirector {
         if (o instanceof THREE.Mesh) o.geometry.dispose();
       });
     }
-    this.theme = buildTheme(id);
+    this.theme = this.visuals.buildTheme(id);
     this.mood = null;
     this.scene.add(this.theme.group);
     this.applyFogAndBackground();

@@ -83,6 +83,7 @@ export const anamnesisPack: ContentPack = {
     clarityThreshold: ANAMNESIS_LUCIDITY,
     endingsTotal,
     epitaphLines,
+    hiddenUntilWitnessed: ['anamnesis'],
     axisTriptych,
   },
 

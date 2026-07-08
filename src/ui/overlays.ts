@@ -1,15 +1,10 @@
 import type { Persona, Profile, Settings } from '../engine/saveStore';
 import type { Ending, FieldNote, Room } from '../engine/schema';
-import { allRooms } from '../content/rooms';
-import { endings } from '../content/endings';
-import { endingsTotal } from '../engine/endings';
+import type { ContentPack } from '../packs/types';
 import { epiphanyLine, epiphanyLines, isHiddenFromCodex, ledgerStats } from '../engine/ledger';
 import type { RoomRegistry } from '../engine/storyEngine';
-import { actName } from '../content/graph';
 import { clear, el, HEART_SVG } from './dom';
 import { showFieldNote } from './fieldNote';
-import { roomIcons, endingIcons } from '../content/icons';
-import { KEEPSAKES, keepsakeIcons } from '../content/keepsakes';
 import { t } from '../engine/text/resolver';
 import {
   uiKey,
@@ -23,6 +18,7 @@ import {
   endingNoteThinkersKey,
   endingNoteBodyKey,
   keepsakeKey,
+  actNameKey,
 } from '../engine/text/keys';
 import { LANGUAGE_LABELS } from './locale';
 import { nextLang } from '../engine/text/resolver';
@@ -39,10 +35,10 @@ function overlay(ui: HTMLElement): HTMLElement {
   return o;
 }
 
-export function showTitle(ui: HTMLElement, profile: Profile): Promise<TitleAction> {
+export function showTitle(ui: HTMLElement, profile: Profile, pack: ContentPack): Promise<TitleAction> {
   return new Promise((resolve) => {
     const o = overlay(ui);
-    o.append(el('div', 'title-word', 'ANAMNESIS'));
+    o.append(el('div', 'title-word', pack.meta.title));
     o.append(
       el(
         'div',
@@ -107,7 +103,7 @@ export function showTitle(ui: HTMLElement, profile: Profile): Promise<TitleActio
         el(
           'div',
           'title-sub',
-          `${t(uiKey('endingsWitnessed'), 'endings witnessed')}: ${profile.endingsSeen.length} ${t(uiKey('of'), 'of')} ${endingsTotal(profile.endingsSeen)}`,
+          `${t(uiKey('endingsWitnessed'), 'endings witnessed')}: ${profile.endingsSeen.length} ${t(uiKey('of'), 'of')} ${pack.endingRules.endingsTotal(profile.endingsSeen)}`,
         ),
       );
     }
@@ -131,6 +127,8 @@ export interface SettingsActions {
    * false without changing anything if `raw` isn't valid JSON; on success it
    * persists and reloads, so the caller never needs to handle that half. */
   onImportProfile: (raw: string) => boolean;
+  /** Download filename prefix for the exported profile (pack.meta.exportPrefix). */
+  exportPrefix: string;
 }
 
 /** A row: label + control on one line, a short explanatory line underneath. */
@@ -375,7 +373,7 @@ export function showSettings(ui: HTMLElement, settings: Settings, actions: Setti
       const url = URL.createObjectURL(blob);
       const a = el('a') as HTMLAnchorElement;
       a.href = url;
-      a.download = `anamnesis-profile-${new Date().toISOString().slice(0, 10)}.json`;
+      a.download = `${actions.exportPrefix}-profile-${new Date().toISOString().slice(0, 10)}.json`;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -657,7 +655,7 @@ export function translateFieldNoteForCodex(id: string, note: FieldNote, isEnding
       };
 }
 
-export function showCodex(ui: HTMLElement, profile: Profile): Promise<void> {
+export function showCodex(ui: HTMLElement, profile: Profile, pack: ContentPack): Promise<void> {
   return new Promise((resolve) => {
     const o = overlay(ui);
     const panel = el('div', 'codex-panel');
@@ -675,22 +673,24 @@ export function showCodex(ui: HTMLElement, profile: Profile): Promise<void> {
       card.append(el('div', 'cx-title', unlocked ? title : '· · ·'));
       card.append(el('div', 'cx-thinkers', unlocked ? thinkers : notYetWalked));
       if (unlocked && note) {
-        const icon = isEnding ? endingIcons[id.replace(/^ending:/, '')] : roomIcons[id];
+        const icon = isEnding ? pack.visuals.endingIcons[id.replace(/^ending:/, '')] : pack.visuals.iconFor(id);
         const translated = translateFieldNoteForCodex(id, note, isEnding);
         card.addEventListener('click', () => showFieldNote(ui, translated, isEnding ? endingLabel : fieldNoteLabel, icon));
       }
       grid.appendChild(card);
     };
 
-    for (const room of allRooms) {
+    const actNameFor = (act: Room['act']) => t(actNameKey(act), pack.graph.actNamesEn[act]);
+
+    for (const room of pack.rooms) {
       if (isHiddenFromCodex(room.id, profile)) continue;
-      if (room.id === 'last-message') {
+      if (room.id === pack.hooks.lastMessageId) {
         // Room 19's codex entry is the sentence you sent
         const unlocked = profile.codexUnlocked.includes(room.id);
         const lastMessageTitle = t(roomTitleKey(room.id), room.title);
         addCard(
           room.id,
-          actName(room.act),
+          actNameFor(room.act),
           lastMessageTitle,
           unlocked && profile.lastMessage ? `“${profile.lastMessage}”` : '',
           unlocked && profile.lastMessage
@@ -705,18 +705,18 @@ export function showCodex(ui: HTMLElement, profile: Profile): Promise<void> {
       }
       addCard(
         room.id,
-        actName(room.act),
+        actNameFor(room.act),
         t(roomNoteTitleKey(room.id), room.fieldNote?.title ?? room.title),
         t(roomNoteThinkersKey(room.id), room.fieldNote?.thinkers ?? ''),
         room.fieldNote,
       );
     }
     const endingLabelAct = t(uiKey('ending'), 'Ending');
-    for (const ending of endings) {
-      // The hidden seventh ending isn't shown locked like the rest — it isn't
-      // shown at all until witnessed, per spec 03: no visible lock, no hint
-      // via the codex that a seventh ending exists.
-      if (ending.id === 'anamnesis' && !profile.endingsSeen.includes('anamnesis')) continue;
+    for (const ending of pack.endings) {
+      // Hidden endings (e.g. ANAMNESIS's 7th) aren't shown locked like the
+      // rest — they aren't shown at all until witnessed, per spec 03: no
+      // visible lock, no hint via the codex that they exist.
+      if (pack.endingRules.hiddenUntilWitnessed.includes(ending.id) && !profile.endingsSeen.includes(ending.id)) continue;
       addCard(
         `ending:${ending.id}`,
         endingLabelAct,
@@ -730,12 +730,12 @@ export function showCodex(ui: HTMLElement, profile: Profile): Promise<void> {
     const shelf = el('div', 'codex-shelf');
     shelf.append(el('div', 'shelf-title', t(uiKey('shelfTitle'), 'The Shelf')));
     const shelfItems = el('div', 'shelf-items');
-    for (const def of KEEPSAKES) {
+    for (const def of pack.keepsakes) {
       const earned = profile.keepsakes.includes(def.id);
       const item = el('div', `shelf-item${earned ? '' : ' unearned'}`);
       if (earned) {
         const icon = el('span', 'shelf-icon');
-        icon.innerHTML = keepsakeIcons[def.id] ?? '';
+        icon.innerHTML = pack.keepsakeIcons[def.id] ?? '';
         const name = t(keepsakeKey(def.id, 'name'), def.name);
         item.title = t(keepsakeKey(def.id, 'origin'), def.origin);
         item.append(icon, el('span', 'shelf-name', name));

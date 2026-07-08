@@ -56,6 +56,10 @@ export interface ContentPack {
     endingsTotal(endingsSeen: string[]): number;
     epitaphLines(endingsSeen: string[]): string[];
     axisTriptych(s: RunState): [string, string, string];
+    /** Ending ids that never appear locked in the codex — hidden entirely
+     * (no card, no hint of existing) until the player has actually witnessed
+     * them. ANAMNESIS's 7th ending is the one example today. */
+    hiddenUntilWitnessed: string[];
   };
 
   guide: {
