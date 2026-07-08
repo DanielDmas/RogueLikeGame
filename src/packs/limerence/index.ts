@@ -87,7 +87,15 @@ export const limerencePack: ContentPack = {
   graph: {
     prologue: 'the-front-desk',
     actPools: {
-      1: ['placeholder-room-1'],
+      1: [
+        'the-read-receipt',
+        'the-screenshot',
+        'the-password',
+        'the-party',
+        'the-forward',
+        'the-best-friends-girl',
+        'the-summer-ends',
+      ],
       2: ['placeholder-room-2'],
       3: ['placeholder-room-3'],
     },
@@ -99,7 +107,7 @@ export const limerencePack: ContentPack = {
     },
     act4Sequence: ['the-kitchen-table', 'the-unsent', 'the-morning-desk'],
     understorySequence: [],
-    optionalPerAct: { 1: 0, 2: 0, 3: 0 },
+    optionalPerAct: { 1: 3, 2: 0, 3: 0 },
     actNamesEn: ACT_NAMES_EN,
   },
 
@@ -137,9 +145,23 @@ export const limerencePack: ContentPack = {
     heartsSvg: HEART_SVG, // placeholder — Trust re-skin lands at L5
   },
 
-  keepsakes: [],
-  keepsakeTriggers: {},
-  keepsakeIcons: {},
+  keepsakes: [
+    {
+      id: 'the-cheap-ring',
+      name: 'The Cheap Ring',
+      origin: 'won at a party, for thirty seconds of being laughed at',
+    },
+  ],
+  keepsakeTriggers: {
+    'refused-the-dare': 'the-cheap-ring',
+  },
+  keepsakeIcons: {
+    'the-cheap-ring': `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="32" cy="38" r="16"/>
+      <path d="M24 22 L32 10 L40 22 Z"/>
+      <circle cx="32" cy="16" r="2.4" fill="currentColor"/>
+    </svg>`,
+  },
 
   epiphanies,
 

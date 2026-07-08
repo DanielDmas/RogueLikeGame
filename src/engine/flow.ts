@@ -631,7 +631,7 @@ export class Game {
       // Not retroactive: a flag set by a run before keepsakes shipped grants
       // nothing, since flags reset every run.
       const newFlags = this.state.flags.filter((f) => !flagsBefore.includes(f));
-      for (const keepsakeId of keepsakesEarnedByFlags(newFlags)) {
+      for (const keepsakeId of keepsakesEarnedByFlags(newFlags, this.pack.keepsakeTriggers)) {
         if (!this.profile.keepsakes.includes(keepsakeId)) this.profile.keepsakes.push(keepsakeId);
       }
       if (choice.keepsakeId && !this.profile.keepsakeChoicesTaken.includes(choice.id)) {

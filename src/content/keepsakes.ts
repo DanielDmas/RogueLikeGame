@@ -51,12 +51,14 @@ export const KEEPSAKE_TRIGGERS: Record<string, string> = {
 };
 
 /** Pure lookup: which keepsakes (deduped) does this set of newly-added flags
- * earn? `flow.ts` calls this with only the flags added by the current
- * choice (i.e. flags absent before `applyEffects` and present after). */
-export function keepsakesEarnedByFlags(newFlags: string[]): string[] {
+ * earn, per `triggers`? `flow.ts` calls this with the active pack's own
+ * `pack.keepsakeTriggers` and only the flags added by the current choice
+ * (i.e. flags absent before `applyEffects` and present after). `triggers`
+ * defaults to ANAMNESIS's own map so existing call sites are unaffected. */
+export function keepsakesEarnedByFlags(newFlags: string[], triggers: Record<string, string> = KEEPSAKE_TRIGGERS): string[] {
   const earned = new Set<string>();
   for (const flag of newFlags) {
-    const id = KEEPSAKE_TRIGGERS[flag];
+    const id = triggers[flag];
     if (id) earned.add(id);
   }
   return [...earned];
