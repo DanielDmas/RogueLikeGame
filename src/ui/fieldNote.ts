@@ -1,8 +1,8 @@
-import type { FieldNote } from '../content/schema';
+import type { FieldNote } from '../engine/schema';
 import { el } from './dom';
 import { sound } from '../audio/soundEngine';
-import { t } from '../content/text/resolver';
-import { uiKey } from '../content/text/keys';
+import { t } from '../engine/text/resolver';
+import { uiKey } from '../engine/text/keys';
 
 /** Escapes HTML, then turns `**text**` into `<strong>` — the only markup field-note bodies use. */
 export function renderEmphasis(raw: string): string {

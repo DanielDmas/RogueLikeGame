@@ -2,7 +2,7 @@
 // field notes, explanations) for the prologue and Act I. Registered under
 // version 'v2'. Translated from the English v2 source directly, per
 // CLAUDE.md's context-first rule.
-import { registerAll } from './resolver';
+import { registerAll } from '../../engine/text/resolver';
 import {
   roomBeatKey,
   roomChoiceHintKey,
@@ -12,7 +12,7 @@ import {
   roomNoteBodyKey,
   roomNoteThinkersKey,
   roomNoteTitleKey,
-} from './keys';
+} from '../../engine/text/keys';
 
 // ---------- Prologue ----------
 registerAll('v2', 'fr', {

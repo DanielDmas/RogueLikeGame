@@ -1,4 +1,4 @@
-import type { ActId, Room, RunState } from '../content/schema';
+import type { ActId, Room, RunState } from './schema';
 import { ACT4_SEQUENCE, ACT_POOLS, GATES, OPTIONAL_PER_ACT, PROLOGUE, UNDERSTORY_SEQUENCE } from '../content/graph';
 
 export interface RoomRegistry {

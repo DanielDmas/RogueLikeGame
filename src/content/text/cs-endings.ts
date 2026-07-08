@@ -1,7 +1,7 @@
 // Czech translation of the v2 ending prose (title, epitaph, beats, field
 // notes). Registered under version 'v2'. Built up ending by ending; see
 // scripts/extract-v2.ts for the canonical English source list.
-import { registerAll } from './resolver';
+import { registerAll } from '../../engine/text/resolver';
 import {
   endingBeatKey,
   endingEpitaphKey,
@@ -9,7 +9,7 @@ import {
   endingNoteThinkersKey,
   endingNoteTitleKey,
   endingTitleKey,
-} from './keys';
+} from '../../engine/text/keys';
 
 // ---------- Ending: The Return ----------
 registerAll('v2', 'cs', {

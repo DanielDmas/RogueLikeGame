@@ -50,5 +50,5 @@ import './fr-epiphanies';
 import './cs-explanations';
 import './fa-explanations';
 
-export * from './resolver';
-export * from './keys';
+export * from '../../engine/text/resolver';
+export * from '../../engine/text/keys';

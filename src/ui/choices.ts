@@ -1,7 +1,7 @@
-import type { Choice, RunState } from '../content/schema';
+import type { Choice, RunState } from '../engine/schema';
 import { el } from './dom';
-import { t } from '../content/text/resolver';
-import { roomChoiceTextKey, roomChoiceHintKey, uiKey, keepsakeKey } from '../content/text/keys';
+import { t } from '../engine/text/resolver';
+import { roomChoiceTextKey, roomChoiceHintKey, uiKey, keepsakeKey } from '../engine/text/keys';
 import { KEEPSAKES } from '../content/keepsakes';
 
 export interface DoorOption {

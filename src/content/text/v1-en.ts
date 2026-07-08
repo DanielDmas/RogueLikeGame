@@ -5,7 +5,7 @@
 // this should stay the frozen v1 voice — but content that is mechanically
 // load-bearing in every text version (e.g. the Milestone 5 seventh-ending
 // margin hints, appended here to match v2/cs/fa) is an exception.
-import { registerAll } from './resolver';
+import { registerAll } from '../../engine/text/resolver';
 
 registerAll('v1', 'en', {
   "ending.dissolved.beat0": `Somewhere between one room and the next, the last of the grip lets go.`,

@@ -2,11 +2,11 @@
 // translated by hand alongside their string siblings in cs-rooms-actN.ts —
 // scripts/extract-v2.ts only lifts plain strings, so these can't be
 // auto-extracted. Branching logic mirrors the English source exactly.
-import { register, t } from './resolver';
+import { register, t } from '../../engine/text/resolver';
 import { choseIn, choseInPrior, hasFlag, pickExhibitEntry, pickShadowMoments, pickUnchosenRooms } from '../../engine/gameState';
 import { punchlineUnlocked } from '../../engine/endings';
-import type { RunState } from '../schema';
-import { roomBeatKey, roomChoiceOutcomeKey, roomChoiceTextKey, roomTitleKey, endingTitleKey } from './keys';
+import type { RunState } from '../../engine/schema';
+import { roomBeatKey, roomChoiceOutcomeKey, roomChoiceTextKey, roomTitleKey, endingTitleKey } from '../../engine/text/keys';
 import { ROOM_TITLE_BY_ID, ENDING_TITLE_BY_ID } from '../rooms/understory';
 
 /** Czech mirror of act3.ts's SHADOW_FALLBACK, index-aligned. */

@@ -2,7 +2,7 @@
 // outcome, field notes). Registered under version 'v2'. Rooms: junction,
 // experience-machine, ship, casino-pascal, omelas, chinese-room,
 // newcomb-annex, veil-of-ignorance, court-of-usher.
-import { registerAll } from './resolver';
+import { registerAll } from '../../engine/text/resolver';
 import {
   roomBeatKey,
   roomChoiceHintKey,
@@ -11,7 +11,7 @@ import {
   roomNoteBodyKey,
   roomNoteThinkersKey,
   roomNoteTitleKey,
-} from './keys';
+} from '../../engine/text/keys';
 
 // ---------- Act II: The Junction ----------
 registerAll('v2', 'fa', {

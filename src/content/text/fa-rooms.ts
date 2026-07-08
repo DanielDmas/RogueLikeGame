@@ -1,7 +1,7 @@
 // Farsi translation of the v2 room/ending prose (beats, choice text/hint/
 // outcome, field notes). Registered under version 'v2'. Built up room by
 // room; see scripts/extract-v2.ts for the canonical English source list.
-import { registerAll } from './resolver';
+import { registerAll } from '../../engine/text/resolver';
 import {
   roomBeatKey,
   roomChoiceHintKey,
@@ -10,7 +10,7 @@ import {
   roomNoteBodyKey,
   roomNoteThinkersKey,
   roomNoteTitleKey,
-} from './keys';
+} from '../../engine/text/keys';
 
 // ---------- Prologue ----------
 registerAll('v2', 'fa', {

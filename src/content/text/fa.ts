@@ -3,8 +3,8 @@
 // long-form room prose (beats, choice outcomes, field notes) is not yet
 // translated and gracefully falls back to English v2 (see resolver.ts).
 // RTL layout and the Vazirmatn webfont are applied in ui/locale.ts.
-import { registerAll } from './resolver';
-import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey, keepsakeKey } from './keys';
+import { registerAll } from '../../engine/text/resolver';
+import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey, keepsakeKey } from '../../engine/text/keys';
 
 registerAll('v2', 'fa', {
   [uiKey('abandonToTitle')]: 'رها کردن و بازگشت به صفحه‌ی عنوان',

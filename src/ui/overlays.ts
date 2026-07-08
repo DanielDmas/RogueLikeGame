@@ -1,5 +1,5 @@
 import type { Persona, Profile, Settings } from '../engine/saveStore';
-import type { Ending, FieldNote, Room } from '../content/schema';
+import type { Ending, FieldNote, Room } from '../engine/schema';
 import { allRooms } from '../content/rooms';
 import { endings } from '../content/endings';
 import { endingsTotal } from '../engine/endings';
@@ -10,7 +10,7 @@ import { clear, el, HEART_SVG } from './dom';
 import { showFieldNote } from './fieldNote';
 import { roomIcons, endingIcons } from '../content/icons';
 import { KEEPSAKES, keepsakeIcons } from '../content/keepsakes';
-import { t } from '../content/text/resolver';
+import { t } from '../engine/text/resolver';
 import {
   uiKey,
   roomTitleKey,
@@ -23,10 +23,10 @@ import {
   endingNoteThinkersKey,
   endingNoteBodyKey,
   keepsakeKey,
-} from '../content/text/keys';
+} from '../engine/text/keys';
 import { LANGUAGE_LABELS } from './locale';
-import { nextLang } from '../content/text/resolver';
-import type { TextVersion } from '../content/text/resolver';
+import { nextLang } from '../engine/text/resolver';
+import type { TextVersion } from '../engine/text/resolver';
 import { sound } from '../audio/soundEngine';
 import { isElectron, isFullscreen, toggleFullscreen } from './fullscreen';
 import { applyUiZoom } from './zoom';

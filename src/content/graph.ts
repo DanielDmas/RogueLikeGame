@@ -1,6 +1,6 @@
-import type { ActId } from './schema';
-import { t } from './text/resolver';
-import { actNameKey } from './text/keys';
+import type { ActId } from '../engine/schema';
+import { t } from '../engine/text/resolver';
+import { actNameKey } from '../engine/text/keys';
 
 /** Optional-room pools per act; the player completes OPTIONAL_PER_ACT of them, then the gate. */
 export const ACT_POOLS: Record<Exclude<ActId, 0 | 4>, string[]> = {

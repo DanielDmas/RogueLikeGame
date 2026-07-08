@@ -1,6 +1,6 @@
-import type { RunState } from './schema';
-import { t } from './text/resolver';
-import { usherBarkKey, actIntroKey } from './text/keys';
+import type { RunState } from '../engine/schema';
+import { t } from '../engine/text/resolver';
+import { usherBarkKey, actIntroKey } from '../engine/text/keys';
 
 /** One-line Usher commentary shown at the door-choosing moment. `atUnderstoryFork`
  * is true exactly once per eligible run — the single moment the Act IV

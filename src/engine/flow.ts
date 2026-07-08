@@ -1,4 +1,4 @@
-import type { Choice, Room, RunState } from '../content/schema';
+import type { Choice, Room, RunState } from './schema';
 import { allRooms } from '../content/rooms';
 import { getEnding } from '../content/endings';
 import { actName, UNDERSTORY_SEQUENCE } from '../content/graph';
@@ -53,7 +53,7 @@ import {
   endingNoteBodyKey,
   uiKey,
   usherBarkKey,
-} from '../content/text/keys';
+} from './text/keys';
 import { applyLocaleToDocument } from '../ui/locale';
 import { isFullscreen, shouldOpenPauseOnEscape, toggleFullscreen } from '../ui/fullscreen';
 import { applyUiZoom } from '../ui/zoom';

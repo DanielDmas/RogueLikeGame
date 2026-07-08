@@ -2,10 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { allRooms } from '../content/rooms';
 import { newRun } from '../engine/gameState';
 import { shouldShowReflections, shouldShowSocraticAside, shuffledReflections } from '../engine/reflections';
-import { setLocale, t } from '../content/text/resolver';
+import { setLocale, t } from '../engine/text/resolver';
 import '../content/text';
-import { reflectionKey } from '../content/text/keys';
-import type { Reflection } from '../content/schema';
+import { reflectionKey } from '../engine/text/keys';
+import type { Reflection } from '../engine/schema';
 
 const TRADITIONS: Reflection['tradition'][] = ['consequence', 'duty', 'virtue', 'care'];
 

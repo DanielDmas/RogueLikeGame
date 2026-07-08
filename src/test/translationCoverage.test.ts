@@ -2,8 +2,8 @@ import { describe, expect, it, afterEach } from 'vitest';
 import { allRooms } from '../content/rooms';
 import { endings } from '../content/endings';
 import '../content/text'; // registers v1-en + cs + fa + all room/ending translation packs
-import { setLocale } from '../content/text/resolver';
-import { t } from '../content/text/resolver';
+import { setLocale } from '../engine/text/resolver';
+import { t } from '../engine/text/resolver';
 import {
   endingBeatKey,
   endingNoteBodyKey,
@@ -17,7 +17,7 @@ import {
   roomNoteBodyKey,
   roomNoteThinkersKey,
   roomNoteTitleKey,
-} from '../content/text/keys';
+} from '../engine/text/keys';
 
 const LANGS = ['cs', 'fa', 'de', 'fr'] as const;
 

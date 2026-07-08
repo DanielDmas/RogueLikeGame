@@ -1,7 +1,7 @@
 import { el } from './dom';
 import { sound } from '../audio/soundEngine';
-import { t } from '../content/text/resolver';
-import { uiKey } from '../content/text/keys';
+import { t } from '../engine/text/resolver';
+import { uiKey } from '../engine/text/keys';
 import { renderEmphasis } from './fieldNote';
 
 /** Slides up a plain-language explanation of the current stage's situation

@@ -1,9 +1,9 @@
 import { describe, expect, it, afterEach } from 'vitest';
 import '../content/text'; // registers all translation packs including all dynamic v2 beats
-import { setLocale, t } from '../content/text/resolver';
-import { roomBeatKey, roomChoiceOutcomeKey, roomChoiceTextKey } from '../content/text/keys';
+import { setLocale, t } from '../engine/text/resolver';
+import { roomBeatKey, roomChoiceOutcomeKey, roomChoiceTextKey } from '../engine/text/keys';
 import { newRun } from '../engine/gameState';
-import type { RunState } from '../content/schema';
+import type { RunState } from '../engine/schema';
 
 const LANGS = ['cs', 'fa'] as const;
 

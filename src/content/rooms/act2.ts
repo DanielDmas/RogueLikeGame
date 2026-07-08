@@ -1,4 +1,4 @@
-import type { Reflection, Room } from '../schema';
+import type { Reflection, Room } from '../../engine/schema';
 import { choseIn, hasFlag } from '../../engine/gameState';
 
 /** Examined Path (spec 05) shorthand — a Reflection tuple in the fixed

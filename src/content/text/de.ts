@@ -5,8 +5,8 @@
 // Milestone 5, Phase R4 — lowest priority, may slip to Milestone 6; this is
 // the infrastructure + UI/structural layer, translated from the English v2
 // source directly (never via Czech), matching cs.ts's key inventory.
-import { registerAll } from './resolver';
-import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey, keepsakeKey } from './keys';
+import { registerAll } from '../../engine/text/resolver';
+import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey, keepsakeKey } from '../../engine/text/keys';
 
 registerAll('v2', 'de', {
   [uiKey('abandonToTitle')]: 'Aufgeben und zum Titelbildschirm zurückkehren',

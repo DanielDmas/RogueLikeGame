@@ -1,8 +1,8 @@
 import { el, HEART_SVG } from './dom';
 import { MAX_HEARTS } from '../engine/gameState';
-import { nextLang, t } from '../content/text/resolver';
-import { uiKey } from '../content/text/keys';
-import type { Lang } from '../content/text/resolver';
+import { nextLang, t } from '../engine/text/resolver';
+import { uiKey } from '../engine/text/keys';
+import type { Lang } from '../engine/text/resolver';
 
 const LANG_SHORT: Record<Lang, string> = { en: 'EN', cs: 'CS', fa: 'FA', de: 'DE', fr: 'FR' };
 

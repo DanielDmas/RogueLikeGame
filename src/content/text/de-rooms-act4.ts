@@ -5,7 +5,7 @@
 // door-that-asks stage0 beats 2/3, stage0 choice 'dont-remember' outcome 0,
 // stage1 beat 4. The Last Message writes its own field note (no roomNote
 // keys here, matching the English source's comment).
-import { registerAll } from './resolver';
+import { registerAll } from '../../engine/text/resolver';
 import {
   roomBeatKey,
   roomChoiceHintKey,
@@ -15,7 +15,7 @@ import {
   roomNoteBodyKey,
   roomNoteThinkersKey,
   roomNoteTitleKey,
-} from './keys';
+} from '../../engine/text/keys';
 
 // ---------- Act IV: The Boulder ----------
 registerAll('v2', 'de', {

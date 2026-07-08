@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { applyMood, type MoodType } from '../scene/themes';
-import type { RoomType } from '../content/schema';
+import type { RoomType } from '../engine/schema';
 
 const BASE = { fogColor: 0x123456, background: 0x123456, fogDensity: 0.04 };
 

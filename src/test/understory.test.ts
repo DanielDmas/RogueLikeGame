@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { RunState } from '../content/schema';
+import type { RunState } from '../engine/schema';
 import { allRooms } from '../content/rooms';
 import { UNDERSTORY_SEQUENCE } from '../content/graph';
 import { newRun } from '../engine/gameState';

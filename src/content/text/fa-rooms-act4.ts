@@ -2,7 +2,7 @@
 // outcome, field notes) for boulder, last-message, and door-that-asks.
 // Registered under version 'v2'. See fa-rooms.ts for the established pattern
 // and scripts/extract-v2.ts for the canonical English source list.
-import { registerAll } from './resolver';
+import { registerAll } from '../../engine/text/resolver';
 import {
   roomBeatKey,
   roomChoiceHintKey,
@@ -11,7 +11,7 @@ import {
   roomNoteBodyKey,
   roomNoteThinkersKey,
   roomNoteTitleKey,
-} from './keys';
+} from '../../engine/text/keys';
 
 // ---------- Act IV: The Boulder ----------
 registerAll('v2', 'fa', {

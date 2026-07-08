@@ -1,4 +1,4 @@
-import type { Axis, Effects, RunState, TranscriptEntry } from '../content/schema';
+import type { Axis, Effects, RunState, TranscriptEntry } from './schema';
 import { ACT_POOLS } from '../content/graph';
 
 export const MAX_HEARTS = 3;

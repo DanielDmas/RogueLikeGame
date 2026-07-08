@@ -1,4 +1,4 @@
-import type { Reflection, Room, RunState } from '../schema';
+import type { Reflection, Room, RunState } from '../../engine/schema';
 import { choseIn, pickShadowMoments } from '../../engine/gameState';
 
 /** Examined Path (spec 05) shorthand — a Reflection tuple in the fixed

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { Choice, RunState } from '../content/schema';
+import type { Choice, RunState } from '../engine/schema';
 import { allRooms } from '../content/rooms';
 import { applyEffects, newRun } from '../engine/gameState';
 import { completeRoom, makeRegistry, offeredDoors } from '../engine/storyEngine';

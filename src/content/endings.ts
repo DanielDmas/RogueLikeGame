@@ -1,4 +1,4 @@
-import type { Ending } from './schema';
+import type { Ending } from '../engine/schema';
 
 export const endings: Ending[] = [
   {

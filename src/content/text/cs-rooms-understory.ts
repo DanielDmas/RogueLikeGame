@@ -4,7 +4,7 @@
 // this file follows. NOTE: each room's RunState-dependent beats (the
 // exhibit card, the unchosen-doors list/opener, the echo's voice/junction/
 // ending lines) are functions — those live in cs-dynamic.ts, not here.
-import { registerAll } from './resolver';
+import { registerAll } from '../../engine/text/resolver';
 import {
   roomBeatKey,
   roomChoiceHintKey,
@@ -13,7 +13,7 @@ import {
   roomNoteBodyKey,
   roomNoteThinkersKey,
   roomNoteTitleKey,
-} from './keys';
+} from '../../engine/text/keys';
 
 // ---------- Act V: The Archive ----------
 registerAll('v2', 'cs', {

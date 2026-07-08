@@ -1,8 +1,8 @@
-import type { RunState } from '../content/schema';
+import type { RunState } from './schema';
 import { choseIn, hasFlag } from './gameState';
 import { endings } from '../content/endings';
-import { t } from '../content/text/resolver';
-import { endingEpitaphKey } from '../content/text/keys';
+import { t } from './text/resolver';
+import { endingEpitaphKey } from './text/keys';
 
 export type EndingId =
   | 'return'

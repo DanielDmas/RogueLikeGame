@@ -2,10 +2,10 @@
 // callbacks), copied verbatim from the pre-rewrite room files. These can't be
 // auto-extracted by scripts/extract-v1.ts (which only lifts plain strings),
 // so they're preserved here by hand alongside it.
-import { register } from './resolver';
+import { register } from '../../engine/text/resolver';
 import { choseIn, hasFlag } from '../../engine/gameState';
 import { punchlineUnlocked } from '../../engine/endings';
-import type { RunState } from '../schema';
+import type { RunState } from '../../engine/schema';
 
 register('room.junction.stage1.beat3', 'v1', 'en', (s: RunState) =>
   choseIn(s, 'junction', 'pull')

@@ -3,7 +3,7 @@
 // fr.ts (extended there for i18n.test.ts's coverage of the anamnesis
 // ending); repeated here for a single self-contained source of truth per
 // the cs-endings.ts / fa-endings.ts precedent.
-import { registerAll } from './resolver';
+import { registerAll } from '../../engine/text/resolver';
 import {
   endingBeatKey,
   endingEpitaphKey,
@@ -11,7 +11,7 @@ import {
   endingNoteThinkersKey,
   endingNoteTitleKey,
   endingTitleKey,
-} from './keys';
+} from '../../engine/text/keys';
 
 // ---------- Ending: The Return ----------
 registerAll('v2', 'fr', {

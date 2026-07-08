@@ -2,8 +2,8 @@
 // Each line is translated for the quiet, understated register the Ledger
 // keeps throughout — never a fanfare, just a fact — see CLAUDE.md's
 // translation rule.
-import { registerAll } from './resolver';
-import { epiphanyKey } from './keys';
+import { registerAll } from '../../engine/text/resolver';
+import { epiphanyKey } from '../../engine/text/keys';
 
 registerAll('v2', 'fa', {
   [epiphanyKey('first-return')]: 'شما بازگشتید.',

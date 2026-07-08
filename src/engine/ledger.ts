@@ -4,13 +4,13 @@
 // return. Read-only throughout: nothing here is ever consulted by a room's
 // `available`/`secret` predicate, `offeredDoors`, or `evaluateEnding` — it
 // exists to be looked at, never to be played around.
-import type { RunState } from '../content/schema';
+import type { RunState } from './schema';
 import { UNDERSTORY_SEQUENCE } from '../content/graph';
 import type { Profile } from './saveStore';
 import { endingsTotal } from './endings';
 import type { RoomRegistry } from './storyEngine';
-import { t } from '../content/text/resolver';
-import { epiphanyKey, roomTitleKey, uiKey } from '../content/text/keys';
+import { t } from './text/resolver';
+import { epiphanyKey, roomTitleKey, uiKey } from './text/keys';
 
 /** The Act V understory rooms are filtered from the codex (and, by the same
  * rule, the Ledger's room count) until first walked — they shouldn't hint at

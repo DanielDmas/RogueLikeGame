@@ -2,8 +2,8 @@
 // structure, room titles/hints/teasers, and endings are fully translated;
 // long-form room prose (beats, choice outcomes, field notes) is not yet
 // translated and gracefully falls back to English v2 (see resolver.ts).
-import { registerAll } from './resolver';
-import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey, keepsakeKey } from './keys';
+import { registerAll } from '../../engine/text/resolver';
+import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey, keepsakeKey } from '../../engine/text/keys';
 
 registerAll('v2', 'cs', {
   [uiKey('abandonToTitle')]: 'Opustit a vrátit se na titulní obrazovku',

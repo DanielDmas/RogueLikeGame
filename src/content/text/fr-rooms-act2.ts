@@ -2,7 +2,7 @@
 // field notes, explanations) for Act II. Registered under version 'v2'.
 // Translated from the English v2 source directly, per CLAUDE.md's
 // context-first rule. State-reactive (dynamic) beats live in fr-dynamic.ts.
-import { registerAll } from './resolver';
+import { registerAll } from '../../engine/text/resolver';
 import {
   roomBeatKey,
   roomChoiceHintKey,
@@ -12,7 +12,7 @@ import {
   roomNoteBodyKey,
   roomNoteThinkersKey,
   roomNoteTitleKey,
-} from './keys';
+} from '../../engine/text/keys';
 
 // ---------- Act II: The Junction ----------
 registerAll('v2', 'fr', {

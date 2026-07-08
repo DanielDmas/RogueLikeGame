@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { RunState } from '../content/schema';
+import type { RunState } from '../engine/schema';
 import { newRun } from '../engine/gameState';
 import { axisTriptych, epitaphLines, evaluateEnding, punchlineUnlocked, PUNCHLINE_LUCIDITY } from '../engine/endings';
 import { endings, getEnding } from '../content/endings';

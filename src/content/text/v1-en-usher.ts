@@ -1,7 +1,7 @@
 // v1 (original voice) copies of the Usher's door-barks and act intros,
 // preserved verbatim from the pre-rewrite usher.ts, keyed to match the
 // bucket keys `usherDoorBark` now selects by (see content/usher.ts).
-import { registerAll } from './resolver';
+import { registerAll } from '../../engine/text/resolver';
 
 registerAll('v1', 'en', {
   'usher.bark.second-run':

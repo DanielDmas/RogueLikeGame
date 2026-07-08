@@ -2,9 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { allRooms } from '../content/rooms';
 import { KEEPSAKE_TRIGGERS, KEEPSAKES, keepsakeIcons, keepsakesEarnedByFlags } from '../content/keepsakes';
 import { newRun } from '../engine/gameState';
-import { setLocale, t } from '../content/text/resolver';
+import { setLocale, t } from '../engine/text/resolver';
 import '../content/text';
-import { keepsakeKey } from '../content/text/keys';
+import { keepsakeKey } from '../engine/text/keys';
 
 const ALL_KEEPSAKE_IDS = KEEPSAKES.map((k) => k.id);
 

@@ -2,8 +2,8 @@
 // ELI15 summary of each stage's situation and question, shown when the
 // player clicks the "?" button beside the text panel. Registered under
 // version 'v2'. See fa-rooms*.ts for the established pattern this follows.
-import { registerAll } from './resolver';
-import { roomExplanationKey } from './keys';
+import { registerAll } from '../../engine/text/resolver';
+import { roomExplanationKey } from '../../engine/text/keys';
 
 registerAll('v2', 'fa', {
   [roomExplanationKey('waiting-room', 0)]:

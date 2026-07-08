@@ -1,6 +1,6 @@
 import { el } from './dom';
-import { t } from '../content/text/resolver';
-import { uiKey } from '../content/text/keys';
+import { t } from '../engine/text/resolver';
+import { uiKey } from '../engine/text/keys';
 import { shouldTriggerRecovery } from '../engine/recovery';
 
 /** One calm, in-fiction panel shown on an otherwise-unrecoverable failure.

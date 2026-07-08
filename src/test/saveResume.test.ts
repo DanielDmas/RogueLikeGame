@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { newRun } from '../engine/gameState';
 import { completeRoom, makeRegistry } from '../engine/storyEngine';
 import { allRooms } from '../content/rooms';
-import type { RunState } from '../content/schema';
+import type { RunState } from '../engine/schema';
 
 const registry = makeRegistry(allRooms);
 

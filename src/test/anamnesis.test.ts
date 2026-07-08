@@ -10,9 +10,9 @@ import {
   endingsTotal,
   evaluateEnding,
 } from '../engine/endings';
-import { setLocale, t } from '../content/text/resolver';
+import { setLocale, t } from '../engine/text/resolver';
 import '../content/text';
-import { roomNoteBodyKey } from '../content/text/keys';
+import { roomNoteBodyKey } from '../engine/text/keys';
 import { doorThatAsks } from '../content/rooms/act4';
 
 const ALL_ROOM_IDS = allRooms.map((r) => r.id);

@@ -1,9 +1,9 @@
-import type { Reflection } from '../content/schema';
+import type { Reflection } from '../engine/schema';
 import { el } from './dom';
 import { sound } from '../audio/soundEngine';
 import { shuffledReflections } from '../engine/reflections';
-import { t } from '../content/text/resolver';
-import { reflectionKey, traditionLabelKey, uiKey } from '../content/text/keys';
+import { t } from '../engine/text/resolver';
+import { reflectionKey, traditionLabelKey, uiKey } from '../engine/text/keys';
 
 const TRADITION_FALLBACK: Record<Reflection['tradition'], string> = {
   consequence: 'Consequence',

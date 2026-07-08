@@ -3,7 +3,7 @@
 // `offeredDoors`'s act-4 branch (see storyEngine.ts) — never by ACT_POOLS.
 // They only ever appear for a returning traveler (RunState.prior.runs >= 1)
 // who takes the staircase fork instead of `boulder`.
-import type { Reflection, Room, RunState } from '../schema';
+import type { Reflection, Room, RunState } from '../../engine/schema';
 import { choseInPrior, pickExhibitEntry, pickShadowMoments, pickUnchosenRooms } from '../../engine/gameState';
 import { act1Rooms } from './act1';
 import { act2Rooms } from './act2';

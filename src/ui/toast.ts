@@ -1,6 +1,6 @@
 import { el } from './dom';
-import { t } from '../content/text/resolver';
-import { uiKey } from '../content/text/keys';
+import { t } from '../engine/text/resolver';
+import { uiKey } from '../engine/text/keys';
 
 function showToast(ui: HTMLElement, text: string, reducedMotion: boolean, speedMultiplier: number, holdMs: number): void {
   const toast = el('div', 'save-toast', text);

@@ -1,7 +1,7 @@
 import '@fontsource/vazirmatn/400.css';
 import '@fontsource/vazirmatn/500.css';
 import '@fontsource/vazirmatn/600.css';
-import type { Lang } from '../content/text/resolver';
+import type { Lang } from '../engine/text/resolver';
 
 /** Applies document-level locale concerns: RTL direction and the Farsi webfont class. */
 export function applyLocaleToDocument(lang: Lang): void {

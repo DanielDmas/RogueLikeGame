@@ -1,6 +1,6 @@
 import { describe, expect, it, afterEach } from 'vitest';
 import '../content/text'; // registers cs/fa packs
-import { setLocale } from '../content/text/resolver';
+import { setLocale } from '../engine/text/resolver';
 import { translateFieldNoteForCodex } from '../ui/overlays';
 import { isHiddenFromCodex } from '../engine/ledger';
 import { allRooms } from '../content/rooms';

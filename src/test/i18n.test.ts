@@ -2,7 +2,7 @@ import { describe, expect, it, afterEach } from 'vitest';
 import { allRooms } from '../content/rooms';
 import { endings } from '../content/endings';
 import '../content/text'; // registers v1-en + cs + fa packs (side effect)
-import { getLocale, nextLang, register, setLocale, t } from '../content/text/resolver';
+import { getLocale, nextLang, register, setLocale, t } from '../engine/text/resolver';
 import {
   actIntroKey,
   actNameKey,
@@ -14,7 +14,7 @@ import {
   roomTeaserKey,
   roomTitleKey,
   usherBarkKey,
-} from '../content/text/keys';
+} from '../engine/text/keys';
 import { EPIPHANY_IDS } from '../engine/ledger';
 import { actIntroText, usherDoorBark } from '../content/usher';
 import { newRun } from '../engine/gameState';

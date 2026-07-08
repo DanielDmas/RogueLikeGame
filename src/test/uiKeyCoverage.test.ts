@@ -2,8 +2,8 @@ import { describe, expect, it, afterEach } from 'vitest';
 import { readFileSync, readdirSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import '../content/text';
-import { setLocale, t } from '../content/text/resolver';
-import { uiKey } from '../content/text/keys';
+import { setLocale, t } from '../engine/text/resolver';
+import { uiKey } from '../engine/text/keys';
 
 /**
  * Statically scans every `uiKey('literal')` call under src/ui, src/engine,

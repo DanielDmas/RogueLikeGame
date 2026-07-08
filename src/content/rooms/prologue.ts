@@ -1,4 +1,4 @@
-import type { Room } from '../schema';
+import type { Room } from '../../engine/schema';
 
 export const prologue: Room = {
   id: 'waiting-room',

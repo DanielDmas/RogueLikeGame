@@ -1,8 +1,8 @@
 // Czech translations for Act I's Examined Path reflections (spec 05).
 // Every line is translated with the specific room's situation in mind, not
 // word-for-word from English — see CLAUDE.md's translation rule.
-import { registerAll } from './resolver';
-import { reflectionKey } from './keys';
+import { registerAll } from '../../engine/text/resolver';
+import { reflectionKey } from '../../engine/text/keys';
 
 registerAll('v2', 'cs', {
   // ---------- The Wallet ----------

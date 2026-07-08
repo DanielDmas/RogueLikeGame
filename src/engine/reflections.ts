@@ -1,4 +1,4 @@
-import type { Choice, Reflection, RunState } from '../content/schema';
+import type { Choice, Reflection, RunState } from './schema';
 
 /** Pure gate for the Reflection card (spec 05) — extracted so the "a player
  * who never opts in sees nothing new, ever" guarantee is testable without a

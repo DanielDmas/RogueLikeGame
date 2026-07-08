@@ -4,7 +4,7 @@
 // CLAUDE.md's context-first rule. State-reactive (dynamic) beats live in
 // fr-dynamic.ts: the-archive stage0 beat 3, the-unchosen stage0 beats 2/3
 // and choice 'enter-it' outcome 0, the-echo stage0 beats 2/3/4.
-import { registerAll } from './resolver';
+import { registerAll } from '../../engine/text/resolver';
 import {
   roomBeatKey,
   roomChoiceHintKey,
@@ -14,7 +14,7 @@ import {
   roomNoteBodyKey,
   roomNoteThinkersKey,
   roomNoteTitleKey,
-} from './keys';
+} from '../../engine/text/keys';
 
 // ---------- Act V: The Archive ----------
 registerAll('v2', 'fr', {

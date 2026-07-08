@@ -1,4 +1,4 @@
-import type { Reflection, Room } from '../schema';
+import type { Reflection, Room } from '../../engine/schema';
 import { hasFlag } from '../../engine/gameState';
 import { anamnesisAvailable, punchlineUnlocked } from '../../engine/endings';
 

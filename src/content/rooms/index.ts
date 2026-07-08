@@ -1,4 +1,4 @@
-import type { Room } from '../schema';
+import type { Room } from '../../engine/schema';
 import { prologue } from './prologue';
 import { act1Rooms } from './act1';
 import { act2Rooms } from './act2';

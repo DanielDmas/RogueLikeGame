@@ -1,4 +1,4 @@
-import type { Reflection, Room } from '../schema';
+import type { Reflection, Room } from '../../engine/schema';
 
 /** Examined Path (spec 05) shorthand — a Reflection tuple in the fixed
  * consequence/duty/virtue/care order (shuffled per-display by the UI). */

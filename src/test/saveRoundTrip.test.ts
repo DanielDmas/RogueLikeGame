@@ -2,7 +2,7 @@ import { describe, expect, it, beforeEach } from 'vitest';
 import { newRun } from '../engine/gameState';
 import { defaultProfile, type Profile, type SaveStore } from '../engine/saveStore';
 import { LocalSaveStore } from '../engine/localSave';
-import type { RunState } from '../content/schema';
+import type { RunState } from '../engine/schema';
 
 const PROFILE_ID = 'traveler';
 

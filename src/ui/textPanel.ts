@@ -1,8 +1,8 @@
-import type { Beat, RunState } from '../content/schema';
+import type { Beat, RunState } from '../engine/schema';
 import { clear, el } from './dom';
 import { sound } from '../audio/soundEngine';
-import { t, applyTokens } from '../content/text/resolver';
-import { uiKey } from '../content/text/keys';
+import { t, applyTokens } from '../engine/text/resolver';
+import { uiKey } from '../engine/text/keys';
 import { showExplanation } from './explanation';
 
 const SPEAKER_PREFIXES = ['Usher:', 'The Room:', 'The Door:', 'USHER:', 'THE ROOM:', 'THE DOOR:'];

@@ -4,7 +4,7 @@
 // context-first rule. State-reactive (dynamic) beats live in fr-dynamic.ts:
 // teleporter stage0 beat 3, butterfly-dream stage0 beat 2, the-cave stage0
 // beats 2/3/4.
-import { registerAll } from './resolver';
+import { registerAll } from '../../engine/text/resolver';
 import {
   roomBeatKey,
   roomChoiceHintKey,
@@ -14,7 +14,7 @@ import {
   roomNoteBodyKey,
   roomNoteThinkersKey,
   roomNoteTitleKey,
-} from './keys';
+} from '../../engine/text/keys';
 
 // ---------- Act III: The Teleporter ----------
 registerAll('v2', 'fr', {

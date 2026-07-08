@@ -1,5 +1,5 @@
-import type { RunState, TranscriptEntry } from '../content/schema';
-import type { Lang } from '../content/text/resolver';
+import type { RunState, TranscriptEntry } from './schema';
+import type { Lang } from './text/resolver';
 
 export interface Settings {
   typewriter: boolean;

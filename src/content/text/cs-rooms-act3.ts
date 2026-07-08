@@ -5,7 +5,7 @@
 // follows. NOTE: the-cave's three shadow-play beats (stage0.beat2/3/4) are
 // RunState-dependent functions — those live in cs-dynamic.ts alongside the
 // other state-reactive beats, not here.
-import { registerAll } from './resolver';
+import { registerAll } from '../../engine/text/resolver';
 import {
   roomBeatKey,
   roomChoiceHintKey,
@@ -14,7 +14,7 @@ import {
   roomNoteBodyKey,
   roomNoteThinkersKey,
   roomNoteTitleKey,
-} from './keys';
+} from '../../engine/text/keys';
 
 // ---------- Act III: The Teleporter ----------
 registerAll('v2', 'cs', {
