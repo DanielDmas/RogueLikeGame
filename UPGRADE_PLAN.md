@@ -1426,12 +1426,59 @@ non-explicit, adult acts frank-never-graphic, ~PEGI 16 posture).
       under `packs/anamnesis/`; (2) `graph.test.ts`/`flagAudit.test.ts`/
       `translationCoverage.test.ts` remain ANAMNESIS-only pending
       LIMERENCE's pool sizes growing past 1-per-act. Neither blocks L2.
-- [ ] L2. LIMERENCE playable skeleton EN (frame, prologue, Act I, 2 endings,
-      advisory layer). **Not started** — L1's skeleton rooms are structural
-      placeholders only, not the real Act I content from
-      `docs/design-limerence/02-rooms-act1.md`; per the plan, L2 begins on
-      a separate explicit owner go-ahead, same as L1 did.
+- [~] L2. LIMERENCE playable skeleton EN (frame, prologue, Act I, 2 endings,
+      advisory layer). **Mostly done, 2026-07-08.** Real content now, not
+      placeholders: the-front-desk (prologue) + the full 7-room Act I pool
+      (the-read-receipt, the-screenshot, the-password, the-party,
+      the-forward, the-best-friends-girl, the-summer-ends) + the-rumor gate,
+      each with 4 choices, full effects/outcomes, an explanation, a cited
+      field note, and Examined Path reflections across all four traditions —
+      matching `docs/design-limerence/02-rooms-act1.md` room-for-room. The
+      two L2 endings (the-morning-after, the-ghost) were already wired at
+      L1.5 and now resolve correctly against real play; the first keepsake
+      (the-cheap-ring, earned by refusing the party dare) works end to end.
+      Live-verified: a full run from a jumped-in final gate through to the
+      ending screen (axis triptych, recap, stats, epiphany) renders cleanly
+      with zero console errors, alongside targeted checks of the-read-receipt
+      (4 choices, correct lucidity math) and the-rumor (4 choices, DOOMED
+      weight intact).
+      **Explicitly not done — visible gap, not hidden:** the onboarding
+      advisory layer (spec 10 §2 — the themes list, the "Act I contains no
+      sexual content" note, "this is fiction, not therapy"). ANAMNESIS's
+      `showAbout()` is entirely hardcoded to ANAMNESIS's own mechanics copy;
+      giving LIMERENCE its own advisory screen needs the same kind of
+      pack-parameterization pass `showCodex`/`showTitle` got in L1, done
+      deliberately rather than bolted on at the end of an already-long
+      session — this is safety-relevant copy for a game whose subject matter
+      includes coercive control and non-consensual imagery, and it deserves
+      its own careful pass, not a rushed one. Also not done: the hearts→Trust
+      *label* re-skin (the icon reuses ANAMNESIS's placeholder per L1; the
+      *tooltip copy* — "grip on reality" — is still ANAMNESIS's own words,
+      since `ContentPack.skin` doesn't yet carry per-pack UI copy overrides).
+      Do the advisory layer before any real playtesting of LIMERENCE.
 - [ ] L3. Acts II–III + gates + secret room.
 - [ ] L4. Act IV + Records Office + all 7 endings + full meta-systems.
-- [ ] L5. Hotel visual/audio identity + UAT pack matrix + docs.
+- [ ] L5. Hotel visual/audio identity (**partially pulled forward,
+      2026-07-08** — see below) + UAT pack matrix + docs.
+
+**Pulled forward from L5, on explicit owner request (2026-07-08):**
+LIMERENCE now has its own real visual and audio identity rather than
+waiting for L5. `Settings.theme: 'dark' | 'light'` (default 'dark') plus
+`ContentPack.visuals.supportsLightTheme` gates a Settings > Display
+"Light mode" toggle LIMERENCE alone offers — ANAMNESIS keeps its single
+authored dark tone, no choice given (asked, and decided against, per the
+owner's "keep Anamnesis without choices" instruction). `styles.css` scopes
+a full sodium-amber/corridor-teal dark palette under `body.pack-limerence`
+and a warmer "morning after" daylight read under
+`body.pack-limerence.theme-light`. `src/packs/limerence/theme.ts` gives
+the 3D scene five real per-floor palettes (reusing `corridorTheme`'s
+geometry, now parameterized via `CorridorPalette`, defaulting to
+ANAMNESIS's exact values so its five scenes are pixel-unchanged) plus two
+new small builders for the Top Floor and the ending space.
+`SoundEngine.configurePack()` lets LIMERENCE override its chord
+progressions/mote scales — minor-leaning per floor, resolving to a held
+major chord at the ending. **Still real L5 work, not pulled forward:**
+bespoke room dioramas (two phones on one bed, the migrating wall/window,
+etc.), the Porter's own figure rig (currently reuses the Usher's), the
+hearts→Trust visual re-skin, door-bark dread pass, UAT pack matrix.
 - [ ] L6. Czech translation.
