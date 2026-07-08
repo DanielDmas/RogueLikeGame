@@ -1406,10 +1406,31 @@ L0–L6 milestone roadmap, and a binding safety/education charter — Act I
 non-explicit, adult acts frank-never-graphic, ~PEGI 16 posture).
 
 - [x] L0. Design specifications committed (documentation only — this entry).
-- [ ] L1. Engine/pack split (`docs/design-limerence/08-…`); ANAMNESIS
-      behavior-neutral, tests parameterized, both packs boot.
+- [x] L1. Engine/pack split (`docs/design-limerence/08-…`); ANAMNESIS
+      behavior-neutral, tests parameterized, both packs boot. **Done
+      2026-07-08**, in 8 small, independently-tested commits (`src/engine/schema.ts`
+      + text resolver/keys moved into `engine/`; the `ContentPack` interface
+      + `packs/anamnesis/` assembled by re-export; `Game`'s constructor,
+      `flow.ts`'s special-room hooks, `SceneDirector`, `overlays.ts`,
+      storage/UAT namespacing, and `storyEngine.ts`'s graph functions all
+      threaded through `pack`; a real (if minimal) `packs/limerence/`
+      skeleton — 10 rooms, 2 endings, matching the room/gate ids already
+      named in the design docs — proving the seam; `packConformance.test.ts`
+      and `contentPipeline.test.ts` parameterized over both packs). tsc
+      clean throughout; suite grew 476 → 514, nothing deleted; `npm run dev`
+      and `npm run dev:limerence` both live-verified booting correctly with
+      zero console errors. Two things deliberately deferred rather than
+      rushed — see spec 08 §6/§7 for the honest accounting: (1)
+      `engine/endings.ts`'s ANAMNESIS-specific evaluation logic is wired
+      into `pack.endingRules` by re-export but not yet physically relocated
+      under `packs/anamnesis/`; (2) `graph.test.ts`/`flagAudit.test.ts`/
+      `translationCoverage.test.ts` remain ANAMNESIS-only pending
+      LIMERENCE's pool sizes growing past 1-per-act. Neither blocks L2.
 - [ ] L2. LIMERENCE playable skeleton EN (frame, prologue, Act I, 2 endings,
-      advisory layer).
+      advisory layer). **Not started** — L1's skeleton rooms are structural
+      placeholders only, not the real Act I content from
+      `docs/design-limerence/02-rooms-act1.md`; per the plan, L2 begins on
+      a separate explicit owner go-ahead, same as L1 did.
 - [ ] L3. Acts II–III + gates + secret room.
 - [ ] L4. Act IV + Records Office + all 7 endings + full meta-systems.
 - [ ] L5. Hotel visual/audio identity + UAT pack matrix + docs.

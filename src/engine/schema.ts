@@ -1,4 +1,7 @@
-// ANAMNESIS content schema — rooms are pure data; the engine never hardcodes a room.
+// Engine content schema (spec `docs/design-limerence/08-engine-pack-architecture.md`)
+// — rooms are pure data; the engine never hardcodes a room. Field names are
+// not pack-specific (e.g. `anamnesisEligible`) and are never renamed by a
+// pack: they're the serialized save shape, shared by every pack.
 
 export type Axis = 'reasonFeeling' | 'selfOthers' | 'controlAcceptance';
 // Convention: negative = first pole (REASON / SELF / CONTROL),

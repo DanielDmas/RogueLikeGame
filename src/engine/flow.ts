@@ -182,7 +182,7 @@ export class Game {
   private jump(roomId: string): void {
     if (!this.uat) return;
     if (!isJumpableRoom(roomId, this.registry)) {
-      console.warn(`[anamnesis:uat] jump("${roomId}") refused — unknown room id.`);
+      console.warn(`[${this.pack.meta.id}:uat] jump("${roomId}") refused — unknown room id.`);
       return;
     }
     const room = this.registry.get(roomId);

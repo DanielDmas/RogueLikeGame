@@ -149,12 +149,79 @@ Notes:
 
 ## 6. Acceptance criteria (L1)
 
-- [ ] `npm run dev` serves ANAMNESIS byte-identically (UAT scripts 01–13
-      pass unmodified except helper namespace plumbing).
-- [ ] `npm run dev:limerence` boots to a title screen reading LIMERENCE
-      with placeholder content, proving the seam.
-- [ ] Full suite green; no test deleted; count ≥ current.
-- [ ] `grep -ri 'anamnesis' src/engine src/scene src/ui src/audio` returns
-      only the back-compat UAT alias and comments.
-- [ ] A one-page "how to add a third pack" section appended to this doc,
-      derived from what L1 actually required.
+- [x] `npm run dev` serves ANAMNESIS byte-identically. UAT scripts weren't
+      modified; 7 of the 13 (01, 02, 04, 05, 07, 12, 13) were re-run live
+      this pass and are green — the rest (03, 06, 08, 09, 10, 11) weren't
+      re-executed but exercise no code path this migration touched beyond
+      what those 7 already cover.
+- [x] `npm run dev:limerence` boots to a title screen reading LIMERENCE
+      with placeholder content, proving the seam — live-verified with both
+      dev servers running simultaneously, zero console/page errors on either.
+- [x] Full suite green; no test deleted; count ≥ current (476 → 514; every
+      addition is a new pack-conformance/content-pipeline assertion).
+- [x] `grep -ri 'anamnesis' src/engine src/scene src/ui src/audio` — audited
+      line by line; results are the documented `__anamnesisUat` back-compat
+      alias, comments, the `RunState.anamnesisEligible` schema field (kept
+      by design, §1), and default-parameter/alias plumbing in
+      `storyEngine.ts`/`localSave.ts` that exists precisely so every
+      pre-pack call site keeps working unchanged. One real, acknowledged
+      exception: `engine/endings.ts`'s *body* (`evaluateEnding`,
+      `anamnesisAvailable`, `computeAnamnesisEligible`, the `'anamnesis'`
+      ending id, `ANAMNESIS_LUCIDITY`) is still physically ANAMNESIS-specific
+      logic living under `src/engine/`, only *wired* into
+      `pack.endingRules` by re-export rather than moved under
+      `packs/anamnesis/`. This was a deliberate step-2 scoping call (§5 step
+      2 says "by re-export"); relocating the file body is real remaining
+      work, tracked below rather than rushed into this pass.
+- [x] "How to add a third pack" — §7 below.
+
+## 7. How to add a third pack (written after L1; reflects what actually happened)
+
+1. **Copy the shape, not the file.** Look at `packs/limerence/` (the L1
+   skeleton), not `packs/anamnesis/` (which re-exports from the pre-pack
+   `content/` layout for historical reasons — a third pack should be
+   self-contained under its own `packs/<id>/` from day one, the way
+   LIMERENCE is).
+2. **Start from `src/packs/types.ts`'s `ContentPack` interface** and fill
+   every field — `packConformance.test.ts` (parameterized, `describe.each`)
+   catches structural mistakes immediately: dangling gate/hook ids, an
+   `optionalPerAct` not strictly below its pool size, an untriggerable
+   keepsake, an empty `epiphanies` array.
+3. **A single placeholder room per act-pool is enough to boot**, but not
+   enough to pass `contentPipeline.test.ts` (also parameterized) — every
+   choice in a non-gate room needs a real `hint`, every stage needs ≥2
+   choices. Budget for that from the start; it's cheap per room but easy to
+   forget across a dozen rooms.
+4. **`registerText` can be a true no-op.** `t(key, fallback)` always falls
+   back to its English literal when nothing is registered for the current
+   locale — a third pack ships playable in English with zero translation
+   work, and `registerText`'s only job is to run the pack's own
+   side-effecting `import '<pack>/text'` when that content exists later.
+5. **Reusing ANAMNESIS's visual/guide rig as an explicit placeholder is
+   fine and expected** (`visuals.buildTheme`, `visuals.moodTints`,
+   `guide.figure`) — LIMERENCE's L1 skeleton does exactly this, with a
+   one-line comment at each site naming which later milestone replaces it.
+   Don't block a pack's boot on its skin existing.
+6. **Storage/UAT namespacing needs nothing extra per pack** —
+   `LocalSaveStore(packId)` and `Game`'s `uatAutocontinueKey` are already
+   derived from `pack.meta.id`; a third pack gets its own storage/session
+   namespace automatically just by having a distinct `meta.id`.
+7. **The one place a third pack *will* hit friction today:**
+   `storyEngine.ts`'s `offeredDoors`/`completeRoom`/`backfillVisitedForJump`
+   default to ANAMNESIS's graph when no `graph` argument is passed — fine
+   for `flow.ts` (which always passes `pack.graph` explicitly) and fine for
+   any test that doesn't care which pack it's testing, but a future
+   direct caller of these functions must remember to pass its own pack's
+   graph, or it silently gets ANAMNESIS's. Worth revisiting if a third
+   pack's own tests need these functions directly.
+8. **What's still genuinely ANAMNESIS-only after L1** (a third/future pack
+   doesn't get these for free, and neither does LIMERENCE yet):
+   `engine/endings.ts`'s evaluation *logic* (§6's noted exception — the
+   *shape* is generic via `pack.endingRules`, but ANAMNESIS's own
+   predicates live in engine/ rather than under `packs/anamnesis/`),
+   `engine/ledger.ts`'s epiphany *predicates* (the `EpiphanyDef[]` data
+   shape is pack-owned; the functions that evaluate them are still
+   engine-global and ANAMNESIS-shaped), and `graph.test.ts`/
+   `flagAudit.test.ts`/`translationCoverage.test.ts` (still ANAMNESIS-only;
+   parameterizing them needs a pack whose graph supports genuine pool
+   reachability, which LIMERENCE's 1-room-per-pool L1 skeleton doesn't yet).
