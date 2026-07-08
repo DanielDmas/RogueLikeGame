@@ -1527,19 +1527,65 @@ non-explicit, adult acts frank-never-graphic, ~PEGI 16 posture).
       green; live-verified via Playwright that 7 of the 8 new rooms + the
       gate render real content through `jump()`.
 
-      **Still not started: Act IV real content + all 7 endings.** The
-      graph's Act IV sequence and final gate remain the L2-era structural
-      placeholders (`the-kitchen-table`/`the-unsent`/`the-morning-desk`),
-      and only 2 of 7 endings (`the-morning-after`, `the-ghost`) are wired.
-      A full run is fully playable end-to-end today; only its ending and
-      Act IV are still placeholder-depth.
-
       **Release status (2026-07-08):** v0.2.0-beta is committed and pushed
       to the working branch, tagged locally, but not yet cut as a public
       GitHub Release — owner decision was to keep developing toward a more
       complete state before publishing rather than release from a
-      part-finished, unmerged branch. Revisit once Act IV lands.
-- [ ] L4. Act IV + Records Office + all 7 endings + full meta-systems.
+      part-finished, unmerged branch. Revisit once L4 is further along.
+- [~] L4. Act IV + Records Office + all 7 endings + full meta-systems.
+      **Act IV + Records Office + endings done (2026-07-08):** real content
+      for `the-kitchen-table` (4 choices + a ✧ `the-unsent-letter` bonus,
+      a dynamic opening beat that reframes by yours/theirs/both betrayal
+      lineage), `the-unsent` (6 choices, 4 of them availability-gated on
+      flags/visited-room state exactly like ANAMNESIS's `last-message`,
+      one quoting an actual Act I transcript entry back to the player),
+      and `the-morning-desk` (LIMERENCE's final gate — a 2-stage room: a
+      3-choice audit reading back the-screenshot/the-confession/the-trap
+      lineage via dynamic Porter dialogue, then a 3-5-choice threshold with
+      two hidden doors). All 7 endings now real
+      (`the-morning-after`/`the-giver`/`the-armored`/`the-ghost`/
+      `the-porter`/`the-mirror`/`the-pattern`), full beats + field notes,
+      matching spec `06-endings-keepsakes-epiphanies.md` §1. The Records
+      Office (understory) is real too: `the-registry` (+ ✧ `the-keycard`
+      bonus), `the-doors-not-opened`, `the-other-side` (+ ✧ `the-sim`
+      bonus) — offered as the violet-accented second door beside
+      `the-kitchen-table` for `prior.runs >= 1`, exactly like ANAMNESIS's
+      own Act V. All 4 keepsakes now have both an earn room and a spend
+      room. New `packs/limerence/endingLogic.ts` mirrors
+      `engine/endings.ts`'s `punchlineUnlocked`/`anamnesisAvailable`/
+      `computeAnamnesisEligible` pattern exactly (`mirrorUnlocked`/
+      `patternAvailable`/`computePatternEligible`), reusing the engine's
+      already-generic `RunState.anamnesisEligible`/`memoryLost` fields —
+      no renaming, per schema.ts's own "field names are never pack-
+      specific" rule. One small, safe engine change: `gameState.ts`'s
+      `pickUnchosenRooms` gained an optional `pools` parameter (defaulting
+      to ANAMNESIS's own `ACT_POOLS`, zero behavior change for ANAMNESIS)
+      so `the-doors-not-opened` could reuse it for LIMERENCE's own pools —
+      same default-parameter pattern used everywhere else this session.
+      Covered by 27 new tests in `limerenceAct4.test.ts` (Act IV + Records
+      Office content integrity, all-7-endings shape, `evaluate()` branch
+      coverage including hearts=0/each gate choice/axis extremes/default,
+      `epitaphLines`/`endingsTotal` display rules, and direct unit tests of
+      `endingLogic.ts`'s pure functions). Full suite 660/660 green;
+      live-verified via Playwright that all 5 new rooms render and that
+      jumping to the final gate and clicking through the threshold
+      actually reaches a real, authored outcome beat with zero errors.
+
+      **Still not done: epiphanies (12, spec 06 §3).** `engine/ledger.ts`'s
+      `evaluateEpiphanies`/`EPIPHANY_PREDICATES` are hardcoded to
+      ANAMNESIS's own room ids and flag names (`experience-machine`,
+      `release-form`, etc.) — genuinely not pack-parameterized yet, unlike
+      every other engine seam touched this session. LIMERENCE's Ledger
+      still works today (the profile-level predicates — runs completed,
+      hearts lost, keepsakes held, endings seen — are pack-agnostic and
+      evaluate harmlessly; the two ANAMNESIS-room-specific predicates
+      simply never fire for LIMERENCE, which is safe but not bespoke), it
+      just shows generic-flavored epiphany lines instead of LIMERENCE's
+      own 12 designed ones. This needs the same kind of predicate-
+      parameterization pass the ending logic just got, done as its own
+      dedicated unit rather than folded into an already-very-large L4
+      commit. Flagging clearly rather than silently shipping half of L4's
+      "full meta-systems" as if it were the whole thing.
 - [ ] L5. Hotel visual/audio identity (**partially pulled forward,
       2026-07-08** — see below) + UAT pack matrix + docs.
 

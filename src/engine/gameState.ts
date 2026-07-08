@@ -149,11 +149,15 @@ function fnvHash(input: string, salt: number): number {
  * Every id this returns genuinely went unentered in that run, which is all
  * the room claims. Deterministically salted by the previous run's `runs`
  * count, so repeat visits to the same previous-run snapshot see the same 3
- * candidates and the same "swings open" pick.
- */
-export function pickUnchosenRooms(prior: RunState['prior']): { candidates: string[]; opens?: string } {
+ * candidates and the same "swings open" pick. `pools` defaults to
+ * ANAMNESIS's own `ACT_POOLS` — pass a pack's `graph.actPools` to reuse this
+ * for a different pack's understory-analog room. */
+export function pickUnchosenRooms(
+  prior: RunState['prior'],
+  pools: Record<1 | 2 | 3, string[]> = ACT_POOLS,
+): { candidates: string[]; opens?: string } {
   const entered = new Set((prior?.transcript ?? []).map((e) => e.roomId));
-  const pool = [...ACT_POOLS[1], ...ACT_POOLS[2], ...ACT_POOLS[3]];
+  const pool = [...pools[1], ...pools[2], ...pools[3]];
   const unchosen = pool.filter((id) => !entered.has(id));
   if (unchosen.length === 0) return { candidates: [] };
   const salt = fnvHash(`unchosen#${prior?.runs ?? 0}`, 0);

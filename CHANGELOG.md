@@ -27,20 +27,21 @@ Milestone 5 for ANAMNESIS (finished this release):
   lock, a generated dead-flag audit test, a content-pipeline validation
   test, and a citation-accuracy pass over every field note.
 
-**LIMERENCE joins as a second title (early/testing build):**
+**LIMERENCE joins as a second title (content-complete beta):**
 
 - The engine split into one content-agnostic core plus per-title content
   packs (`ContentPack`) — ANAMNESIS unchanged and behavior-neutral
   throughout the split.
 - LIMERENCE: a roguelike about relationships at their breaking points,
-  guided by the Night Porter. The Prologue, Act I (7 rooms + a gate), Act
-  II (8 rooms + a gate), and Act III (8 rooms + a secret room + a gate)
-  are real, authored content, each choice carrying plural ethical
-  reflections and a field note citing real psychology research; a full
-  run is playable start to finish today. Act IV and the Records Office
-  (Understory) are structural placeholders for now, and only 2 of 7
-  endings are wired, so no run ever dead-ends while the remaining content
-  is written.
+  guided by the Night Porter. All four acts (Act I: 7 rooms + a gate ·
+  Act II: 8 rooms + a gate · Act III: 8 rooms + a secret room + a gate ·
+  Act IV: 3 rooms including the final gate), the optional Records Office
+  (3 rooms for returning players), and all 7 endings are real, authored
+  content — every choice carries plural ethical reflections and a field
+  note citing real psychology research, and a full run is playable start
+  to finish, including its ending, today. All 4 keepsakes have both an
+  earn room and a spend room. Still open: LIMERENCE's Ledger shows
+  generic epiphany lines rather than its own 12 designed ones.
 - Its own visual and audio identity: a sodium-amber/corridor-teal hotel
   palette with an optional light/dark theme toggle (LIMERENCE only), a
   minor-leaning generative score resolving to a held major chord at the

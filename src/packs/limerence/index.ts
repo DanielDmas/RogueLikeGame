@@ -12,6 +12,8 @@ import { limerenceEndings } from './endings';
 import { usherFigure } from '../../scene/themes';
 import { limerenceBuildTheme, LIMERENCE_FOG_COLOR_BY_THEME, LIMERENCE_MOOD_TINTS } from './theme';
 import { HEART_SVG } from '../../ui/dom';
+import { choseIn } from '../../engine/gameState';
+import { mirrorUnlocked, patternAvailable, computePatternEligible, PATTERN_CLARITY } from './endingLogic';
 
 /** Minor-leaning progressions per floor (spec `docs/design-limerence/`
  * creative bible: "act progressions in minor-leaning keys"), warming toward
@@ -125,18 +127,29 @@ export const limerencePack: ContentPack = {
       4: 'the-morning-desk',
     },
     act4Sequence: ['the-kitchen-table', 'the-unsent', 'the-morning-desk'],
-    understorySequence: [],
+    understorySequence: ['the-registry', 'the-doors-not-opened', 'the-other-side'],
     optionalPerAct: { 1: 3, 2: 3, 3: 2 },
     actNamesEn: ACT_NAMES_EN,
   },
 
   endingRules: {
-    evaluate: (s: RunState) => (s.hearts <= 0 ? 'the-ghost' : 'the-morning-after'),
-    hiddenChoiceAvailable: () => false,
-    hiddenDoorUnlocked: () => false,
-    computeHiddenEligible: () => false,
-    clarityThreshold: Number.POSITIVE_INFINITY,
-    endingsTotal: () => limerenceEndings.length,
+    evaluate: (s: RunState) => {
+      if (s.hearts <= 0) return 'the-ghost';
+      if (choseIn(s, 'the-morning-desk', 'stop-carrying-it')) return 'the-ghost';
+      if (choseIn(s, 'the-morning-desk', 'i-know-every-room')) return 'the-pattern';
+      if (choseIn(s, 'the-morning-desk', 'laughing-door')) return 'the-mirror';
+      if (choseIn(s, 'the-morning-desk', 'take-the-desk')) return 'the-porter';
+      const { selfOthers, controlAcceptance } = s.axes;
+      const EXTREME = 35;
+      if (selfOthers >= EXTREME && controlAcceptance >= EXTREME) return 'the-giver';
+      if (selfOthers <= -EXTREME && controlAcceptance <= -EXTREME) return 'the-armored';
+      return 'the-morning-after';
+    },
+    hiddenChoiceAvailable: patternAvailable,
+    hiddenDoorUnlocked: mirrorUnlocked,
+    computeHiddenEligible: computePatternEligible,
+    clarityThreshold: PATTERN_CLARITY,
+    endingsTotal: (endingsSeen: string[]) => (endingsSeen.includes('the-pattern') ? 7 : 6),
     epitaphLines: (endingsSeen: string[]) => {
       const known = endingsSeen.map((id) => limerenceEndings.find((e) => e.id === id)).filter((e): e is (typeof limerenceEndings)[number] => e != null);
       return known.length < 2 ? [] : known.map((e) => e.epitaph);
@@ -149,7 +162,7 @@ export const limerencePack: ContentPack = {
         line(s.axes.controlAcceptance, 'You gripped tight, floor after floor.', 'You knew when to hold and when to open.', 'You let the current decide.'),
       ];
     },
-    hiddenUntilWitnessed: [],
+    hiddenUntilWitnessed: ['the-pattern'],
   },
 
   guide: {

@@ -701,6 +701,18 @@ export const theWeddingEve: Room = {
             'This gives Dana the truth before a vow is made, rather than after, whatever else it costs both of you tonight.',
           ),
         },
+        {
+          id: 'hold-the-cheap-ring',
+          text: 'Hold the cheap plastic ring from that party, once, next to tomorrow’s real one.',
+          hint: 'a keepsake you’ve been carrying since the Ground Floor',
+          effects: { lucidity: 10 },
+          keepsakeId: 'the-cheap-ring',
+          available: (s: RunState) => (s.keepsakesHeld ?? []).includes('the-cheap-ring'),
+          outcome: [
+            'You still have it — thirty seconds of being laughed at, plastic gone slightly cloudy with age, kept for reasons you never fully examined.',
+            'You have refused a dare before, on far less at stake than this. Check, honestly, whether tomorrow is one — and the answer, whatever it is, arrives quieter than you expected.',
+          ],
+        },
       ],
       explanation:
         'Lavner’s longitudinal research on premarital doubts found something specific and uncomfortable: doubts expressed before a wedding — especially the bride’s or lower-status partner’s — do predict later marital distress and divorce, but critically, the risk is concentrated in doubts that go unexamined, not doubts that get honestly explored. "Cold feet" and "real signal" function as a false binary; the more useful question is about content, not temperature. And sunk cost — deposits paid, invitations sent — is a formally defined bias for a reason: none of it is actually evidence about whether marrying this person tomorrow is the right decision.',

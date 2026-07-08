@@ -33,11 +33,8 @@ import {
   theUsualSuite,
   theUsualRoom,
 } from './act3';
-import {
-  theKitchenTable,
-  theUnsent,
-  theMorningDesk,
-} from './placeholders';
+import { theKitchenTable, theUnsent, theMorningDesk } from './act4';
+import { theRegistry, theDoorsNotOpened, theOtherSide } from './understory';
 
 export const limerenceRooms: Room[] = [
   theFrontDesk,
@@ -71,4 +68,7 @@ export const limerenceRooms: Room[] = [
   theKitchenTable,
   theUnsent,
   theMorningDesk,
+  theRegistry,
+  theDoorsNotOpened,
+  theOtherSide,
 ];

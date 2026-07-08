@@ -42,15 +42,26 @@ describe('LIMERENCE Act III — room-by-room content integrity (spec 04-rooms-ac
     expect(suite.secret!({ ...newRun(), prior: { runs: 1, endingId: null, transcript: [] } })).toBe(true);
   });
 
-  it('every regular pool room offers exactly 4 choices in its first stage, each with 4-tradition reflections (except the-usual-suite, which is a 3-choice witnessing room)', () => {
+  it('every regular pool room offers exactly 4 base choices in its first stage (excluding any additive ✧ keepsake bonus choice), each with 4-tradition reflections (except the-usual-suite, which is a 3-choice witnessing room)', () => {
     for (const id of ACT3_REGULAR_IDS) {
-      const choices = room(id).stages[0].choices;
-      expect(choices, `${id} should have 4 choices`).toHaveLength(4);
-      for (const c of choices) {
+      const baseChoices = room(id).stages[0].choices.filter((c) => !c.keepsakeId);
+      expect(baseChoices, `${id} should have 4 base choices`).toHaveLength(4);
+      for (const c of baseChoices) {
         expect(c.reflections, `${id}/${c.id} has no reflections`).toBeDefined();
         expect(c.reflections).toHaveLength(4);
       }
     }
+  });
+
+  it('the-wedding-eve carries an additive ✧ bonus choice for the-cheap-ring, gated on holding it and additive-only', () => {
+    const choices = room('the-wedding-eve').stages[0].choices;
+    const bonus = choices.find((c) => c.keepsakeId === 'the-cheap-ring');
+    expect(bonus, 'the-wedding-eve should have a the-cheap-ring bonus choice').toBeDefined();
+    expect(bonus!.available).toBeDefined();
+    expect(bonus!.available!({ ...newRun(), keepsakesHeld: [] })).toBe(false);
+    expect(bonus!.available!({ ...newRun(), keepsakesHeld: ['the-cheap-ring'] })).toBe(true);
+    const others = choices.filter((c) => c.id !== bonus!.id);
+    expect(others).toHaveLength(4);
   });
 
   it('the-usual-suite offers 3 witnessing choices without reflections (matching ANAMNESIS’s the-cave convention)', () => {

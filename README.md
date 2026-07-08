@@ -76,14 +76,16 @@ every scene cuts at the threshold. As with ANAMNESIS, nothing here is a
 substitute for real support: if any of this is your actual life right now,
 a game is not the tool.
 
-**Status: early/testing build.** The Prologue, Act I (7 rooms + gate), Act
-II (8 rooms + gate), and Act III (8 rooms + a secret room + gate) are real,
-authored content — a full run is fully playable start to finish today. Act
-IV and the Records Office (Understory) are currently structural
-placeholders (a real room and gate exist for every required beat, so no
-run ever dead-ends), and only 2 of 7 endings are wired, with the rest
-landing in later milestones — see `UPGRADE_PLAN.md`'s LIMERENCE section for
-exactly what's done versus placeholder.
+**Status: content-complete beta.** The Prologue, all four acts (Act I: 7
+rooms + gate · Act II: 8 rooms + gate · Act III: 8 rooms + a secret room +
+gate · Act IV: 3 rooms including the final gate), the Records Office
+(3 optional rooms for returning players), and all 7 endings are real,
+authored content — a full run is fully playable start to finish, including
+its ending, today. All 4 keepsakes have both an earn room and a spend
+room. The one still-open gap: LIMERENCE's Ledger shows generic,
+pack-agnostic epiphany lines rather than its own 12 designed ones (an
+engine-parameterization pass not yet done) — see `UPGRADE_PLAN.md`'s
+LIMERENCE section for the exact remaining scope.
 
 ```bash
 npm run dev:limerence   # play LIMERENCE at the printed local URL
