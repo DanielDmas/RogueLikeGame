@@ -1,8 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { anamnesisPack } from '../packs/anamnesis';
+import { limerencePack } from '../packs/limerence';
 import type { ContentPack } from '../packs/types';
 
-const packs: { name: string; pack: ContentPack }[] = [{ name: 'anamnesis', pack: anamnesisPack }];
+const packs: { name: string; pack: ContentPack }[] = [
+  { name: 'anamnesis', pack: anamnesisPack },
+  { name: 'limerence', pack: limerencePack },
+];
 
 describe.each(packs)('ContentPack conformance — $name', ({ pack }) => {
   const roomIds = new Set(pack.rooms.map((r) => r.id));

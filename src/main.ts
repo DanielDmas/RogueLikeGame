@@ -11,11 +11,16 @@ import { Game } from './engine/flow';
 import { parseUatFlag } from './engine/uatMode';
 import { setLocale } from './engine/text/resolver';
 import { anamnesisPack } from './packs/anamnesis';
+import { limerencePack } from './packs/limerence';
 import { applyLocaleToDocument } from './ui/locale';
 import { installRecoveryHandlers } from './ui/recovery';
 import { showRestoredFromBackupToast } from './ui/toast';
 
-const pack = anamnesisPack;
+// __PACK__ is a build-time define (vite.config.ts, from VITE_PACK) selecting
+// which ContentPack this build boots; a dev-only `?pack=` override is also
+// honored so both packs can be exercised from one `npm run dev` server.
+const requestedPack = import.meta.env.DEV ? (new URLSearchParams(location.search).get('pack') ?? __PACK__) : __PACK__;
+const pack = requestedPack === 'limerence' ? limerencePack : anamnesisPack;
 
 async function boot() {
   pack.registerText();
