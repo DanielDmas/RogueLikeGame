@@ -1,14 +1,10 @@
 import type { Choice, Room, RunState } from './schema';
-import { allRooms } from '../content/rooms';
-import { getEnding } from '../content/endings';
-import { actName, UNDERSTORY_SEQUENCE } from '../content/graph';
-import { actIntroText, usherDoorBark } from '../content/usher';
+import type { ContentPack } from '../packs/types';
 import { keepsakesEarnedByFlags } from '../content/keepsakes';
 import { applyEffects, newRun } from './gameState';
-import { axisTriptych, computeAnamnesisEligible, epitaphLines, evaluateEnding } from './endings';
 import { shouldShowReflections, shouldShowSocraticAside } from './reflections';
 import { evaluateEpiphanies } from './ledger';
-import { backfillVisitedForJump, completeRoom, makeRegistry, offeredDoors } from './storyEngine';
+import { backfillVisitedForJump, completeRoom, makeRegistry, offeredDoors, type RoomRegistry } from './storyEngine';
 import { defaultProfile, hydrateProfile, type Profile, type SaveStore } from './saveStore';
 import { SceneDirector } from '../scene/director';
 import type { DoorSpec } from '../scene/doors';
@@ -32,9 +28,8 @@ import {
   type SettingsActions,
 } from '../ui/overlays';
 import { el } from '../ui/dom';
-import { sound, type RoomAccent } from '../audio/soundEngine';
-import { endingIcons, iconFor } from '../content/icons';
-import { setLocale, t } from '../content/text';
+import { sound } from '../audio/soundEngine';
+import { setLocale, t } from './text/resolver';
 import {
   roomTitleKey,
   roomDoorHintKey,
@@ -53,6 +48,7 @@ import {
   endingNoteBodyKey,
   uiKey,
   usherBarkKey,
+  actNameKey,
 } from './text/keys';
 import { applyLocaleToDocument } from '../ui/locale';
 import { isFullscreen, shouldOpenPauseOnEscape, toggleFullscreen } from '../ui/fullscreen';
@@ -60,30 +56,11 @@ import { applyUiZoom } from '../ui/zoom';
 import { installUatHandle, isJumpableRoom, speedMultiplierFor, type UatHandle } from './uatMode';
 
 const PROFILE_ID = 'traveler';
-const registry = makeRegistry(allRooms);
 /** sessionStorage marker: set by jump() right before a reload, so start() knows to
  * skip the title screen and resume `profile.run` directly instead of waiting for a click. */
 const UAT_AUTOCONTINUE_KEY = 'anamnesis-uat-autocontinue';
 
 const themeForAct = (act: number): 0 | 1 | 2 | 3 | 4 => (act <= 1 ? (act as 0 | 1) : (act as 2 | 3 | 4));
-
-/** The 3 rooms with a bespoke ambient audio accent (spec 07 §Q5.4) — null for
- * every other room, clearing whatever accent was previously playing. */
-const ROOM_ACCENT_BY_ID: Partial<Record<string, RoomAccent>> = {
-  junction: 'junction',
-  'casino-pascal': 'casino',
-  ship: 'ship',
-};
-const roomAccentFor = (roomId: string): RoomAccent => ROOM_ACCENT_BY_ID[roomId] ?? null;
-
-/** English source for the Examined Path's once-per-act Socratic asides (spec
- * 05) — rhetorical, unscored, no branching. `Usher:` prefix marks it spoken. */
-const EXAMINED_ACT_BARK_FALLBACK: Record<1 | 2 | 3 | 4, string> = {
-  1: 'Usher: Would you have chosen the same in front of witnesses? Would that have been better — or only nicer?',
-  2: 'Usher: When the machine is right, does it matter why?',
-  3: 'Usher: Which of your reasons tonight were yours, and which were rehearsals?',
-  4: 'Usher: If no one could ever know, walk the corridor again. Anything change?',
-};
 
 export class Game {
   private ui: HTMLElement;
@@ -97,6 +74,8 @@ export class Game {
   private state: RunState = newRun();
   private profile: Profile;
   private store: SaveStore;
+  private pack: ContentPack;
+  private registry: RoomRegistry;
   private currentTheme = -1;
   private doorClickThrough: ((id: string) => void) | null = null;
   /** The door specs currently on screen, in door-index order — lets both
@@ -118,10 +97,19 @@ export class Game {
    * the newer state. Chaining makes ordering independent of backend latency. */
   private persistChain: Promise<void> = Promise.resolve();
 
-  constructor(canvas: HTMLCanvasElement, ui: HTMLElement, profile: Profile, store: SaveStore, uat = false) {
+  constructor(
+    canvas: HTMLCanvasElement,
+    ui: HTMLElement,
+    profile: Profile,
+    store: SaveStore,
+    pack: ContentPack,
+    uat = false,
+  ) {
     this.ui = ui;
     this.profile = profile;
     this.store = store;
+    this.pack = pack;
+    this.registry = makeRegistry(pack.rooms);
     this.uat = uat;
     this.speedMultiplier = speedMultiplierFor(uat);
 
@@ -190,11 +178,11 @@ export class Game {
    * warning rather than throwing. */
   private jump(roomId: string): void {
     if (!this.uat) return;
-    if (!isJumpableRoom(roomId, registry)) {
+    if (!isJumpableRoom(roomId, this.registry)) {
       console.warn(`[anamnesis:uat] jump("${roomId}") refused — unknown room id.`);
       return;
     }
-    const room = registry.get(roomId);
+    const room = this.registry.get(roomId);
     const base = this.inGame && !this.state.finished ? this.state : newRun(undefined, this.priorFromProfile(), this.keepsakesFromProfile());
     const next: RunState = {
       ...base,
@@ -204,7 +192,7 @@ export class Game {
       finished: false,
       endingId: null,
       visited: backfillVisitedForJump(base.visited, roomId),
-      descended: UNDERSTORY_SEQUENCE.includes(roomId) ? true : base.descended,
+      descended: this.pack.graph.understorySequence.includes(roomId) ? true : base.descended,
     };
     this.profile.run = next;
     void this.store.save(PROFILE_ID, this.profile).then(() => {
@@ -356,7 +344,7 @@ export class Game {
     this.stageBottom.classList.add('overlay-hidden');
     const action = await showPauseMenu(this.ui);
     if (action === 'codex') await showCodex(this.ui, this.profile);
-    if (action === 'ledger') await showLedger(this.ui, this.profile, registry);
+    if (action === 'ledger') await showLedger(this.ui, this.profile, this.registry);
     if (action === 'persona') {
       this.profile.persona = await showPersona(this.ui, this.profile.persona);
       await this.persist();
@@ -402,12 +390,12 @@ export class Game {
     for (;;) {
       // Rebuilt fresh on every loop entry rather than reactively — covers a
       // locale change made mid-title-loop without any extra plumbing.
-      this.director.setEpitaphWall(epitaphLines(this.profile.endingsSeen));
+      this.director.setEpitaphWall(this.pack.endingRules.epitaphLines(this.profile.endingsSeen));
       const action = await showTitle(this.ui, this.profile);
       if (action === 'codex') {
         await showCodex(this.ui, this.profile);
       } else if (action === 'ledger') {
-        await showLedger(this.ui, this.profile, registry);
+        await showLedger(this.ui, this.profile, this.registry);
       } else if (action === 'persona') {
         this.profile.persona = await showPersona(this.ui, this.profile.persona);
         await this.persist();
@@ -470,20 +458,20 @@ export class Game {
       this.currentTheme = theme;
       sound.setAct(theme);
       await this.fade(false);
-      const intro = actIntroText(this.state.act);
+      const intro = this.pack.guide.actIntroText(this.state.act);
       if (intro && this.state.act > 0) {
-        await this.text.playBeats([intro], this.state, { title: actName(this.state.act) }, { tokens: this.tokens() });
+        await this.text.playBeats([intro], this.state, { title: this.actNameFor(this.state.act) }, { tokens: this.tokens() });
         this.text.hide();
       }
       // Examined Path (spec 05): one rhetorical, unscored Socratic aside per
       // act — no input, no branching, no record kept. Piggybacks on the act
       // intro since both fire exactly once per act transition.
       if (shouldShowSocraticAside(this.state)) {
-        const fallback = EXAMINED_ACT_BARK_FALLBACK[this.state.act as 1 | 2 | 3 | 4];
+        const fallback = this.pack.guide.examinedActBarkFallback[this.state.act as 1 | 2 | 3 | 4];
         await this.text.playBeats(
           [t(usherBarkKey(`examined-act${this.state.act}`), fallback)],
           this.state,
-          { title: actName(this.state.act) },
+          { title: this.actNameFor(this.state.act) },
           { tokens: this.tokens() },
         );
         this.text.hide();
@@ -499,17 +487,17 @@ export class Game {
       const pending = this.state.currentRoom;
       if (pending) {
         await this.syncTheme();
-        this.hud.setAct(actName(this.state.act));
+        this.hud.setAct(this.actNameFor(this.state.act));
         this.hud.update(this.state.hearts, this.state.lucidity);
-        await this.enterRoom(registry.get(pending));
+        await this.enterRoom(this.registry.get(pending));
         continue;
       }
 
-      const doors = offeredDoors(this.state, registry);
-      if (doors.length === 0) return this.playEnding(evaluateEnding(this.state));
+      const doors = offeredDoors(this.state, this.registry);
+      if (doors.length === 0) return this.playEnding(this.pack.endingRules.evaluate(this.state));
 
       await this.syncTheme();
-      this.hud.setAct(actName(this.state.act));
+      this.hud.setAct(this.actNameFor(this.state.act));
       this.hud.update(this.state.hearts, this.state.lucidity);
 
       const specs = doors.map((r) => ({
@@ -520,8 +508,8 @@ export class Game {
         // channel (violet accent) to read as the "stranger" option, without
         // making the room itself `secret` in content — it must never enter
         // act-pool secret-door logic.
-        secret: Boolean(r.secret) || r.id === UNDERSTORY_SEQUENCE[0],
-        icon: iconFor(r.id),
+        secret: Boolean(r.secret) || r.id === this.pack.graph.understorySequence[0],
+        icon: this.pack.visuals.iconFor(r.id),
         unseen: !this.profile.codexUnlocked.includes(r.id),
       }));
       this.currentDoorSpecs = specs;
@@ -529,8 +517,8 @@ export class Game {
       this.director.setDiorama(null);
       sound.setRoomAccent(null);
       this.director.showDoors(specs);
-      const atUnderstoryFork = doors.some((d) => d.id === UNDERSTORY_SEQUENCE[0]);
-      this.text.showBark(usherDoorBark(this.state, this.profile.runsCompleted, doors.length, atUnderstoryFork), this.tokens());
+      const atUnderstoryFork = doors.some((d) => d.id === this.pack.graph.understorySequence[0]);
+      this.text.showBark(this.pack.guide.doorBark(this.state, this.profile.runsCompleted, doors.length, atUnderstoryFork), this.tokens());
       const picker = this.choices.pickDoor(specs, (id) => {
         this.director.highlightDoor(id);
         if (id) sound.hover(this.doorIndex(id));
@@ -541,8 +529,8 @@ export class Game {
       sound.choice();
       this.text.hide();
 
-      if (roomId === UNDERSTORY_SEQUENCE[0]) this.state = { ...this.state, descended: true };
-      const nextRoom = registry.get(roomId);
+      if (roomId === this.pack.graph.understorySequence[0]) this.state = { ...this.state, descended: true };
+      const nextRoom = this.registry.get(roomId);
       await this.director.walkThrough(roomId, { color: spillColorFor(nextRoom.type, themeForAct(nextRoom.act)) });
       await this.fade(true);
       this.director.hideDoors();
@@ -550,7 +538,7 @@ export class Game {
 
       this.state = { ...this.state, currentRoom: roomId, currentStage: 0 };
       await this.persist(true);
-      await this.enterRoom(registry.get(roomId));
+      await this.enterRoom(this.registry.get(roomId));
     }
   }
 
@@ -559,21 +547,21 @@ export class Game {
     // in scope here, so it's recomputed fresh each time the final door is
     // reached — a codex/keepsake milestone hit mid-run counts immediately,
     // rather than requiring a fresh run to notice it.
-    if (room.id === 'door-that-asks') {
-      const eligible = computeAnamnesisEligible(
-        registry.all().map((r) => r.id),
-        UNDERSTORY_SEQUENCE,
+    if (room.id === this.pack.hooks.finalGateId) {
+      const eligible = this.pack.endingRules.computeHiddenEligible(
+        this.registry.all().map((r) => r.id),
+        this.pack.graph.understorySequence,
         this.profile.codexUnlocked,
         this.profile.keepsakeChoicesTaken,
       );
       this.state = { ...this.state, anamnesisEligible: eligible };
     }
-    const icon = iconFor(room.id);
+    const icon = this.pack.visuals.iconFor(room.id);
     const title = t(roomTitleKey(room.id), room.title);
     const tokens = this.tokens();
     this.director.setMood(room.type);
     this.director.setDiorama(room.id);
-    sound.setRoomAccent(roomAccentFor(room.id));
+    sound.setRoomAccent((this.pack.audio.roomAccents[room.id] ?? null));
     // A room already witnessed in an earlier run reads back fast on repeat —
     // no typewriter, and the panel carries a quiet "remembered" mark — so
     // replays stay brisk instead of re-reading beats the player already knows.
@@ -620,7 +608,7 @@ export class Game {
       // Mary's Room diorama (spec 07 §Q1): the one saturated red cube lights
       // only once the drawer has actually been opened, matching the room's
       // own beat (opening the drawer reveals red for the first time).
-      if (room.id === 'marys-room' && choice.id === 'open-drawer') {
+      if (this.pack.visuals.dioramaAccentHooks.some((h) => h.roomId === room.id && h.choiceId === choice.id)) {
         this.director.setDioramaAccent(true);
       }
       const firstHeartLoss = this.state.hearts < heartsBefore && !this.profile.hasSeenHeartLoss;
@@ -647,7 +635,7 @@ export class Game {
         effects: choice.effects,
       });
       this.hud.update(this.state.hearts, this.state.lucidity);
-      if (room.id === 'last-message') {
+      if (room.id === this.pack.hooks.lastMessageId) {
         this.profile.lastMessage = choice.text.replace(/^“|”$/g, '');
       }
       // Shown once per profile, ever — a brief, calm explanation of what just
@@ -712,12 +700,22 @@ export class Game {
     // completion, never on a quit-and-resume replay of the same room, since
     // this line only runs after the stage loop above has fully finished.
     this.profile.roomVisits[room.id] = (this.profile.roomVisits[room.id] ?? 0) + 1;
-    this.state = completeRoom(this.state, room.id, registry);
+    this.state = completeRoom(this.state, room.id, this.registry);
     await this.persist(true);
   }
 
+  private getEnding(endingId: string) {
+    const ending = this.pack.endings.find((e) => e.id === endingId);
+    if (!ending) throw new Error(`Unknown ending: ${endingId}`);
+    return ending;
+  }
+
+  private actNameFor(act: RunState['act']): string {
+    return t(actNameKey(act), this.pack.graph.actNamesEn[act]);
+  }
+
   private async playEnding(endingId: string): Promise<void> {
-    const raw = getEnding(endingId);
+    const raw = this.getEnding(endingId);
     const tokens = this.tokens();
     const ending = {
       ...raw,
@@ -738,7 +736,7 @@ export class Game {
     await this.text.playBeats(
       raw.beats,
       this.state,
-      { title: ending.title, type: 'ENDING', icon: endingIcons[endingId] },
+      { title: ending.title, type: 'ENDING', icon: this.pack.visuals.endingIcons[endingId] },
       { keyOf: (bi) => endingBeatKey(endingId, bi), tokens },
     );
     this.text.hide();
@@ -751,7 +749,7 @@ export class Game {
           body: t(endingNoteBodyKey(endingId), raw.fieldNote.body),
         },
         `${t(uiKey('endingFieldNoteHeader'), 'Ending · Field Note')}`,
-        endingIcons[endingId],
+        this.pack.visuals.endingIcons[endingId],
       );
     }
 
@@ -768,16 +766,16 @@ export class Game {
     if (this.state.examined) this.profile.examinedRuns += 1;
     // Epiphanies (spec 06): evaluated last, once every other counter above
     // has this run's contribution already applied.
-    const newEpiphanies = evaluateEpiphanies(this.profile, this.state, registry);
+    const newEpiphanies = evaluateEpiphanies(this.profile, this.state, this.registry);
     this.profile.epiphanies.push(...newEpiphanies);
     await this.persist();
 
     const recap = this.state.visited
-      .map((id) => registry.get(id))
+      .map((id) => this.registry.get(id))
       .map((room) => ({
         title: t(roomTitleKey(room.id), room.title),
         thesis:
-          room.id === 'last-message' && this.profile.lastMessage
+          room.id === this.pack.hooks.lastMessageId && this.profile.lastMessage
             ? `“${this.profile.lastMessage}”`
             : t(roomNoteTitleKey(room.id), room.fieldNote?.title ?? ''),
       }));
@@ -785,7 +783,7 @@ export class Game {
     for (;;) {
       const action = await showEndScreen(this.ui, {
         ending,
-        triptych: axisTriptych(this.state),
+        triptych: this.pack.endingRules.axisTriptych(this.state),
         recap,
         lucidity: this.state.lucidity,
         hearts: Math.max(0, this.state.hearts),

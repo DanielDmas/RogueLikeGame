@@ -9,12 +9,16 @@ import './styles.css';
 import { LocalSaveStore } from './engine/localSave';
 import { Game } from './engine/flow';
 import { parseUatFlag } from './engine/uatMode';
-import { setLocale } from './content/text';
+import { setLocale } from './engine/text/resolver';
+import { anamnesisPack } from './packs/anamnesis';
 import { applyLocaleToDocument } from './ui/locale';
 import { installRecoveryHandlers } from './ui/recovery';
 import { showRestoredFromBackupToast } from './ui/toast';
 
+const pack = anamnesisPack;
+
 async function boot() {
+  pack.registerText();
   const canvas = document.getElementById('scene') as HTMLCanvasElement;
   const ui = document.getElementById('ui') as HTMLElement;
   installRecoveryHandlers(ui, canvas);
@@ -24,7 +28,7 @@ async function boot() {
   applyLocaleToDocument(profile.settings.language);
   if (store.wasRestoredFromBackup()) showRestoredFromBackupToast(ui, profile.settings.reducedMotion);
   const uat = parseUatFlag(location.search);
-  const game = new Game(canvas, ui, profile, store, uat);
+  const game = new Game(canvas, ui, profile, store, pack, uat);
   await game.start();
 }
 
