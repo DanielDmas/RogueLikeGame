@@ -7,6 +7,11 @@ on:
         description: 'Release tag name (defaults to nightly-<run number> if left blank)'
         required: false
         type: string
+      publish:
+        description: 'Publish a public GitHub Release (uncheck to only build the .exe as a private workflow artifact, e.g. for a one-off verification build)'
+        required: false
+        type: boolean
+        default: true
   push:
     tags:
       - 'v*'
@@ -36,6 +41,13 @@ jobs:
       - name: Package Windows executable
         run: npm run dist:win
 
+      - name: Upload .exe as a workflow artifact (always — private, downloadable from this run's page by repo collaborators, independent of whether a public release is also published)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ANAMNESIS-windows-exe
+          path: release/*.exe
+          retention-days: 14
+
       - name: Determine tag
         id: tag
         shell: bash
@@ -49,6 +61,10 @@ jobs:
           fi
 
       - name: Publish GitHub release
+        # Tag pushes always publish (the documented v* release flow); a manual
+        # workflow_dispatch run publishes unless `publish` is explicitly
+        # unchecked, so an ad hoc verification build can skip going public.
+        if: github.event_name == 'push' || inputs.publish != false
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
