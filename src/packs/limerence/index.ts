@@ -177,6 +177,24 @@ export const limerencePack: ContentPack = {
     heartsSvg: HEART_SVG, // placeholder — Trust re-skin lands at L5
   },
 
+  // The onboarding advisory layer (design spec 10-safety-education-charter.md
+  // §2) — shown automatically once via the engine's existing
+  // Profile.hasSeenAbout mechanism, and re-viewable any time from the title
+  // menu's "Before you begin" button.
+  advisory: {
+    purposeStatement:
+      'LIMERENCE exists so you can walk into these rooms before life builds them around you. Nothing here grades you. The research in the field notes is real; the people are not.',
+    mechanicsNote:
+      'Nothing here is graded right or wrong. Each choice quietly shifts three hidden inclinations — head against heart, mine against ours, grip against open — and those, not a scoreboard, shape which doors open, how the hotel looks and sounds, and which ending you eventually reach. Three hearts are your Trust — a handful of especially costly choices spend one outright, and losing all three is not a failure screen; it is a real ending, written as one. Each door is a different room, and you cannot walk through all of them in a single stay — a replay will show you the rest.',
+    themes:
+      'infidelity, jealousy, coercive control, non-consensual image sharing (never depicted), relationship breakdown, and consensual non-monogamy.',
+    minorsNote: 'Characters on the Ground Floor (Act I) are 15–18, and their storylines contain no sexual content.',
+    fictionNote: 'This is fiction, not therapy or advice.',
+    helpLine:
+      'If one of these rooms is your life right now, a game is not the tool. Talk to someone real — a friend who tells you the truth, a counselor, a doctor.',
+    noTelemetry: 'Nothing about how you play is tracked, sent anywhere, or tied to an account — your save lives only in this browser.',
+  },
+
   keepsakes: [
     {
       id: 'the-cheap-ring',

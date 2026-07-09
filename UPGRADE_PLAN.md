@@ -1459,20 +1459,50 @@ non-explicit, adult acts frank-never-graphic, ~PEGI 16 posture).
       with zero console errors, alongside targeted checks of the-read-receipt
       (4 choices, correct lucidity math) and the-rumor (4 choices, DOOMED
       weight intact).
-      **Explicitly not done — visible gap, not hidden:** the onboarding
-      advisory layer (spec 10 §2 — the themes list, the "Act I contains no
-      sexual content" note, "this is fiction, not therapy"). ANAMNESIS's
-      `showAbout()` is entirely hardcoded to ANAMNESIS's own mechanics copy;
-      giving LIMERENCE its own advisory screen needs the same kind of
-      pack-parameterization pass `showCodex`/`showTitle` got in L1, done
-      deliberately rather than bolted on at the end of an already-long
-      session — this is safety-relevant copy for a game whose subject matter
-      includes coercive control and non-consensual imagery, and it deserves
-      its own careful pass, not a rushed one. Also not done: the hearts→Trust
-      *label* re-skin (the icon reuses ANAMNESIS's placeholder per L1; the
-      *tooltip copy* — "grip on reality" — is still ANAMNESIS's own words,
-      since `ContentPack.skin` doesn't yet carry per-pack UI copy overrides).
-      Do the advisory layer before any real playtesting of LIMERENCE.
+      **Onboarding advisory layer — done (2026-07-09).** `showAbout()`
+      (the "Before you begin" panel, engine-shared) is now pack-aware:
+      `ContentPack.advisory?: {...}` (new optional field, `packs/types.ts`)
+      carries a purpose statement, a pack-specific mechanics note, the
+      themes list, the minors'-content note, the fiction-not-therapy note,
+      a static help line, and a no-telemetry restatement. ANAMNESIS defines
+      no `advisory` and renders its original why/hearts/doors content
+      byte-for-byte unchanged (verified by test). LIMERENCE's `advisory`
+      is populated per spec 10 §2 exactly — themes (infidelity, jealousy,
+      coercive control, non-consensual image sharing (never depicted),
+      relationship breakdown, consensual non-monogamy), the Act I
+      minors'-content note, "this is fiction, not therapy or advice," the
+      static jurisdiction-generic help line, and an honest no-telemetry
+      line. No new trigger mechanism was needed — the engine's existing
+      `Profile.hasSeenAbout` (already generic, already shows "Before you
+      begin" automatically once on a player's first-ever new run, already
+      re-openable from the title menu afterward) was already exactly the
+      onboarding-advisory mechanism the spec asked for; it just needed
+      pack-aware content, not new plumbing. The panel content itself was
+      refactored into a pure `aboutBodyHtml(pack)` helper (`ui/overlays.ts`)
+      so it's unit-testable without a DOM — 5 new tests in
+      `advisoryLayer.test.ts`, including a charter-mandated regression test
+      that the non-consensual-imagery theme is named but never depicted or
+      characterized in the advisory copy itself. Also required extending
+      two existing ANAMNESIS-only audits to be pack-aware/exclusion-aware
+      so they didn't false-positive on the new pack-conditional content:
+      `flagAudit.test.ts` (done in the previous L4 round) and
+      `uiKeyCoverage.test.ts` (this round — a documented
+      `PACK_CONDITIONAL_KEYS` exclusion list, with its own staleness
+      check, for the new `about*` keys that only ever render behind
+      `pack.advisory`, which LIMERENCE alone defines and which has no
+      translations yet). Live-verified via Playwright: the advisory
+      auto-shows on a fresh LIMERENCE profile's first "Begin," contains
+      every mandatory element, and ANAMNESIS's own About panel is
+      confirmed unaffected. Full suite 669/669 green.
+
+      **Still not done:** the hearts→Trust *label* re-skin (the icon
+      reuses ANAMNESIS's placeholder per L1; the HUD tooltip copy —
+      "grip on reality" — is still ANAMNESIS's own words, since
+      `ContentPack.skin` doesn't yet carry per-pack HUD-copy overrides;
+      the new advisory panel's own mechanics paragraph does correctly say
+      "Trust," so the inconsistency is now scoped to exactly one
+      remaining surface, not several). This is L5 polish, not a safety
+      gap — deferred deliberately, not overlooked.
 - [~] L3. Acts II–III + gates + secret room. **Act II done (2026-07-08):**
       8 real rooms (`the-distance`, `the-hall-pass`, `the-rebound`,
       `the-unicorn`, `just-friends`, `the-ex`, `the-confession`,
@@ -1607,13 +1637,22 @@ non-explicit, adult acts frank-never-graphic, ~PEGI 16 posture).
       own game with the correct `<title>` and in-game title-word.
       `dist-web/` added to `.gitignore` alongside the existing `dist/`.
 
-      **Release status (2026-07-08):** with L4 content-complete, both
-      titles playable end-to-end, and a working dual-pack deploy path now
-      built and verified, the main remaining blockers to a public release
-      are the epiphanies gap above and the L5 polish items below — neither
-      breaks anything, both are honestly flagged. `v0.2.0-beta` is
-      committed and pushed, tagged locally, still not cut as a public
-      GitHub Release pending an explicit owner go-ahead.
+      **Release status (2026-07-09):** L4 is content-complete, both titles
+      play end-to-end, the dual-pack web deploy path is built and verified,
+      the Windows `.exe` pipeline was verified end-to-end on a real
+      `windows-latest` runner (build → package → artifact, all green;
+      2026-07-09), and the onboarding advisory layer — the one gap
+      previously flagged as safety-relevant rather than mere polish — is
+      now done. What remains before a public LIMERENCE release is real but
+      genuinely optional: the epiphanies gap (LIMERENCE's Ledger works,
+      just shows generic rather than bespoke lines) and the L5 polish
+      items below. Note: ANAMNESIS itself already has several public
+      GitHub Releases with working `.exe` assets (0.2.0–0.2.3, predating
+      this entry) — ANAMNESIS has effectively already been publicly
+      released; LIMERENCE has not, and has no Windows/Electron packaging
+      at all yet (web-only). `v0.2.0-beta` (package.json) is stale relative
+      to the actual tag history and should be bumped before the next
+      release cut.
 - [ ] L5. Hotel visual/audio identity (**partially pulled forward,
       2026-07-08** — see below) + UAT pack matrix + docs.
 

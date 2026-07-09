@@ -77,6 +77,34 @@ export interface ContentPack {
     traditionLabels?: Partial<Record<Reflection['tradition'], string>>;
   };
 
+  /** The onboarding advisory layer (design spec `10-safety-education-
+   * charter.md` §2) — shown automatically once (via the existing
+   * `Profile.hasSeenAbout`/"Before you begin" mechanism, engine-generic
+   * already) and re-viewable from the title menu's About button. Omit for
+   * a pack whose subject matter needs no additional advisory beyond
+   * ANAMNESIS's own mechanics explainer (ANAMNESIS leaves this undefined
+   * and `showAbout` falls back to its original, unchanged content). */
+  advisory?: {
+    /** One sentence introducing what the game is for. */
+    purposeStatement: string;
+    /** A short paragraph explaining the core mechanic (hearts/axes/doors)
+     * in this pack's own honest terms — kept separate from ANAMNESIS's own
+     * wording rather than reusing hardcoded facts (ending counts, etc.)
+     * that don't hold for a different pack. */
+    mechanicsNote: string;
+    /** The themes list, one sentence, comma-separated. */
+    themes: string;
+    /** The age/content-register note (e.g. minors' storylines are
+     * non-explicit). */
+    minorsNote: string;
+    /** "This is fiction, not therapy or advice." register statement. */
+    fictionNote: string;
+    /** The static, jurisdiction-generic help line. */
+    helpLine: string;
+    /** No-telemetry restatement. */
+    noTelemetry: string;
+  };
+
   keepsakes: KeepsakeDef[];
   keepsakeTriggers: Record<string, string>;
   keepsakeIcons: Record<string, string>;

@@ -563,12 +563,20 @@ export function showPersona(ui: HTMLElement, persona: Persona): Promise<Persona>
   });
 }
 
-export function showAbout(ui: HTMLElement): Promise<void> {
-  return new Promise((resolve) => {
-    const o = overlay(ui);
-    const panel = el('div', 'codex-panel about-panel');
-    panel.append(el('h2', undefined, t(uiKey('aboutTitle'), 'Before you begin')));
-    const body = el('div', 'about-body');
+/**
+ * The About/"Before you begin" panel's body content, computed as pure HTML
+ * (no DOM mutation) so it's unit-testable without a browser environment.
+ * ANAMNESIS (`pack.advisory` undefined) gets its original, unchanged
+ * why-play/hearts/doors explainer. A pack that defines `advisory` (spec
+ * `10-safety-education-charter.md` §2) gets its own mechanics note plus the
+ * mandatory safety/education layer: purpose statement, themes list, the
+ * minors'-content note, the fiction-not-therapy note, the help line, and a
+ * no-telemetry restatement — shown automatically once via the existing
+ * `Profile.hasSeenAbout` mechanism and re-viewable from the title menu.
+ */
+export function aboutBodyHtml(pack: ContentPack): string {
+  const heartGlyph = `<span class="about-heart-glyph">${HEART_SVG}</span>`;
+  if (!pack.advisory) {
     const p1 = t(
       uiKey('aboutWhy'),
       '<b>Why play.</b> Nothing here is graded right or wrong. Each choice quietly shifts three hidden inclinations — reason against feeling, self against others, control against acceptance — and those, not a scoreboard, shape which doors open, how the facility looks and sounds, and which of six endings you eventually reach. Honest engagement is the only thing rewarded.',
@@ -581,8 +589,26 @@ export function showAbout(ui: HTMLElement): Promise<void> {
       uiKey('aboutDoors'),
       '<b>Doors.</b> Each door behind the corridor is a different situation, and you cannot walk through all of them in a single run. Choosing a door is choosing what you will face — and what you will skip — this time. A replay will show you the rest.',
     );
-    const heartGlyph = `<span class="about-heart-glyph">${HEART_SVG}</span>`;
-    body.innerHTML = `<p>${p1}</p><p>${heartGlyph}${p2}</p><p>${p3}</p>`;
+    return `<p>${p1}</p><p>${heartGlyph}${p2}</p><p>${p3}</p>`;
+  }
+  const a = pack.advisory;
+  const purpose = t(uiKey('aboutPurpose'), `<b>Why this exists.</b> ${a.purposeStatement}`);
+  const mechanics = t(uiKey('aboutMechanics'), `<b>How it works.</b> ${a.mechanicsNote}`);
+  const themes = t(uiKey('aboutThemes'), `<b>Themes.</b> ${a.themes}`);
+  const minors = t(uiKey('aboutMinorsNote'), a.minorsNote);
+  const fiction = t(uiKey('aboutFictionNote'), a.fictionNote);
+  const help = t(uiKey('aboutHelpLine'), `<b>If this is your life right now.</b> ${a.helpLine}`);
+  const telemetry = t(uiKey('aboutNoTelemetry'), a.noTelemetry);
+  return `<p>${purpose}</p><p>${heartGlyph}${mechanics}</p><p>${themes}</p><p><i>${minors} ${fiction}</i></p><p>${help}</p><p>${telemetry}</p>`;
+}
+
+export function showAbout(ui: HTMLElement, pack: ContentPack): Promise<void> {
+  return new Promise((resolve) => {
+    const o = overlay(ui);
+    const panel = el('div', 'codex-panel about-panel');
+    panel.append(el('h2', undefined, t(uiKey('aboutTitle'), 'Before you begin')));
+    const body = el('div', 'about-body');
+    body.innerHTML = aboutBodyHtml(pack);
     panel.append(body);
     const back = el('button', 'title-btn', t(uiKey('back'), 'Back'));
     back.style.marginTop = '26px';

@@ -78,7 +78,9 @@ Adult scenes (Acts II–IV) are frank about attraction, sex, and their
 consequences, in the register of a prestige drama, but never graphic —
 every scene cuts at the threshold. As with ANAMNESIS, nothing here is a
 substitute for real support: if any of this is your actual life right now,
-a game is not the tool.
+a game is not the tool. This same note (plus the themes list and a purpose
+statement) shows automatically in-game the first time you begin a run, and
+is re-viewable any time from the title menu's "Before you begin" button.
 
 **Status: content-complete beta.** The Prologue, all four acts (Act I: 7
 rooms + gate · Act II: 8 rooms + gate · Act III: 8 rooms + a secret room +

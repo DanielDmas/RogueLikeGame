@@ -357,7 +357,7 @@ export class Game {
       this.profile.persona = await showPersona(this.ui, this.profile.persona);
       await this.persist();
     }
-    if (action === 'about') await showAbout(this.ui);
+    if (action === 'about') await showAbout(this.ui, this.pack);
     if (action === 'settings') {
       this.profile.settings = await showSettings(this.ui, this.profile.settings, this.settingsActions());
       this.applySettings();
@@ -408,7 +408,7 @@ export class Game {
         this.profile.persona = await showPersona(this.ui, this.profile.persona);
         await this.persist();
       } else if (action === 'about') {
-        await showAbout(this.ui);
+        await showAbout(this.ui, this.pack);
       } else if (action === 'settings') {
         this.profile.settings = await showSettings(this.ui, this.profile.settings, this.settingsActions());
         this.applySettings();
@@ -422,7 +422,7 @@ export class Game {
         // (hasSeenAbout), before persona and before the Examined Path offer;
         // the manual "Before you begin" title button still works afterward.
         if (action === 'new' && !this.profile.hasSeenAbout) {
-          await showAbout(this.ui);
+          await showAbout(this.ui, this.pack);
           this.profile.hasSeenAbout = true;
           await this.persist();
         }

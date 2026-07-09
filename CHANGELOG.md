@@ -4,7 +4,7 @@ One line of history per released version. Full detail for every change
 lives in `UPGRADE_PLAN.md` and git history; this file is the short public
 summary.
 
-## v0.2.0-beta — 2026-07-08
+## v0.2.4-beta — 2026-07-09
 
 **The Vestibule.** This repo now ships a collection of two games sharing
 one content-agnostic engine, rather than a single title — see the README
@@ -42,6 +42,12 @@ Milestone 5 for ANAMNESIS (finished this release):
   to finish, including its ending, today. All 4 keepsakes have both an
   earn room and a spend room. Still open: LIMERENCE's Ledger shows
   generic epiphany lines rather than its own 12 designed ones.
+- An onboarding advisory (shown automatically once, re-viewable from the
+  title menu): the themes list, an age/content note, "this is fiction, not
+  therapy," and a help line — ANAMNESIS is unaffected, keeping its own
+  original explainer unchanged.
+- A rozcestník (chooser page) at the site root linking to both titles, each
+  now buildable as its own independent production bundle.
 - Its own visual and audio identity: a sodium-amber/corridor-teal hotel
   palette with an optional light/dark theme toggle (LIMERENCE only), a
   minor-leaning generative score resolving to a held major chord at the

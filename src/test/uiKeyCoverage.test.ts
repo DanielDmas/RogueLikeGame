@@ -23,7 +23,27 @@ function findTsFiles(dir: string, out: string[] = []): string[] {
   return out;
 }
 
-function extractUiKeys(): string[] {
+// Keys only ever rendered behind `pack.advisory` (spec 10-safety-education-
+// charter.md §2) — currently LIMERENCE-only content, statically present in
+// the shared src/ui/overlays.ts source (so the scan below finds them) but
+// never reachable in an ANAMNESIS build (`pack.advisory` is undefined there,
+// see packs/anamnesis/index.ts) and therefore correctly absent from
+// ANAMNESIS's own cs/fa/de/fr catalogs. LIMERENCE itself has no translations
+// yet (Czech is milestone L6, not started — see UPGRADE_PLAN.md); this test
+// is scoped to ANAMNESIS's translation coverage, not a generic per-pack
+// check, so these are excluded here rather than papered over with fake
+// translations that would never actually be shown to anyone.
+const PACK_CONDITIONAL_KEYS = new Set([
+  'aboutPurpose',
+  'aboutMechanics',
+  'aboutThemes',
+  'aboutMinorsNote',
+  'aboutFictionNote',
+  'aboutHelpLine',
+  'aboutNoTelemetry',
+]);
+
+function scanUiKeys(): Set<string> {
   const roots = ['src/ui', 'src/engine', 'src/content'].map((d) => resolve(__dirname, '../..', d));
   const keys = new Set<string>();
   for (const root of roots) {
@@ -37,17 +57,23 @@ function extractUiKeys(): string[] {
   keys.add('persona.about1');
   keys.add('persona.about2');
   keys.add('persona.about3');
-  return [...keys];
+  return keys;
 }
 
 const LANGS = ['cs', 'fa', 'de', 'fr'] as const;
-const allKeys = extractUiKeys();
+const scannedKeys = scanUiKeys();
+const allKeys = [...scannedKeys].filter((k) => !PACK_CONDITIONAL_KEYS.has(k));
 
 describe('uiKey coverage — every ui.* string actually used in the app is translated', () => {
   afterEach(() => setLocale('en', 'v2'));
 
   it('found a sane number of keys (sanity check the scan itself is working)', () => {
     expect(allKeys.length).toBeGreaterThan(60);
+  });
+
+  it('PACK_CONDITIONAL_KEYS has no stale entries — every excluded key is still actually used somewhere', () => {
+    const stale = [...PACK_CONDITIONAL_KEYS].filter((k) => !scannedKeys.has(k));
+    expect(stale, `excluded but no longer found in source: ${stale.join(', ')}`).toEqual([]);
   });
 
   for (const lang of LANGS) {
