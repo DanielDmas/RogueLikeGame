@@ -1654,8 +1654,10 @@ non-explicit, adult acts frank-never-graphic, ~PEGI 16 posture).
       to the actual tag history and should be bumped before the next
       release cut.
 - [x] L5. Hotel visual/audio identity (**pulled forward across
-      2026-07-08/09** — see below; content/code complete, UAT pack matrix
-      still outstanding).
+      2026-07-08/09** — see below; content/code complete, `tests/uat/
+      14-limerence-visual-sweep.mjs` closes the UAT pack matrix gap for
+      this round's L5 work — every prior UAT script exercised ANAMNESIS
+      only).
 
 **Pulled forward from L5, on explicit owner request (2026-07-08):**
 LIMERENCE now has its own real visual and audio identity rather than

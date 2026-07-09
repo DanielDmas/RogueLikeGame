@@ -1,12 +1,12 @@
 # Committed UAT suite (Milestone 5, Phase S §S7, §S2)
 
-Thirteen stable Playwright scripts, each verifying one thing this
+Fourteen stable Playwright scripts, each verifying one thing this
 milestone's ad hoc scratchpad scripts kept re-deriving from scratch every
 session. They are plain Node scripts (not a test-runner suite) — each is
 self-contained, prints one `PASS` line on success, and throws on the first
 failed assertion.
 
-## Why these thirteen
+## Why these fourteen
 
 | Script | Verifies |
 |---|---|
@@ -23,6 +23,7 @@ failed assertion.
 | `11-i18n-matrix.mjs` | Czech and Farsi taglines differ from the English fallback, and Farsi correctly flips the document to RTL. |
 | `12-choice-panel-replaces-text.mjs` | The in-room choice cards fully replace the beat text panel — no stale `.text-panel` left stacked with `.choices` in `.stage-bottom` (regression for a real bug: a missing `text.hide()` before `choices.pick(...)`). |
 | `13-reflection-panel-replaces-text.mjs` | The Examined Path's reflection card fully replaces the outcome text panel — sibling regression to 12 (a missing `text.hide()` before `reflection.show(...)` let the commentary render *above* the outcome it was about). |
+| `14-limerence-visual-sweep.mjs` | The first script to load `?pack=limerence` at all — LIMERENCE's HUD hearts aria-label reads "Trust" (not ANAMNESIS's "grip on reality"), and its 6 bespoke-diorama rooms plus the Porter's own figure rig render with zero console/page errors. |
 
 `src/test/panelLifecycle.test.ts` guards the same two invariants at the
 source level (fast, no browser) — 12 and 13 are the genuine rendered
@@ -64,6 +65,7 @@ multi-viewport/multi-panel coverage the spec originally sketched.
    node tests/uat/11-i18n-matrix.mjs
    node tests/uat/12-choice-panel-replaces-text.mjs
    node tests/uat/13-reflection-panel-replaces-text.mjs
+   node tests/uat/14-limerence-visual-sweep.mjs
    ```
    Each opens its own fresh, isolated browser context (no shared
    `localStorage` between scripts) and finishes in well under CLAUDE.md's
