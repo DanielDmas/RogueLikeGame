@@ -1653,8 +1653,9 @@ non-explicit, adult acts frank-never-graphic, ~PEGI 16 posture).
       at all yet (web-only). `v0.2.0-beta` (package.json) is stale relative
       to the actual tag history and should be bumped before the next
       release cut.
-- [ ] L5. Hotel visual/audio identity (**partially pulled forward,
-      2026-07-08** — see below) + UAT pack matrix + docs.
+- [x] L5. Hotel visual/audio identity (**pulled forward across
+      2026-07-08/09** — see below; content/code complete, UAT pack matrix
+      still outstanding).
 
 **Pulled forward from L5, on explicit owner request (2026-07-08):**
 LIMERENCE now has its own real visual and audio identity rather than
@@ -1695,8 +1696,68 @@ guarantee every other animation in the file already gives). Covered by 79
 new tests this round: `packDoors.test.ts` (16, incl. an ANAMNESIS
 regression pin and a LIMERENCE-distinctness suite), plus the prior
 `packGraph`/`packScene`/`packAudio`/`limerenceAct1` batch (63) — full suite
-at 593/593 green throughout. **Still real L5 work, not pulled forward:**
-bespoke room dioramas (two phones on one bed, the migrating wall/window,
-etc.), the Porter's own figure rig (currently reuses the Usher's), the
-hearts→Trust visual re-skin, door-bark dread pass, UAT pack matrix.
+at 593/593 green throughout.
+
+**L5 finished, plus two cross-pack leaks and the dual-pack Windows exe
+(2026-07-09, round 2):** review pass found and fixed two ANAMNESIS-
+hardcoded engine seams that silently misbehaved for LIMERENCE — the codex/
+Ledger's understory-hiding used ANAMNESIS's `UNDERSTORY_SEQUENCE`
+regardless of the active pack (would have leaked LIMERENCE's Records
+Office rooms into its codex as locked cards from the start), and the ✧
+keepsake-choice tooltip looked its name up in ANAMNESIS's `KEEPSAKES` list
+only (would have rendered nameless for LIMERENCE) — both fixed via the
+same default-parameter pack-injection pattern used throughout L1, with a
+new `crossPackLeaks.test.ts` pinning the old buggy behavior alongside the
+fix. LIMERENCE's 143 choice hints were capitalized to match ANAMNESIS's
+convention (owner decision). The remaining L5 items are now done:
+- **Door icons:** new `packs/limerence/icons.ts`, 34 room + 7 ending
+  icons, LIMERENCE's own visual vocabulary (phones, locks, hotel doors)
+  rather than reusing ANAMNESIS's; `visuals.iconFor` was `() => undefined`.
+- **Epiphanies:** `engine/ledger.ts`'s epiphany machinery was hardcoded to
+  ANAMNESIS's 12 ids/predicates — `EpiphanyDef` now carries its own
+  `predicate` (mirrors the `endingRules` pattern), ANAMNESIS's original 12
+  moved verbatim into `packs/anamnesis/epiphanies.ts` (behavior-neutral),
+  and LIMERENCE gets its own 12 per spec 06 §3, evaluated over a new
+  `Profile.choiceHistory` field (every room:choice ever taken, across
+  every finished run — additive).
+- **Door-bark dread pass + act intros:** `packs/limerence/guide.ts`
+  mirrors `content/usher.ts`'s full structure (understory fork/single-door
+  gate/first-choice explainer/second-run wink/axis-reactive lines/8-line
+  generic pool) in the Porter's own register; `actIntroText` returned
+  `undefined` for every floor before this and now has one line per act.
+- **Hearts→Trust HUD re-skin:** the HUD hearts row and About-panel heart
+  glyph were hardcoded to ANAMNESIS's own "grip on reality" wording/icon
+  regardless of pack (a third cross-pack leak, same family as the two
+  above) — `pack.skin` gained `heartsAriaLabel`/`heartsTooltip`/
+  `lucidityTooltip`, LIMERENCE's now say Trust/Clarity throughout.
+- **Bespoke dioramas + the Porter's own figure rig:** `dioramaFor` was
+  `() => null` for every room; 6 signature rooms now get one (a phone
+  glowing "seen," the migrating Glass wall/window, the therapist's four
+  doors, a kitchen table under a swaying bulb, two overlapping phones, two
+  hotel doors with a pulsing keycard) — same scope as ANAMNESIS's own
+  bespoke-signature-rooms-only coverage. `guide.figure` reused
+  `usherFigure()` (halo + horns) verbatim; `packs/limerence/figure.ts`
+  builds the Porter's own rig from the same primitives — no halo/horns, a
+  peaked cap, an amber glow matching the door palette, and the creative
+  bible's one visual tell (a ring on the right hand only). Verified with a
+  headless Playwright smoke test (zero console/page errors across all 6
+  diorama rooms + the figure). Suite at 704/704 green throughout this pass.
+
+**The Windows `.exe` is now dual-pack ("The Vestibule," 2026-07-09):**
+previously `electron/main.cjs` always loaded `dist/index.html` (the plain
+`npm run build`'s ANAMNESIS-only output) — one game, hardcoded. It now
+loads `dist-web/index.html` (the same rozcestník the web deploy uses,
+built by `npm run build:web`, wired as a `predist:win` pre-hook so
+`npm run dist:win` always rebuilds both packs fresh) and navigates the one
+window into whichever door is clicked; Alt+Left returns to the chooser
+(deliberately not Backspace — both games have a real text `<input>`, the
+persona name editor, and a global Backspace-as-back would eat every
+character deleted there). `landing/index.html`'s door hrefs changed from
+`./anamnesis/` to `./anamnesis/index.html` (explicit files — a bare
+directory href doesn't resolve under Electron's `file://` navigation the
+way a web server's index-file fallback does; still valid on the web deploy
+too). `package.json`'s electron-builder config renamed the product to "The
+Vestibule" (`files` now points at `dist-web/**/*`), and
+`release-windows.yml` no longer runs a separate `npm run build` step
+before packaging (redundant with the new pre-hook).
 - [ ] L6. Czech translation.

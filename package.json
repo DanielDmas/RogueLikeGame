@@ -16,6 +16,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "electron": "electron .",
+    "predist:win": "npm run build:web",
     "dist:win": "electron-builder --win --x64"
   },
   "dependencies": {
@@ -34,10 +35,10 @@
     "vitest": "^2.1.0"
   },
   "build": {
-    "appId": "com.anamnesis.game",
-    "productName": "ANAMNESIS",
+    "appId": "com.anamnesis.thevestibule",
+    "productName": "The Vestibule",
     "files": [
-      "dist/**/*",
+      "dist-web/**/*",
       "electron/**/*"
     ],
     "directories": {
@@ -53,7 +54,7 @@
           ]
         }
       ],
-      "artifactName": "ANAMNESIS-${version}-win-x64.exe"
+      "artifactName": "TheVestibule-${version}-win-x64.exe"
     }
   }
 }

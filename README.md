@@ -109,10 +109,10 @@ unsettling rather than gothic.
 
 ```bash
 npm test               # engine + content tests: endings, graph reachability, reducers, i18n coverage, content lint
-npm run build           # type-check + production bundle (ANAMNESIS, dist/) — what the Windows/Electron build uses
+npm run build           # type-check + production bundle (ANAMNESIS only, dist/) — dev convenience, not what any release uses
 npm run build:anamnesis # type-check + production bundle → dist-web/anamnesis/
 npm run build:limerence # type-check + production bundle → dist-web/limerence/
-npm run build:web       # both of the above, plus the rozcestník → dist-web/index.html — what GitHub Pages deploys
+npm run build:web       # both of the above, plus the rozcestník → dist-web/index.html — what GitHub Pages AND the Windows build use
 npm run preview         # serve the production build
 ```
 
@@ -124,7 +124,7 @@ npm run preview         # serve the production build
 
 ## Windows executable
 
-A standalone Windows build is published on the [Releases page](../../releases) as a portable `.exe` (no installer needed — just download and run). It's built by GitHub Actions (`.github/workflows/release-windows.yml`), wrapping the production web bundle in Electron. ANAMNESIS only, for now — LIMERENCE has no Electron packaging yet.
+A standalone Windows build — **The Vestibule**, both ANAMNESIS and LIMERENCE in one portable `.exe` (no installer needed — just download and run) — is published on the [Releases page](../../releases). It's built by GitHub Actions (`.github/workflows/release-windows.yml`), wrapping `npm run build:web`'s output (both packs + the rozcestník) in Electron: the app opens on the same door-choice screen as the browser version, and picking a door navigates the one window into that game (Alt+Left returns to the choice).
 
 The reliable way to trigger a release build is manually, from the Actions tab: open the "Build and release Windows EXE" workflow, click **Run workflow**, and optionally supply a `tag_name` (it defaults to `nightly-<run number>` if left blank). Pushing a `v*` tag also triggers the same workflow, but tag pushes aren't available in every environment this project is developed from, so `workflow_dispatch` is the path actually exercised and kept working.
 

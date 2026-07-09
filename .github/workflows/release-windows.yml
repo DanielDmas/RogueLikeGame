@@ -35,16 +35,13 @@ jobs:
       - name: Run tests
         run: npm test
 
-      - name: Build web bundle
-        run: npm run build
-
-      - name: Package Windows executable
+      - name: Package Windows executable (builds both ANAMNESIS and LIMERENCE web bundles first, via the dist:win pre-hook)
         run: npm run dist:win
 
       - name: Upload .exe as a workflow artifact (always — private, downloadable from this run's page by repo collaborators, independent of whether a public release is also published)
         uses: actions/upload-artifact@v4
         with:
-          name: ANAMNESIS-windows-exe
+          name: TheVestibule-windows-exe
           path: release/*.exe
           retention-days: 14
 
@@ -68,7 +65,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
-          name: ANAMNESIS ${{ steps.tag.outputs.tag }}
+          name: The Vestibule ${{ steps.tag.outputs.tag }}
           files: release/*.exe
           draft: false
           prerelease: false

@@ -47,7 +47,7 @@ function createWindow() {
     minHeight: 600,
     backgroundColor: '#0a0a0d',
     autoHideMenuBar: true,
-    title: 'ANAMNESIS',
+    title: 'The Vestibule',
     icon: ICON_PATH,
     webPreferences: {
       contextIsolation: true,
@@ -59,7 +59,21 @@ function createWindow() {
 
   win.on('close', () => saveWindowState(win));
 
-  win.loadFile(path.join(__dirname, '..', 'dist', 'index.html'));
+  // The app now opens on the rozcestník (a choice of two games) and
+  // navigates the same window into whichever one is picked — there's no
+  // browser chrome to click "back" with, so wire the keyboard shortcut a
+  // desktop user would expect (Alt+Left) to return to it, same as the web
+  // build's actual browser back button would. Deliberately NOT Backspace —
+  // both games have a real text `<input>` (the persona name editor), and a
+  // global Backspace-as-back would eat every character deleted there.
+  win.webContents.on('before-input-event', (event, input) => {
+    if (input.type === 'keyDown' && input.alt && input.key === 'ArrowLeft' && win.webContents.canGoBack()) {
+      event.preventDefault();
+      win.webContents.goBack();
+    }
+  });
+
+  win.loadFile(path.join(__dirname, '..', 'dist-web', 'index.html'));
   return win;
 }
 
