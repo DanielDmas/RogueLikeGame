@@ -11,6 +11,8 @@ import type { ThemeConfig, ThemeId, MoodType, MoodTint, GuideFigure } from '../s
 import type { DoorStyle } from '../scene/doors';
 import type { ActKey, RoomAccent } from '../audio/soundEngine';
 import type { KeepsakeDef } from '../content/keepsakes';
+import type { Profile } from '../engine/saveStore';
+import type { RoomRegistry } from '../engine/storyEngine';
 
 export type Quality = 'low' | 'high';
 
@@ -18,6 +20,10 @@ export interface EpiphanyDef {
   id: string;
   /** English fallback line, resolved via t(epiphanyKey(id), fallback). */
   fallback: string;
+  /** Evaluated once per finished run (`engine/ledger.ts`'s `evaluateEpiphanies`),
+   * against the profile with this run's own counters already applied — same
+   * contract as `endingRules.evaluate`: pure, read-only, content owns it. */
+  predicate(profile: Profile, run: RunState, registry: RoomRegistry, understorySequence: readonly string[]): boolean;
 }
 
 export interface ContentPack {

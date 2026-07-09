@@ -3,7 +3,7 @@
 // seam, by re-export — L1 migration step 2. The modules themselves are not
 // rewritten here; this file only wires their existing exports into the
 // shape the engine now consumes.
-import type { ContentPack, EpiphanyDef } from '../types';
+import type { ContentPack } from '../types';
 // Side effect: registers ANAMNESIS's whole text catalog (every language and
 // version) the first time this pack module is imported.
 import '../../content/text';
@@ -33,7 +33,7 @@ import { usherFigure } from '../../scene/themes';
 import { SPEAKER_PREFIXES } from '../../ui/textPanel';
 import { HEART_SVG } from '../../ui/dom';
 import { KEEPSAKES, KEEPSAKE_TRIGGERS, keepsakeIcons } from '../../content/keepsakes';
-import { EPIPHANY_IDS, EPIPHANY_EN_FALLBACK } from '../../engine/ledger';
+import { anamnesisEpiphanies } from './epiphanies';
 import { iconFor, endingIcons } from '../../content/icons';
 import { buildTheme, MOOD_TINTS, FOG_COLOR_BY_THEME } from '../../scene/themes';
 import { dioramaFor } from '../../scene/dioramas';
@@ -52,8 +52,6 @@ const ROOM_ACCENTS: ContentPack['audio']['roomAccents'] = {
   'casino-pascal': 'casino',
   ship: 'ship',
 };
-
-const epiphanies: EpiphanyDef[] = EPIPHANY_IDS.map((id) => ({ id, fallback: EPIPHANY_EN_FALLBACK[id] }));
 
 export const anamnesisPack: ContentPack = {
   meta: {
@@ -103,7 +101,7 @@ export const anamnesisPack: ContentPack = {
   keepsakeTriggers: KEEPSAKE_TRIGGERS,
   keepsakeIcons,
 
-  epiphanies,
+  epiphanies: anamnesisEpiphanies,
 
   visuals: {
     iconFor,

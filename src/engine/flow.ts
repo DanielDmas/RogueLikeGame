@@ -352,7 +352,7 @@ export class Game {
     this.stageBottom.classList.add('overlay-hidden');
     const action = await showPauseMenu(this.ui);
     if (action === 'codex') await showCodex(this.ui, this.profile, this.pack);
-    if (action === 'ledger') await showLedger(this.ui, this.profile, this.registry, this.pack.graph.understorySequence);
+    if (action === 'ledger') await showLedger(this.ui, this.profile, this.registry, this.pack.graph.understorySequence, this.pack.epiphanies);
     if (action === 'persona') {
       this.profile.persona = await showPersona(this.ui, this.profile.persona);
       await this.persist();
@@ -403,7 +403,7 @@ export class Game {
       if (action === 'codex') {
         await showCodex(this.ui, this.profile, this.pack);
       } else if (action === 'ledger') {
-        await showLedger(this.ui, this.profile, this.registry, this.pack.graph.understorySequence);
+        await showLedger(this.ui, this.profile, this.registry, this.pack.graph.understorySequence, this.pack.epiphanies);
       } else if (action === 'persona') {
         this.profile.persona = await showPersona(this.ui, this.profile.persona);
         await this.persist();
@@ -774,9 +774,16 @@ export class Game {
     this.profile.runsCompleted += 1;
     if (this.state.descended) this.profile.understoryDescents += 1;
     if (this.state.examined) this.profile.examinedRuns += 1;
+    // Every choice this run made, folded into the lifetime record epiphany
+    // predicates read across runs (spec 06 §3) — before evaluateEpiphanies,
+    // same "this run's contribution already applied" rule as the counters above.
+    for (const entry of this.state.transcript) {
+      const key = `${entry.roomId}:${entry.choiceId}`;
+      if (!this.profile.choiceHistory.includes(key)) this.profile.choiceHistory.push(key);
+    }
     // Epiphanies (spec 06): evaluated last, once every other counter above
     // has this run's contribution already applied.
-    const newEpiphanies = evaluateEpiphanies(this.profile, this.state, this.registry, this.pack.graph.understorySequence);
+    const newEpiphanies = evaluateEpiphanies(this.profile, this.state, this.registry, this.pack.epiphanies, this.pack.graph.understorySequence);
     this.profile.epiphanies.push(...newEpiphanies);
     await this.persist();
 
@@ -799,6 +806,7 @@ export class Game {
         hearts: Math.max(0, this.state.hearts),
         newNotes: this.profile.codexUnlocked.length - this.runStartNotes,
         newEpiphanies,
+        epiphanies: this.pack.epiphanies,
       });
       if (action === 'codex') {
         await showCodex(this.ui, this.profile, this.pack);

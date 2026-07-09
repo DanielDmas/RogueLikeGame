@@ -15,9 +15,11 @@ import {
   roomTitleKey,
   usherBarkKey,
 } from '../engine/text/keys';
-import { EPIPHANY_IDS } from '../engine/ledger';
+import { anamnesisPack } from '../packs/anamnesis';
 import { actIntroText, usherDoorBark } from '../content/usher';
 import { newRun } from '../engine/gameState';
+
+const EPIPHANY_IDS = anamnesisPack.epiphanies.map((e) => e.id);
 
 const LANGS = ['cs', 'fa', 'de', 'fr'] as const;
 const USHER_BARK_IDS = [

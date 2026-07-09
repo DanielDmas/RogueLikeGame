@@ -1,6 +1,6 @@
 import type { Persona, Profile, Settings } from '../engine/saveStore';
 import type { Ending, FieldNote, Room } from '../engine/schema';
-import type { ContentPack } from '../packs/types';
+import type { ContentPack, EpiphanyDef } from '../packs/types';
 import { epiphanyLine, epiphanyLines, isHiddenFromCodex, ledgerStats } from '../engine/ledger';
 import type { RoomRegistry } from '../engine/storyEngine';
 import { clear, el, HEART_SVG } from './dom';
@@ -803,6 +803,7 @@ export function showLedger(
   profile: Profile,
   registry: RoomRegistry,
   understorySequence: readonly string[],
+  epiphanies: EpiphanyDef[],
 ): Promise<void> {
   return new Promise((resolve) => {
     const o = overlay(ui);
@@ -817,7 +818,7 @@ export function showLedger(
     }
     panel.append(stats);
 
-    const lines = epiphanyLines(profile);
+    const lines = epiphanyLines(profile, epiphanies);
     if (lines.length > 0) {
       panel.append(el('h2', 'ledger-epiphanies-title', t(uiKey('epiphaniesTitle'), 'Epiphanies')));
       const epiphanies = el('div', 'ledger-epiphanies');
@@ -883,6 +884,9 @@ export interface EndScreenData {
   /** Epiphany ids newly earned by this run (spec 06), already translated at
    * render time below — empty/absent renders nothing extra. */
   newEpiphanies?: string[];
+  /** The active pack's own epiphany defs, needed to resolve `newEpiphanies`
+   * ids to fallback text — required whenever `newEpiphanies` is non-empty. */
+  epiphanies?: EpiphanyDef[];
 }
 
 export function showEndScreen(ui: HTMLElement, data: EndScreenData): Promise<'again' | 'codex' | 'title'> {
@@ -913,7 +917,7 @@ export function showEndScreen(ui: HTMLElement, data: EndScreenData): Promise<'ag
     if (data.newEpiphanies && data.newEpiphanies.length > 0) {
       const block = el('div', 'epiphany-block');
       block.append(el('h4', undefined, t(uiKey('epiphanyEarned'), 'filed tonight')));
-      for (const id of data.newEpiphanies) block.append(el('div', 'epiphany-line', epiphanyLine(id)));
+      for (const id of data.newEpiphanies) block.append(el('div', 'epiphany-line', epiphanyLine(id, data.epiphanies ?? [])));
       inner.append(block);
     }
 

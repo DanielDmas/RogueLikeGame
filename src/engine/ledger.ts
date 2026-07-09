@@ -11,6 +11,7 @@ import { endingsTotal } from './endings';
 import type { RoomRegistry } from './storyEngine';
 import { t } from './text/resolver';
 import { epiphanyKey, roomTitleKey, uiKey } from './text/keys';
+import type { EpiphanyDef } from '../packs/types';
 
 /** The understory rooms are filtered from the codex (and, by the same rule,
  * the Ledger's room count) until first walked — they shouldn't hint at their
@@ -117,101 +118,60 @@ export function ledgerStats(
   return rows;
 }
 
-export const EPIPHANY_IDS = [
-  'first-return',
-  'kept-every-heart',
-  'spent-every-heart',
-  'refused-machine-twice',
-  'all-doors-one-act',
-  'codex-complete',
-  'three-endings',
-  'descended',
-  'examined-run',
-  'first-keepsake',
-  'high-lucidity',
-  'last-word-kept',
-] as const;
-
-export type EpiphanyId = (typeof EPIPHANY_IDS)[number];
-
-export const EPIPHANY_EN_FALLBACK: Record<EpiphanyId, string> = {
-  'first-return': 'You came back.',
-  'kept-every-heart': 'You kept every heart, once.',
-  'spent-every-heart': 'You learned what the bottom of the ledger looks like.',
-  'refused-machine-twice': 'You refused the machine twice.',
-  'all-doors-one-act': "One act holds no more doors you haven't opened.",
-  'codex-complete': 'Every room, witnessed.',
-  'three-endings': 'Three ways out, all of them yours.',
-  descended: 'You took the stairs.',
-  'examined-run': 'You let the Annex file its commentary, start to end.',
-  'first-keepsake': 'Something small came with you.',
-  'high-lucidity': 'You finished seeing almost everything.',
-  'last-word-kept': 'You had one sentence, and you still have it.',
-};
-
 /** One epiphany's translated, display-ready line. Shared by the Ledger and
  * the end screen's "filed tonight" block, so both ever resolve exactly one
- * fallback text per id. */
-export function epiphanyLine(id: string): string {
-  return t(epiphanyKey(id), EPIPHANY_EN_FALLBACK[id as EpiphanyId] ?? id);
+ * fallback text per id. `epiphanies` is the active pack's own list
+ * (`pack.epiphanies`) — the fallback text lives with the pack that defines
+ * the epiphany, not here. */
+export function epiphanyLine(id: string, epiphanies: EpiphanyDef[]): string {
+  const fallback = epiphanies.find((e) => e.id === id)?.fallback ?? id;
+  return t(epiphanyKey(id), fallback);
 }
 
 /** One line per earned epiphany, in earn order, already translated. */
-export function epiphanyLines(profile: Profile): string[] {
-  return profile.epiphanies.map(epiphanyLine);
+export function epiphanyLines(profile: Profile, epiphanies: EpiphanyDef[]): string[] {
+  return profile.epiphanies.map((id) => epiphanyLine(id, epiphanies));
 }
 
-/** One predicate per epiphany that needs only the profile and the
- * just-finished `RunState` — evaluated against the *updated* profile (all
- * of this run's counters already applied; `playEnding` calls this last).
- * `refused-machine-twice`'s predicate is deliberately derived from existing
- * data (visited the Experience Machine at least twice, never once holding
- * the keepsake that only the "refuse" choice's follow-through can grant)
- * rather than new dedicated tracking — spec 06 §6 calls this out explicitly.
- * `codex-complete` and `all-doors-one-act` need the room registry too, so
- * they're computed separately in `evaluateEpiphanies` instead of living here. */
-const EPIPHANY_PREDICATES: Partial<Record<EpiphanyId, (profile: Profile, run: RunState) => boolean>> = {
-  'first-return': (profile) => profile.runsCompleted >= 2,
-  'kept-every-heart': (_profile, run) => run.finished && run.hearts === 3,
-  'spent-every-heart': (profile) => profile.endingsSeen.includes('dissolved'),
-  'refused-machine-twice': (profile) =>
-    (profile.roomVisits['experience-machine'] ?? 0) >= 2 && !profile.keepsakes.includes('release-form'),
-  'three-endings': (profile) => profile.endingsSeen.length >= 3,
-  descended: (profile) => profile.understoryDescents >= 1,
-  'examined-run': (profile) => profile.examinedRuns >= 1,
-  'first-keepsake': (profile) => profile.keepsakes.length >= 1,
-  'high-lucidity': (_profile, run) => run.finished && run.lucidity >= 180,
-  'last-word-kept': (profile) => Boolean(profile.lastMessage) && profile.runsCompleted >= 2,
-};
+/** Generic helper for a pack's own `codex-complete`-style epiphany: every
+ * base (non-understory) room in the registry has been unlocked in the
+ * codex. Exported so each pack's own epiphany predicate can reuse it rather
+ * than re-deriving the base-room-id filter. */
+export function codexCompletePredicate(profile: Profile, registry: RoomRegistry, understorySequence: readonly string[]): boolean {
+  const baseRoomIds = registry.all().map((r) => r.id).filter((id) => !understorySequence.includes(id));
+  return baseRoomIds.every((rid) => profile.codexUnlocked.includes(rid));
+}
+
+/** Generic helper for a pack's own `all-doors-one-act`-style epiphany: any
+ * single act (I, II, or III — the pooled acts) has every one of its own
+ * (non-gate) rooms unlocked in the codex. */
+export function allDoorsOneActPredicate(profile: Profile, registry: RoomRegistry): boolean {
+  const actRoomIds: Record<1 | 2 | 3, string[]> = { 1: [], 2: [], 3: [] };
+  for (const room of registry.all()) {
+    if (!room.gate && (room.act === 1 || room.act === 2 || room.act === 3)) actRoomIds[room.act].push(room.id);
+  }
+  return Object.values(actRoomIds).some((ids) => ids.length > 0 && ids.every((rid) => profile.codexUnlocked.includes(rid)));
+}
 
 /** Returns *newly* earned epiphany ids (already-held ones excluded), in
- * `EPIPHANY_IDS` order. Idempotent: calling this again with an unchanged
- * profile/run returns an empty array, since every predicate is checked
- * against the profile that already has this run's counters applied. */
+ * `epiphanies` order — `epiphanies` is the active pack's own list
+ * (`pack.epiphanies`), each carrying its own predicate (spec 08 pattern:
+ * content owns content, the engine only drives the evaluation loop).
+ * Idempotent: calling this again with an unchanged profile/run returns an
+ * empty array, since every predicate is checked against the profile that
+ * already has this run's counters applied. */
 export function evaluateEpiphanies(
   profile: Profile,
   finishedRun: RunState,
   registry: RoomRegistry,
+  epiphanies: EpiphanyDef[],
   understorySequence: readonly string[] = UNDERSTORY_SEQUENCE,
 ): string[] {
   const held = new Set(profile.epiphanies);
   const newly: string[] = [];
-  const baseRoomIds = registry.all().map((r) => r.id).filter((id) => !understorySequence.includes(id));
-
-  const actRoomIds: Record<1 | 2 | 3, string[]> = { 1: [], 2: [], 3: [] };
-  for (const room of registry.all()) {
-    if (room.act === 1 || room.act === 2 || room.act === 3) actRoomIds[room.act].push(room.id);
-  }
-
-  for (const id of EPIPHANY_IDS) {
-    if (held.has(id)) continue;
-    const earned =
-      id === 'codex-complete'
-        ? baseRoomIds.every((rid) => profile.codexUnlocked.includes(rid))
-        : id === 'all-doors-one-act'
-          ? Object.values(actRoomIds).some((ids) => ids.every((rid) => profile.codexUnlocked.includes(rid)))
-          : (EPIPHANY_PREDICATES[id]?.(profile, finishedRun) ?? false);
-    if (earned) newly.push(id);
+  for (const def of epiphanies) {
+    if (held.has(def.id)) continue;
+    if (def.predicate(profile, finishedRun, registry, understorySequence)) newly.push(def.id);
   }
   return newly;
 }

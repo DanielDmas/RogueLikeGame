@@ -91,6 +91,13 @@ export interface Profile {
   /** Epiphany ids earned, in earn order — never removed. Ledger-only;
    * displayed, never read by any gameplay predicate. */
   epiphanies: string[];
+  /** Every `${roomId}:${choiceId}` ever taken, across every finished run,
+   * deduped (first-earned order) — never removed. Ledger-only; feeds
+   * epiphany predicates that need to look further back than the just-
+   * finished run or the single `lastRunTranscript` snapshot (e.g. "have you
+   * ever, in any run, chosen to walk away"). Never read by any gameplay
+   * predicate — same hard guarantee as the other Ledger-only fields. */
+  choiceHistory: string[];
 }
 
 export function defaultProfile(): Profile {
@@ -130,6 +137,7 @@ export function defaultProfile(): Profile {
     understoryDescents: 0,
     examinedRuns: 0,
     epiphanies: [],
+    choiceHistory: [],
   };
 }
 

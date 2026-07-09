@@ -5,7 +5,7 @@
 // placeholder: the Usher rig (the Porter's own desk-lamp-lantern figure is
 // L5 work) and the hearts SVG (the Trust re-skin is also L5).
 import type { ActKey } from '../../audio/soundEngine';
-import type { ContentPack, EpiphanyDef } from '../types';
+import type { ContentPack } from '../types';
 import type { ActId, RunState } from '../../engine/schema';
 import { limerenceRooms } from './rooms';
 import { limerenceEndings } from './endings';
@@ -15,6 +15,7 @@ import { iconFor as limerenceIconFor, endingIcons as limerenceEndingIcons } from
 import { HEART_SVG } from '../../ui/dom';
 import { choseIn } from '../../engine/gameState';
 import { mirrorUnlocked, patternAvailable, computePatternEligible, PATTERN_CLARITY } from './endingLogic';
+import { limerenceEpiphanies } from './epiphanies';
 
 /** Minor-leaning progressions per floor (spec `docs/design-limerence/`
  * creative bible: "act progressions in minor-leaning keys"), warming toward
@@ -74,8 +75,6 @@ const EXAMINED_ACT_BARK_FALLBACK: Record<1 | 2 | 3 | 4, string> = {
   3: 'Porter: Which of these rooms would still be furnished the same way if no one else could see it?',
   4: 'Porter: If no one could ever know, walk the corridor again. Anything change?',
 };
-
-const epiphanies: EpiphanyDef[] = [{ id: 'first-return', fallback: 'You came back to the Interval.' }];
 
 export const limerencePack: ContentPack = {
   meta: {
@@ -245,7 +244,7 @@ export const limerencePack: ContentPack = {
     </svg>`,
   },
 
-  epiphanies,
+  epiphanies: limerenceEpiphanies,
 
   visuals: {
     iconFor: limerenceIconFor,

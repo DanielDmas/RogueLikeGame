@@ -6,7 +6,6 @@ import { makeRegistry } from '../engine/storyEngine';
 import { newRun } from '../engine/gameState';
 import { defaultProfile, type Profile } from '../engine/saveStore';
 import {
-  EPIPHANY_IDS,
   epiphanyLine,
   evaluateEpiphanies,
   isHiddenFromCodex,
@@ -14,9 +13,14 @@ import {
   mostWalkedRoomId,
   visibleRoomCount,
 } from '../engine/ledger';
+import { anamnesisPack } from '../packs/anamnesis';
 import '../content/text';
 
 const registry = makeRegistry(allRooms);
+const epiphanies = anamnesisPack.epiphanies;
+const EPIPHANY_IDS = epiphanies.map((e) => e.id);
+const evalEpiphanies = (profile: Profile, run: ReturnType<typeof newRun>) =>
+  evaluateEpiphanies(profile, run, registry, epiphanies);
 
 function profileWith(overrides: Partial<Profile>): Profile {
   return { ...defaultProfile(), ...overrides };
@@ -95,7 +99,7 @@ describe('evaluateEpiphanies (Milestone 5, Phase P)', () => {
     const emptyProfile = defaultProfile();
     const emptyRun = newRun();
 
-    expect(evaluateEpiphanies(emptyProfile, emptyRun, registry)).toEqual([]);
+    expect(evalEpiphanies(emptyProfile, emptyRun)).toEqual([]);
 
     const cases: [string, Profile, ReturnType<typeof newRun>][] = [
       ['first-return', profileWith({ runsCompleted: 2 }), emptyRun],
@@ -114,13 +118,13 @@ describe('evaluateEpiphanies (Milestone 5, Phase P)', () => {
       ['last-word-kept', profileWith({ lastMessage: 'hi', runsCompleted: 2 }), emptyRun],
     ];
     for (const [id, profile, run] of cases) {
-      expect(evaluateEpiphanies(profile, run, registry), id).toContain(id);
+      expect(evalEpiphanies(profile, run), id).toContain(id);
     }
   });
 
   it('refused-machine-twice does NOT fire if the release-form keepsake was ever held (spec 06 §6)', () => {
     const profile = profileWith({ roomVisits: { 'experience-machine': 2 }, keepsakes: ['release-form'] });
-    expect(evaluateEpiphanies(profile, newRun(), registry)).not.toContain('refused-machine-twice');
+    expect(evalEpiphanies(profile, newRun())).not.toContain('refused-machine-twice');
   });
 
   it('codex-complete requires every base room, excluding the understory trio', () => {
@@ -130,32 +134,32 @@ describe('evaluateEpiphanies (Milestone 5, Phase P)', () => {
       .filter((id) => !['the-archive', 'the-unchosen', 'the-echo'].includes(id));
     const almostAll = profileWith({ codexUnlocked: baseRoomIds.slice(0, -1) });
     const all = profileWith({ codexUnlocked: baseRoomIds });
-    expect(evaluateEpiphanies(almostAll, newRun(), registry)).not.toContain('codex-complete');
-    expect(evaluateEpiphanies(all, newRun(), registry)).toContain('codex-complete');
+    expect(evalEpiphanies(almostAll, newRun())).not.toContain('codex-complete');
+    expect(evalEpiphanies(all, newRun())).toContain('codex-complete');
   });
 
   it('all-doors-one-act fires once any single act (I, II, or III) is fully unlocked', () => {
     const act1Ids = registry.all().filter((r) => r.act === 1).map((r) => r.id);
     const profile = profileWith({ codexUnlocked: act1Ids });
-    expect(evaluateEpiphanies(profile, newRun(), registry)).toContain('all-doors-one-act');
+    expect(evalEpiphanies(profile, newRun())).toContain('all-doors-one-act');
   });
 
   it('excludes already-held epiphanies from "newly earned"', () => {
     const profile = profileWith({ runsCompleted: 3, epiphanies: ['first-return'] });
-    expect(evaluateEpiphanies(profile, newRun(), registry)).not.toContain('first-return');
+    expect(evalEpiphanies(profile, newRun())).not.toContain('first-return');
   });
 
   it('is idempotent: re-evaluating an unchanged profile/run returns nothing new', () => {
     const profile = profileWith({ runsCompleted: 2 });
     const run = newRun();
-    const first = evaluateEpiphanies(profile, run, registry);
+    const first = evalEpiphanies(profile, run);
     const applied = profileWith({ runsCompleted: 2, epiphanies: first });
-    expect(evaluateEpiphanies(applied, run, registry)).toEqual([]);
+    expect(evalEpiphanies(applied, run)).toEqual([]);
   });
 
   it('every epiphany id has a translated line distinct from its raw slug', () => {
     for (const id of EPIPHANY_IDS) {
-      expect(epiphanyLine(id)).not.toBe(id);
+      expect(epiphanyLine(id, epiphanies)).not.toBe(id);
     }
   });
 });
@@ -168,6 +172,7 @@ describe('Profile migration — new Ledger fields backfill on a legacy profile (
     expect(p.understoryDescents).toBe(0);
     expect(p.examinedRuns).toBe(0);
     expect(p.epiphanies).toEqual([]);
+    expect(p.choiceHistory).toEqual([]);
   });
 });
 
@@ -186,7 +191,7 @@ describe('Ledger hard guarantee — read-only, never mechanical (production revi
     return out;
   }
 
-  const LEDGER_ONLY_FIELDS = ['heartsLost', 'roomVisits', 'understoryDescents', 'examinedRuns', 'epiphanies'];
+  const LEDGER_ONLY_FIELDS = ['heartsLost', 'roomVisits', 'understoryDescents', 'examinedRuns', 'epiphanies', 'choiceHistory'];
 
   it('no room content file references any Ledger-only Profile field', () => {
     const roomsDir = resolve(__dirname, '../content/rooms');
