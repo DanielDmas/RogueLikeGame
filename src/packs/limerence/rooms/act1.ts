@@ -33,7 +33,7 @@ export const theReadReceipt: Room = {
         {
           id: 'double-text',
           text: 'Spiral, and send two more messages.',
-          hint: 'chase the silence',
+          hint: 'Chase the silence',
           effects: { lucidity: 5, axes: { controlAcceptance: -8 } },
           outcome: [
             'Relief, for about four minutes.',
@@ -49,7 +49,7 @@ export const theReadReceipt: Room = {
         {
           id: 'drawer',
           text: 'Put the phone in a drawer. Sit with the feeling.',
-          hint: 'meet the anxiety without feeding it',
+          hint: 'Meet the anxiety without feeding it',
           effects: { lucidity: 20, axes: { controlAcceptance: 8 } },
           outcome: [
             'The feeling, met head-on instead of managed, turns out to have a shape and — eventually — a bottom.',
@@ -65,7 +65,7 @@ export const theReadReceipt: Room = {
         {
           id: 'bait',
           text: 'Test her with a bait story, to force a reply.',
-          hint: 'engineer proof',
+          hint: 'Engineer proof',
           effects: { lucidity: 8, axes: { controlAcceptance: -10 }, flags: ['first-test'] },
           outcome: [
             'It works. She replies within a minute.',
@@ -81,7 +81,7 @@ export const theReadReceipt: Room = {
         {
           id: 'ask-tomorrow',
           text: 'Ask her directly tomorrow, out loud, face to face.',
-          hint: 'wait for daylight and a real answer',
+          hint: 'Wait for daylight and a real answer',
           effects: { lucidity: 15, axes: { reasonFeeling: -6 } },
           outcome: [
             'Daylight makes the question small. Her answer — "my mum took the phone" — makes the whole architecture of last night visible, and slightly embarrassing.',
@@ -126,7 +126,7 @@ export const theScreenshot: Room = {
         {
           id: 'tell-nadia',
           text: 'Show Nadia everything, today.',
-          hint: 'tell the person it happened to',
+          hint: 'Tell the person it happened to',
           effects: { lucidity: 18, axes: { selfOthers: 8 }, flags: ['told-the-wronged'] },
           outcome: [
             'Her face does the thing faces do. Then the friendship-triage begins — who she can stand to see, who she can’t.',
@@ -142,7 +142,7 @@ export const theScreenshot: Room = {
         {
           id: 'confront-tom',
           text: 'Go to Tom first: "you tell her, or I do."',
-          hint: 'give him the choice, on a deadline',
+          hint: 'Give him the choice, on a deadline',
           effects: { lucidity: 15, axes: { reasonFeeling: -5 }, flags: ['ultimatum-given'] },
           outcome: [
             'Tom bargains, minimizes — "it’s just messages" — then begs.',
@@ -158,7 +158,7 @@ export const theScreenshot: Room = {
         {
           id: 'stay-out',
           text: '"Not my relationship." Delete it.',
-          hint: 'stay out of it entirely',
+          hint: 'Stay out of it entirely',
           effects: { lucidity: 6, axes: { selfOthers: -8 }, flags: ['held-the-secret'] },
           outcome: [
             'The secret doesn’t delete. It moves in with you.',
@@ -174,7 +174,7 @@ export const theScreenshot: Room = {
         {
           id: 'verify-first',
           text: 'Quietly verify the screenshots are real before anything.',
-          hint: 'be certain before you act',
+          hint: 'Be certain before you act',
           effects: { lucidity: 12, axes: { reasonFeeling: -8 } },
           outcome: [
             'They’re real. And while you were checking, three more people got the same airdrop.',
@@ -219,7 +219,7 @@ export const thePassword: Room = {
         {
           id: 'give-it',
           text: 'Give her the password.',
-          hint: 'close the distance she’s asking you to close',
+          hint: 'Close the distance she’s asking you to close',
           effects: { lucidity: 5, axes: { selfOthers: 8, controlAcceptance: -6 }, flags: ['gave-the-key'] },
           outcome: [
             'The room rewards it, honestly, short-term: she softens, the week heals.',
@@ -235,7 +235,7 @@ export const thePassword: Room = {
         {
           id: 'refuse-flat',
           text: 'No. Just no.',
-          hint: 'hold the line',
+          hint: 'Hold the line',
           effects: { lucidity: 12, axes: { selfOthers: -8 } },
           outcome: [
             'The fight that follows is real, and it costs a beat of the relationship.',
@@ -251,7 +251,7 @@ export const thePassword: Room = {
         {
           id: 'transparency-not-surveillance',
           text: '"Ask me anything, any time. The lock stays."',
-          hint: 'offer openness without handing over the key',
+          hint: 'Offer openness without handing over the key',
           effects: { lucidity: 22, axes: { controlAcceptance: 8 } },
           outcome: [
             'The distinction lands slowly, not in the room but over the following weeks.',
@@ -267,7 +267,7 @@ export const thePassword: Room = {
         {
           id: 'demand-hers',
           text: '"Fine — yours too, then."',
-          hint: 'match the request instead of resolving it',
+          hint: 'Match the request instead of resolving it',
           effects: { lucidity: 8, axes: { controlAcceptance: -10 }, flags: ['symmetry-trap'] },
           outcome: [
             'Mutually assured surveillance: two people reading each other’s mail in adjacent rooms.',
@@ -313,7 +313,7 @@ export const theParty: Room = {
         {
           id: 'play-and-bury',
           text: 'Play the dare. Tell no one.',
-          hint: 'let it be nothing, quietly',
+          hint: 'Let it be nothing, quietly',
           effects: { lucidity: 5, flags: ['it-didnt-count'] },
           outcome: [
             'The kiss is nothing. The burying is something.',
@@ -329,7 +329,7 @@ export const theParty: Room = {
         {
           id: 'play-and-tell',
           text: 'Play it. Tell Sara yourself, tonight.',
-          hint: 'let her hear it from you first',
+          hint: 'Let her hear it from you first',
           effects: { lucidity: 18, axes: { reasonFeeling: 6 } },
           outcome: [
             'Her reaction is hers — hurt, then oddly settled by having been told first.',
@@ -345,7 +345,7 @@ export const theParty: Room = {
         {
           id: 'refuse',
           text: 'Refuse the dare. Absorb the mockery.',
-          hint: 'sit through thirty seconds of being laughed at',
+          hint: 'Sit through thirty seconds of being laughed at',
           effects: { lucidity: 15, axes: { selfOthers: -4 }, flags: ['refused-the-dare'] },
           outcome: [
             'Thirty seconds of jeering that feels, from inside it, like an hour.',
@@ -361,7 +361,7 @@ export const theParty: Room = {
         {
           id: 'leave',
           text: 'Just leave the party.',
-          hint: 'remove yourself from the assembly line',
+          hint: 'Remove yourself from the assembly line',
           effects: { lucidity: 10, axes: { controlAcceptance: 4 } },
           outcome: [
             'The cold air outside, as a full, unhurried beat.',
@@ -406,7 +406,7 @@ export const theForward: Room = {
         {
           id: 'delete-only',
           text: 'Delete it. Say nothing.',
-          hint: 'remove yourself, quietly',
+          hint: 'Remove yourself, quietly',
           effects: { lucidity: 8, axes: { selfOthers: -4 } },
           outcome: [
             'Your hands are clean, and nothing else is.',
@@ -422,7 +422,7 @@ export const theForward: Room = {
         {
           id: 'report',
           text: 'Report it — to the platform, and to an adult at school.',
-          hint: 'get someone with authority involved',
+          hint: 'Get someone with authority involved',
           effects: { lucidity: 20, axes: { reasonFeeling: -6 }, flags: ['reported-it'] },
           outcome: [
             'Adults move slower than chats and faster than nothing. Consequences arrive, eventually, for the sender.',
@@ -438,7 +438,7 @@ export const theForward: Room = {
         {
           id: 'tell-ema-first',
           text: 'Message Ema first, so she isn’t the last to know.',
-          hint: 'give her the warning nobody else will',
+          hint: 'Give her the warning nobody else will',
           effects: { lucidity: 22, axes: { reasonFeeling: 8, selfOthers: 6 }, flags: ['told-her-first'] },
           outcome: [
             'The hardest message you have ever typed. Her reply is two words.',
@@ -454,7 +454,7 @@ export const theForward: Room = {
         {
           id: 'confront-publicly',
           text: 'Call the sender out, in the chat itself.',
-          hint: 'make it visible',
+          hint: 'Make it visible',
           effects: { lucidity: 12, axes: { controlAcceptance: -4 } },
           outcome: [
             'The chat turns on him. Then on the drama itself. Then — the room is honest here — partly back on Ema.',
@@ -503,7 +503,7 @@ export const theBestFriendsGirl: Room = {
         {
           id: 'confess-to-her',
           text: 'Tell Nadia.',
-          hint: 'say it to the person it’s about',
+          hint: 'Say it to the person it’s about',
           effects: { lucidity: 10, axes: { reasonFeeling: 8 }, flags: ['crossed-the-line'] },
           outcome: [
             'Whatever she feels — the room keeps it honestly ambiguous, a half-second is not a contract — the constellation now has a crack through it.',
@@ -519,7 +519,7 @@ export const theBestFriendsGirl: Room = {
         {
           id: 'starve-it',
           text: 'Distance. No drama, no explanation.',
-          hint: 'let it starve, quietly',
+          hint: 'Let it starve, quietly',
           effects: { lucidity: 18, axes: { controlAcceptance: 6 } },
           outcome: [
             'Limerence starved is limerence loud, for a while — the intrusions get worse before they get better.',
@@ -535,7 +535,7 @@ export const theBestFriendsGirl: Room = {
         {
           id: 'tell-tom',
           text: 'Tell Tom the truth of the feeling.',
-          hint: 'trust your friend with it',
+          hint: 'Trust your friend with it',
           effects: { lucidity: 22, axes: { selfOthers: -4 } },
           outcome: [
             'The bravest sentence on this floor. Tom’s silence, then: "okay. thanks for telling me and not her."',
@@ -551,7 +551,7 @@ export const theBestFriendsGirl: Room = {
         {
           id: 'test-the-evening',
           text: 'Engineer one ambiguous evening to find out.',
-          hint: 'manufacture your own answer',
+          hint: 'Manufacture your own answer',
           effects: { lucidity: 8, axes: { controlAcceptance: -8 }, flags: ['ran-the-test'] },
           outcome: [
             'Ambiguity engineered returns ambiguity, compounded.',
@@ -601,7 +601,7 @@ export const theSummerEnds: Room = {
         {
           id: 'promise-ldr',
           text: 'Promise the long-distance everyone says will fail.',
-          hint: 'commit across the distance',
+          hint: 'Commit across the distance',
           effects: { lucidity: 12, axes: { reasonFeeling: 8, selfOthers: 6 }, flags: ['promised-september'] },
           outcome: [
             'The promise is real, and so are base rates. The room refuses to spoil which you’ll turn out to be.',
@@ -610,7 +610,7 @@ export const theSummerEnds: Room = {
         {
           id: 'end-clean',
           text: 'End it now, on the best day rather than the worst.',
-          hint: 'choose the ending instead of waiting for one',
+          hint: 'Choose the ending instead of waiting for one',
           effects: { lucidity: 20, axes: { reasonFeeling: -8 } },
           outcome: [
             'The strange dignity of a chosen ending. Grief without a villain.',
@@ -620,7 +620,7 @@ export const theSummerEnds: Room = {
         {
           id: 'drift',
           text: 'Promise nothing. Let it fade.',
-          hint: 'avoid the conversation entirely',
+          hint: 'Avoid the conversation entirely',
           effects: { lucidity: 4, axes: { controlAcceptance: -4, selfOthers: -4 }, flags: ['let-it-drift'] },
           outcome: [
             'The coward’s route, honestly costed: no scene, no ending.',
@@ -671,7 +671,7 @@ export const theRumor: Room = {
         {
           id: 'trust-without-asking',
           text: 'Extend the benefit of the doubt whole. Never ask.',
-          hint: 'choose not to know',
+          hint: 'Choose not to know',
           effects: { lucidity: 15, axes: { controlAcceptance: 10 } },
           outcome: [
             'You live with never knowing — permanently. No later room resolves this; none ever will.',
@@ -687,7 +687,7 @@ export const theRumor: Room = {
         {
           id: 'interrogate',
           text: 'Ask her everything. Dates, names, specifics.',
-          hint: 'demand the full account',
+          hint: 'Demand the full account',
           effects: { lucidity: 18, hearts: -1, axes: { controlAcceptance: -8 } },
           outcome: [
             'Answers arrive, and so does the damage — the questions themselves inform her, precisely, what you think she is.',
@@ -703,7 +703,7 @@ export const theRumor: Room = {
         {
           id: 'set-the-trap',
           text: 'Tell her a fake detail — one only a guilty person would correct.',
-          hint: 'set a snare and watch it',
+          hint: 'Set a snare and watch it',
           effects: { lucidity: 20, loseMemory: true, flags: ['set-the-trap'] },
           outcome: [
             'The trap works. The room lets it work.',
@@ -719,7 +719,7 @@ export const theRumor: Room = {
         {
           id: 'ask-the-accuser',
           text: 'Go to the source: "what do you get out of this?"',
-          hint: 'question the rumor’s engine, not her',
+          hint: 'Question the rumor’s engine, not her',
           effects: { lucidity: 25, axes: { reasonFeeling: -6 } },
           outcome: [
             'The rare third door. The rumor’s actual engine gets exposed — a grudge, a bored weekend, a misread photograph.',

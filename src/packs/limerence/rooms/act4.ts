@@ -44,7 +44,7 @@ export const theKitchenTable: Room = {
         {
           id: 'stay-for-them',
           text: 'Stay, for the kids. Say so, out loud, to each other.',
-          hint: 'a pact, named plainly',
+          hint: 'A pact, named plainly',
           effects: { lucidity: 12, axes: { selfOthers: 6 }, flags: ['stayed-for-kids'] },
           outcome: [
             (s: RunState) =>
@@ -63,7 +63,7 @@ export const theKitchenTable: Room = {
         {
           id: 'separate-well',
           text: 'Separate, and spend everything on doing it well.',
-          hint: 'grief, done in daylight',
+          hint: 'Grief, done in daylight',
           effects: { lucidity: 20, hearts: -1, axes: { controlAcceptance: 6 } },
           outcome: [
             'The un-dramatic catastrophe: logistics as elegy. One whole beat is simply the calendar of handovers, and it is somehow the hardest part.',
@@ -79,7 +79,7 @@ export const theKitchenTable: Room = {
         {
           id: 'attempt-repair',
           text: 'The work. Not the word. The work.',
-          hint: 'begin, without a guarantee',
+          hint: 'Begin, without a guarantee',
           effects: { lucidity: 25, axes: { reasonFeeling: 6, selfOthers: 8 }, flags: ['chose-repair'] },
           outcome: [
             'No montage, no guarantee — the room renders week one only: an intake form, the first honest inventory, the affair (whosever it was) examined as alarm rather than only as crime.',
@@ -95,7 +95,7 @@ export const theKitchenTable: Room = {
         {
           id: 'say-the-unsayable',
           text: 'Say the one thing you’ve each been holding since before any of this.',
-          hint: 'the riskiest door at this table',
+          hint: 'The riskiest door at this table',
           effects: { lucidity: 30, hearts: -1 },
           outcome: [
             (s: RunState) =>
@@ -114,7 +114,7 @@ export const theKitchenTable: Room = {
         {
           id: 'place-the-unsent-letter',
           text: 'Place the unsent letter on the table, still sealed.',
-          hint: 'an amendment to the disclosure, whosever morning it is',
+          hint: 'An amendment to the disclosure, whosever morning it is',
           effects: { lucidity: 10, axes: { selfOthers: 4 } },
           keepsakeId: 'the-unsent-letter',
           available: (s: RunState) => (s.keepsakesHeld ?? []).includes('the-unsent-letter'),
@@ -163,7 +163,7 @@ export const theUnsent: Room = {
         {
           id: 'to-the-one-you-hurt',
           text: 'To the one you hurt.',
-          hint: 'amends, without asking for absolution',
+          hint: 'Amends, without asking for absolution',
           effects: { lucidity: 20, axes: { selfOthers: 8 } },
           available: (s: RunState) => YOURS_FLAGS.some((f) => hasFlag(s, f)),
           outcome: [
@@ -174,7 +174,7 @@ export const theUnsent: Room = {
         {
           id: 'to-the-one-who-hurt-you',
           text: 'To the one who hurt you.',
-          hint: 'not forgiveness — release',
+          hint: 'Not forgiveness — release',
           effects: { lucidity: 18, axes: { controlAcceptance: 6 } },
           available: (s: RunState) => THEIRS_FLAGS.some((f) => hasFlag(s, f)),
           outcome: [
@@ -185,7 +185,7 @@ export const theUnsent: Room = {
         {
           id: 'to-the-one-that-got-away',
           text: 'To the one that got away.',
-          hint: 'the letter honest people are afraid to write',
+          hint: 'The letter honest people are afraid to write',
           effects: { lucidity: 15, axes: { reasonFeeling: 6 } },
           available: (s: RunState) => hasFlag(s, 'walked-away') || choseIn(s, 'the-summer-ends', 'end-clean'),
           outcome: [
@@ -196,7 +196,7 @@ export const theUnsent: Room = {
         {
           id: 'to-your-16-year-old-self',
           text: 'To your 16-year-old self.',
-          hint: 'the room’s kindest door',
+          hint: 'The room’s kindest door',
           effects: { lucidity: 25 },
           outcome: [
             (s: RunState) => {
@@ -210,7 +210,7 @@ export const theUnsent: Room = {
         {
           id: 'to-your-own-kids-someday',
           text: 'To your own kids, someday.',
-          hint: 'the education folded into fiction',
+          hint: 'The education folded into fiction',
           effects: { lucidity: 20, axes: { selfOthers: 6 } },
           available: (s: RunState) => s.visited.includes('the-kitchen-table'),
           outcome: [
@@ -221,7 +221,7 @@ export const theUnsent: Room = {
         {
           id: 'blank-page',
           text: 'Send the blank page.',
-          hint: 'everything unsaid still weighs something',
+          hint: 'Everything unsaid still weighs something',
           effects: { lucidity: 12, axes: { controlAcceptance: 4 } },
           outcome: [
             'The heaviest envelope in the desk. Nothing written on it at all.',
@@ -279,7 +279,7 @@ export const theMorningDesk: Room = {
         {
           id: 'stand-by-all',
           text: '"Yes. All of it. I chose what I chose, and I’d sign it again."',
-          hint: 'consistency, owned',
+          hint: 'Consistency, owned',
           effects: { lucidity: 15, axes: { controlAcceptance: -4 } },
           outcome: [
             'Porter: "Steadiness. Rarer than it advertises — most guests disown at least one room the moment they’re actually asked. You kept the whole ledger, including the entries that cost you."',
@@ -295,7 +295,7 @@ export const theMorningDesk: Room = {
         {
           id: 'name-what-changed-me',
           text: '"No — not all of it. I can tell you exactly what changed me, and where."',
-          hint: 'growth, named and owned',
+          hint: 'Growth, named and owned',
           effects: { lucidity: 25, axes: { reasonFeeling: 4 }, flags: ['noticed-the-hands'] },
           outcome: [
             'You name the room. The specific one. Not a mood — a reason: something a later floor taught the earlier one.',
@@ -311,7 +311,7 @@ export const theMorningDesk: Room = {
         {
           id: 'some-rooms-i-wasnt-present-in',
           text: '"Some of it I barely remember choosing. I wasn’t fully present for parts of this."',
-          hint: 'the honest gap',
+          hint: 'The honest gap',
           effects: { lucidity: 12 },
           outcome: [
             (s: RunState) =>
@@ -346,7 +346,7 @@ export const theMorningDesk: Room = {
         {
           id: 'walk-out',
           text: 'Walk out. Back to the morning, the noise, the world.',
-          hint: 'the return',
+          hint: 'The return',
           effects: { lucidity: 15 },
           outcome: [
             'You step toward the light. The threshold has the exact temperature of a doorway in summer — that half-degree shift that means outside.',
@@ -356,7 +356,7 @@ export const theMorningDesk: Room = {
         {
           id: 'take-the-desk',
           text: 'Stay. Take the desk. This is the Porter’s job now.',
-          hint: 'the keeper’s bargain',
+          hint: 'The keeper’s bargain',
           effects: { lucidity: 15, axes: { selfOthers: 6 } },
           outcome: [
             'You turn from the morning — actually turn, which the lobby registers with something like a held breath — and hold out your hand for the ledger.',
@@ -367,7 +367,7 @@ export const theMorningDesk: Room = {
         {
           id: 'stop-carrying-it',
           text: 'Lie down at the threshold. Let it finish, gently, on your own terms.',
-          hint: 'the quiet',
+          hint: 'The quiet',
           effects: { lucidity: 10, hearts: -3, axes: { controlAcceptance: 12 } },
           outcome: [
             'You lie down with the morning three steps away, and it is not defeat — the Porter can tell, the lobby can tell. It is a choice, made with open eyes, by someone who walked every floor to earn the right to make it.',
@@ -377,7 +377,7 @@ export const theMorningDesk: Room = {
         {
           id: 'laughing-door',
           text: 'The small door. The laughter. Open it.',
-          hint: 'you earned the noticing',
+          hint: 'You earned the noticing',
           effects: { lucidity: 25 },
           available: (s: RunState) => mirrorUnlocked(s),
           outcome: [
@@ -388,7 +388,7 @@ export const theMorningDesk: Room = {
         {
           id: 'i-know-every-room',
           text: '"I know every room."',
-          hint: 'not a door — a sentence',
+          hint: 'Not a door — a sentence',
           effects: { lucidity: 20 },
           available: (s: RunState) => patternAvailable(s),
           outcome: [

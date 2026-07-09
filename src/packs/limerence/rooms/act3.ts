@@ -48,7 +48,7 @@ export const theColleague: Room = {
         {
           id: 'the-balcony',
           text: 'One more drink. Her room.',
-          hint: 'follow the shorthand where it leads',
+          hint: 'Follow the shorthand where it leads',
           effects: { lucidity: 6, axes: { reasonFeeling: 6, controlAcceptance: -4 }, flags: ['crossed-at-the-conference'] },
           outcome: [
             'The threshold, cut, deliberately — the door clicking shut is the last thing rendered.',
@@ -64,7 +64,7 @@ export const theColleague: Room = {
         {
           id: 'walk-away',
           text: '"Goodnight, Rowan." Your own room. Alone.',
-          hint: 'let the anticlimax be the whole event',
+          hint: 'Let the anticlimax be the whole event',
           effects: { lucidity: 22, axes: { controlAcceptance: 6 }, flags: ['walked-away'] },
           outcome: [
             'The anticlimax, honored as the achievement it actually is. Your room. The ceiling. An unsent "you up?" typed and deleted.',
@@ -80,7 +80,7 @@ export const theColleague: Room = {
         {
           id: 'name-it-in-the-corridor',
           text: 'Say it out loud, right there: "this is a door, and I’m not opening it."',
-          hint: 'name the thing instead of managing around it',
+          hint: 'Name the thing instead of managing around it',
           effects: { lucidity: 25, axes: { selfOthers: -4 } },
           outcome: [
             'The naming changes the shorthand forever. Some of it dies on the spot, honestly mourned by the room rather than pretended away.',
@@ -96,7 +96,7 @@ export const theColleague: Room = {
         {
           id: 'postpone',
           text: 'Nothing tonight — but leave the door unlocked in the calendar. "Next month, the Berlin trip…"',
-          hint: 'decide by not deciding',
+          hint: 'Decide by not deciding',
           effects: { lucidity: 8, axes: { controlAcceptance: -6 }, flags: ['kept-the-door-open'] },
           outcome: [
             'The most honest dishonest choice available tonight: deciding by not deciding.',
@@ -142,7 +142,7 @@ export const theMetamour: Room = {
         {
           id: 'enforce-via-dana',
           text: 'Take it to Dana: "your other relationship, your boundary to hold."',
-          hint: 'route it through the person whose relationship it is',
+          hint: 'Route it through the person whose relationship it is',
           effects: { lucidity: 15, axes: { reasonFeeling: -4 } },
           outcome: [
             'Structurally correct, and emotionally slow. Dana is caught, visibly, between two people who both have a reasonable case.',
@@ -161,7 +161,7 @@ export const theMetamour: Room = {
         {
           id: 'talk-to-petra',
           text: 'Coffee with Petra. Just you two. Name it directly.',
-          hint: 'have the conversation almost nobody has',
+          hint: 'Have the conversation almost nobody has',
           effects: { lucidity: 22, axes: { selfOthers: 6, controlAcceptance: 6 } },
           outcome: [
             'The metamour conversation almost nobody actually has: awkward, adult, and — the research backs this up — effective.',
@@ -177,7 +177,7 @@ export const theMetamour: Room = {
         {
           id: 'name-the-hierarchy',
           text: 'Call the meeting. Make the three of you say the word.',
-          hint: 'say "hierarchy" out loud, on purpose',
+          hint: 'Say "hierarchy" out loud, on purpose',
           effects: { lucidity: 20, axes: { selfOthers: -4 } },
           outcome: [
             'The taboo, spoken: "descriptive hierarchy exists; pretending otherwise is how it becomes prescriptive and unfair." Some tears, from more than one of you.',
@@ -193,7 +193,7 @@ export const theMetamour: Room = {
         {
           id: 'audit-the-jealousy',
           text: 'Before anything: is this signal, or noise?',
-          hint: 'examine your own reaction first',
+          hint: 'Examine your own reaction first',
           effects: { lucidity: 25, axes: { reasonFeeling: -6 } },
           outcome: [
             'A room-within-a-room of introspection. The finding, rendered fairly: both. A real boundary really did erode, and your own attachment pattern really is amplifying it.',
@@ -239,7 +239,7 @@ export const theVeto: Room = {
         {
           id: 'comply',
           text: 'Honor the rule as written. End it with Sam.',
-          hint: 'keep the old agreement, whatever it costs now',
+          hint: 'Keep the old agreement, whatever it costs now',
           effects: { lucidity: 12, hearts: -1, axes: { selfOthers: 6 }, flags: ['honored-the-veto'] },
           outcome: [
             'The ending scene with Sam — who did nothing wrong — given its full, uncomfortable weight.',
@@ -255,7 +255,7 @@ export const theVeto: Room = {
         {
           id: 'fight-the-rule',
           text: 'Refuse the veto, not Dana: "renegotiate the rule, or it’s not the rule that breaks."',
-          hint: 'challenge the mechanism, not the person',
+          hint: 'Challenge the mechanism, not the person',
           effects: { lucidity: 20, axes: { selfOthers: -6, controlAcceptance: 6 } },
           outcome: [
             'The constitutional crisis of a two-person state, rendered in painful specifics: what replaces a veto — raised concerns, time-bound slow-downs, but no unilateral kill switch.',
@@ -271,7 +271,7 @@ export const theVeto: Room = {
         {
           id: 'examine-the-veto',
           text: 'Before deciding anything: what was the veto for, in year one?',
-          hint: 'understand the rule before obeying or breaking it',
+          hint: 'Understand the rule before obeying or breaking it',
           effects: { lucidity: 25, axes: { reasonFeeling: -6 } },
           outcome: [
             'A small excavation: the night the rule was written, both of you afraid, the rule built as a blanket against a fear neither of you had a better answer to yet.',
@@ -287,7 +287,7 @@ export const theVeto: Room = {
         {
           id: 'counter-veto',
           text: 'Invoke yours right back. On Petra.',
-          hint: 'match the move instead of resolving it',
+          hint: 'Match the move instead of resolving it',
           effects: { lucidity: 6, axes: { controlAcceptance: -10 }, flags: ['veto-war'] },
           outcome: [
             (s: RunState) =>
@@ -335,7 +335,7 @@ export const theDrift: Room = {
         {
           id: 'start-the-work',
           text: 'Stay, and start the terrifying work of wanting again.',
-          hint: 'begin, in something small',
+          hint: 'Begin, in something small',
           effects: { lucidity: 22, axes: { reasonFeeling: 6, controlAcceptance: 6 }, flags: ['chose-the-work'] },
           outcome: [
             'Not a montage. One single, concrete act: a question you don’t know the answer to, asked at the sink, out loud.',
@@ -351,7 +351,7 @@ export const theDrift: Room = {
         {
           id: 'raise-it',
           text: 'Say the unsayable: "are we okay, or are we just quiet?"',
-          hint: 'ask the question out loud',
+          hint: 'Ask the question out loud',
           effects: { lucidity: 25, hearts: -1, axes: { selfOthers: 6 } },
           outcome: [
             'The conversation itself is the risk, and the room prices it honestly: what opens here can’t be re-closed the way it was.',
@@ -371,7 +371,7 @@ export const theDrift: Room = {
         {
           id: 'accept-quiet-as-love',
           text: 'Decide this is love, in its year-seven clothes.',
-          hint: 'grant the quiet its own dignity',
+          hint: 'Grant the quiet its own dignity',
           effects: { lucidity: 15, axes: { controlAcceptance: 8 } },
           outcome: [
             'The room grants this reading its full dignity: companionate love is real love, not a lesser tier of it.',
@@ -387,7 +387,7 @@ export const theDrift: Room = {
         {
           id: 'notice-youve-left',
           text: 'Notice you’ve already left in every way but the door.',
-          hint: 'take honest inventory',
+          hint: 'Take honest inventory',
           effects: { lucidity: 18, axes: { selfOthers: -4 }, flags: ['already-gone'] },
           outcome: [
             'A quiet catastrophe of an honest inventory. Nothing announced. Nothing packed.',
@@ -433,7 +433,7 @@ export const theSecondAccount: Room = {
         {
           id: 'delete-it',
           text: 'Delete the account. Tonight. Whole.',
-          hint: 'end it cleanly',
+          hint: 'End it cleanly',
           effects: { lucidity: 20, axes: { controlAcceptance: 4 }, flags: ['deleted-the-account'] },
           outcome: [
             'The deletion, rendered as withdrawal actually feels: the itch, the phantom checking, a full week of reaching for a door that’s gone.',
@@ -449,7 +449,7 @@ export const theSecondAccount: Room = {
         {
           id: 'keep-and-name-it',
           text: 'Keep it. Name honestly what it feeds.',
-          hint: 'stay, but stop pretending',
+          hint: 'Stay, but stop pretending',
           effects: { lucidity: 15, axes: { selfOthers: -4, reasonFeeling: -4 } },
           outcome: [
             'The sophisticated rationalization, given its full, fair voice: "everyone needs a self outside the relationship."',
@@ -465,7 +465,7 @@ export const theSecondAccount: Room = {
         {
           id: 'show-dana',
           text: 'Hand Dana the phone. Account open.',
-          hint: 'let her read it herself',
+          hint: 'Let her read it herself',
           effects: { lucidity: 25, hearts: -1, axes: { selfOthers: 8 } },
           outcome: [
             'The bravest and costliest door. Dana reads in real time — the room replays their face, this time, instead of the messages.',
@@ -481,7 +481,7 @@ export const theSecondAccount: Room = {
         {
           id: 'defend-the-category',
           text: '"It’s not cheating if—"',
-          hint: 'finish the sentence and see if it holds',
+          hint: 'Finish the sentence and see if it holds',
           effects: { lucidity: 6, axes: { controlAcceptance: -4 }, flags: ['defended-the-category'] },
           outcome: [
             'The room lets you finish the sentence completely, then reads it back, flat, in the Porter’s own voice, next to the actual survey data.',
@@ -529,7 +529,7 @@ export const theDiscovery: Room = {
         {
           id: 'confront-now',
           text: 'Confront now. Flooded. Right here in the kitchen.',
-          hint: 'say it before you’ve steadied',
+          hint: 'Say it before you’ve steadied',
           effects: { lucidity: 8, hearts: -1, axes: { controlAcceptance: -8 } },
           outcome: [
             'The fight, rendered in short, fractured sentences — accusation outrunning evidence, Dana’s own flood answering yours, two people drowning in the same small kitchen.',
@@ -549,7 +549,7 @@ export const theDiscovery: Room = {
         {
           id: 'gather-first',
           text: 'Say nothing. Verify. Chattam-forensic, patient, cold.',
-          hint: 'build certainty before speaking',
+          hint: 'Build certainty before speaking',
           effects: { lucidity: 18, hearts: -1, axes: { reasonFeeling: -8 }, flags: ['played-detective'] },
           outcome: [
             'Three days, compressed into four beats: the performance of normalcy at breakfast, while quietly auditing an entire life.',
@@ -569,7 +569,7 @@ export const theDiscovery: Room = {
         {
           id: 'pretend',
           text: 'Decide, actively, not to know.',
-          hint: 'choose unknowing on purpose',
+          hint: 'Choose unknowing on purpose',
           effects: { lucidity: 6, axes: { controlAcceptance: -6 }, flags: ['chose-not-to-know'] },
           outcome: [
             'Unknowing, it turns out, is a full-time job with no holidays. The room time-lapses its maintenance cost across the following weeks.',
@@ -585,7 +585,7 @@ export const theDiscovery: Room = {
         {
           id: 'walk-tonight',
           text: 'Pack one bag. Leave the question behind with the ring.',
-          hint: 'exit without waiting for the answer',
+          hint: 'Exit without waiting for the answer',
           effects: { lucidity: 12, hearts: -1, axes: { selfOthers: -8 } },
           outcome: [
             'The exit, rendered without triumph. Leaving on a question means carrying the question — packed flat, under everything else, indefinitely.',
@@ -634,7 +634,7 @@ export const theWeddingEve: Room = {
         {
           id: 'sit-with-it-til-morning',
           text: 'Hold the doubt without obeying or silencing it.',
-          hint: 'wait it out, honestly, until light',
+          hint: 'Wait it out, honestly, until light',
           effects: { lucidity: 22, axes: { controlAcceptance: 8 } },
           outcome: [
             'Dawn arrives with the doubt still present, but sized now, rather than looming.',
@@ -650,7 +650,7 @@ export const theWeddingEve: Room = {
         {
           id: 'call-someone-honest',
           text: 'Wake the one person who’ll tell you the truth.',
-          hint: 'get an outside, honest read',
+          hint: 'Get an outside, honest read',
           effects: { lucidity: 20, axes: { selfOthers: 4 } },
           outcome: [
             'The 3 a.m. conversation, rendered whole. One question does in four words what the room spent six beats building toward: "is it the day, or the person?"',
@@ -666,7 +666,7 @@ export const theWeddingEve: Room = {
         {
           id: 'answer-the-flame',
           text: 'Take the call. Or make it.',
-          hint: 'reopen the old conversation tonight',
+          hint: 'Reopen the old conversation tonight',
           effects: { lucidity: 8, axes: { reasonFeeling: 6, controlAcceptance: -4 }, flags: ['eve-call'] },
           outcome: [
             (s: RunState) =>
@@ -685,7 +685,7 @@ export const theWeddingEve: Room = {
         {
           id: 'postpone',
           text: 'Wake Dana. Say it: "not tomorrow. Not like this."',
-          hint: 'say the hardest sentence available',
+          hint: 'Say the hardest sentence available',
           effects: { lucidity: 25, hearts: -1, axes: { selfOthers: -4 } },
           outcome: [
             'The bravest sentence available on this floor, and its full price: a morning of phone calls, deposits, and faces, all paid in public.',
@@ -704,7 +704,7 @@ export const theWeddingEve: Room = {
         {
           id: 'hold-the-cheap-ring',
           text: 'Hold the cheap plastic ring from that party, once, next to tomorrow’s real one.',
-          hint: 'a keepsake you’ve been carrying since the Ground Floor',
+          hint: 'A keepsake you’ve been carrying since the Ground Floor',
           effects: { lucidity: 10 },
           keepsakeId: 'the-cheap-ring',
           available: (s: RunState) => (s.keepsakesHeld ?? []).includes('the-cheap-ring'),
@@ -761,7 +761,7 @@ export const theTherapist: Room = {
         {
           id: 'contempt',
           text: 'Walk through CONTEMPT.',
-          hint: 'the eye-roll',
+          hint: 'The eye-roll',
           effects: { lucidity: 18, hearts: -1, flags: ['door-contempt'] },
           outcome: [
             'The eye-roll door. The research is read to you gently but completely: contempt is the single strongest predictor of a relationship ending, of the four.',
@@ -793,7 +793,7 @@ export const theTherapist: Room = {
         {
           id: 'stonewalling',
           text: 'Walk through STONEWALLING.',
-          hint: 'the roaring quiet',
+          hint: 'The roaring quiet',
           effects: { lucidity: 18, flags: ['door-stonewalling'] },
           outcome: [
             (s: RunState) =>
@@ -825,7 +825,7 @@ export const theTherapist: Room = {
         {
           id: 'accept-the-repair',
           text: 'Accept it. Let the bad joke land.',
-          hint: 'take the offered hand',
+          hint: 'Take the offered hand',
           effects: { lucidity: 15, axes: { selfOthers: 6 } },
           outcome: [
             'The room lightens by a genuinely measurable amount. Not resolution — repair. The two are not the same, and the room is careful about the difference.',
@@ -840,7 +840,7 @@ export const theTherapist: Room = {
         {
           id: 'miss-the-repair',
           text: 'Miss it. Stay with the argument.',
-          hint: 'let the moment pass',
+          hint: 'Let the moment pass',
           effects: { lucidity: 8, axes: { controlAcceptance: -4 } },
           outcome: [
             'The room shows, plainly, what missing one costs: not catastrophe, just one fewer bridge, in an argument that could have used one.',
@@ -902,7 +902,7 @@ export const theUsualSuite: Room = {
         {
           id: 'name-them',
           text: '"I recognize you." Say, out loud, whose choices these are.',
-          hint: 'name what you’re watching',
+          hint: 'Name what you’re watching',
           effects: { lucidity: 14, axes: { selfOthers: -3 } },
           outcome: [
             'You say it — not a stranger’s name for it, the small true one, the one you used on yourself, alone, the first time.',
@@ -912,7 +912,7 @@ export const theUsualSuite: Room = {
         {
           id: 'watch-silent',
           text: 'Watch without speaking. Let the shapes finish.',
-          hint: 'witness without narrating',
+          hint: 'Witness without narrating',
           effects: { lucidity: 8, axes: { controlAcceptance: 6 } },
           outcome: [
             'You say nothing. The shapes finish their small, exact performances without your correction, without your permission.',
@@ -922,7 +922,7 @@ export const theUsualSuite: Room = {
         {
           id: 'ask-who-books-it',
           text: 'Ask the Porter directly: who books this room?',
-          hint: 'ask the desk itself',
+          hint: 'Ask the desk itself',
           effects: { lucidity: 10 },
           outcome: [
             '"You do," the Porter says. "Every time. It’s the only reservation the desk never has to confirm."',
@@ -965,7 +965,7 @@ export const theUsualRoom: Room = {
         {
           id: 'defiant-different',
           text: 'Demand a different room. Any different room.',
-          hint: 'refuse the assignment on principle',
+          hint: 'Refuse the assignment on principle',
           effects: { lucidity: 12, axes: { controlAcceptance: -8 } },
           outcome: [
             'The new room, defiantly slept in. Comfortable enough, unfamiliar enough to feel like a statement.',
@@ -981,7 +981,7 @@ export const theUsualRoom: Room = {
         {
           id: 'refuse-all-rooms',
           text: 'Sleep in the lobby. Opt out of the ledger entirely.',
-          hint: 'decline to participate',
+          hint: 'Decline to participate',
           effects: { lucidity: 12, axes: { controlAcceptance: 4 } },
           outcome: [
             'The board, turned around, has read all along: "will attempt the lobby — estimated duration: one night."',
@@ -997,7 +997,7 @@ export const theUsualRoom: Room = {
         {
           id: 'take-it-knowingly',
           text: 'Take the usual room — on purpose. "It was always going to be this room, and I choose it."',
-          hint: 'own the pattern instead of fighting it',
+          hint: 'Own the pattern instead of fighting it',
           effects: { lucidity: 25, axes: { controlAcceptance: 10 } },
           outcome: [
             'The same key, turned this time by a different hand. "The pattern runs through the choosing," the Porter says, "not around it."',
@@ -1013,7 +1013,7 @@ export const theUsualRoom: Room = {
         {
           id: 'room-with-no-number',
           text: 'Ask for the room with no number.',
-          hint: 'ask for the option that isn’t on the board',
+          hint: 'Ask for the option that isn’t on the board',
           effects: { lucidity: 15, axes: { reasonFeeling: 4 } },
           outcome: [
             'There is such a room. A linen closet, with a chair in it, entirely unremarkable.',

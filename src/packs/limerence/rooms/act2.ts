@@ -45,7 +45,7 @@ export const theDistance: Room = {
         {
           id: 'confess-the-near-miss',
           text: 'Tell Jules exactly what almost happened.',
-          hint: 'give the whole second, unedited',
+          hint: 'Give the whole second, unedited',
           effects: { lucidity: 20, hearts: -1, axes: { selfOthers: 6 }, flags: ['windows-open'] },
           outcome: [
             'A hard call, and a good one. Jules’s hurt is real; so, underneath it, is the relief of being trusted with the truth while it was still nothing.',
@@ -61,7 +61,7 @@ export const theDistance: Room = {
         {
           id: 'bury-it',
           text: 'Nothing happened. Nothing to tell.',
-          hint: 'let the technical truth stand in for the whole one',
+          hint: 'Let the technical truth stand in for the whole one',
           effects: { lucidity: 6, axes: { selfOthers: -4 }, flags: ['buried-the-almost'] },
           outcome: [
             'Technically true. The call goes fine, ordinary, ninety minutes about nothing.',
@@ -77,7 +77,7 @@ export const theDistance: Room = {
         {
           id: 'soften-it',
           text: 'Tell a curated version: "someone flirted with me, it was weird."',
-          hint: 'give the shape without the substance',
+          hint: 'Give the shape without the substance',
           effects: { lucidity: 8, flags: ['trickle-truth'] },
           outcome: [
             'It works. Jules laughs, unbothered, and the call moves on.',
@@ -93,7 +93,7 @@ export const theDistance: Room = {
         {
           id: 'keep-visiting-almost',
           text: 'Decide "almost" is a place you can keep visiting.',
-          hint: 'let deniability be the whole plan',
+          hint: 'Let deniability be the whole plan',
           effects: { lucidity: 4, axes: { controlAcceptance: -4, reasonFeeling: 4 }, flags: ['visiting-almost'] },
           outcome: [
             'Nothing to confess, nothing to bury — you simply leave the door to "almost" unlocked, on purpose, and don’t examine why.',
@@ -138,7 +138,7 @@ export const theHallPass: Room = {
         {
           id: 'agree-to-keep-peace',
           text: 'Say yes, to avoid seeming small about it.',
-          hint: 'perform the ease you don’t feel',
+          hint: 'Perform the ease you don’t feel',
           effects: { lucidity: 6, axes: { selfOthers: 6, controlAcceptance: -6 }, flags: ['consent-performed'] },
           outcome: [
             'The yes buys a genuinely good week. Jules is warm, grateful, relieved.',
@@ -154,7 +154,7 @@ export const theHallPass: Room = {
         {
           id: 'true-no',
           text: 'Say the actual no. Adjectives be damned.',
-          hint: 'let yourself sound exactly as unmodern as necessary',
+          hint: 'Let yourself sound exactly as unmodern as necessary',
           effects: { lucidity: 20, axes: { selfOthers: -6, reasonFeeling: 4 } },
           outcome: [
             'Jules is surprised, then — a beat later — visibly relieved to have a real answer instead of a performance.',
@@ -170,7 +170,7 @@ export const theHallPass: Room = {
         {
           id: 'counter-with-need',
           text: '"Here’s what I actually need while we’re apart."',
-          hint: 'negotiate needs, not permissions',
+          hint: 'Negotiate needs, not permissions',
           effects: { lucidity: 22, axes: { controlAcceptance: 6, selfOthers: 4 } },
           outcome: [
             'The conversation that follows is slower and better than either a yes or a no would have been.',
@@ -186,7 +186,7 @@ export const theHallPass: Room = {
         {
           id: 'take-it-angrily',
           text: 'Take the pass you didn’t want, and use it to get even in advance.',
-          hint: 'spend the gift out of spite',
+          hint: 'Spend the gift out of spite',
           effects: { lucidity: 5, hearts: -1, axes: { controlAcceptance: -8 }, flags: ['pass-used-angry'] },
           outcome: [
             'The night itself the room elides, deliberately — a threshold, cut. What’s left is the morning after, and the arithmetic in it.',
@@ -235,7 +235,7 @@ export const theRebound: Room = {
         {
           id: 'tell-her-what-this-is',
           text: 'Say the anesthesia sentence, out loud, tonight.',
-          hint: 'name what she is to you right now',
+          hint: 'Name what she is to you right now',
           effects: { lucidity: 22, hearts: -1, axes: { selfOthers: 4 } },
           outcome: [
             'The kindest cruelty available on this floor. Mira’s face changes in real time as the sentence lands.',
@@ -251,7 +251,7 @@ export const theRebound: Room = {
         {
           id: 'let-her-believe',
           text: 'Say nothing. Stay warm.',
-          hint: 'let the story write itself',
+          hint: 'Let the story write itself',
           effects: { lucidity: 4, axes: { selfOthers: -6 }, flags: ['kept-the-anesthesia'] },
           outcome: [
             'Months pass in a single held breath. Then: her "I love you," arriving mid-ordinary-Tuesday, entirely undefended.',
@@ -267,7 +267,7 @@ export const theRebound: Room = {
         {
           id: 'end-it',
           text: 'End it, before it costs her more.',
-          hint: 'stop it while the cost is still small',
+          hint: 'Stop it while the cost is still small',
           effects: { lucidity: 18, axes: { controlAcceptance: 4 } },
           outcome: [
             'She cries and thanks you inside the same ten minutes — grief and relief occupying the same breath.',
@@ -283,7 +283,7 @@ export const theRebound: Room = {
         {
           id: 'try-to-catch-up',
           text: 'Try to make yourself feel what she feels.',
-          hint: 'will the feeling into existence',
+          hint: 'Will the feeling into existence',
           effects: { lucidity: 10, axes: { reasonFeeling: 4, controlAcceptance: -4 } },
           outcome: [
             'Effortful sincerity, honestly rendered.',
@@ -332,7 +332,7 @@ export const theUnicorn: Room = {
         {
           id: 'obey-the-rules',
           text: 'Take the terms exactly as written.',
-          hint: 'sign what’s in front of you',
+          hint: 'Sign what’s in front of you',
           effects: { lucidity: 8, axes: { selfOthers: 6 }, flags: ['signed-their-terms'] },
           outcome: [
             'Three good months, compressed into two beats — warm, easy, exactly as advertised.',
@@ -348,7 +348,7 @@ export const theUnicorn: Room = {
         {
           id: 'renegotiate',
           text: '"Rewrite the rules with me in the room, or I don’t sign."',
-          hint: 'insist on being a party to the terms',
+          hint: 'Insist on being a party to the terms',
           effects: { lucidity: 22, axes: { selfOthers: -6, controlAcceptance: 6 } },
           outcome: [
             'The real test of whether "equal" was ever meant.',
@@ -367,7 +367,7 @@ export const theUnicorn: Room = {
         {
           id: 'discover-we-come-first',
           text: 'Stay until the night Maja cries — and learn what the hierarchy means.',
-          hint: 'let the rule teach itself to you',
+          hint: 'Let the rule teach itself to you',
           effects: { lucidity: 15, hearts: -1, axes: { selfOthers: 4 } },
           outcome: [
             'The 2 a.m. taxi, rendered in full: you, dressed fast, and behind you a door already closing, already repairing itself around the two of them.',
@@ -383,7 +383,7 @@ export const theUnicorn: Room = {
         {
           id: 'decline-kindly',
           text: 'Decline. Name why, kindly.',
-          hint: 'take the road not taken, with grace',
+          hint: 'Take the road not taken, with grace',
           effects: { lucidity: 18, axes: { reasonFeeling: -4 } },
           outcome: [
             'The road not taken, walked with grace instead of drama. Erik and Maja are gracious in return, and a little disappointed, and that’s allowed to be true too.',
@@ -429,7 +429,7 @@ export const justFriends: Room = {
         {
           id: 'open-window',
           text: 'Tell Jules about Alena — all of it, ranking included.',
-          hint: 'let the light in, fully',
+          hint: 'Let the light in, fully',
           effects: { lucidity: 25, axes: { selfOthers: 6 }, flags: ['windows-open'] },
           outcome: [
             'The conversation is awful, and short, and the wall comes down brick by audible brick while you’re both still sitting there.',
@@ -445,7 +445,7 @@ export const justFriends: Room = {
         {
           id: 'nothing-to-tell',
           text: 'Keep her in the "nothing to tell" folder.',
-          hint: 'protect the category, not just the secret',
+          hint: 'Protect the category, not just the secret',
           effects: { lucidity: 6, axes: { selfOthers: -6 }, flags: ['wall-built'] },
           outcome: [
             'The folder thickens by one evening per beat, each one individually defensible.',
@@ -461,7 +461,7 @@ export const justFriends: Room = {
         {
           id: 'test-the-evening',
           text: 'Engineer one evening with Alena that could go either way.',
-          hint: 'keep it deniable, on purpose',
+          hint: 'Keep it deniable, on purpose',
           effects: { lucidity: 8, axes: { controlAcceptance: -6, reasonFeeling: 4 }, flags: ['tested-almost'] },
           outcome: [
             'The evening, real-time, frank — the room doesn’t soften what it is, only where it stops.',
@@ -477,7 +477,7 @@ export const justFriends: Room = {
         {
           id: 'name-it-set-boundary',
           text: 'Name it to Alena, out loud, and set the boundary yourself.',
-          hint: 'say the true sentence to the person it’s about',
+          hint: 'Say the true sentence to the person it’s about',
           effects: { lucidity: 22, axes: { selfOthers: -4, reasonFeeling: -4 } },
           outcome: [
             'The hardest version: "this is becoming the thing people call nothing" — said to her face, not rehearsed away.',
@@ -526,7 +526,7 @@ export const theEx: Room = {
         {
           id: 'reread-everything',
           text: 'Open the whole archive. 2 a.m.',
-          hint: 'let yourself fall all the way in',
+          hint: 'Let yourself fall all the way in',
           effects: { lucidity: 8, axes: { controlAcceptance: -6 }, flags: ['opened-the-archive'] },
           outcome: [
             'The spiral, honestly rendered: nothing sent, everything stirred, four years of curated golden light replayed at full brightness.',
@@ -542,7 +542,7 @@ export const theEx: Room = {
         {
           id: 'answer-her',
           text: 'Reply. Just to talk.',
-          hint: 'reopen a door you have four years of muscle memory for',
+          hint: 'Reopen a door you have four years of muscle memory for',
           effects: { lucidity: 10, axes: { selfOthers: 4 }, flags: ['answered-the-ex'] },
           outcome: [
             '"Just talking" with someone you have four years of muscle memory for is not, it turns out, a neutral act.',
@@ -558,7 +558,7 @@ export const theEx: Room = {
         {
           id: 'block',
           text: 'Block. Both apps. Tonight.',
-          hint: 'close the door you already closed once',
+          hint: 'Close the door you already closed once',
           effects: { lucidity: 15, axes: { selfOthers: -4, reasonFeeling: -4 } },
           outcome: [
             'Clean, cold, and — the room insists on this — genuinely grieved, not just efficient.',
@@ -574,7 +574,7 @@ export const theEx: Room = {
         {
           id: 'tell-jules',
           text: 'Hand Jules the phone: "Sara wrote."',
-          hint: 'let the window face the right way',
+          hint: 'Let the window face the right way',
           effects: { lucidity: 22, axes: { selfOthers: 8 } },
           outcome: [
             'The window instead of the wall. Jules’s fear, whatever it is, gets handled in the open air instead of alone in your head.',
@@ -620,7 +620,7 @@ export const theConfession: Room = {
         {
           id: 'confess',
           text: 'Tell Jules everything, now, whole.',
-          hint: 'put the whole stone down at once',
+          hint: 'Put the whole stone down at once',
           effects: { lucidity: 25, hearts: -1, axes: { selfOthers: 6 }, flags: ['confessed-whole'] },
           outcome: [
             'The conversation, in close-up: flooding, an hour of questions with no good answers, the two of you on the sofa until the sky changes color.',
@@ -636,7 +636,7 @@ export const theConfession: Room = {
         {
           id: 'carry-it',
           text: 'Never tell. Carry it alone, forever.',
-          hint: 'take the weight so no one else has to',
+          hint: 'Take the weight so no one else has to',
           effects: { lucidity: 12, axes: { selfOthers: -6 }, flags: ['carried-alone'] },
           outcome: [
             'The strongest case the game makes for silence: protecting Jules from pain that would serve only your own conscience, not their wellbeing.',
@@ -652,7 +652,7 @@ export const theConfession: Room = {
         {
           id: 'trickle',
           text: 'Confess a softened version.',
-          hint: 'give Jules part of the truth',
+          hint: 'Give Jules part of the truth',
           effects: { lucidity: 6, flags: ['trickle-truth'] },
           outcome: [
             'The drip begins tonight, and the room shows you exactly where it leads: three future revisions, each one costing more than the whole truth would have, all at once, tonight.',
@@ -667,7 +667,7 @@ export const theConfession: Room = {
         {
           id: 'let-it-surface',
           text: '"It’ll come out naturally" — i.e., never, i.e., when it’s worst.',
-          hint: 'outsource the decision to chance',
+          hint: 'Outsource the decision to chance',
           effects: { lucidity: 4, axes: { controlAcceptance: -6 }, flags: ['waiting-to-be-caught'] },
           outcome: [
             'The room names the strategy honestly, out loud: this is outsourcing the decision to chance, so that whatever happens can feel like weather instead of a choice you made.',
@@ -713,7 +713,7 @@ export const theOtherSideOfTheDoor: Room = {
         {
           id: 'continue',
           text: 'Keep the afternoons. Keep the sentence.',
-          hint: 'let it become part of your life, quietly',
+          hint: 'Let it become part of your life, quietly',
           effects: { lucidity: 6, axes: { reasonFeeling: 4 }, flags: ['stayed-the-third'] },
           outcome: [
             'Time-lapse honesty: seasons pass in four beats, the arrangement calcifying, unnoticed, into the actual architecture of your life.',
@@ -729,7 +729,7 @@ export const theOtherSideOfTheDoor: Room = {
         {
           id: 'end-it',
           text: 'End it, without asking him to choose.',
-          hint: 'leave cleanly, on your own terms',
+          hint: 'Leave cleanly, on your own terms',
           effects: { lucidity: 20, axes: { selfOthers: -4, controlAcceptance: 4 } },
           outcome: [
             'An ending nobody witnesses and no one will thank you for — disenfranchised grief, named plainly by the room because there’s no one else around to name it.',
@@ -745,7 +745,7 @@ export const theOtherSideOfTheDoor: Room = {
         {
           id: 'tell-her',
           text: 'Tell his wife.',
-          hint: 'give her the choice you’ve been keeping from her',
+          hint: 'Give her the choice you’ve been keeping from her',
           effects: { lucidity: 15, hearts: -1, flags: ['told-the-wife'] },
           outcome: [
             'The detonation, rendered honestly ambivalent: she deserved the truth, unambiguously.',
@@ -761,7 +761,7 @@ export const theOtherSideOfTheDoor: Room = {
         {
           id: 'demand-choice',
           text: '"Her or me. By Friday."',
-          hint: 'force the decision that was never yours to force',
+          hint: 'Force the decision that was never yours to force',
           effects: { lucidity: 10, axes: { controlAcceptance: -6 } },
           outcome: [
             (s: RunState) =>
@@ -814,7 +814,7 @@ export const theScoreboard: Room = {
         {
           id: 'prosecute',
           text: 'Cross-examine the past: dates, contexts, details.',
-          hint: 'demand the full account, again',
+          hint: 'Demand the full account, again',
           effects: { lucidity: 10, hearts: -1, axes: { controlAcceptance: -10 } },
           outcome: [
             'Every question gets answered. Every answer costs exactly one night’s sleep.',
@@ -830,7 +830,7 @@ export const theScoreboard: Room = {
         {
           id: 'dismiss-with-prejudice',
           text: 'Dismiss the case. And mean it.',
-          hint: 'let the number stop being evidence',
+          hint: 'Let the number stop being evidence',
           effects: { lucidity: 20, axes: { controlAcceptance: 10 } },
           outcome: [
             'Not suppression — dismissal with the reasons read aloud: the person the number belongs to no longer exists; the one who exists chose you.',
@@ -846,7 +846,7 @@ export const theScoreboard: Room = {
         {
           id: 'testify-against-yourself',
           text: 'Take the stand on your own double standard.',
-          hint: 'put your own number on the record too',
+          hint: 'Put your own number on the record too',
           effects: { lucidity: 25, axes: { reasonFeeling: -6 } },
           outcome: [
             'The bravest move in the hearing: your number and theirs, read side by side, in the same room, at the same volume.',
@@ -862,7 +862,7 @@ export const theScoreboard: Room = {
         {
           id: 'ask-what-verdict-frees',
           text: 'Ask the court what verdict would actually free you.',
-          hint: 'ask the harder question',
+          hint: 'Ask the harder question',
           effects: { lucidity: 30 },
           outcome: [
             'Silence. Then the Porter, gently: "None. There is no number, in either direction, that has ever acquitted a guest of their own imagination."',

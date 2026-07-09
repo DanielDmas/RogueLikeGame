@@ -120,7 +120,7 @@ export const theRegistry: Room = {
         {
           id: 'sign-it',
           text: '"That was me. I’ll own it — all of it." Sign the card yourself.',
-          hint: 'own it, the hardest kind of signature',
+          hint: 'Own it, the hardest kind of signature',
           effects: { lucidity: 10, axes: { selfOthers: -3 } },
           outcome: [
             'You take the pen chained to the shelf and sign beneath the typed line, in your own hand, which the file seems to have been expecting.',
@@ -130,7 +130,7 @@ export const theRegistry: Room = {
         {
           id: 'disown-it',
           text: '"That doesn’t sound like me anymore." Leave the card unsigned.',
-          hint: 'let the distance be real, not just comfortable',
+          hint: 'Let the distance be real, not just comfortable',
           effects: { lucidity: 6, axes: { controlAcceptance: -5 } },
           outcome: [
             'You leave the card exactly as you found it and step back from the shelf, the way you might step back from a stranger who happens to share your coat.',
@@ -140,7 +140,7 @@ export const theRegistry: Room = {
         {
           id: 'refile-unjudged',
           text: 'Close the lid gently, mid-sentence, without comment either way.',
-          hint: 'neither defend it nor deny it — file it',
+          hint: 'Neither defend it nor deny it — file it',
           effects: { lucidity: 8, axes: { controlAcceptance: 6 } },
           outcome: [
             'You close the file the way you might close a book mid-chapter, out of respect rather than agreement, and return it to the shelf.',
@@ -150,7 +150,7 @@ export const theRegistry: Room = {
         {
           id: 'pin-the-keycard',
           text: 'Pin the old keycard to the edge of the open file — an amendment to the record.',
-          hint: 'proof the corridor happened, and was walked away from',
+          hint: 'Proof the corridor happened, and was walked away from',
           effects: { lucidity: 10 },
           keepsakeId: 'the-keycard',
           available: (s: RunState) => (s.keepsakesHeld ?? []).includes('the-keycard'),
@@ -215,7 +215,7 @@ export const theDoorsNotOpened: Room = {
         {
           id: 'enter-late',
           text: 'Push it the rest of the way open. Go in.',
-          hint: 'curiosity, honored late',
+          hint: 'Curiosity, honored late',
           effects: { lucidity: 8, axes: { reasonFeeling: 4 } },
           outcome: [
             doorsNotOpenedEnterOutcome,
@@ -231,7 +231,7 @@ export const theDoorsNotOpened: Room = {
         {
           id: 'close-it',
           text: 'Close it the rest of the way. Some doors are honestly better left as doors.',
-          hint: 'respect its pastness',
+          hint: 'Respect its pastness',
           effects: { lucidity: 8, axes: { controlAcceptance: 6 } },
           outcome: [
             'You push it shut, gently, the way you’d close a door on a room where someone is finally, actually asleep.',
@@ -247,7 +247,7 @@ export const theDoorsNotOpened: Room = {
         {
           id: 'ask-why-now',
           text: '"Why did you open again, now, of all times?" Ask the door itself.',
-          hint: 'interrogate the offering, not just the room',
+          hint: 'Interrogate the offering, not just the room',
           effects: { lucidity: 10, axes: { reasonFeeling: -5 } },
           outcome: [
             'No answer, exactly — doors, even here, are not naturally forthcoming — but the hinges are recently oiled. Someone wanted this door easy to move tonight, specifically.',
@@ -319,7 +319,7 @@ export const theOtherSide: Room = {
         {
           id: 'answer-yourself',
           text: '"I hear you." Speak back to who you were.',
-          hint: 'acknowledgment, not correction',
+          hint: 'Acknowledgment, not correction',
           effects: { lucidity: 10, axes: { selfOthers: 4 } },
           outcome: [
             'You say it — not a correction, not an apology, just an acknowledgment, the way you’d greet someone at a door you weren’t sure would still recognize you.',
@@ -335,7 +335,7 @@ export const theOtherSide: Room = {
         {
           id: 'let-yourself-finish',
           text: 'Sit across from it and say nothing. Let it finish, this time, uninterrupted.',
-          hint: 'the uninterrupted hearing you may never have given anyone',
+          hint: 'The uninterrupted hearing you may never have given anyone',
           effects: { lucidity: 8, axes: { controlAcceptance: 6 } },
           outcome: [
             'You let it speak, all the way to the end, without correcting a single word — which, you notice, is not a thing you always managed the first time either.',
@@ -351,7 +351,7 @@ export const theOtherSide: Room = {
         {
           id: 'sit-in-both-chairs',
           text: '"There was never anyone else in here." Sit in both chairs, in turn, and mean it.',
-          hint: 'the costliest reading: there was only ever you',
+          hint: 'The costliest reading: there was only ever you',
           effects: { lucidity: 12 },
           outcome: [
             'You sit in the second chair too, briefly, and try the voice on like a coat you used to own — and it fits, exactly, which is either comforting or the whole problem, depending on the hour.',
@@ -367,7 +367,7 @@ export const theOtherSide: Room = {
         {
           id: 'hand-the-sim',
           text: 'Hand the dead SIM card to the voice in the second chair.',
-          hint: 'the person you stopped being in secret',
+          hint: 'The person you stopped being in secret',
           effects: { lucidity: 12, axes: { selfOthers: 4 } },
           keepsakeId: 'the-sim',
           available: (s: RunState) => (s.keepsakesHeld ?? []).includes('the-sim'),

@@ -22,7 +22,7 @@ export const theFrontDesk: Room = {
         {
           id: 'what-is-this',
           text: '"What is this place?"',
-          hint: 'ask about the hotel itself',
+          hint: 'Ask about the hotel itself',
           effects: { lucidity: 10, axes: { reasonFeeling: -4 } },
           outcome: [
             'Porter: The rooms hold the nights people don’t tell anyone about. You will walk them as the people inside them. That is the whole architecture.',
@@ -31,7 +31,7 @@ export const theFrontDesk: Room = {
         {
           id: 'whose-side',
           text: '"Whose side are you on?"',
-          hint: 'ask about the Porter',
+          hint: 'Ask about the Porter',
           effects: { lucidity: 10, axes: { reasonFeeling: 4 } },
           outcome: [
             'Porter: The desk is neutral, which every guest mistakes for cruelty. You will be everyone before morning. Then "side" will stop meaning very much.',
@@ -40,7 +40,7 @@ export const theFrontDesk: Room = {
         {
           id: 'let-me-out',
           text: '"I just want to go home."',
-          hint: 'refuse the frame outright',
+          hint: 'Refuse the frame outright',
           effects: { lucidity: 10, axes: { controlAcceptance: -6 } },
           outcome: [
             'Porter: Home is where the conversation you are avoiding lives. The way back runs through every room where someone is avoiding one. No shortcut has ever been found. People check, nightly.',
