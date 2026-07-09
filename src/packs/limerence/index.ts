@@ -16,6 +16,7 @@ import { HEART_SVG } from '../../ui/dom';
 import { choseIn } from '../../engine/gameState';
 import { mirrorUnlocked, patternAvailable, computePatternEligible, PATTERN_CLARITY } from './endingLogic';
 import { limerenceEpiphanies } from './epiphanies';
+import { limerenceDoorBark, limerenceActIntroText } from './guide';
 
 /** Minor-leaning progressions per floor (spec `docs/design-limerence/`
  * creative bible: "act progressions in minor-leaning keys"), warming toward
@@ -167,8 +168,8 @@ export const limerencePack: ContentPack = {
 
   guide: {
     speakerPrefixes: ['Porter:', 'THE ROOM:'],
-    doorBark: () => 'Porter: Choose a door. The hotel keeps its hints honest.',
-    actIntroText: () => undefined,
+    doorBark: limerenceDoorBark,
+    actIntroText: limerenceActIntroText,
     examinedActBarkFallback: EXAMINED_ACT_BARK_FALLBACK,
     figure: usherFigure, // placeholder rig — the Porter's own figure lands at L5
   },

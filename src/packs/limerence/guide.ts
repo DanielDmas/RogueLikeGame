@@ -1,0 +1,91 @@
+// The Night Porter's voice (L5 polish: the "door-bark dread pass"). Mirrors
+// content/usher.ts's structure exactly (same priority order: understory
+// fork > single-door gate > first-choice explainer > second-run wink >
+// axis-reactive lines cycling by visited.length > generic pool), re-skinned
+// into the Porter's own register — Chattam-flavored dread, hotel-at-3-a.m.
+// diction, Trust/Clarity/Head-Heart/Mine-Ours/Grip-Open instead of
+// ANAMNESIS's own stat names. Was previously a single static string.
+import type { RunState } from '../../engine/schema';
+import { t } from '../../engine/text/resolver';
+import { usherBarkKey, actIntroKey } from '../../engine/text/keys';
+
+export function limerenceDoorBark(s: RunState, runsCompleted: number, doorCount = 2, atUnderstoryFork = false): string {
+  if (atUnderstoryFork) {
+    return t(
+      usherBarkKey('understory-hint'),
+      'Porter: There is a door behind the desk that is not on the floor plan. It was, once. Take it or don’t — it will not ask twice.',
+    );
+  }
+
+  if (doorCount === 1 && s.visited.length > 0) {
+    return t(
+      usherBarkKey('gate-single-door'),
+      'Porter: Only one door remains on this stretch of corridor. The others are behind you now — closed, or walked past, which is its own kind of closing. This is simply the one still open.',
+    );
+  }
+
+  if (runsCompleted === 0 && s.act === 1 && s.visited.length === 1) {
+    return t(
+      usherBarkKey('first-choice-explainer'),
+      'Porter: Several doors, and only some are yours tonight. Each holds a different night going wrong, not a different score. Choose the one whose question you can actually sit inside.',
+    );
+  }
+
+  if (runsCompleted > 0 && s.visited.length <= 1) {
+    return t(
+      usherBarkKey('second-run'),
+      'Porter: You’ve checked in again. The desk remembers the room number, even on nights you’d rather it didn’t.',
+    );
+  }
+
+  const { reasonFeeling, selfOthers, controlAcceptance } = s.axes;
+  const candidates: string[] = [];
+
+  if (reasonFeeling <= -30)
+    candidates.push(t(usherBarkKey('reason-low'), 'Porter: You weigh every room before you enter it. The rooms have started weighing you back.'));
+  if (reasonFeeling >= 30)
+    candidates.push(t(usherBarkKey('reason-high'), 'Porter: You feel every room here at full volume. The corridor runs warmer for guests like you. That is not a compliment. It is not a warning either.'));
+  if (selfOthers <= -30)
+    candidates.push(t(usherBarkKey('self-low'), 'Porter: You keep what’s yours behind a door of its own. Sensible. Ask, some quiet night, what the guarding costs.'));
+  if (selfOthers >= 30)
+    candidates.push(t(usherBarkKey('self-high'), 'Porter: You keep handing yourself to whoever’s in the room. Generous of you. There is less of you in the room every time.'));
+  if (controlAcceptance <= -30)
+    candidates.push(t(usherBarkKey('control-low'), 'Porter: You fight every room you walk into. I respect it. The rooms have never once noticed.'));
+  if (controlAcceptance >= 30)
+    candidates.push(t(usherBarkKey('control-high'), 'Porter: You’ve stopped bracing at the door. That isn’t surrender, whatever it feels like at 3 a.m. It’s a different kind of steady.'));
+
+  if (s.hearts === 1)
+    candidates.push(t(usherBarkKey('one-heart'), 'Porter: One measure of Trust left in your ledger. I’m not permitted to worry aloud. This is the nearest I come.'));
+  if (s.lucidity >= 150)
+    candidates.push(t(usherBarkKey('high-lucidity'), 'Porter: You’re seeing this floor clearly now. Clarity is the one thing in this hotel that can’t be faked at the desk.'));
+
+  if (candidates.length > 0) return candidates[s.visited.length % candidates.length];
+
+  const generic = [
+    t(usherBarkKey('generic0'), 'Porter: Choose a door. Every room on this floor is occupied. None of them know that yet.'),
+    t(usherBarkKey('generic1'), 'Porter: Take your time. The Interval doesn’t bill by the hour.'),
+    t(usherBarkKey('generic2'), 'Porter: I could tell you which door I’d take. I’ve taken all of them, some nights more than once.'),
+    t(usherBarkKey('generic3'), 'Porter: The hints above each door are honest. This hotel does not deal in false signs.'),
+    t(usherBarkKey('generic4'), 'Porter: There is no checkout time here. That isn’t meant as a comfort. Take it as one anyway, if it helps.'),
+    t(usherBarkKey('generic5'), 'Porter: Whichever door you skip stays locked, not gone. A different night, perhaps.'),
+    t(usherBarkKey('generic6'), 'Porter: Read the hint before you knock. It’s the only honest warning this floor gives.'),
+    t(usherBarkKey('generic7'), 'Porter: Every guest on this floor believes their door is the only one. The hallway disagrees, {name}.'),
+  ];
+  return generic[s.visited.length % generic.length];
+}
+
+/** Per-floor announcements (L5 polish) — LIMERENCE previously returned
+ * `undefined` for every act, so a floor change carried no Porter narration
+ * at all beyond the palette shift. Same shape/cadence as ANAMNESIS's
+ * `actIntroText`, one line per act, spoken as the elevator doors open. */
+export function limerenceActIntroText(act: number): string | undefined {
+  const fallback: Record<number, string> = {
+    1: 'Ahead: a school hallway at night, lockers standing in for doors, each leaking the particular light of being fifteen and certain it’s forever. A caution, traveler: some of these doors are only feelings — and a few of them cost a measure of Trust anyway.',
+    2: 'The corridor cools into something like a city apartment building — thin walls, someone else’s music through the ceiling, every door left slightly ajar on purpose. The room service worth exploring up here comes with a real reservation, and it can cost a measure of Trust.',
+    3: 'The carpet thickens. These are the rooms guests keep for years without quite meaning to — a whole life furnished around one unopened question. Some of what waits behind these doors has a price you will feel, {name}, not merely read about.',
+    4: 'The fog thins toward something almost like morning. Three doors remain on this floor, and then the desk. What happens here counts twice over, whatever the Porter tells you about the Interval keeping no ledger. Even this close to checkout, a careless door can still cost a measure of Trust.',
+  };
+  const text = fallback[act];
+  if (!text) return undefined;
+  return t(actIntroKey(act), text);
+}

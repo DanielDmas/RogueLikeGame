@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { anamnesisPack } from '../packs/anamnesis';
 import { limerencePack } from '../packs/limerence';
 import type { ContentPack } from '../packs/types';
+import { newRun } from '../engine/gameState';
 
 const packs: { name: string; pack: ContentPack }[] = [
   { name: 'anamnesis', pack: anamnesisPack },
@@ -101,6 +102,22 @@ describe.each(packs)('ContentPack conformance — $name', ({ pack }) => {
     for (const id of Object.keys(pack.audio.roomAccents)) {
       expect(roomIds.has(id)).toBe(true);
     }
+  });
+
+  it('every act (1-4) has a non-empty intro announcement', () => {
+    for (const act of [1, 2, 3, 4]) {
+      const intro = pack.guide.actIntroText(act);
+      expect(intro, `act ${act} has no intro text`).toBeTruthy();
+    }
+  });
+
+  it('doorBark actually varies across a run (not a single static line)', () => {
+    const run = newRun();
+    const lines = new Set<string>();
+    for (let i = 0; i < 8; i++) {
+      lines.add(pack.guide.doorBark({ ...run, visited: Array(i).fill('x'), act: 1 }, 0, 2, false));
+    }
+    expect(lines.size, 'doorBark should cycle through more than one line').toBeGreaterThan(1);
   });
 
   it('endingRules.evaluate/endingsTotal/epitaphLines are callable without throwing', () => {
