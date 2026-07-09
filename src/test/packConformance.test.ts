@@ -81,6 +81,11 @@ describe.each(packs)('ContentPack conformance — $name', ({ pack }) => {
     }
   });
 
+  it('this pack has at least one bespoke room diorama', () => {
+    const withDiorama = pack.rooms.filter((r) => pack.visuals.dioramaFor(r.id, 'high') !== null);
+    expect(withDiorama.length, `${pack.meta.id} should give at least one signature room its own diorama`).toBeGreaterThan(0);
+  });
+
   it('every ending has an icon', () => {
     for (const ending of pack.endings) {
       expect(pack.visuals.endingIcons[ending.id], `ending ${ending.id} missing an icon`).toBeDefined();

@@ -19,17 +19,17 @@ export interface Diorama {
   setAccent?(on: boolean): void;
 }
 
-const DIORAMA_Z = -10;
+export const DIORAMA_Z = -10;
 
-function mat(color: number, emissive = 0x000000, emissiveIntensity = 0, opts: Partial<THREE.MeshStandardMaterialParameters> = {}) {
+export function mat(color: number, emissive = 0x000000, emissiveIntensity = 0, opts: Partial<THREE.MeshStandardMaterialParameters> = {}) {
   return new THREE.MeshStandardMaterial({ color, emissive, emissiveIntensity, roughness: 0.85, ...opts });
 }
 
-function box(w: number, h: number, d: number, material: THREE.MeshStandardMaterial): THREE.Mesh {
+export function box(w: number, h: number, d: number, material: THREE.MeshStandardMaterial): THREE.Mesh {
   return new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material);
 }
 
-function trackDispose(group: THREE.Group): () => void {
+export function trackDispose(group: THREE.Group): () => void {
   return () => {
     group.traverse((o) => {
       if (o instanceof THREE.Mesh) {

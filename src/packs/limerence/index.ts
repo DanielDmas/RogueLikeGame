@@ -1,17 +1,19 @@
-// The LIMERENCE ContentPack — L1 skeleton (spec
-// docs/design-limerence/09-milestones-testing.md, milestone L1), now
-// carrying LIMERENCE's own 3D scene palette (theme.ts) and generative music
-// identity (below) — real, not placeholder. Still borrowed as an explicit
-// placeholder: the Usher rig (the Porter's own desk-lamp-lantern figure is
-// L5 work) and the hearts SVG (the Trust re-skin is also L5).
+// The LIMERENCE ContentPack (spec docs/design-limerence/09-milestones-testing.md).
+// Carries its own 3D scene palette (theme.ts), generative music identity
+// (below), door/ending icons (icons.ts), the Porter's own figure rig
+// (figure.ts), bespoke room dioramas for its signature rooms (dioramas.ts),
+// and its own Trust/Clarity HUD wording (skin, below) — L5 polish, complete.
+// Still borrowed as an explicit placeholder: the hearts glyph itself (an
+// icon swap, not a wording one) and per-room ambient audio accents.
 import type { ActKey } from '../../audio/soundEngine';
 import type { ContentPack } from '../types';
 import type { ActId, RunState } from '../../engine/schema';
 import { limerenceRooms } from './rooms';
 import { limerenceEndings } from './endings';
-import { usherFigure } from '../../scene/themes';
+import { porterFigure } from './figure';
 import { limerenceBuildTheme, LIMERENCE_FOG_COLOR_BY_THEME, LIMERENCE_MOOD_TINTS } from './theme';
 import { iconFor as limerenceIconFor, endingIcons as limerenceEndingIcons } from './icons';
+import { limerenceDioramaFor } from './dioramas';
 import { HEART_SVG } from '../../ui/dom';
 import { choseIn } from '../../engine/gameState';
 import { mirrorUnlocked, patternAvailable, computePatternEligible, PATTERN_CLARITY } from './endingLogic';
@@ -171,7 +173,7 @@ export const limerencePack: ContentPack = {
     doorBark: limerenceDoorBark,
     actIntroText: limerenceActIntroText,
     examinedActBarkFallback: EXAMINED_ACT_BARK_FALLBACK,
-    figure: usherFigure, // placeholder rig — the Porter's own figure lands at L5
+    figure: porterFigure,
   },
 
   skin: {
@@ -257,7 +259,7 @@ export const limerencePack: ContentPack = {
     buildTheme: limerenceBuildTheme,
     moodTints: LIMERENCE_MOOD_TINTS,
     fogColorByTheme: LIMERENCE_FOG_COLOR_BY_THEME,
-    dioramaFor: () => null, // bespoke room dioramas are L5 work
+    dioramaFor: limerenceDioramaFor,
     dioramaAccentHooks: [],
     supportsLightTheme: true,
     // A sleeker, cooler modern-hotel door — thin steel-dark frame instead of
