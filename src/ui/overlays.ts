@@ -719,7 +719,7 @@ export function showCodex(ui: HTMLElement, profile: Profile, pack: ContentPack):
     const actNameFor = (act: Room['act']) => t(actNameKey(act), pack.graph.actNamesEn[act]);
 
     for (const room of pack.rooms) {
-      if (isHiddenFromCodex(room.id, profile)) continue;
+      if (isHiddenFromCodex(room.id, profile, pack.graph.understorySequence)) continue;
       if (room.id === pack.hooks.lastMessageId) {
         // Room 19's codex entry is the sentence you sent
         const unlocked = profile.codexUnlocked.includes(room.id);
@@ -798,14 +798,19 @@ export function showCodex(ui: HTMLElement, profile: Profile, pack: ContentPack):
  * whichever epiphanies have been earned so far, in earn order. No locked
  * slots, no counts for unearned epiphanies — quiet means quiet.
  */
-export function showLedger(ui: HTMLElement, profile: Profile, registry: RoomRegistry): Promise<void> {
+export function showLedger(
+  ui: HTMLElement,
+  profile: Profile,
+  registry: RoomRegistry,
+  understorySequence: readonly string[],
+): Promise<void> {
   return new Promise((resolve) => {
     const o = overlay(ui);
     const panel = el('div', 'codex-panel');
     panel.append(el('h2', undefined, t(uiKey('ledger'), "Traveler's Ledger")));
 
     const stats = el('div', 'ledger-stats');
-    for (const row of ledgerStats(profile, registry)) {
+    for (const row of ledgerStats(profile, registry, understorySequence)) {
       const r = el('div', 'ledger-row');
       r.append(el('span', 'ledger-label', row.label), el('span', 'ledger-value', row.value));
       stats.appendChild(r);

@@ -2,7 +2,7 @@ import type { Choice, RunState } from '../engine/schema';
 import { el } from './dom';
 import { t } from '../engine/text/resolver';
 import { roomChoiceTextKey, roomChoiceHintKey, uiKey, keepsakeKey } from '../engine/text/keys';
-import { KEEPSAKES } from '../content/keepsakes';
+import { KEEPSAKES, type KeepsakeDef } from '../content/keepsakes';
 
 export interface DoorOption {
   id: string;
@@ -22,8 +22,13 @@ export class ChoicePanel {
     this.stage = stageBottom;
   }
 
-  /** Presents a room's choices; resolves with the chosen one. */
-  pick(choices: Choice[], state: RunState, roomId: string): Promise<Choice> {
+  /** Presents a room's choices; resolves with the chosen one. `keepsakes`
+   * (the active pack's — spec 08 §3 engine-default/pack-override pattern)
+   * resolves the ✧ keepsake-choice tooltip's name; defaults to ANAMNESIS's
+   * own list so pre-existing call sites are unaffected, but a second pack
+   * (e.g. LIMERENCE) must pass its own or its keepsake choices render with
+   * a nameless tooltip. */
+  pick(choices: Choice[], state: RunState, roomId: string, keepsakes: KeepsakeDef[] = KEEPSAKES): Promise<Choice> {
     void state;
     return new Promise((resolve) => {
       const wrap = el('div', 'choices');
@@ -31,7 +36,7 @@ export class ChoicePanel {
       choices.forEach((c, i) => {
         const card = el('button', 'choice-card');
         if (c.keepsakeId) {
-          const def = KEEPSAKES.find((k) => k.id === c.keepsakeId);
+          const def = keepsakes.find((k) => k.id === c.keepsakeId);
           const name = def ? t(keepsakeKey(def.id, 'name'), def.name) : '';
           const mark = el('span', 'keepsake-mark', '✧');
           mark.title = name

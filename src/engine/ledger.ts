@@ -12,19 +12,32 @@ import type { RoomRegistry } from './storyEngine';
 import { t } from './text/resolver';
 import { epiphanyKey, roomTitleKey, uiKey } from './text/keys';
 
-/** The Act V understory rooms are filtered from the codex (and, by the same
- * rule, the Ledger's room count) until first walked — they shouldn't hint at
- * their own existence ahead of time. Moved here (from `ui/overlays.ts`) so
- * both the codex and `visibleRoomCount` share exactly one rule. */
-export function isHiddenFromCodex(roomId: string, profile: Profile): boolean {
-  return UNDERSTORY_SEQUENCE.includes(roomId) && !profile.codexUnlocked.includes(roomId);
+/** The understory rooms are filtered from the codex (and, by the same rule,
+ * the Ledger's room count) until first walked — they shouldn't hint at their
+ * own existence ahead of time. Moved here (from `ui/overlays.ts`) so both the
+ * codex and `visibleRoomCount` share exactly one rule. `understorySequence`
+ * defaults to ANAMNESIS's own (spec 08 §3 engine-default/pack-override
+ * pattern) — pass a pack's `graph.understorySequence` so a second pack's
+ * Records Office (e.g. LIMERENCE's) is hidden by its *own* room ids, not
+ * ANAMNESIS's (otherwise a second pack's understory rooms leak into its
+ * codex as locked cards from the start). */
+export function isHiddenFromCodex(
+  roomId: string,
+  profile: Profile,
+  understorySequence: readonly string[] = UNDERSTORY_SEQUENCE,
+): boolean {
+  return understorySequence.includes(roomId) && !profile.codexUnlocked.includes(roomId);
 }
 
 /** Rooms the codex (and therefore the Ledger) actually renders a card for
  * right now: every base room, plus only the understory rooms already
  * walked — never leaking which ones exist before they're found. */
-export function visibleRoomCount(profile: Profile, registry: RoomRegistry): { seen: number; total: number } {
-  const visible = registry.all().filter((r) => !isHiddenFromCodex(r.id, profile));
+export function visibleRoomCount(
+  profile: Profile,
+  registry: RoomRegistry,
+  understorySequence: readonly string[] = UNDERSTORY_SEQUENCE,
+): { seen: number; total: number } {
+  const visible = registry.all().filter((r) => !isHiddenFromCodex(r.id, profile, understorySequence));
   const seen = visible.filter((r) => profile.codexUnlocked.includes(r.id)).length;
   return { seen, total: visible.length };
 }
@@ -53,11 +66,15 @@ export interface LedgerRow {
 /** The Ledger's stat rows, in display order. Rows for descents/examined runs
  * are omitted entirely below their threshold (spec 06 §5: "don't advertise
  * the understory"); the last-message row is omitted until one exists. */
-export function ledgerStats(profile: Profile, registry: RoomRegistry): LedgerRow[] {
+export function ledgerStats(
+  profile: Profile,
+  registry: RoomRegistry,
+  understorySequence: readonly string[] = UNDERSTORY_SEQUENCE,
+): LedgerRow[] {
   const rows: LedgerRow[] = [];
   rows.push({ id: 'runs', label: t(uiKey('ledgerRuns'), 'Runs completed'), value: String(profile.runsCompleted) });
 
-  const { seen, total } = visibleRoomCount(profile, registry);
+  const { seen, total } = visibleRoomCount(profile, registry, understorySequence);
   rows.push({ id: 'rooms', label: t(uiKey('ledgerRooms'), 'Rooms witnessed'), value: `${seen} of ${total}` });
 
   rows.push({
@@ -171,10 +188,15 @@ const EPIPHANY_PREDICATES: Partial<Record<EpiphanyId, (profile: Profile, run: Ru
  * `EPIPHANY_IDS` order. Idempotent: calling this again with an unchanged
  * profile/run returns an empty array, since every predicate is checked
  * against the profile that already has this run's counters applied. */
-export function evaluateEpiphanies(profile: Profile, finishedRun: RunState, registry: RoomRegistry): string[] {
+export function evaluateEpiphanies(
+  profile: Profile,
+  finishedRun: RunState,
+  registry: RoomRegistry,
+  understorySequence: readonly string[] = UNDERSTORY_SEQUENCE,
+): string[] {
   const held = new Set(profile.epiphanies);
   const newly: string[] = [];
-  const baseRoomIds = registry.all().map((r) => r.id).filter((id) => !UNDERSTORY_SEQUENCE.includes(id));
+  const baseRoomIds = registry.all().map((r) => r.id).filter((id) => !understorySequence.includes(id));
 
   const actRoomIds: Record<1 | 2 | 3, string[]> = { 1: [], 2: [], 3: [] };
   for (const room of registry.all()) {

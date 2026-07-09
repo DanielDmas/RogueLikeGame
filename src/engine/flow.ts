@@ -352,7 +352,7 @@ export class Game {
     this.stageBottom.classList.add('overlay-hidden');
     const action = await showPauseMenu(this.ui);
     if (action === 'codex') await showCodex(this.ui, this.profile, this.pack);
-    if (action === 'ledger') await showLedger(this.ui, this.profile, this.registry);
+    if (action === 'ledger') await showLedger(this.ui, this.profile, this.registry, this.pack.graph.understorySequence);
     if (action === 'persona') {
       this.profile.persona = await showPersona(this.ui, this.profile.persona);
       await this.persist();
@@ -403,7 +403,7 @@ export class Game {
       if (action === 'codex') {
         await showCodex(this.ui, this.profile, this.pack);
       } else if (action === 'ledger') {
-        await showLedger(this.ui, this.profile, this.registry);
+        await showLedger(this.ui, this.profile, this.registry, this.pack.graph.understorySequence);
       } else if (action === 'persona') {
         this.profile.persona = await showPersona(this.ui, this.profile.persona);
         await this.persist();
@@ -610,7 +610,7 @@ export class Game {
       // panel's place, silently misplacing everything below it.
       this.text.hide();
       const available = stage.choices.filter((c) => !c.available || c.available(this.state));
-      const choice: Choice = await this.choices.pick(available, this.state, room.id);
+      const choice: Choice = await this.choices.pick(available, this.state, room.id, this.pack.keepsakes);
       sound.choice();
       const heartsBefore = this.state.hearts;
       const flagsBefore = this.state.flags;
@@ -776,7 +776,7 @@ export class Game {
     if (this.state.examined) this.profile.examinedRuns += 1;
     // Epiphanies (spec 06): evaluated last, once every other counter above
     // has this run's contribution already applied.
-    const newEpiphanies = evaluateEpiphanies(this.profile, this.state, this.registry);
+    const newEpiphanies = evaluateEpiphanies(this.profile, this.state, this.registry, this.pack.graph.understorySequence);
     this.profile.epiphanies.push(...newEpiphanies);
     await this.persist();
 
