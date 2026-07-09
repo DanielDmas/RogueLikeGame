@@ -11,6 +11,7 @@ import { limerenceRooms } from './rooms';
 import { limerenceEndings } from './endings';
 import { usherFigure } from '../../scene/themes';
 import { limerenceBuildTheme, LIMERENCE_FOG_COLOR_BY_THEME, LIMERENCE_MOOD_TINTS } from './theme';
+import { iconFor as limerenceIconFor, endingIcons as limerenceEndingIcons } from './icons';
 import { HEART_SVG } from '../../ui/dom';
 import { choseIn } from '../../engine/gameState';
 import { mirrorUnlocked, patternAvailable, computePatternEligible, PATTERN_CLARITY } from './endingLogic';
@@ -247,8 +248,8 @@ export const limerencePack: ContentPack = {
   epiphanies,
 
   visuals: {
-    iconFor: () => undefined,
-    endingIcons: {},
+    iconFor: limerenceIconFor,
+    endingIcons: limerenceEndingIcons,
     buildTheme: limerenceBuildTheme,
     moodTints: LIMERENCE_MOOD_TINTS,
     fogColorByTheme: LIMERENCE_FOG_COLOR_BY_THEME,

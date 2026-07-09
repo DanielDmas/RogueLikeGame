@@ -72,6 +72,21 @@ describe.each(packs)('ContentPack conformance — $name', ({ pack }) => {
     }
   });
 
+  it('every room has a door icon', () => {
+    for (const room of pack.rooms) {
+      const icon = pack.visuals.iconFor(room.id);
+      expect(icon, `room ${room.id} missing an icon`).toBeDefined();
+      expect(icon).toContain('<svg');
+    }
+  });
+
+  it('every ending has an icon', () => {
+    for (const ending of pack.endings) {
+      expect(pack.visuals.endingIcons[ending.id], `ending ${ending.id} missing an icon`).toBeDefined();
+      expect(pack.visuals.endingIcons[ending.id]).toContain('<svg');
+    }
+  });
+
   it('epiphany ids are unique and non-empty', () => {
     const ids = pack.epiphanies.map((e) => e.id);
     expect(new Set(ids).size).toBe(ids.length);
