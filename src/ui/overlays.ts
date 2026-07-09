@@ -3,7 +3,7 @@ import type { Ending, FieldNote, Room } from '../engine/schema';
 import type { ContentPack, EpiphanyDef } from '../packs/types';
 import { epiphanyLine, epiphanyLines, isHiddenFromCodex, ledgerStats } from '../engine/ledger';
 import type { RoomRegistry } from '../engine/storyEngine';
-import { clear, el, HEART_SVG } from './dom';
+import { clear, el } from './dom';
 import { showFieldNote } from './fieldNote';
 import { t } from '../engine/text/resolver';
 import {
@@ -575,7 +575,7 @@ export function showPersona(ui: HTMLElement, persona: Persona): Promise<Persona>
  * `Profile.hasSeenAbout` mechanism and re-viewable from the title menu.
  */
 export function aboutBodyHtml(pack: ContentPack): string {
-  const heartGlyph = `<span class="about-heart-glyph">${HEART_SVG}</span>`;
+  const heartGlyph = `<span class="about-heart-glyph">${pack.skin.heartsSvg}</span>`;
   if (!pack.advisory) {
     const p1 = t(
       uiKey('aboutWhy'),

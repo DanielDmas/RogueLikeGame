@@ -79,6 +79,13 @@ export interface ContentPack {
 
   skin: {
     heartsSvg: string;
+    /** HUD hearts-row `aria-label`/`title` — omit to inherit ANAMNESIS's own
+     * "grip on reality" wording (spec 08 §3 engine-default/pack-override
+     * pattern). LIMERENCE overrides both with its own Trust framing. */
+    heartsAriaLabel?: string;
+    heartsTooltip?: string;
+    /** HUD lucidity-glow `title` — omit to inherit ANAMNESIS's own wording. */
+    lucidityTooltip?: string;
     axisLabels?: Partial<Record<Axis, { negKey: string; posKey: string }>>;
     traditionLabels?: Partial<Record<Reflection['tradition'], string>>;
   };

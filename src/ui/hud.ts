@@ -1,8 +1,16 @@
-import { el, HEART_SVG } from './dom';
+import { el } from './dom';
 import { MAX_HEARTS } from '../engine/gameState';
 import { nextLang, t } from '../engine/text/resolver';
 import { uiKey } from '../engine/text/keys';
 import type { Lang } from '../engine/text/resolver';
+
+/** ANAMNESIS's own wording — the engine-default half of the spec 08 §3
+ * pattern; `Hud`'s constructor falls back to these whenever a pack's
+ * `skin` doesn't override them, so ANAMNESIS itself never has to. */
+const DEFAULT_HEARTS_ARIA_LABEL = 'grip on reality';
+const DEFAULT_HEARTS_TOOLTIP =
+  'Your grip on reality. A few costly choices spend one outright — the Usher always warns first — and so does lucidity running out completely. Losing all three hearts is an ending, not a failure.';
+const DEFAULT_LUCIDITY_TOOLTIP = 'Lucidity — how honestly you have been looking.';
 
 const LANG_SHORT: Record<Lang, string> = { en: 'EN', cs: 'CS', fa: 'FA', de: 'DE', fr: 'FR' };
 
@@ -20,24 +28,27 @@ export class Hud {
    * (safely swapping already-rendered choice text mid-read isn't free —
    * see the risk noted in the language-switch task).
    */
-  constructor(ui: HTMLElement, onMenu: () => void, initialLang: Lang, onLanguageChange: (lang: Lang) => void) {
+  constructor(
+    ui: HTMLElement,
+    onMenu: () => void,
+    initialLang: Lang,
+    onLanguageChange: (lang: Lang) => void,
+    skin: { heartsSvg: string; heartsAriaLabel?: string; heartsTooltip?: string; lucidityTooltip?: string },
+  ) {
     this.root = el('div', 'hud');
     const hearts = el('div', 'hearts');
     hearts.setAttribute('role', 'status');
-    hearts.setAttribute('aria-label', t(uiKey('heartsAriaLabel'), 'grip on reality'));
-    hearts.title = t(
-      uiKey('heartsTooltip'),
-      'Your grip on reality. A few costly choices spend one outright — the Usher always warns first — and so does lucidity running out completely. Losing all three hearts is an ending, not a failure.',
-    );
+    hearts.setAttribute('aria-label', t(uiKey('heartsAriaLabel'), skin.heartsAriaLabel ?? DEFAULT_HEARTS_ARIA_LABEL));
+    hearts.title = t(uiKey('heartsTooltip'), skin.heartsTooltip ?? DEFAULT_HEARTS_TOOLTIP);
     for (let i = 0; i < MAX_HEARTS; i++) {
       const h = el('div', 'heart');
-      h.innerHTML = HEART_SVG;
+      h.innerHTML = skin.heartsSvg;
       hearts.appendChild(h);
       this.heartEls.push(h);
     }
     const right = el('div', 'hud-right');
     this.lucidityEl = el('div', 'lucidity');
-    this.lucidityEl.title = t(uiKey('lucidityTooltip'), 'Lucidity — how honestly you have been looking.');
+    this.lucidityEl.title = t(uiKey('lucidityTooltip'), skin.lucidityTooltip ?? DEFAULT_LUCIDITY_TOOLTIP);
     let currentLang = initialLang;
     this.langBtn = el('button', 'menu-btn lang-btn', LANG_SHORT[currentLang]);
     this.langBtn.title = t(uiKey('hudLanguageTooltip'), 'Change language (applies from the next beat onward)');

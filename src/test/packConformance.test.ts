@@ -104,6 +104,14 @@ describe.each(packs)('ContentPack conformance — $name', ({ pack }) => {
     }
   });
 
+  it('the HUD hearts aria-label/tooltip use this pack’s own vocabulary (Trust for LIMERENCE, not ANAMNESIS’s "grip on reality")', () => {
+    if (pack.meta.id === 'limerence') {
+      expect(pack.skin.heartsAriaLabel).toBe('Trust');
+      expect(pack.skin.heartsTooltip).not.toMatch(/grip on reality/i);
+      expect(pack.skin.lucidityTooltip).toMatch(/Clarity/);
+    }
+  });
+
   it('every act (1-4) has a non-empty intro announcement', () => {
     for (const act of [1, 2, 3, 4]) {
       const intro = pack.guide.actIntroText(act);

@@ -175,7 +175,11 @@ export const limerencePack: ContentPack = {
   },
 
   skin: {
-    heartsSvg: HEART_SVG, // placeholder — Trust re-skin lands at L5
+    heartsSvg: HEART_SVG, // placeholder icon — the Porter's own diorama art is the dioramas L5 item; the label/tooltip below are the real Trust re-skin
+    heartsAriaLabel: 'Trust',
+    heartsTooltip:
+      'Your Trust — your capacity to extend it. A handful of especially costly choices spend one outright, and so does your Clarity running out completely. Losing all three is an ending, not a failure screen.',
+    lucidityTooltip: 'Clarity — how honestly you are willing to see yourself.',
   },
 
   // The onboarding advisory layer (design spec 10-safety-education-charter.md

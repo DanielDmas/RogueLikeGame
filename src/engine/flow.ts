@@ -138,11 +138,17 @@ export class Game {
       profile.settings.renderScale,
     );
     this.director.setSpeedMultiplier(this.speedMultiplier);
-    this.hud = new Hud(ui, () => this.openPause(), profile.settings.language, (lang) => {
-      this.profile.settings = { ...this.profile.settings, language: lang };
-      this.applySettings();
-      void this.persist();
-    });
+    this.hud = new Hud(
+      ui,
+      () => this.openPause(),
+      profile.settings.language,
+      (lang) => {
+        this.profile.settings = { ...this.profile.settings, language: lang };
+        this.applySettings();
+        void this.persist();
+      },
+      pack.skin,
+    );
     this.text = new TextPanel(stageBottom, ui);
     this.choices = new ChoicePanel(stageBottom);
     this.reflection = new ReflectionPanel(stageBottom);
