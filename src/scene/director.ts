@@ -474,11 +474,16 @@ export class SceneDirector {
       ? `<span class="tip-hint">${spec.hint}</span><span class="tip-teaser">${spec.teaser}</span>`
       : spec.hint;
     const p = this.doors.lintel(id).clone().project(this.camera);
-    // Clear the door's own glow/bloom, which extends above its lintel —
-    // a small gap here reads as "unreadable" once the teaser's second line
-    // (and any UI zoom) pushes it back down into that glow.
+    // Clear the door's own glow/bloom, which extends well above its lintel —
+    // the tooltip box is bottom-anchored here (CSS `translate(-50%, -100%)`),
+    // so this offset is the gap between the door and the *closest* edge of
+    // the text, not its top. A one-line hint only needs modest clearance;
+    // the two-line teaser variant is visually taller and denser right at
+    // that boundary, so it earns extra room rather than reusing the same
+    // fixed number and reading as if it were touching the door.
+    const offset = spec.teaser ? 52 : 34;
     this.tooltip.style.left = `${((p.x + 1) / 2) * innerWidth}px`;
-    this.tooltip.style.top = `${((1 - p.y) / 2) * innerHeight - 34}px`;
+    this.tooltip.style.top = `${((1 - p.y) / 2) * innerHeight - offset}px`;
     this.tooltip.classList.add('on');
   }
 
