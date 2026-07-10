@@ -101,4 +101,36 @@ describe.each(packs)('Milestone 5, Phase R5 — content pipeline validation ($na
       }
     }
   });
+
+  it('every choice text starts with an uppercase letter', () => {
+    const bad: string[] = [];
+    for (const room of pack.rooms) {
+      for (const stage of room.stages) {
+        for (const choice of stage.choices) {
+          const first = choice.text.charAt(0);
+          if (/[a-z]/.test(first)) bad.push(`${room.id}:${choice.id} -> "${choice.text.slice(0, 30)}"`);
+        }
+      }
+    }
+    expect(bad, `lowercase-first choice text:\n${bad.join('\n')}`).toEqual([]);
+  });
+
+  it('every stage of every room defines a non-empty, substantial plain-language explanation (the "?" button)', () => {
+    const missing: string[] = [];
+    const short: string[] = [];
+    const sameAsTeaser: string[] = [];
+    for (const room of pack.rooms) {
+      room.stages.forEach((stage, si) => {
+        if (!stage.explanation || stage.explanation.trim().length === 0) {
+          missing.push(`${room.id}.stage${si}`);
+          return;
+        }
+        if (stage.explanation.length < 120) short.push(`${room.id}.stage${si} (${stage.explanation.length} chars)`);
+        if (stage.explanation.trim() === room.teaser.trim()) sameAsTeaser.push(`${room.id}.stage${si}`);
+      });
+    }
+    expect(missing, `missing explanation for:\n${missing.join('\n')}`).toEqual([]);
+    expect(short, `explanation too short (stub-like) for:\n${short.join('\n')}`).toEqual([]);
+    expect(sameAsTeaser, `explanation is just the door teaser repeated for:\n${sameAsTeaser.join('\n')}`).toEqual([]);
+  });
 });

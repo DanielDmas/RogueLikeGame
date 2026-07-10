@@ -841,6 +841,8 @@ export const theTherapist: Room = {
             : 'Dr. Weiss offers one repair attempt: small, and imperfect, because that’s what real repair attempts actually look like.',
         'A bad joke, at slightly the wrong moment. Dana’s, offered with visible nerve.',
       ],
+      explanation:
+        'Gottman’s research also names the flip side of the Four Horsemen: a "repair attempt" — a small, often clumsy bid one partner makes mid-argument to de-escalate, like a bad joke, an apology, or just reaching for a hand. What matters most isn’t how smooth the repair attempt is; it’s whether the other person actually catches it. Couples who stay happy long-term aren’t the ones who never fight — research finds they’re the ones who successfully accept each other’s repair attempts, even the awkward ones, instead of letting pride keep the argument going a little longer than it needed to.',
       choices: [
         {
           id: 'accept-the-repair',
