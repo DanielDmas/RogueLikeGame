@@ -161,6 +161,7 @@ registerAll('v2', 'fa', {
   [uiKey('statNewNotes')]: 'یادداشت‌های جدید',
   [uiKey('title')]: 'صفحه‌ی عنوان',
   [uiKey('titleTagline')]: 'سفری میان اتاق‌ها · هر در یک پرسش است · راه بازگشت از میان آن‌هاست',
+  [uiKey('titleAgeAdvisory')]: '16+ · مضامین بزرگسالان',
   [uiKey('travelerLabel')]: 'مسافر',
   [uiKey('travellerFallback')]: 'مسافر',
   [uiKey('archiveBlurbFallback')]: 'در پرونده توضیح بیشتری ثبت نشده',

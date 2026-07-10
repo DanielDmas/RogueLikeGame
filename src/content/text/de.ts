@@ -163,6 +163,7 @@ registerAll('v2', 'de', {
   [uiKey('statNewNotes')]: 'neue Notizen',
   [uiKey('title')]: 'Titelbildschirm',
   [uiKey('titleTagline')]: 'eine Reise durch die Räume · jede Tür ist eine Frage · der Weg zurück führt hindurch',
+  [uiKey('titleAgeAdvisory')]: '16+ · Reife Themen',
   [uiKey('travelerLabel')]: 'Reisende(r)',
   [uiKey('travellerFallback')]: 'Reisende(r)',
   [uiKey('archiveBlurbFallback')]: 'keine weitere Beschreibung in der Akte',

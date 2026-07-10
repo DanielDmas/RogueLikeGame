@@ -163,6 +163,7 @@ registerAll('v2', 'fr', {
   [uiKey('statNewNotes')]: 'nouvelles notes',
   [uiKey('title')]: 'Écran-titre',
   [uiKey('titleTagline')]: 'un voyage à travers les pièces · chaque porte est une question · le chemin du retour passe par elles',
+  [uiKey('titleAgeAdvisory')]: '16+ · Thèmes matures',
   [uiKey('travelerLabel')]: 'Voyageur',
   [uiKey('travellerFallback')]: 'voyageur',
   [uiKey('archiveBlurbFallback')]: 'aucune autre description au dossier',

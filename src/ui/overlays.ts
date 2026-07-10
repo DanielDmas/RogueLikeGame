@@ -51,7 +51,7 @@ export function showTitle(ui: HTMLElement, profile: Profile, pack: ContentPack):
     // any pack whose subject matter carries one (self-declared; not an
     // official rating body's classification, since none has been sought).
     if (pack.advisory?.ageAdvisory) {
-      o.append(el('div', 'title-age-advisory', pack.advisory.ageAdvisory));
+      o.append(el('div', 'title-age-advisory', t(uiKey('titleAgeAdvisory'), pack.advisory.ageAdvisory)));
     }
     const how = el('div', 'how-to-play');
     how.innerHTML = `

@@ -160,6 +160,7 @@ registerAll('v2', 'cs', {
   [uiKey('statNewNotes')]: 'nové poznámky',
   [uiKey('title')]: 'Titulní obrazovka',
   [uiKey('titleTagline')]: 'cesta všemi místnostmi · každé dveře jsou otázkou · cesta zpět vede skrz',
+  [uiKey('titleAgeAdvisory')]: '16+ · zralá témata',
   [uiKey('travelerLabel')]: 'Poutník',
   [uiKey('travellerFallback')]: 'poutníku',
   [uiKey('archiveBlurbFallback')]: 've spisu není žádný další popis',
