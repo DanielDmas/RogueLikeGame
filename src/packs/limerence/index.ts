@@ -14,6 +14,10 @@ import { porterFigure } from './figure';
 import { limerenceBuildTheme, LIMERENCE_FOG_COLOR_BY_THEME, LIMERENCE_MOOD_TINTS } from './theme';
 import { iconFor as limerenceIconFor, endingIcons as limerenceEndingIcons } from './icons';
 import { limerenceDioramaFor } from './dioramas';
+// Side effect: registers LIMERENCE's translated text catalog the first time
+// this pack module is imported (mirrors packs/anamnesis/index.ts's
+// `import '../../content/text'`).
+import './text';
 import { HEART_SVG } from '../../ui/dom';
 import { choseIn } from '../../engine/gameState';
 import { mirrorUnlocked, patternAvailable, computePatternEligible, PATTERN_CLARITY } from './endingLogic';
@@ -300,8 +304,10 @@ export const limerencePack: ContentPack = {
   },
 
   registerText: () => {
-    // No translations registered yet — every t(key, fallback) call in the
-    // engine and in limerenceRooms/limerenceEndings above falls back to its
-    // English literal, so the pack is fully playable without one.
+    // The static `import './text'` above already registered the catalog
+    // (currently: the Czech prologue + Act I) by the time any caller
+    // reaches this — see the comment on that import. Any t(key, fallback)
+    // call not yet covered by a registered translation still falls back to
+    // its English literal, so the pack remains fully playable regardless.
   },
 };
