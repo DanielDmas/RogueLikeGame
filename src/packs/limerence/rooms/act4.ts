@@ -130,7 +130,7 @@ export const theKitchenTable: Room = {
   ],
   fieldNote: {
     title: 'The Load-Bearing Table',
-    thinkers: 'Amato · Perel',
+    thinkers: 'Amato · Perel (2017)',
     body: 'Paul Amato’s decades of research on children and divorce converge on one finding above the others: **conflict exposure, not family structure, is the active ingredient** — children in well-managed separated households consistently do better than children in high-conflict intact ones, and the popular assumption that staying together is automatically the safer choice doesn’t survive the data. Perel’s exit-versus-alarm framing for affairs has drawn fair criticism for how easily it can be misused to excuse harm; used carefully, as intended, it only explains — an alarm tells you something in the house needs attention, it never excuses what got broken pulling it. Repair’s actual predictors, across the literature, are structure, a witness, and time — not a single conversation, however good. The drawing on the fridge survives every version of this morning. Decide which morning it grows up inside.',
   },
 };

@@ -77,7 +77,7 @@ export const boulder: Room = {
   ],
   fieldNote: {
     title: 'Sisyphus, Happy',
-    thinkers: 'Albert Camus · The Myth of Sisyphus · the absurd',
+    thinkers: 'Albert Camus · The Myth of Sisyphus (1942) · the absurd',
     body: 'Camus called it the only serious philosophical problem: if life has no given meaning, why continue it? His answer begins with Sisyphus, condemned by the gods to roll a boulder uphill forever, watching it fall each time. Camus refuses both exits — suicide (yielding to meaninglessness) and what he called philosophical suicide (leaping into consoling systems that promise the meaning back). The absurd, for him, is not the world’s property; it is the collision between our demand for meaning and the universe’s silence — and it must be kept alive, not resolved. The scandalous last line — “one must imagine Sisyphus happy” — is not optimism. It is the claim that in the walk back down, lucid, unconsoled, and continuing anyway, Sisyphus becomes superior to his punishment: the boulder is his boulder, the rhythm his own. This room could not be won because the point was never the stack. **It was the walk down: the moment the task stopped happening to you and began, precisely, to be yours.**',
   },
 };
@@ -398,7 +398,7 @@ export const doorThatAsks: Room = {
   ],
   fieldNote: {
     title: 'The Examined Life, Audited',
-    thinkers: 'Socrates · Kierkegaard · narrative identity — MacIntyre, Ricoeur',
+    thinkers: 'Socrates · Kierkegaard (1843) · narrative identity — MacIntyre (1981), Ricoeur (1990)',
     body: 'Socrates said the unexamined life is not worth living, and was put to death by a jury that preferred not to be examined. This door is the sentence run in reverse: the examination, at last, of the examiner. Narrative identity theorists — MacIntyre, Ricoeur — hold that a self is not a substance but a story under continuous revision, and that the moral question is whether you can stand behind your story as both author and character. Note what the door rewarded: not consistency, which can calcify into armor, but revision with receipts — the ability to say “I changed my mind, and here is what changed it.” Kierkegaard: life is lived forward and understood backward; the door is where the two directions finally meet and compare notes. Every philosophy this journey staged — the trolley, the machine, the planks, the wager, the basement, the folder — **was always one question wearing costumes: when your own file is read back to you, is the signature yours?**',
   },
 };

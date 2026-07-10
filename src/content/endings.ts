@@ -33,7 +33,7 @@ export const endings: Ending[] = [
     ],
     fieldNote: {
       title: 'On Boundless Compassion',
-      thinkers: 'Simone Weil · the bodhisattva problem',
+      thinkers: 'Simone Weil (1947) · the bodhisattva problem',
       body: 'Simone Weil held that attention — pure, unselfed attention to another — is the rarest and purest form of generosity, and she practiced it to the point of self-erasure, dying at 34 having refused to eat more than the rationed people she stood with. The traditions that prize boundless compassion all carry the same fine print: the bodhisattva who vows to save all beings must somehow remain someone who can act, and a boundary is not the opposite of love — it is love’s load-bearing wall. **An open hand that cannot close cannot carry.** The rooms rewarded your openness; the world will too, and it will also, without malice, bill it. Porousness is a gift with a maintenance schedule.',
     },
   },
@@ -51,7 +51,7 @@ export const endings: Ending[] = [
     ],
     fieldNote: {
       title: 'On Armor',
-      thinkers: 'stoic fortification · Rilke · defended selves',
+      thinkers: 'stoic fortification · Rilke (1929) · defended selves',
       body: 'The Stoics built the original inner citadel: make your judgments the only thing you value, and no fortune can breach you. It is a real technology and it genuinely works — that is its danger. Psychology finds the same structure in defended selves: armor laid down against a real threat, kept on long after the war, until protection and imprisonment share a wall. Rilke’s own dragons ran the opposite errand: in his Letters to a Young Poet, he suggested our dragons are secretly princesses, waiting only to see us act once with courage. Seal the gate against the dragons on principle, refusing the encounter altogether, and you seal it against whatever they were guarding too. **A self that nothing can wound is also a self nothing can astonish.** The fortress ending is not a failure; it is a trade, honestly priced. The sting is only this: the door locks from the inside, and the keyholder is the one person who never checks whether the siege ended.',
     },
   },
@@ -87,7 +87,7 @@ export const endings: Ending[] = [
     ],
     fieldNote: {
       title: 'On Tending',
-      thinkers: 'Camus · Voltaire, “il faut cultiver notre jardin” · the wounded healer',
+      thinkers: 'Camus (1942) · Voltaire (1759), “il faut cultiver notre jardin” · the wounded healer',
       body: 'Voltaire ended Candide — his catalogue of the world’s absurd cruelties — with the most anticlimactic wisdom in literature: we must cultivate our garden. Not solve the world; tend a corner of it. The Gardener ending is the absurd hero’s second act: Camus’s Sisyphus, having claimed the boulder, discovers there are other people on the hill and that the rock rolls easier with company watching. The wounded-healer archetype (Chiron, and every sponsor, therapist, and veteran guide since) holds that the deepest qualification for tending others through a passage is having been dismantled by it yourself. Staying was not refusing the return. **It was returning — to the only reality this place has — and choosing to be furniture in it: the good kind, the kind a lost traveler can lean on.** Somebody polished that lever for you, once. Now you know their name.',
     },
   },
@@ -125,7 +125,7 @@ export const endings: Ending[] = [
     ],
     fieldNote: {
       title: 'Total Recollection',
-      thinkers: 'Plato · Henri Bergson',
+      thinkers: 'Plato (c. 385 BCE) · Henri Bergson (1896)',
       body: 'Plato’s theory of anamnesis holds that learning is not acquisition but recollection: the soul already knows, and the diagram in the dust — Meno’s slave boy tracing a geometric proof he was never taught — only reminds it of what it always held. Bergson took the same shape and turned it toward memory itself: the past, he argued, is not stored like a filing cabinet, retrieved piece by piece, but persists whole and simultaneous, a durée the present is always swimming inside rather than dipping into. **This ending does not add a memory. It removes the delay between having lived something and knowing that you did.** Nothing here was earned by force — no fight, no bargain, no lever. What changes, when nothing is missing, is not the self’s contents but the self’s shape: a person who no longer experiences their own history as a sequence of rooms to be re-entered, but as a single standing fact they happen to be. The rooms were never behind you. They were, it turns out, always the shape of you being awake.',
     },
   },

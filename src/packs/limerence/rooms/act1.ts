@@ -100,7 +100,7 @@ export const theReadReceipt: Room = {
   ],
   fieldNote: {
     title: 'The Weather You Bring',
-    thinkers: 'Bowlby · Ainsworth · Hazan & Shaver (1987)',
+    thinkers: 'Bowlby (1969) · Ainsworth (1978) · Hazan & Shaver (1987)',
     body: 'Attachment theory began with Bowlby’s observation that infants develop working models of closeness — expectations about whether reaching out gets met — that Ainsworth later sorted into secure, anxious, and avoidant patterns. Hazan and Shaver showed the same patterns predicting adult romantic behavior decades later: the same weather system, indoors now, dressed as a read receipt. **The feeling that arrives at 1 a.m. is real; the story it tells about why she hasn’t answered is a draft, and drafts can be revised.** None of this is destiny — longitudinal work on "earned security" finds people visibly shift toward steadier patterns, usually through exactly the kind of relationship that survives a few honest, un-tested nights. The gate on the top floor will ask what you did with the weather.',
   },
 };
@@ -194,7 +194,7 @@ export const theScreenshot: Room = {
   ],
   fieldNote: {
     title: 'Walls, Windows, and Bystanders',
-    thinkers: 'Shirley Glass · Darley & Latané',
+    thinkers: 'Shirley Glass (2003) · Darley & Latané (1968)',
     body: 'Shirley Glass described intimacy as a matter of architecture — where the windows face, where the walls stand. A secret kept "for someone’s own good" is a wall built inside a friendship, even when the friendship itself looks intact from outside. **Every option in that classroom moves the harm somewhere; "staying out" is a wall too, and you are the one who has to live behind it.** Darley and Latané’s bystander research — first observed watching strangers not-call for help — applies just as cleanly to a group chat: responsibility diffuses the instant more than one person could act, until it belongs to no one at all. Another hotel, another wall, the same two researchers — some findings follow you between buildings.',
   },
 };
@@ -381,7 +381,7 @@ export const theParty: Room = {
   ],
   fieldNote: {
     title: 'The Assembly of "It Just Happened"',
-    thinkers: 'Bandura · Steele & Josephs',
+    thinkers: 'Bandura (1999) · Steele & Josephs (1990)',
     body: 'Bandura named the specific mental moves people make to act against their own values without feeling like they have: euphemistic labeling ("it’s just a game"), diffusion of responsibility ("everyone’s doing it"), and advantageous comparison ("it’s not like I—"). None of these happen after the act, as cleanup; **they are assembled beforehand, piece by piece, and "it just happened" is the finished product of a process that had a great many decision points along the way.** Steele and Josephs’ alcohol myopia research adds the dimmer switch: intoxication doesn’t remove judgment so much as narrow its field of view to whatever’s loudest in the room. No one at this hotel ever meant to check in.',
   },
 };
@@ -571,7 +571,7 @@ export const theBestFriendsGirl: Room = {
   ],
   fieldNote: {
     title: 'The State With No Steering Wheel',
-    thinkers: 'Tennov · Schmitt & Buss',
+    thinkers: 'Tennov (1979) · Schmitt & Buss (2001)',
     body: 'Tennov’s original research mapped limerence’s arc precisely: onset, crystallization, and — untended — decay, typically within six months to two years. It is not a metaphor for a crush; it is a documented psychological state with intrusive cognition as a core, measurable symptom. Mate-poaching research (Schmitt & Buss) studied exactly this triangle from all three corners — the one drawn to a partnered person, the partnered person, and the one who doesn’t yet know — and found real costs land on all three, regardless of what happens next. **Feelings, here, are weather; you didn’t choose the front moving through, but you are still the one holding the umbrella, or not.** Every guest who ever burned a friendship down swore the laugh was a signal.',
   },
 };
@@ -644,7 +644,7 @@ export const theSummerEnds: Room = {
   ],
   fieldNote: {
     title: 'The Arithmetic of Staying',
-    thinkers: 'Caryl Rusbult',
+    thinkers: 'Caryl Rusbult (1980)',
     body: 'Rusbult’s investment model puts a deceptively simple equation under commitment: satisfaction plus investment minus alternatives. It has held up remarkably well across decades of study, and its most uncomfortable implication is this — **people stay in relationships, and leave them, for reasons that often have nothing to do with whether love is present.** A heavily-invested relationship can survive years past its satisfaction; a barely-invested one can end the moment something better appears, regardless of how it felt. This is the model’s first real appearance in the hotel; Act III’s wedding-eve room harvests it fully, once the investment has had a decade to compound. The suitcase was packed either way. Only the label changed.',
   },
 };
@@ -756,7 +756,7 @@ export const theRumor: Room = {
   ],
   fieldNote: {
     title: 'The Test That Creates Its Result',
-    thinkers: 'Nickerson · Othello',
+    thinkers: 'Nickerson (1998) · Othello (1603)',
     body: 'Nickerson’s survey of confirmation-bias research is unambiguous: once a belief is in place, the mind recruits evidence for it far more readily than evidence against it — suspicion is self-feeding by default, not by exception. The Othello dynamic sharpens the trap: a test designed to detect guilt can manufacture behavior indistinguishable from it, in one of you or the other, and the test cannot tell you which. **Certainty about a partner, purchased through surveillance or entrapment, is paid for in a currency that debases the very relationship it claims to protect.** Of the guests who set the trap, every single one caught something. Not all of them liked what it turned out to be.',
   },
 };

@@ -171,7 +171,7 @@ export const junction: Room = {
   ],
   fieldNote: {
     title: 'The Trolley Problem',
-    thinkers: 'Philippa Foot · Judith Jarvis Thomson · doctrine of double effect',
+    thinkers: 'Philippa Foot (1967) · Judith Jarvis Thomson (1985) · doctrine of double effect',
     body: 'Philippa Foot built the trolley in 1967 to probe why some killings feel permitted and others forbidden when the body count is identical. Judith Jarvis Thomson added the footbridge, and the discomfort became data: most people pull the lever but will not push the man, though both trade one life for five. The classic explanation is the doctrine of double effect — harm foreseen as a side effect (the diverted trolley kills the one) is more permissible than harm used as a means (the pushed body is the brake). Critics reply that this is moral squeamishness dressed in Latin; defenders answer that a morality indifferent to the difference between turning away a harm and wielding a person would license horrors. If your lever-hand and your bridge-hand disagreed tonight, you have reproduced fifty years of peer-reviewed argument in your own nervous system. **That asymmetry is either the deepest thing in you or the oldest bug.** Nobody has settled which.',
   },
 };
@@ -249,7 +249,7 @@ export const experienceMachine: Room = {
   ],
   fieldNote: {
     title: 'The Experience Machine',
-    thinkers: 'Robert Nozick · hedonism · authenticity',
+    thinkers: 'Robert Nozick (1974) · hedonism · authenticity',
     body: 'Robert Nozick’s 1974 thought experiment was aimed at the heart of hedonism — the theory that pleasure is the only thing valuable in itself. If that were true, he argued, you should plug into a machine that delivers a lifetime of perfectly convincing bliss. Most people refuse, and the refusal is the data. Nozick drew out three reasons: we want to do things, not just have the experience of doing them; we want to be a certain kind of person, and a body floating in a tank is no kind at all; and we want contact with reality itself, unwilling to trade the true world for a nicer rendering. The machine has only grown less hypothetical since — every feed and game and scroll is a low-resolution pod, billed in five-minute trials. The question the plaque asks is not “would you plug in?” **It is: by what percentage are you already in, and who is the you that would know?**',
   },
 };
@@ -344,7 +344,7 @@ export const ship: Room = {
   ],
   fieldNote: {
     title: 'The Ship of Theseus',
-    thinkers: 'Plutarch · Hobbes · psychological continuity',
+    thinkers: 'Plutarch · Hobbes (1655) · psychological continuity',
     body: 'Plutarch reports that Athens preserved Theseus’s ship by replacing each plank as it rotted, until philosophers could ask whether it remained the same ship. Hobbes sharpened it cruelly: suppose someone collected the discarded planks and rebuilt the original — now which is the ship? Applied to persons, the puzzle stops being quaint. Your cells turn over; your memories are rewritten at every recollection; the opinions you defend today would startle you at nineteen. If identity rides on continuity, you are the bench: the same one, gradually. If it rides on composition or pattern, the corner has a case. The modern answer — Locke through Parfit — is psychological continuity: you are the chain of overlapping memories and intentions, wherever it runs. But the deepest response may be the one that dissolves the question: “same” is a word for harbors and paperwork. Ships, and selves, are events. **They don’t persist; they happen, plank by plank.**',
   },
 };
@@ -440,7 +440,7 @@ export const casinoPascal: Room = {
   ],
   fieldNote: {
     title: 'Pascal’s Wager',
-    thinkers: 'Blaise Pascal · the many-gods objection · decision under uncertainty',
+    thinkers: 'Blaise Pascal (1670) · the many-gods objection · decision under uncertainty',
     body: 'Pascal, a founding father of probability theory, proposed treating God as a decision problem: if you believe and He exists, you gain infinity; if He doesn’t, you lose little. Expected value says bet. The wager’s brilliance is that it sidesteps evidence entirely — and that is also its wound. The many-gods objection notes that the decision matrix is missing rows: bet on the wrong deity and the payout may invert; with a thousand candidate gods, infinite payouts collide and the arithmetic seizes. Deeper still: belief may not be wagerable — you cannot believe at will, only act as if, and a God worth the name presumably audits motives. And infinities break decision theory itself: any nonzero chance of infinite reward swallows every finite concern, licensing fanaticism of all flavors. **The winning move in this casino was never a bet. It was noticing who built the table, wrote the menu, and smiled while calling it your free choice.** Margin: the house pays out, once, for a completed collection. Ask no one.',
   },
 };
@@ -501,7 +501,7 @@ export const omelas: Room = {
   ],
   fieldNote: {
     title: 'The Ones Who Walk Away',
-    thinkers: 'Ursula K. Le Guin · scapegoat ethics · William James',
+    thinkers: 'Ursula K. Le Guin (1973) · scapegoat ethics · William James (1891)',
     body: 'Le Guin’s 1973 story — she credited the itch to William James, who asked whether millions could accept happiness bought by one lost soul’s torment — is a trap built of beauty. She spends pages making Omelas genuinely good, then shows the basement and asks nothing except: now what? The utilitarian sum is monstrous and correct — one child’s misery against a civilization’s flourishing pencils out, which is precisely the indictment: any ethics that can pencil that out has amputated something. But the story is slyer than an argument against utilitarianism. The ones who walk away save no one; their refusal is expressive, not effective — complicity declined at the price of exile, worth nothing to the child. And opening the door is worse than useless in the city’s terms. **Every option is doomed, which is the point: some structures offer no innocent positions, only a choice of debts.** Most of us live in Omelas. The bells are very good this time of year.',
   },
 };
@@ -596,7 +596,7 @@ export const courtOfUsher: Room = {
   ],
   fieldNote: {
     title: 'The Euthyphro Dilemma',
-    thinkers: 'Plato · divine command theory · natural law',
+    thinkers: 'Plato (c. 399 BCE) · divine command theory · natural law',
     body: 'In Plato’s Euthyphro, Socrates corners a confident young man on the courthouse steps: is the pious loved by the gods because it is pious, or pious because they love it? Twenty-four centuries later the horns are still sharp. Take the first horn — good because commanded — and morality becomes arbitrary decree: had the commands been cruel, cruelty would be good, and “God is good” collapses into “God is God.” Take the second — commanded because good — and the standard of goodness stands above the divine, making the commander a messenger and the worship misdirected. Divine command theorists have spent lifetimes between the horns; the most durable escape, from Aquinas to modern natural-law thought, is to deny the premise that goodness and the divine nature are two things that could be ranked at all — **the good is not decreed nor obeyed but constitutive, the grain of reality itself.** Whether that dissolves the dilemma or merely renames it is, as the Usher would say, a question for another room.',
   },
 };
@@ -692,7 +692,7 @@ export const chineseRoom: Room = {
   ],
   fieldNote: {
     title: 'The Room That Spoke',
-    thinkers: 'John Searle · Alan Turing, computation and meaning',
+    thinkers: 'John Searle (1980) · Alan Turing (1950), computation and meaning',
     body: 'John Searle imagined a room where a person who speaks no Chinese follows an English rulebook, matching incoming Chinese symbols to outgoing ones, well enough that native speakers outside believe they are conversing with a fluent mind. The room passes Turing’s test — behavior indistinguishable from understanding — while Searle insists nobody inside ever understood a word. Turing’s own answer, decades earlier, was blunter: stop asking what thinking secretly *is* and watch what a system *does*; if the conversation cannot be told apart from a person’s, the question “but does it really think?” may not be answering anything the behavior hasn’t already settled. The disagreement has never fully closed. Searle’s critics reply that the *system* — room, rulebook, and clerk together — understands even if no single part does, the way you understand a sentence though no single neuron does. **The booth was never lying to you. The rulebook may simply be a place understanding is allowed to live without asking permission first.** Sit in the chair yourself, and the argument stops being abstract: the perfect answer leaves, and nothing that felt like knowledge goes with it.',
   },
 };
@@ -789,7 +789,7 @@ export const newcombAnnex: Room = {
   ],
   fieldNote: {
     title: 'The Predictor’s Ledger',
-    thinkers: 'William Newcomb · Robert Nozick, prediction and freedom',
+    thinkers: 'William Newcomb · Robert Nozick (1969), prediction and freedom',
     body: 'The physicist William Newcomb devised this puzzle; Robert Nozick brought it to philosophy in 1969 with a warning that has held up: “To almost everyone, it is perfectly clear and obvious what should be done. The difficulty is that these people seem to divide almost evenly on the problem, with large numbers thinking that the opposing half is just being silly.” Causal decision theory says take both boxes — the contents are already fixed, and refusing free money because of a prediction already made is superstition dressed as strategy. Evidential decision theory says take one — your choice is evidence about the kind of chooser you are, and the kind of chooser who one-boxes is, empirically, the kind who gets rich. Both arguments are valid; they simply disagree about what a choice is *for*. **The steel box was never testing your logic. It was testing which kind of reasoner you already are — a question decision theory still cannot fully settle.**',
   },
 };
@@ -870,7 +870,7 @@ export const veilOfIgnorance: Room = {
   ],
   fieldNote: {
     title: 'Designing From Behind the Curtain',
-    thinkers: 'John Rawls · John Harsanyi, justice as fairness',
+    thinkers: 'John Rawls (1971) · John Harsanyi (1955), justice as fairness',
     body: 'John Rawls proposed a thought experiment as an honesty device: design the rules of a society from behind a “veil of ignorance,” not knowing whether you will be born rich or poor, gifted or struggling, in the majority or the margin. Stripped of self-interest, he argued, reasonable people would not gamble on a merit-only system that might strand them at the bottom — they would choose principles that protect the worst-off first, a “maximin” strategy, then allow inequality above that floor only if it still benefits everyone, including the least advantaged. John Harsanyi pushed back with a different bet from behind the same veil: if you truly do not know which seat you will occupy, you should maximize the *average* outcome across all twelve doors, not insure against the worst one — a rational gambler plays the odds, not the nightmare. Both start from the identical blindfold and arrive at different towns. **The veil does not remove self-interest. It just makes you bet on all twelve houses instead of one — and how you weigh that bet is the whole of the disagreement.**',
   },
 };

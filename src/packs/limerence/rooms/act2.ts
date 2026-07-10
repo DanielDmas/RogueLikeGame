@@ -113,7 +113,7 @@ export const theDistance: Room = {
   ],
   fieldNote: {
     title: 'The Curated Confession',
-    thinkers: 'Shirley Glass',
+    thinkers: 'Shirley Glass (2003)',
     body: 'Glass’s disclosure research is unambiguous on one point: betrayed partners consistently rate the drip of revisions — a story that grows a little truer each time it’s challenged — as worse than the original act itself, because each revision proves the last version was a curation, not an account. **Walls get built one deniable brick at a time; nobody ever decides, on a single day, to build one.** The distinction that matters isn’t how big the secret is — it’s whether the door was left open or quietly, plausibly, ajar. "Almost" is a suburb. People commute.',
   },
 };
@@ -497,7 +497,7 @@ export const justFriends: Room = {
   ],
   fieldNote: {
     title: 'Walls and Windows',
-    thinkers: 'Shirley Glass, Not Just Friends',
+    thinkers: 'Shirley Glass, Not Just Friends (2003)',
     body: 'Glass’s central finding, from decades of clinical work, is that most affairs — emotional and otherwise — begin between people who would have called themselves "just friends" right up until they wouldn’t, without ever consciously planning the transition. **Secrecy is the active ingredient, not attraction; attraction is common and mostly harmless, secrecy is what converts it.** Her architecture image has outlived the specific research it came from because it’s simply accurate: a relationship has a window (what’s shared openly with your partner) and, inevitably, a wall (what isn’t) — and the two other people in your life are always standing on one side or the other, whether you meant to place them there or not. The window and the wall weigh exactly the same. Only the placement differs.',
   },
 };
@@ -687,7 +687,7 @@ export const theConfession: Room = {
   ],
   fieldNote: {
     title: 'Whose Relief Is It',
-    thinkers: 'the selfish-confession debate · Esther Perel',
+    thinkers: 'the selfish-confession debate · Esther Perel (2017)',
     body: 'Both literatures deserve an honest hearing here. One line of research and clinical opinion holds that partners are owed the truth of the life they’re actually living, full stop — that withholding it, however kindly meant, is a decision made about someone without their consent. Another holds that confession can function as guilt-transfer: relief for the confessor, purchased with pain for someone who did nothing to deserve the transaction. Perel’s framing cuts through both: **"the one who holds the secret holds the power" — and that power imbalance exists whether or not the secret is ever spoken aloud.** This game does not resolve the debate, and says so in as many words: the stone is real either way. The only real choice is the pocket.',
   },
 };

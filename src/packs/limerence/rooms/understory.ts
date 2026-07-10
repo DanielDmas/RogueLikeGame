@@ -267,7 +267,7 @@ export const theDoorsNotOpened: Room = {
   ],
   fieldNote: {
     title: 'The Road Not Taken, Audited',
-    thinkers: 'Kierkegaard’s vertigo of the possible · Frost misread, corrected',
+    thinkers: 'Kierkegaard’s (1844) vertigo of the possible · Frost (1916) misread, corrected',
     body: 'Kierkegaard called possibility the most dizzying thing available to a person — more vertiginous than any actual danger, because the actual is finite while the possible multiplies without limit the longer you stand at a fork refusing to choose. Frost’s "The Road Not Taken" gets misquoted at nearly every graduation as an anthem for bold divergence, but the poem itself is slyer: the two roads are, the speaker admits two stanzas earlier, worn "really about the same" — the wistful sigh at the end is confessed in advance as a story reshaped by hindsight, not a truth reported from the fork. **Re-aimed at relationships: the person you didn’t choose is a rumor, not a receipt.** The doors in this corridor were never secretly better. They were simply, briefly, possible — and possibility, once it closes, keeps none of its receipts, only its rumors.',
   },
 };

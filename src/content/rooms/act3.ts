@@ -90,7 +90,7 @@ export const teleporter: Room = {
   ],
   fieldNote: {
     title: 'Personal Identity and the Teleporter',
-    thinkers: 'Derek Parfit · Reasons and Persons · John Locke',
+    thinkers: 'Derek Parfit · Reasons and Persons (1984) · John Locke',
     body: 'Derek Parfit built the teleporter case to break a very old assumption: that personal identity is a deep further fact — a soul-like thread that either survives or doesn’t. The scanner destroys you and prints a perfect replica; the replica remembers stepping in and feels seamless. Did you die? Parfit’s scandalous answer: the question is empty. Everything that matters — psychological continuity, memory, intention, character — is preserved; the “extra” thing whose survival worries you was never there to begin with. **Identity, he argued, is not what matters; continuity and connectedness are.** His branch-line case (print the copy without destroying the original) exposes the wound: two candidates, symmetrical claims, no possible tiebreaker. Parfit reported that internalizing this made death seem less bad — a change in degree, not the snapping of a metaphysical thread. Whether that consoles you or hollows you out tends to depend on which side of the booth you’re standing on.',
   },
 };
@@ -169,7 +169,7 @@ export const editor: Room = {
   ],
   fieldNote: {
     title: 'The Wound and the Ledger',
-    thinkers: 'Nietzsche, amor fati · memory reconsolidation · Kierkegaard',
+    thinkers: 'Nietzsche (1888), amor fati · memory reconsolidation · Kierkegaard (1843)',
     body: 'Nietzsche’s formula for greatness was amor fati — to love one’s fate, wanting nothing to be different, “not merely bear what is necessary, still less conceal it… but love it.” Not because suffering is good, but because the self that judges the suffering was built by it: strike the worst chapter and the reader changes too. Modern memory science gives the thought experiment teeth — reconsolidation research shows memories are rewritten each time they are recalled, and drugs that blunt a memory’s emotional charge already exist. The question is no longer science fiction: if you could sand down grief, should you? The case for the pen is real; nobody is morally obligated to bleed for character development. The case against is quieter: **pain often turns out to be load-bearing — the source of a specific empathy, a specific patience, a specific refusal to let others suffer unwitnessed.** Kierkegaard said life is lived forward but understood backward. The folder is the backward part. Editors, be careful with it. Margin: what is erased is not merely gone — it is owed.',
   },
 };
@@ -274,7 +274,7 @@ export const introduction: Room = {
   ],
   fieldNote: {
     title: 'The Unfindable Self',
-    thinkers: 'Hume · anattā (Buddhist no-self) · the apophatic tradition',
+    thinkers: 'Hume (1739) · anattā (Buddhist no-self) · the apophatic tradition',
     body: 'David Hume went looking for his self and filed a famous null result: whenever he introspected, he found only particular perceptions — heat, cold, love, anger — never the perceiver itself. His conclusion: the self is a bundle of experiences, and the “owner” is a habit of grammar. Twenty-two centuries earlier, the Buddha taught anattā: search the body, feelings, perceptions, impulses, and consciousness, and none of them qualifies as the permanent self we assume; the assumption itself is the root of a specific suffering. The apophatic tradition — from the Upanishads’ neti neti (“not this, not this”) to Meister Eckhart — turned the failure into a method: strip every description, and what remains is not nothing but the unnameable witness doing the stripping. This room had no solution because “who are you?” is not a question with missing data. **Every sayable answer is a description, and descriptions are had, not been.** You always pass. The lesson is what’s left.',
   },
 };
@@ -370,7 +370,7 @@ export const debtOfDead: Room = {
   ],
   fieldNote: {
     title: 'Forgiveness and the Ledger',
-    thinkers: 'Bishop Butler · Hannah Arendt · Jacques Derrida',
+    thinkers: 'Bishop Butler (1726) · Hannah Arendt (1958) · Jacques Derrida (2001)',
     body: 'Bishop Butler defined forgiveness as the forswearing of resentment — not excusing, not forgetting, not reconciling, but declining to keep paying interest on the wound. Hannah Arendt called forgiveness the only genuine escape from the past’s irreversibility: without it, we remain forever the victim of one deed, and the wrongdoer forever its author; forgiveness releases both parties from a frozen frame. But Derrida saw the paradox at the bedside: forgiveness worth the name forgives the unforgivable — anything less is mere accounting, waiving debts already affordable. And the deathbed sharpens every edge: a sincere apology changes the wrongdoer, not the wrong; your forgiveness is asked for at the exact moment refusing it becomes cruel and granting it can feel coerced. There was no correct answer in that chair. Forgiving, refusing honestly, releasing silently, and asking the unasked question are four different acts of taking the wound seriously — **which was, perhaps, the only debt that was truly yours to pay.**',
   },
 };
@@ -447,7 +447,7 @@ export const marysRoom: Room = {
   ],
   fieldNote: {
     title: "What Mary Didn't Know",
-    thinkers: 'Frank Jackson · Thomas Nagel, the knowledge argument',
+    thinkers: 'Frank Jackson (1982) · Thomas Nagel (1974), the knowledge argument',
     body: 'Frank Jackson designed Mary to break physicalism\'s confidence outright: raised in a black-and-white room, she learns every physical fact about color vision — wavelengths, cone cells, the visual cortex\'s response curves — without ever seeing a color. Release her, show her a ripe tomato, and something happens no textbook prepared her for. Jackson\'s question: did she learn something new? If a complete physical description leaves out **what red looks like**, physicalism\'s complete list was never complete — some facts, the argument runs, are facts about experience, and no third-person description delivers them, however exhaustive. Thomas Nagel had already sharpened a companion version: you can know everything about a bat\'s echolocation and still not know what it is like to be a bat. Physicalists have replies — Mary gains an ability, not a fact; a new way of representing an old fact, not new information. None fully deflate the intuition in the room with you right now. The drawer was never going to be explained by what came before it. It was going to be met.',
   },
 };
@@ -521,7 +521,7 @@ export const butterflyDream: Room = {
   ],
   fieldNote: {
     title: "The Butterfly's Question",
-    thinkers: 'Zhuangzi, the dream of the butterfly',
+    thinkers: 'Zhuangzi (c. 300 BCE), the dream of the butterfly',
     body: 'Zhuangzi, the Daoist philosopher, describes dreaming he was a butterfly — flitting and content, unaware of any Zhuangzi at all — and waking with a start, unable to decide whether he was a man who had just dreamed he was a butterfly, or is now a butterfly dreaming he is a man. He calls this the transformation of things, and declines, pointedly, to resolve it: the question assumes a fixed observer standing outside both states, checking which one is real, and no such observer is on offer. Each experience, while it lasts, is total and unquestioned from the inside — the butterfly doesn\'t suspect Zhuangzi, and Zhuangzi, mid-dream, didn\'t suspect the butterfly either. Western epistemology tends to want a verdict: which one is the base reality, which the dream. Zhuangzi\'s answer is closer to a shrug elevated to a doctrine — identity is provisional, states transform into one another, and looking for the one true waker underneath all of them may be the only real mistake available. **The wings were not a metaphor for something. They were, entirely, themselves, for exactly as long as they lasted.**',
   },
 };
@@ -616,7 +616,7 @@ export const swampman: Room = {
   ],
   fieldNote: {
     title: 'The Man From the Marsh',
-    thinkers: 'Donald Davidson · Derek Parfit, causal history and what matters',
+    thinkers: 'Donald Davidson (1987) · Derek Parfit (1984), causal history and what matters',
     body: 'Donald Davidson proposed Swampman as a reductio: lightning strikes a swamp and, by cosmic accident, assembles a being molecule-for-molecule identical to Davidson, memories and all, with no causal history connecting it to the original — no childhood, no learning, no actual relationship to the people it "remembers." Davidson\'s own intuition was that Swampman couldn\'t mean anything by its words, since meaning requires a causal history the swamp-creature never had; representation, on this view, isn\'t just structure, it\'s structure plus a story. Derek Parfit, working the same fork from a different angle, argued the story was never the point: what matters in survival is psychological continuity and connectedness — memory, intention, character carried forward — not an unbroken causal thread to a particular hunk of matter. If Parfit is right, the swamp is a strange delivery mechanism for someone who nonetheless is you, in every sense worth wanting. If Davidson is right, the room is occupied by a stranger who arrived pre-loaded with your entire inner life and none of your history. **Both of them can be right about what they are each measuring — they were never actually arguing about the same question.**',
   },
 };
@@ -696,7 +696,7 @@ export const theCave: Room = {
   ],
   fieldNote: {
     title: 'The Fire and the Wall',
-    thinkers: 'Plato, the ascent from the cave',
+    thinkers: 'Plato (c. 375 BCE), the ascent from the cave',
     body: 'Plato\'s allegory, in the Republic, imagines prisoners chained since childhood in a cave, facing a wall, watching shadows a fire behind them casts — shadows they take, understandably, for the whole of reality, having never had reason to suspect there was more. Freed and dragged into the sunlight, the prisoner is first blinded, then furious, then slowly transformed — and Plato\'s harder question follows immediately: what happens if that prisoner climbs back down to tell the others? They will not thank him. Plato suggests they will try to kill him, because the shadows were working fine and no one enjoys being told their whole world was a wall. This room does something the allegory never quite risked: it hands you your own shadows, cast by your own fire, and asks you to watch yourself from exactly the angle the prisoners never got. **The chains were never the interesting part. The wall was never lying to you on purpose. It simply never mentioned that it was a wall.**',
   },
 };
@@ -768,7 +768,7 @@ export const freeWill: Room = {
   ],
   fieldNote: {
     title: 'Free Will and the Forecast',
-    thinkers: 'Benjamin Libet · determinism · compatibilism — Hume, Frankfurt, Dennett',
+    thinkers: 'Benjamin Libet (1983) · determinism · compatibilism — Hume, Frankfurt, Dennett',
     body: 'In the 1980s, Benjamin Libet found that a readiness potential appears in the brain a measurable stretch before subjects report deciding to move — the button lights, it seems, before “you” press it. Headlines buried free will; the fine print was subtler (Libet himself noted a veto window, and later work questions what the readiness potential even measures). But the deeper question predates the electrodes: if every event has causes, your choices included, in what sense are they yours? Hard determinism says: none. Libertarian free will says the causal chain breaks in you — somehow. Compatibilism, the working philosophy of most philosophers today, dissolves the fight: freedom never required exemption from causality; it means acting from your own deliberation, unforced — the machinery running through your choosing rather than around it. **“Could I have done otherwise?” may matter less than “was it I who did it?”** You were always going to read this note. You also just chose to. Both sentences, one cup.',
   },
 };

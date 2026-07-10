@@ -37,7 +37,7 @@ registerAll('v2', 'cs', {
   [endingBeatKey('open-hand', 4)]: 'Jen občas — pozdě, v poctivých hodinách — si všimnete, co otevřená dlaň neumí, a to je zavřít se. Dali jste místnostem svou zbroj a ony si ji nechaly. Jestli to byla cena, nebo výhra, je otázka, kterou každý večer záměrně necháváte na stole nezodpovězenou.',
   [endingBeatKey('open-hand', 5)]: 'A Uvaděč, kdyby vás mohl vidět — a v liché dny, kdo ví — by řekl: tohohle jsme vrátili lehčího. Možná jsme odstranili o něco víc obalu, než přísně doporučují předpisy.',
   [endingNoteTitleKey('open-hand')]: 'O bezmezném soucitu',
-  [endingNoteThinkersKey('open-hand')]: 'Simone Weilová · problém bódhisattvy',
+  [endingNoteThinkersKey('open-hand')]: 'Simone Weilová (1947) · problém bódhisattvy',
   [endingNoteBodyKey('open-hand')]: 'Simone Weilová tvrdila, že pozornost — čistá, nesobecká pozornost věnovaná druhému — je nejvzácnější a nejčistší formou štědrosti, a praktikovala ji až k sebevymazání, když ve třiceti čtyřech letech zemřela poté, co odmítla jíst víc, než měli přiděleno lidé, po jejichž boku stála. Tradice, které oceňují bezmeznou soucitnost, nesou stejné drobné písmo: bódhisattva, který slíbí spasit všechny bytosti, musí nějak zůstat tím, kdo je schopen jednat, a hranice není opakem lásky — je to nosná zeď lásky. Otevřená dlaň, která se neumí zavřít, neunese náklad. Místnosti odměnily vaši otevřenost; svět to udělá také, a bez zloby vám to i naúčtuje. Propustnost je dar s plánem údržby.',
 });
 
@@ -52,7 +52,7 @@ registerAll('v2', 'cs', {
   [endingBeatKey('fortress', 4)]: 'Pevnost drží všechno venku. K tomu pevnosti jsou. Trvá roky, než jednoho večera stojíte u okna a dovolíte si tu myšlenku dokončit: všechno venku. Počasí, vlky, hluk — a taky poštu, a návštěvníky, a cokoli to bylo, co se dřív dostávalo dovnitř, když jste ještě prosakovali.',
   [endingBeatKey('fortress', 5)]: 'Někde, v lichý den, zakládá Uvaděč vaši kartu s tichým povzdechem. „V bezpečí,“ napíše do kolonky výsledku. A pak, protože formulář na to nemá políčko, na okraj: „Před čím přesně, nebylo nikdy upřesněno.“',
   [endingNoteTitleKey('fortress')]: 'O zbroji',
-  [endingNoteThinkersKey('fortress')]: 'stoické opevnění · Rilke · bráněná já',
+  [endingNoteThinkersKey('fortress')]: 'stoické opevnění · Rilke (1929) · bráněná já',
   [endingNoteBodyKey('fortress')]: 'Stoikové postavili původní vnitřní citadelu: udělejte ze svých úsudků jedinou věc, které si ceníte, a žádný osud vás neprolomí. Je to skutečná technologie a opravdu funguje — to je její nebezpečí. Psychologie nachází stejnou strukturu v bráněných já: zbroj nasazená proti skutečné hrozbě, ponechaná dlouho po válce, dokud si ochrana a vězení nezačnou dělit jednu zeď. Rilkeho vlastní draci míří opačným směrem: v Dopisech mladému básníkovi napsal, že naši draci jsou tajně princezny, čekající jen na to, až se k nim aspoň jednou postavíme s odvahou. Zapečeťte bránu proti drakům ze zásady, odmítněte setkání úplně, a zapečetíte tím i to, co střežili. Já, které nic nedokáže zranit, je také já, které nic nedokáže ohromit. Konec Pevnosti není selhání; je to obchod, poctivě naceněný. Bolestivé je jen tohle: dveře se zamykají zevnitř, a držitel klíče je jediný člověk, který nikdy nezkontroluje, jestli obležení skončilo.',
 });
 
@@ -82,7 +82,7 @@ registerAll('v2', 'cs', {
   [endingBeatKey('gardener', 4)]: 'A jednoho dne — dost daleko v jakémkoli účetnictví, které tu měří čas — se poutník u prahu odvrátí od rána, podívá se na vás s poznáním, které si pamatujete zevnitř, a natáhne ruku po podložce s deskami.',
   [endingBeatKey('gardener', 5)]: 'Předáte ji. Je teplá. Je na ní jejich jméno, náhle čitelné. „První lekce,“ slyšíte se říkat hlasem, ve kterém je záchvěv, „aureola a rohy mají stejnou velikost. Je to záměr. Tady je záměrem všechno.“ A konečně projdete svým prahem — tím, který byl samozřejmě celou dobu za recepčním pultem.',
   [endingNoteTitleKey('gardener')]: 'O pěstování',
-  [endingNoteThinkersKey('gardener')]: 'Camus · Voltaire, „il faut cultiver notre jardin“ · zraněný léčitel',
+  [endingNoteThinkersKey('gardener')]: 'Camus (1942) · Voltaire (1759), „il faut cultiver notre jardin“ · zraněný léčitel',
   [endingNoteBodyKey('gardener')]: 'Voltaire zakončil Candida — svůj katalog absurdních krutostí světa — nejméně vzletnou moudrostí v literatuře: musíme pěstovat svou zahradu. Ne vyřešit svět; obdělávat jeho kousek. Konec Zahradníka je druhé dějství absurdního hrdiny: Camusův Sisyfos, poté co se s balvanem smířil, zjišťuje, že na kopci jsou i další lidé a že se kámen valí snáz, když ho někdo doprovází pohledem. Archetyp zraněného léčitele (Cheirón, a od něj každý sponzor, terapeut a zkušený průvodce) tvrdí, že nejhlubší kvalifikací pro provázení druhých přechodem je to, že jím byl člověk sám rozebrán. Zůstat neznamenalo odmítnout návrat. Byl to návrat — k jediné realitě, kterou tohle místo má — a rozhodnutí být v ní nábytkem: tím dobrým druhem, o který se ztracený poutník může opřít. Někdo tu páku pro vás kdysi vyleštil. Teď znáte jeho jméno.',
 });
 
@@ -114,6 +114,6 @@ registerAll('v2', 'cs', {
   [endingBeatKey('anamnesis', 5)]: 'Nepůsobí to jako vzpomenutí si na fakt. Je to jako to, co cítil Menónův otrok nad diagramem — nikoli sdělení něčeho nového, ale rozpoznání něčeho, co tu, jak se ukazuje, bylo celou dobu, pod vším, čemu jste říkali zapomnění.',
   [endingBeatKey('anamnesis', 6)]: 'Probudíte se. Ne do chodby, ne k prahu, ne do postele v nějaké věrohodné místnosti — probudíte se tak, jak vás probudil úplně první okamžik celé této cesty, jenže tentokrát {name} přichází spolu s probuzením, ne o půl vteřiny později, už padnoucí, už vaše, a nese s sebou každou místnost, místo aby je nechalo za sebou.',
   [endingNoteTitleKey('anamnesis')]: 'Úplné rozpomenutí',
-  [endingNoteThinkersKey('anamnesis')]: 'Platón · Henri Bergson',
+  [endingNoteThinkersKey('anamnesis')]: 'Platón (c. 385 BCE) · Henri Bergson (1896)',
   [endingNoteBodyKey('anamnesis')]: 'Platónova teorie anamnésis tvrdí, že učení není získáváním, ale rozpomínáním: duše už ví, a diagram v prachu — Menónův otrok, kreslící geometrický důkaz, kterému ho nikdo neučil — jí jen připomíná, co vždycky držela. Bergson vzal stejný tvar a obrátil ho k samotné paměti: minulost, tvrdil, není uložena jako kartotéka, vyvolávaná kousek po kousku, ale trvá celá a současně, jako durée, ve kterém přítomnost vždycky plave, místo aby se do něj jen občas nořila. **Tento konec nepřidává vzpomínku. Odstraňuje prodlevu mezi tím, že jste něco prožili, a tím, že to víte.** Nic tady nebylo vydobyto silou — žádný boj, žádný obchod, žádná páka. To, co se mění, když nic nechybí, není obsah já, ale jeho tvar: člověk, který už svou vlastní historii neprožívá jako sled místností, do kterých se musí znovu vracet, ale jako jediný trvající fakt, kterým prostě je. Místnosti nikdy nebyly za vámi. Byly, jak se ukazuje, vždycky tvarem toho, že jste vzhůru.',
 });

@@ -39,7 +39,7 @@ registerAll('v2', 'cs', {
   [roomChoiceOutcomeKey('boulder', 'refuse-carry', 2)]: 'Uvaděč: (přehazuje vám kabát přes ramena) Stávka je zaznamenána. Dokonce i respektována. Ale kopec je jediná cesta, která tu je. I on tlačí. Ne proto, že by to něco znamenalo. Protože se rozhodl, že to tlačení je jeho. Pojďte. Nahoru.',
   [roomChoiceTextKey('boulder', 'refuse-carry')]: 'Odmítněte. Sedněte si. Nebudete pro nikoho předvádět nesmyslnost.',
   [roomNoteTitleKey('boulder')]: 'Sisyfos, šťastný',
-  [roomNoteThinkersKey('boulder')]: 'Albert Camus · Mýtus o Sisyfovi · absurdno',
+  [roomNoteThinkersKey('boulder')]: 'Albert Camus · Mýtus o Sisyfovi (1942) · absurdno',
   [roomNoteBodyKey('boulder')]: 'Camus to nazval jediným vážným filosofickým problémem: nemá-li život žádný daný smysl, proč v něm pokračovat? Jeho odpověď začíná Sisyfem, odsouzeným bohy valit balvan do kopce navěky a sledovat, jak pokaždé padá zpět. Camus odmítá oba východy — sebevraždu (podlehnutí bezesmyslnosti) i to, čemu říkal filosofická sebevražda (skok do utěšujících systémů, které slibují smysl zpátky). Absurdno pro něj není vlastností světa; je to srážka mezi naší žádostí po smyslu a mlčením vesmíru — a musí se udržet živé, ne vyřešit. Skandální poslední věta — „člověk si musí představit Sisyfa šťastného“ — není optimismus. Je to tvrzení, že při cestě zpátky dolů, jasnozřivý, neutěšený a přesto pokračující, se Sisyfos stává nadřazeným svému trestu: balvan je jeho balvan, rytmus jeho vlastní. Tuto místnost nebylo možné vyhrát, protože smyslem nikdy nebyla hromada. Byla jím cesta dolů: okamžik, kdy úkol přestal být tím, co se vám děje, a začal být přesně tím, co je vaše.',
 });
 
@@ -122,6 +122,6 @@ registerAll('v2', 'cs', {
   [roomChoiceOutcomeKey('door-that-asks', 'walk-through', 1)]: 'Uvaděč: (volá za vámi) Poutníku. Ať tam venku najdete cokoli — bude to přesně tentýž svět. To nikdy nebyl ten slib. Vy jste byl tou rekonstrukcí. Pozor na mezeru.',
   [roomChoiceTextKey('door-that-asks', 'walk-through')]: 'Projděte skrz. Zpátky do rána, do hluku, do světa.',
   [roomNoteTitleKey('door-that-asks')]: 'Prozkoumaný život, prověřený',
-  [roomNoteThinkersKey('door-that-asks')]: 'Sókratés · Kierkegaard · narativní identita — MacIntyre, Ricoeur',
+  [roomNoteThinkersKey('door-that-asks')]: 'Sókratés · Kierkegaard (1843) · narativní identita — MacIntyre (1981), Ricoeur (1990)',
   [roomNoteBodyKey('door-that-asks')]: 'Sókratés řekl, že neprozkoumaný život nestojí za to žít, a byla mu za to porotou, která nechtěla být zkoumána, vyměřena smrt. Tyto dveře jsou ta věta obrácená naruby: konečně zkoumání toho, kdo zkoumá. Teoretici narativní identity — MacIntyre, Ricoeur — tvrdí, že já není substance, ale příběh v neustálé revizi, a že morální otázka zní, zda dokážete stát za svým příběhem jako autor i jako postava zároveň. Všimněte si, co dveře odměnily: ne konzistenci, která může zkamenět v brnění, ale revizi s doklady — schopnost říct „změnil jsem názor, a tady je, co ho změnilo.“ Kierkegaard: život se žije dopředu a chápe zpětně; dveře jsou místem, kde se oba směry konečně setkají a porovnají si poznámky. Každá filosofie, kterou tato cesta inscenovala — tramvaj, stroj, prkna, sázka, sklep, složka — byla vždycky jednou otázkou v přestrojení: když se vám váš vlastní spis přečte nahlas, je ten podpis váš?',
 });

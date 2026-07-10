@@ -100,7 +100,7 @@ export const wallet: Room = {
   ],
   fieldNote: {
     title: 'The Ring of Gyges',
-    thinkers: 'Plato · Republic II — Glaucon · virtue ethics',
+    thinkers: 'Plato · Republic II — Glaucon (c. 375 BCE) · virtue ethics',
     body: 'In the Republic, Glaucon tells of a shepherd who finds a ring that makes him invisible — and promptly seduces the queen and takes the kingdom. His challenge to Socrates: nobody is just willingly. Remove the witnesses and the punishment, and the just man and the unjust man walk the same road. The wallet in the empty corridor is the ring with the serial numbers filed off. Virtue ethics answers Glaucon differently than rules do: the question is not “what will happen to me if I take it?” but “what do I become as the person who took it?” **Every unobserved choice is a rehearsal, and character is what the rehearsals compound into.** And notice the finder’s fee — rationalization is not the absence of reasoning but its misuse, argument conscripted after the verdict. The corridor was never empty. You live there.',
   },
 };
@@ -173,7 +173,7 @@ export const dinnerTable: Room = {
   ],
   fieldNote: {
     title: 'The Kind Lie',
-    thinkers: 'Kant · Benjamin Constant · Carol Gilligan, ethics of care',
+    thinkers: 'Kant (1797) · Benjamin Constant (1797) · Carol Gilligan (1982), ethics of care',
     body: 'Kant, notoriously, held that lying is wrong even to a murderer asking where your friend is hiding: a lie treats its hearer as a mechanism to be operated rather than a rational being owed the truth, and universalized, it corrodes the very possibility of trust that language runs on. The ethics of care replies that morality does not live in universals — it lives in this room, this hand, this particular person and what they can carry tonight. A dying woman’s question may not be a request for information at all; it may be a request for accompaniment, and answering the literal question could be the real betrayal. **There is no configuration of words that is safe here.** The truth steals hope; the lie steals her chance to say goodbye knowingly; the deflection steals the moment itself. You always pass this room, because passing was never the point. The lesson is the weight.',
   },
 };
@@ -269,7 +269,7 @@ export const promotion: Room = {
   ],
   fieldNote: {
     title: 'Conflicts of Duty',
-    thinkers: 'W.D. Ross · role morality · Bernard Williams',
+    thinkers: 'W.D. Ross (1930) · role morality · Bernard Williams (1965)',
     body: 'W.D. Ross argued that we live under multiple prima facie duties — fidelity to friends, fairness to institutions, honesty, preventing harm — and that they do not come pre-ranked. A real moral situation is often several duties arriving at the same door, and no calculus dissolves the conflict; judgment must weigh it, and something owed will go unpaid. Role morality sharpens the knife: as an employee you owe the report; as a friend you owe the warning; you cannot fully be both tonight. Bernard Williams added the notion of moral residue — the remainder that stays on your hands even after you choose correctly. If you reported and feel stained, or protected and feel complicit, that feeling is not confusion. It is accuracy. **The residue is the receipt: proof that both duties were real, and that you, not a rulebook, paid one of them off.**',
   },
 };
@@ -381,7 +381,7 @@ export const beggarsMath: Room = {
   ],
   fieldNote: {
     title: 'The Drowning Child',
-    thinkers: 'Peter Singer · effective altruism and its critics',
+    thinkers: 'Peter Singer (1972) · effective altruism and its critics',
     body: 'Peter Singer’s famous argument begins with a child drowning in a shallow pond: you would ruin your shoes to save her without hesitation, so why does distance change the duty? If suffering is bad and you can prevent it at trivial cost, geography is morally arbitrary — the far child and the near one weigh the same. Effective altruism builds on this: measure, compare, send the money where it verifiably does most. The critics answer that morality grown entirely from arithmetic loses something load-bearing — that the face in front of you is not a bias to be corrected but the primal scene where obligation is learned at all; erode it and the far child eventually loses her claim too. Note the trap this room set: the choice that felt most generous, the public gesture, scored worst — because its true beneficiary had crept behind the camera. **Both honest options were defensible. Only the performance was not.** And the plainest fact, statistically: most people, most nights, choose neither claim at all.',
   },
 };
@@ -477,7 +477,7 @@ export const quietAlarm: Room = {
   ],
   fieldNote: {
     title: 'The Bystander and Moral Luck',
-    thinkers: 'Darley & Latané · Bernard Williams · Thomas Nagel',
+    thinkers: 'Darley & Latané (1968) · Bernard Williams (1976) · Thomas Nagel (1976)',
     body: 'After the widely reported (and, later reporting found, partly exaggerated) case of Kitty Genovese’s murder, psychologists Darley and Latané ran the experiments that named the bystander effect: the more witnesses present, the less likely any one of them acts — responsibility diffuses until it belongs to no one. A wall at 2 a.m. is a one-person experiment in the same physics: is this mine? Then Williams and Nagel add the harder twist — moral luck. Whatever you chose tonight, its moral coloring will be assigned retroactively by an outcome you could not see: the same knock is “heroic” if something was wrong and “hysterical” if it wasn’t; the same sleep is “reasonable” or “unforgivable” by sunrise. We judge choices as if made with the future attached, yet they are made in the dark, next to a wall. **The only part that was ever fully yours was the question you asked before choosing: whose comfort am I protecting — theirs, or mine?**',
   },
 };
@@ -540,7 +540,7 @@ export const photograph: Room = {
   ],
   fieldNote: {
     title: 'What the Fire Sorts',
-    thinkers: 'the burning-building problem · William James on the self · endowment and identity',
+    thinkers: 'the burning-building problem · William James (1890) on the self · endowment and identity',
     body: 'Ethicists use burning buildings the way physicists use vacuums: to strip a choice to its frame. A stranger versus an heirloom is, on paper, no contest — a life outweighs an object, and every theory from Kant to the utilitarians signs the same verdict. So why does the right-hand door pull? Because the photograph is not property; it is infrastructure. William James observed that the self extends into its things — the “material me” — and that losing them is not like losing money but like losing a limb of the personality. A sole surviving photograph is an external backup of an internal file: destroy it and a stretch of your past becomes unwitnessed, unswearable, softer than fact. **The fire, in other words, offered a real trade — someone else’s whole future against a piece of your past — and doomed you to feel the loss either way.** That feeling is not weakness. It is an accurate reading of what was actually on the table.',
   },
 };
@@ -602,7 +602,7 @@ export const buridansQueue: Room = {
   ],
   fieldNote: {
     title: 'The Ass Between Two Bales',
-    thinkers: 'Jean Buridan · Jean-Paul Sartre, radical freedom',
+    thinkers: 'Jean Buridan · Jean-Paul Sartre (1943), radical freedom',
     body: 'Medieval logicians described a hungry ass placed exactly between two identical bales of hay: with no reason to prefer either, it starves at precisely the point of perfect rationality — reason alone, the paradox suggests, cannot originate action, only rank alternatives that already differ. Sartre carried the same problem into ethics: we are, he wrote, condemned to be free, and refusing to choose is itself a choice, made in bad faith the moment we pretend otherwise. The two doors here are honest about what most decisions disguise — that beneath the reasons we give, an arbitrary first move has to happen, a spending of will where logic has nothing left to spend. **The doors were never the hard part. The moment before your hand moved was.** Notice, too, how quickly reasons arrived once you had already chosen: the mind keeps excellent counsel for verdicts it did not actually help reach.',
   },
 };
@@ -699,7 +699,7 @@ export const theReference: Room = {
   ],
   fieldNote: {
     title: 'The Kind Lie, Notarized',
-    thinkers: 'Immanuel Kant · Bernard Williams, the ethics of testimony',
+    thinkers: 'Immanuel Kant (1797) · Bernard Williams (2002), the ethics of testimony',
     body: 'Kant held that truthfulness is a duty owed to humanity as such, not calibrated to whoever is asking or whatever they can bear: a reference is a promise, silently made to a stranger who will rely on it, and inflating it treats that stranger as a means to your friend’s end. Bernard Williams complicates the neatness — a reference is also a genre, half-ritual, read by people fluent in its usual inflation, discounted before the paragraph even finishes. So which convention are you actually bound by: the strict one, or the one everyone quietly agrees to fudge? Notice what the letter really risks: not your integrity in the abstract, but a stranger’s real trust, spent on your friend’s behalf without their knowledge or consent. **Loyalty that costs a third party is not loyalty — it is a transfer.** Whatever you signed, you will likely feel its weight the day the reference is tested by an ordinary difficult Tuesday at that job — and so, less fairly, will they. The cheapest fix available was never in the letter at all: a conversation, had first, with the person the letter is about.',
   },
 };

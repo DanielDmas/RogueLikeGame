@@ -56,7 +56,7 @@ export const prologue: Room = {
   ],
   fieldNote: {
     title: 'Anamnesis',
-    thinkers: 'Plato · Meno, Phaedo',
+    thinkers: 'Plato · Meno (c. 385 BCE), Phaedo (c. 380 BCE)',
     body: 'Plato proposed something strange: that learning is not acquiring the new but remembering the forgotten — anamnesis, the soul’s recollection of what it knew before birth scattered it into a body. In the Meno, Socrates draws geometry out of an untaught boy to argue the knowledge was already there, waiting to be walked back to. You do not need to buy the metaphysics to feel the truth in the shape of it: the moments that most change us rarely feel like additions. **They feel like recognition — “I knew this, and had arranged not to.”** This game takes Plato literally, once. Your self has been filed into rooms, and the way back is not invention but recollection: choosing, and watching what the choice reminds you of. The clock has no hands because recollection does not happen in time. It happens in rooms. A marginal note, in an older hand: the ones who remember all of it do not use the door at all.',
   },
 };

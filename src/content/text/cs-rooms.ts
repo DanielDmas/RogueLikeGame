@@ -34,7 +34,7 @@ registerAll('v2', 'cs', {
   [roomChoiceOutcomeKey('waiting-room', 'back', 0)]: 'Uvaděč: To chce každý. Tady je dobrá zpráva: „zpátky“ existuje. A tady je to ostatní — cesta vede skrz každý kousek vás, který máme ve spisu. Laskavá rozhodnutí. Ta zbabělá. Ta, která jste si nikdy nedovolili domyslet.',
   [roomChoiceOutcomeKey('waiting-room', 'back', 1)]: 'Uvaděč: Skrz ně není žádná zkratka. Lidé to zkoušeli. Nikdo ji zatím nenašel.',
   [roomNoteTitleKey('waiting-room')]: 'Anamnésis',
-  [roomNoteThinkersKey('waiting-room')]: 'Platón · Menón, Faidón',
+  [roomNoteThinkersKey('waiting-room')]: 'Platón · Menón (c. 385 BCE), Faidón (c. 380 BCE)',
   [roomNoteBodyKey('waiting-room')]: 'Platón navrhl něco podivného: že učení není získáváním nového, ale vzpomínáním na zapomenuté — anamnésis, vzpomínka duše na to, co znala dřív, než ji narození rozptýlilo do těla. V Menónovi Sókratés vyvozuje geometrii z nevzdělaného chlapce, aby dokázal, že znalost tam už byla, čekajíc, až se k ní člověk vrátí. Nemusíte věřit té metafyzice, abyste v tom cítili pravdu: chvíle, které nás nejvíce mění, se málokdy zdají jako přídavky. **Cítí se jako rozpoznání — „tohle jsem znal a zařídil jsem si, abych to nevěděl.“** Tato hra bere Platóna doslovně, jednou. Vaše já bylo založeno do místností a cesta zpět není vynálezem, ale vzpomínáním: volbou, a sledováním, na co vás ta volba upomíná. Hodiny nemají ručičky, protože vzpomínání se neděje v čase. Děje se v místnostech. Poznámka na okraji, starší rukou: ti, kdo si vzpomenou na úplně všechno, dveře vůbec nepoužijí.',
 });
 
@@ -65,7 +65,7 @@ registerAll('v2', 'cs', {
   [roomChoiceOutcomeKey('wallet', 'keep-it', 1)]: 'Někde čtyřicet minut odkudkoli dorazí datum podle plánu.',
   [roomChoiceOutcomeKey('wallet', 'keep-it', 2)]: 'Uvaděč: Pro záznam: někdo se díval. Byl jste to vy. To není chyba v uspořádání. Vždycky to byl smysl celé věci.',
   [roomNoteTitleKey('wallet')]: 'Gygův prsten',
-  [roomNoteThinkersKey('wallet')]: 'Platón · Ústava II — Glaukón · etika ctnosti',
+  [roomNoteThinkersKey('wallet')]: 'Platón · Ústava II — Glaukón (c. 375 BCE) · etika ctnosti',
   [roomNoteBodyKey('wallet')]: 'V Ústavě Glaukón vypráví o pastýři, který najde prsten, jenž ho učiní neviditelným — a okamžitě svede královnu a uchvátí království. Jeho výzva Sókratovi: nikdo není spravedlivý dobrovolně. Odstraňte svědky a trest, a spravedlivý i nespravedlivý člověk jdou stejnou cestou. Peněženka v prázdné chodbě je ten prsten se sobroušenými sériovými čísly. Etika ctnosti odpovídá Glaukónovi jinak než pravidla: otázka není „co se mi stane, když si ji vezmu?“, ale „kým se stanu jako člověk, který si ji vzal?“ **Každá nepozorovaná volba je zkouška, a charakter je to, v co se ty zkoušky sčítají.** A všimněte si nálezného — racionalizace není absence uvažování, ale jeho zneužití, argument povolaný až po verdiktu. Chodba nikdy nebyla prázdná. Žijete v ní.',
 });
 
@@ -97,7 +97,7 @@ registerAll('v2', 'cs', {
   [roomChoiceOutcomeKey('dinner-table', 'silence', 1)]: 'Zkoumá vás pohledem. Zná vás od doby, než jste uměli lhát, a čte odpověď v tom mlčení — ale mlčení lze číst jemně, jakoukoli rychlostí, kterou čtenář unese.',
   [roomChoiceOutcomeKey('dinner-table', 'silence', 2)]: '„Vždycky jsi byl ten tichý,“ řekne, což nikdy nebyla pravda, což znamená: rozumím. Děkuji, že jsi mě to nenutil slyšet.',
   [roomNoteTitleKey('dinner-table')]: 'Laskavá lež',
-  [roomNoteThinkersKey('dinner-table')]: 'Kant · Benjamin Constant · Carol Gilligan, etika péče',
+  [roomNoteThinkersKey('dinner-table')]: 'Kant (1797) · Benjamin Constant (1797) · Carol Gilligan (1982), etika péče',
   [roomNoteBodyKey('dinner-table')]: 'Kant, jak známo, tvrdil, že lhát je špatné i vrahovi, který se ptá, kde se skrývá váš přítel: lež zachází s posluchačem jako s mechanismem, který se má ovládat, místo jako s rozumnou bytostí, jíž dlužíte pravdu, a zobecněná rozežírá samotnou možnost důvěry, na níž jazyk stojí. Etika péče odpovídá, že morálka nežije v univerzáliích — žije v této místnosti, této ruce, tomto konkrétním člověku a tom, co unese dnes večer. Otázka umírající ženy nemusí být vůbec žádostí o informaci; může to být žádost o doprovod, a odpověď na doslovnou otázku by mohla být skutečnou zradou. **Neexistuje žádná konfigurace slov, která by tu byla bezpečná.** Pravda krade naději; lež krade její šanci vědomě se rozloučit; vyhýbavá odpověď krade samotný okamžik. Touto místností vždy jen procházíte, protože o procházení tu nikdy nešlo. Ponaučením je ta váha.',
 });
 
@@ -128,7 +128,7 @@ registerAll('v2', 'cs', {
   [roomChoiceOutcomeKey('promotion', 'tell-friend', 1)]: 'Nahlásí se sami v 8:40. Jde to s nimi tvrdě, ale čestně — chyba přiznaná je jiný druh než chyba odhalená.',
   [roomChoiceOutcomeKey('promotion', 'tell-friend', 2)]: 'Ani jeden z vás nedostane povýšení. Něco jiného bylo povýšeno místo toho; oba to víte a nikdy to nevyslovíte nahlas, což je způsob, jak poznáte, že je to skutečné.',
   [roomNoteTitleKey('promotion')]: 'Konflikty povinností',
-  [roomNoteThinkersKey('promotion')]: 'W.D. Ross · rolová morálka · Bernard Williams',
+  [roomNoteThinkersKey('promotion')]: 'W.D. Ross (1930) · rolová morálka · Bernard Williams (1965)',
   [roomNoteBodyKey('promotion')]: 'W.D. Ross tvrdil, že žijeme pod mnoha prima facie povinnostmi — věrností přátelům, spravedlností vůči institucím, poctivostí, předcházením újmě — a že nepřicházejí předem seřazené. Skutečná morální situace je často několik povinností přicházejících ke stejným dveřím současně, a žádný kalkul konflikt nerozpustí; musí ho zvážit úsudek, a něco dlužné zůstane nezaplaceno. Rolová morálka nůž ještě zaostří: jako zaměstnanec dlužíte hlášení; jako přítel dlužíte varování; dnes večer nemůžete být plně obojím. Bernard Williams přidal pojem morálního zbytku — zbytek, který zůstává na vašich rukou i poté, co se rozhodnete správně. Pokud jste nahlásili a cítíte se poskvrněni, nebo jste ochránili a cítíte se spoluvinní, ten pocit není zmatek. Je to přesnost. **Zbytek je účtenka: důkaz, že obě povinnosti byly skutečné, a že vy, ne nějaký sborník pravidel, jednu z nich splatili.**',
 });
 
@@ -163,7 +163,7 @@ registerAll('v2', 'cs', {
   [roomChoiceOutcomeKey('beggars-math', 'walk-on', 1)]: 'Nic dramatického se neděje. A právě to je ten nález: většina lidí, většinu večerů, udělá přesně tohle, a svět to vstřebá beze slova, tak jako vstřebá skoro všechno.',
   [roomChoiceOutcomeKey('beggars-math', 'walk-on', 2)]: 'Uvaděč: Nevedu si účetní knihu o tom, kdo dává a kdo jde dál — jen o tom, co každou volbu stojí unést potom. „Dnes ne“ je, statisticky, nejčastější odpověď v této chodbě. Nezmiňuji to jako rozhřešení ani jako obžalobu. Jen jako jinou aritmetiku.',
   [roomNoteTitleKey('beggars-math')]: 'Tonoucí dítě',
-  [roomNoteThinkersKey('beggars-math')]: 'Peter Singer · efektivní altruismus a jeho kritici',
+  [roomNoteThinkersKey('beggars-math')]: 'Peter Singer (1972) · efektivní altruismus a jeho kritici',
   [roomNoteBodyKey('beggars-math')]: 'Slavný argument Petera Singera začíná dítětem, které se topí v mělkém rybníku: bez váhání byste zničili boty, abyste ji zachránili, tak proč vzdálenost mění povinnost? Pokud je utrpení špatné a vy mu můžete zabránit za triviální cenu, geografie je morálně nahodilá — vzdálené dítě a blízké váží stejně. Efektivní altruismus na tom staví: měřte, srovnávejte, posílejte peníze tam, kde prokazatelně konají nejvíc. Kritici odpovídají, že morálka vyrostlá čistě z aritmetiky ztrácí něco nosného — že tvář před vámi není zkreslení, které je třeba opravit, ale prvotní scéna, kde se povinnost vůbec učí; narušte ji a vzdálené dítě nakonec ztratí i svůj nárok. Všimněte si pasti, kterou tato místnost nastražila: volba, která se zdála nejšlechetnější, veřejné gesto, skórovala nejhůř — protože jejím skutečným příjemcem se za kamerou stal někdo jiný. **Obě upřímné možnosti byly obhajitelné. Jen to představení nebylo.**',
 });
 
@@ -194,7 +194,7 @@ registerAll('v2', 'cs', {
   [roomChoiceOutcomeKey('quiet-alarm', 'wait', 1)]: 'V jednu chvíli se probudíte opřeni o zeď, prochladlí, po dvou hodinách stráže nad vlastním váháním. Byt vedle je tichý — teď už asi ten dobrý druh ticha. Asi je slovo, které si ponecháte.',
   [roomChoiceOutcomeKey('quiet-alarm', 'wait', 2)]: 'Ráno potkáte jednoho z nich u schránek. Hledáte důkaz v jejich tváři. Jejich tvář je zavřené dveře s rohožkou „vítejte“. Nikdy se nedozvíte, co vaše čekání stálo, nebo zachránilo, nebo čím bylo.',
   [roomNoteTitleKey('quiet-alarm')]: 'Přihlížející a morální štěstí',
-  [roomNoteThinkersKey('quiet-alarm')]: 'Darley a Latané · Bernard Williams · Thomas Nagel',
+  [roomNoteThinkersKey('quiet-alarm')]: 'Darley a Latané (1968) · Bernard Williams (1976) · Thomas Nagel (1976)',
   [roomNoteBodyKey('quiet-alarm')]: 'Po hojně sdíleném (a jak se později ukázalo, částečně přehnaném) případu vraždy Kitty Genovese provedli psychologové Darley a Latané experimenty, které pojmenovaly efekt přihlížejícího: čím víc svědků, tím méně pravděpodobné, že kterýkoli z nich zasáhne — odpovědnost se rozptýlí, dokud nepatří nikomu. Zeď ve dvě ráno je jednočlenný experiment ze stejné fyziky: je tohle moje? Pak Williams a Nagel přidávají tvrdší zvrat — morální štěstí. Ať jste dnes zvolili cokoli, jeho morální zbarvení bude přiřazeno zpětně výsledkem, který jste nemohli vidět: totéž zaklepání je „hrdinské“, pokud bylo něco v nepořádku, a „hysterické“, pokud ne; totéž spaní je „rozumné“ nebo „neomluvitelné“ do rána. Soudíme volby, jako by byly učiněny s připojenou budoucností, přitom jsou učiněny ve tmě, vedle zdi. **Jediná část, která kdy byla plně vaše, byla otázka, kterou jste si položili před volbou: čí pohodlí to vlastně chráním — jejich, nebo své?**',
 });
 
@@ -221,7 +221,7 @@ registerAll('v2', 'cs', {
   [roomChoiceOutcomeKey('buridans-queue', 'sit-down', 1)]: 'Po chvíli — přestanete počítat, jak dlouhé to bylo — projde skrz ty levé dveře průvan a ony se pootevřou o pár centimetrů, jako by to, co za nimi čekalo, bylo prostě trpělivé ohledně toho pantu.',
   [roomChoiceOutcomeKey('buridans-queue', 'sit-down', 2)]: 'Uvaděč: Nezvolil jste. Nakonec zvolila místnost za vás, tak jak to místnosti dělají, když to neudělá nikdo jiný. Všimněte si, že odmítnutí volby vás nezbavilo výsledku — jen přeneslo účet za čekání na někoho jiného. Dnes večer na mě.',
   [roomNoteTitleKey('buridans-queue')]: 'Osel mezi dvěma otepmi sena',
-  [roomNoteThinkersKey('buridans-queue')]: 'Jean Buridan · Jean-Paul Sartre, radikální svoboda',
+  [roomNoteThinkersKey('buridans-queue')]: 'Jean Buridan · Jean-Paul Sartre (1943), radikální svoboda',
   [roomNoteBodyKey('buridans-queue')]: 'Středověcí logikové popisovali hladového osla umístěného přesně mezi dva identické otepy sena: bez důvodu upřednostnit jeden nebo druhý umírá hladem přesně v bodě dokonalé racionality — samotný rozum, naznačuje paradox, nedokáže jednání vyvolat, jen seřadit alternativy, které se už nějak liší. Sartre přenesl stejný problém do etiky: jsme, napsal, odsouzeni ke svobodě, a odmítnutí volby je samo o sobě volbou, učiněnou ve špatné víře ve chvíli, kdy předstíráme opak. Tyto dvoje dveře jsou upřímné ohledně toho, co většina rozhodnutí maskuje — že pod důvody, které uvádíme, se musí odehrát libovolný první pohyb, výdej vůle tam, kde logice už nezbývá co utrácet. **Dveře nikdy nebyly tou těžkou částí. Byl jí ten okamžik, než se pohnula vaše ruka.** Všimněte si také, jak rychle se dostavily důvody, jakmile jste se už rozhodli: mysl vede vynikající obhajobu pro verdikty, ke kterým ve skutečnosti nijak nepřispěla.',
 });
 
@@ -253,7 +253,7 @@ registerAll('v2', 'cs', {
   [roomChoiceOutcomeKey('the-reference', 'talk-first', 1)]: 'Nevyřeší se to čistě. Je zraněný, nebo mu uleví, nebo obojí ve špatném pořadí. Ale ať se po tomhle hovoru napíše cokoli, napsal to s vámi, s otevřenýma očima, místo aby to později našel v rozhodnutí cizího člověka.',
   [roomChoiceOutcomeKey('the-reference', 'talk-first', 2)]: 'Uvaděč: Přidal jste tomuto dopisu čtvrtého čtenáře — toho, o kom skutečně byl. Přiznávám, že většina doporučení se s ním nikdy nesetká.',
   [roomNoteTitleKey('the-reference')]: 'Laskavá lež, notářsky ověřená',
-  [roomNoteThinkersKey('the-reference')]: 'Immanuel Kant · Bernard Williams, etika svědectví',
+  [roomNoteThinkersKey('the-reference')]: 'Immanuel Kant (1797) · Bernard Williams (2002), etika svědectví',
   [roomNoteBodyKey('the-reference')]: 'Kant tvrdil, že pravdomluvnost je povinností vůči lidství jako takovému, nekalibrovanou podle toho, kdo se ptá nebo co unese: doporučení je slib, mlčky daný cizímu člověku, který se na něj spolehne, a jeho přikrášlení zachází s tím cizím člověkem jako s prostředkem k cíli vašeho přítele. Bernard Williams tu úhlednost komplikuje — doporučení je také žánr, napůl rituál, čtený lidmi znalými jeho obvyklého přikrášlení, odečítaného ještě dřív, než odstavec skončí. Kterou konvencí jste tedy skutečně vázán: tou přísnou, nebo tou, na jejímž mírném ohýbání se všichni potichu shodli? Všimněte si, co dopis skutečně riskuje: ne vaši integritu v abstraktní rovině, ale skutečnou důvěru cizího člověka, vydanou jménem vašeho přítele bez jeho vědomí či souhlasu. **Věrnost, která něco stojí třetí stranu, není věrnost — je to přesun.** Ať jste podepsal cokoli, pravděpodobně ucítíte jeho váhu v den, kdy doporučení prověří obyčejné těžké úterý v té práci — a stejně tak, méně spravedlivě, i on.',
 });
 
@@ -280,6 +280,6 @@ registerAll('v2', 'cs', {
   [roomChoiceOutcomeKey('photograph', 'try-both', 1)]: 'Venku ten cizí dýchá. Sáhnete do bundy a vaše prsty najdou popel uspořádaný do tvaru obdélníku. Oheň vám dovolil to vynést; jen odmítl nechat to zůstat fotografií.',
   [roomChoiceOutcomeKey('photograph', 'try-both', 2)]: 'Uvaděč: Snažili jste se zachránit všechno, a zachránili jste tu osobu, a hrst popela tam, kde bývala ta fotografie. Pro co to stojí za to, je to volba, kterou vídám nejčastěji u poutníků, kterých si začínám vážit.',
   [roomNoteTitleKey('photograph')]: 'Co oheň roztřídí',
-  [roomNoteThinkersKey('photograph')]: 'problém hořící budovy · William James o já · vlastnictví a identita',
+  [roomNoteThinkersKey('photograph')]: 'problém hořící budovy · William James (1890) o já · vlastnictví a identita',
   [roomNoteBodyKey('photograph')]: 'Etici používají hořící budovy tak, jako fyzici používají vakuum: aby obnažili volbu na její kostru. Cizí člověk proti rodinné památce je na papíře bezkonkurenční — život převáží předmět a každá teorie od Kanta po utilitaristy podepisuje stejný verdikt. Tak proč táhnou pravé dveře? Protože fotografie není majetek; je to infrastruktura. William James si všiml, že se já rozprostírá do svých věcí — „materiální já“ — a že jejich ztráta není jako ztráta peněz, ale jako ztráta údu osobnosti. Jediná dochovaná fotografie je externí záloha vnitřního souboru: zničte ji, a úsek vaší minulosti se stane nedosvědčeným, neodpřisáhnutelným, měkčím než fakt. **Oheň, jinými slovy, nabídl skutečný obchod — celou budoucnost někoho jiného proti kousku vaší minulosti — a odsoudil vás k tomu, abyste tu ztrátu cítili tak jako tak.** Ten pocit není slabost. Je to přesné čtení toho, co bylo skutečně ve hře.',
 });

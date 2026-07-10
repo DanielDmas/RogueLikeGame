@@ -102,7 +102,7 @@ export const theArchive: Room = {
   ],
   fieldNote: {
     title: 'On Keeping Records',
-    thinkers: 'Paul Ricœur, narrative identity',
+    thinkers: 'Paul Ricœur (1990), narrative identity',
     body: 'Paul Ricœur argued that a self isn’t a thing you locate by introspection — it is a narrative you keep composing, revising the plot without ever finishing the book. He called this narrative identity: unlike a mere object, whose sameness lies in never changing, a self’s sameness lies in being able to change and still call it the same story. This room stages the confrontation Ricœur’s theory was built to survive: a specific, dated, filed act, read back to you cold, without the surrounding chapters that made it feel inevitable at the time. Owning it, disowning it, and filing it without a verdict are three different relationships to authorship — and Ricœur’s own answer sits closer to the third than either of the first two. **You are not obligated to still endorse every sentence you have written. Only to admit you are the one who is still holding the pen.**',
   },
 };
@@ -204,7 +204,7 @@ export const theUnchosen: Room = {
   ],
   fieldNote: {
     title: 'The Road Not Taken, Audited',
-    thinkers: 'Søren Kierkegaard · Robert Frost, the poem misread as caution',
+    thinkers: 'Søren Kierkegaard (1844) · Robert Frost (1916), the poem misread as caution',
     body: 'Søren Kierkegaard called possibility the most dizzying thing available to a person — more vertiginous than any actual danger, because the actual is at least finite, while the possible multiplies without limit the longer you stand at a fork refusing to choose. Anxiety, for Kierkegaard, is the feeling of freedom looking down. Robert Frost’s “The Road Not Taken” gets misquoted at nearly every graduation as an anthem for bold divergence — “the one less traveled by, / And that has made all the difference” — but the poem itself is far slyer: the two roads are, the speaker admits two stanzas earlier, worn “really about the same,” and the wistful sigh at the end is confessed in advance as something the speaker will tell “with a sigh / Somewhere ages and ages hence” — a story reshaped by hindsight, not a truth reported from the fork. **The doors in this corridor were never secretly better. They were simply, briefly, possible — and possibility, once it closes, keeps none of its receipts, only its rumors.**',
   },
 };
@@ -309,7 +309,7 @@ export const theEcho: Room = {
   ],
   fieldNote: {
     title: 'Conversations With a Previous Tenant',
-    thinkers: 'David Hume · Galen Strawson, the bundle self and its critics',
+    thinkers: 'David Hume (1739) · Galen Strawson (1997), the bundle self and its critics',
     body: 'David Hume searched his own mind for a continuous self and reported finding only a bundle of perceptions — no thread running underneath them, just one experience after another, tightly enough packed to feel like a person. Galen Strawson took the bundle seriously as a description of experience itself: many of us, he argued, don’t actually feel continuous with who we were years or even hours ago — the psychological self is often “episodic,” renewing itself in shorter, more local bursts than the narrative-identity model assumes, with no single thread required to make any given burst a genuine self. The voice in the other chair is not a haunting; it is what’s left of one such burst, filed accurately and without malice. Whether you answer it, out-wait it, or admit there was only ever one occupant, the room asks the same question three ways: **is the one listening now the same one who spoke then — or simply the next tenant, reading the previous lease with unusual attention?**',
   },
 };

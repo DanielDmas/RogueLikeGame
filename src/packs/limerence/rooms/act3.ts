@@ -116,7 +116,7 @@ export const theColleague: Room = {
   ],
   fieldNote: {
     title: 'The Geometry of Doors',
-    thinkers: 'Treas · Giesen · Esther Perel',
+    thinkers: 'Treas · Giesen (2000) · Esther Perel (2017)',
     body: 'Treas and Giesen’s research on infidelity found opportunity structures — proximity, privacy, travel — predicting affairs about as strongly as relationship dissatisfaction does, sometimes more so; the workplace remains, across decades of data, the single most common place affairs begin, simply because it supplies sustained, private, repeated contact. Perel’s contribution reframes the "why": **affairs are often not about the partner you have, but the self you miss** — a version of yourself that existed before the roles, the routines, the mortgage. Neither finding excuses anything; both explain why couples who decide, in daylight, what a hotel corridor means fare measurably better than couples who leave it to be improvised at midnight. The keycard was warm because you were holding it. Note who was holding it.',
   },
 };
@@ -407,7 +407,7 @@ export const theDrift: Room = {
   ],
   fieldNote: {
     title: 'The Quietest Rooms',
-    thinkers: 'Gottman · Aron · Finkel',
+    thinkers: 'Gottman · Aron (2000) · Finkel (2017)',
     body: 'Gottman’s data is consistent across decades: disengagement — not the presence of conflict — is the strongest predictor that a relationship is ending, because couples who stop turning toward each other’s small bids for attention have stopped doing the maintenance love actually requires. Aron’s self-expansion experiments found something specific and replicable: couples assigned novel, moderately challenging joint activities showed measurable gains in reported closeness, evidence that growth functions as a real ingredient, not just a romantic metaphor. Finkel’s framing sharpens the trap: modern relationships are asked to supply nearly everything a person needs — while receiving less time and attention than relationships historically got from a whole surrounding community. **Comfort is a feature. Check whether it’s the only one still installed.**',
   },
 };
@@ -501,7 +501,7 @@ export const theSecondAccount: Room = {
   ],
   fieldNote: {
     title: 'The Definition Gap',
-    thinkers: 'digital-infidelity survey literature · Glass (digital walls)',
+    thinkers: 'digital-infidelity survey literature · Glass (2003) (digital walls)',
     body: 'Surveys asking couples to independently define "cheating" find remarkably little agreement — not between strangers, where disagreement is expected, but between partners in the same relationship, who routinely draw the line in different places without realizing it until tested. Across the disagreement, one criterion holds up consistently: secrecy. **A behavior kept hidden from a partner functions, structurally, the way a hidden behavior always has — regardless of what species of behavior it technically is.** Attention itself behaves like a finite, redirectable resource in this research: what an account harvests, a relationship doesn’t receive, whether or not anything explicit was ever exchanged. The mirror is on the inside of this door for a reason. It’s the one room where the evidence was always going to be yours.',
   },
 };
@@ -740,7 +740,7 @@ export const theWeddingEve: Room = {
   ],
   fieldNote: {
     title: 'The 2 A.M. Audit',
-    thinkers: 'Lavner · sunk-cost literature',
+    thinkers: 'Lavner (2012) · sunk-cost literature',
     body: 'Lavner’s studies on premarital doubt are specific enough to be genuinely useful: doubts expressed before a wedding do predict elevated risk of later distress and divorce — the effect sizes are real but modest, and worth stating honestly rather than dramatically. The more important finding sits underneath the headline: **the risk concentrates in doubt that goes unexamined, not doubt that gets honestly explored** — which reframes "cold feet" from a verdict into an instruction. The useful distinction isn’t doubting the person versus not doubting them; it’s doubting the person, doubting the institution of marriage itself, and doubting your own readiness — three separate questions routinely collapsed into one 2 a.m. feeling. The suit fits. That was never the question.',
   },
 };
@@ -879,7 +879,7 @@ export const theTherapist: Room = {
   ],
   fieldNote: {
     title: 'Four Doors and a Bad Joke',
-    thinkers: 'Gottman · Christensen',
+    thinkers: 'Gottman (1994) · Christensen (1990)',
     body: 'Gottman’s Four Horsemen — criticism, contempt, defensiveness, stonewalling — remain among the most widely cited findings in relationship research, each paired with a specific, learnable antidote rather than a character verdict. The famous claim of near-perfect divorce prediction from short observed interactions has drawn published statistical critique since — later reanalyses questioned aspects of the original studies’ methodology — and the honest framing keeps both facts in view: a genuinely useful diagnostic map, not an oracle. **Repair attempts, not the absence of conflict, are Gottman’s actual load-bearing finding** — happy couples fight plenty; they simply reach for each other, and get reached for, mid-fight, far more often. Christensen’s demand-withdraw research adds a symmetry worth remembering: the pursuer and the one who goes quiet are usually both frightened, just in opposite directions. The tissue box is real. The doors were always in the room; the office just has better lighting.',
   },
 };
