@@ -17,6 +17,7 @@ import { showFieldNote } from '../ui/fieldNote';
 import { showSavedToast } from '../ui/toast';
 import {
   showAbout,
+  showCredits,
   showCodex,
   showEndScreen,
   showExaminedPathOffer,
@@ -364,6 +365,7 @@ export class Game {
       await this.persist();
     }
     if (action === 'about') await showAbout(this.ui, this.pack);
+    if (action === 'credits') await showCredits(this.ui, this.pack);
     if (action === 'settings') {
       this.profile.settings = await showSettings(this.ui, this.profile.settings, this.settingsActions());
       this.applySettings();
@@ -415,6 +417,8 @@ export class Game {
         await this.persist();
       } else if (action === 'about') {
         await showAbout(this.ui, this.pack);
+      } else if (action === 'credits') {
+        await showCredits(this.ui, this.pack);
       } else if (action === 'settings') {
         this.profile.settings = await showSettings(this.ui, this.profile.settings, this.settingsActions());
         this.applySettings();

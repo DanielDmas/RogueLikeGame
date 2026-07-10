@@ -110,6 +110,13 @@ export interface ContentPack {
     /** The age/content-register note (e.g. minors' storylines are
      * non-explicit). */
     minorsNote: string;
+    /** A short, glance-able self-declared age advisory (e.g. "16+ · Mature
+     * Themes") shown as a persistent badge on the title screen itself —
+     * not just inside the About panel, and not just on a first playthrough.
+     * Explicitly self-declared, not an official rating body's classification
+     * (no PEGI/ESRB submission has been made); see UPGRADE_PLAN.md's
+     * packaging-readiness notes for what a real submission would require. */
+    ageAdvisory: string;
     /** "This is fiction, not therapy or advice." register statement. */
     fictionNote: string;
     /** The static, jurisdiction-generic help line. */

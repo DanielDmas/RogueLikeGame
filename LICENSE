@@ -1,0 +1,35 @@
+Copyright (c) 2026 Daniel Dmas. All rights reserved.
+
+This repository contains the source code, game design, room text, room
+structure, translations, and other creative content for "The Vestibule"
+(ANAMNESIS and LIMERENCE), collectively "the Software."
+
+Except where a file explicitly states otherwise (see THIRD_PARTY_NOTICES.md
+for bundled third-party fonts and libraries, which remain under their own
+licenses), no part of the Software may be copied, modified, distributed,
+sublicensed, publicly performed, or used to create derivative works,
+in whole or in part, without the prior written permission of the copyright
+holder.
+
+Viewing this repository's source on GitHub, and building or running it
+locally for personal, non-commercial evaluation, is permitted. Redistribution
+of built binaries (including the Windows executable), publication of the web
+build under a different name, or commercial use of any kind requires
+separate written permission.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHOR OR COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+---
+
+Note for a future commercial release: this file names "Daniel Dmas" (this
+repository's GitHub account) as the placeholder rights holder. Before any
+paid distribution (Steam, DVD, or otherwise), replace this with the exact
+legal name or entity that will hold the copyright, and consider having the
+final license text reviewed by a lawyer in your jurisdiction — this file is
+a reasonable default, not legal advice.

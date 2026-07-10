@@ -33,6 +33,11 @@ describe('Onboarding advisory layer (spec 10 §2)', () => {
     for (const field of ['purposeStatement', 'mechanicsNote', 'themes', 'minorsNote', 'fictionNote', 'helpLine', 'noTelemetry'] as const) {
       expect(a[field].length, `advisory.${field} should be non-empty`).toBeGreaterThan(10);
     }
+    expect(a.ageAdvisory.length, 'advisory.ageAdvisory should be a short, non-empty badge string').toBeGreaterThan(3);
+  });
+
+  it('LIMERENCE’s title screen shows a persistent, glance-able age-advisory badge (self-declared, not an official rating)', () => {
+    expect(limerencePack.advisory!.ageAdvisory).toBe('16+ · Mature Themes');
   });
 
   it('LIMERENCE’s About body includes every mandatory element of the charter’s advisory layer', () => {

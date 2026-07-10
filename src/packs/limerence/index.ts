@@ -196,6 +196,7 @@ export const limerencePack: ContentPack = {
     themes:
       'infidelity, jealousy, coercive control, non-consensual image sharing (never depicted), relationship breakdown, and consensual non-monogamy.',
     minorsNote: 'Characters on the Ground Floor (Act I) are 15–18, and their storylines contain no sexual content.',
+    ageAdvisory: '16+ · Mature Themes',
     fictionNote: 'This is fiction, not therapy or advice.',
     helpLine:
       'If one of these rooms is your life right now, a game is not the tool. Talk to someone real — a friend who tells you the truth, a counselor, a doctor.',

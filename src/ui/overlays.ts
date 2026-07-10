@@ -27,7 +27,7 @@ import { sound } from '../audio/soundEngine';
 import { isElectron, isFullscreen, toggleFullscreen } from './fullscreen';
 import { applyUiZoom } from './zoom';
 
-export type TitleAction = 'new' | 'continue' | 'codex' | 'ledger' | 'settings' | 'persona' | 'about' | 'exit';
+export type TitleAction = 'new' | 'continue' | 'codex' | 'ledger' | 'settings' | 'persona' | 'about' | 'credits' | 'exit';
 
 function overlay(ui: HTMLElement): HTMLElement {
   const o = el('div', 'overlay fade-in');
@@ -46,6 +46,13 @@ export function showTitle(ui: HTMLElement, profile: Profile, pack: ContentPack):
         t(uiKey('titleTagline'), 'a journey through the rooms · every door is a question · the way back is through'),
       ),
     );
+    // A persistent, glance-able age advisory — every visit to the title
+    // screen, not just a first playthrough's auto-shown About panel — for
+    // any pack whose subject matter carries one (self-declared; not an
+    // official rating body's classification, since none has been sought).
+    if (pack.advisory?.ageAdvisory) {
+      o.append(el('div', 'title-age-advisory', pack.advisory.ageAdvisory));
+    }
     const how = el('div', 'how-to-play');
     how.innerHTML = `
       <span>${t(uiKey('howToClick'), '<b>Click</b> a door, or press <b>1–3</b>, to choose your path')}</span>
@@ -90,7 +97,9 @@ export function showTitle(ui: HTMLElement, profile: Profile, pack: ContentPack):
     st.addEventListener('click', () => done('settings'));
     const ab = el('button', 'title-btn small', t(uiKey('aboutTitle'), 'Before you begin'));
     ab.addEventListener('click', () => done('about'));
-    menu.append(cx, lg, pe, st, ab);
+    const cr = el('button', 'title-btn small', t(uiKey('creditsTitle'), 'Credits'));
+    cr.addEventListener('click', () => done('credits'));
+    menu.append(cx, lg, pe, st, ab, cr);
     // Only the Electron build can actually close its own window — a browser
     // tab can't quit itself, so the button only appears there.
     if (isElectron()) {
@@ -622,6 +631,46 @@ export function showAbout(ui: HTMLElement, pack: ContentPack): Promise<void> {
 }
 
 /**
+ * The Credits panel — engine/tooling and font attributions, a pointer to
+ * THIRD_PARTY_NOTICES.md for full license texts (three.js is MIT, the
+ * bundled fonts are SIL OFL 1.1, both requiring their notices to travel
+ * with any distributed copy of the game), and the standing no-telemetry
+ * statement. Reachable from the title menu and the pause menu, same as
+ * About.
+ */
+export function showCredits(ui: HTMLElement, pack: ContentPack): Promise<void> {
+  return new Promise((resolve) => {
+    const o = overlay(ui);
+    const panel = el('div', 'codex-panel about-panel');
+    panel.append(el('h2', undefined, t(uiKey('creditsTitle'), 'Credits')));
+    // Pack title/version are per-build facts, not translatable prose — kept
+    // out of the translated strings below (same convention as showTitle's
+    // untranslated `.title-version` stamp) so a Czech/Farsi/German/French
+    // translation of this panel doesn't need to embed a dynamic value.
+    const version = typeof __APP_VERSION__ === 'string' && __APP_VERSION__ ? ` v${__APP_VERSION__}` : '';
+    panel.append(el('div', 'title-version', `${pack.meta.title}${version} — The Vestibule`));
+    const body = el('div', 'about-body');
+    body.innerHTML = `
+      <p>${t(uiKey('creditsIntro'), 'Written, designed, and built independently.')}</p>
+      <p>${t(uiKey('creditsEngine'), '<b>Rendering & audio.</b> Every visual is generated geometry (Three.js) and every sound is generated at runtime — no purchased or downloaded art or audio assets.')}</p>
+      <p>${t(uiKey('creditsTooling'), '<b>Built with.</b> Three.js (MIT License) · TypeScript · Vite · Electron (desktop build) · Vitest & Playwright (testing).')}</p>
+      <p>${t(uiKey('creditsFonts'), '<b>Typefaces.</b> Inter, Spectral, and Vazirmatn, via Fontsource — each licensed under the SIL Open Font License 1.1.')}</p>
+      <p>${t(uiKey('creditsNotices'), 'Full third-party license texts are in THIRD_PARTY_NOTICES.md, distributed alongside this build.')}</p>
+      <p><i>${t(uiKey('creditsTelemetry'), 'Nothing about how you play is tracked, sent anywhere, or tied to an account — your save lives only in this browser or this installation.')}</i></p>
+    `;
+    panel.append(body);
+    const back = el('button', 'title-btn', t(uiKey('back'), 'Back'));
+    back.style.marginTop = '26px';
+    back.addEventListener('click', () => {
+      o.remove();
+      resolve();
+    });
+    panel.append(back);
+    o.appendChild(panel);
+  });
+}
+
+/**
  * The Examined Path's opt-in panel (spec 05) — shown once, only on a fresh
  * `'new'` run (never `'continue'`, never mid-run: the mode is immutable once
  * a run starts). Two equal-weight buttons, neither preselected or marked
@@ -837,7 +886,7 @@ export function showLedger(
   });
 }
 
-export type PauseAction = 'resume' | 'codex' | 'ledger' | 'settings' | 'persona' | 'about' | 'title' | 'exit';
+export type PauseAction = 'resume' | 'codex' | 'ledger' | 'settings' | 'persona' | 'about' | 'credits' | 'title' | 'exit';
 
 export function showPauseMenu(ui: HTMLElement): Promise<PauseAction> {
   return new Promise((resolve) => {
@@ -861,6 +910,7 @@ export function showPauseMenu(ui: HTMLElement): Promise<PauseAction> {
     mk(t(uiKey('settings'), 'Settings'), 'settings', true);
     mk(t(uiKey('whoAreYou'), 'Who are you?'), 'persona', true);
     mk(t(uiKey('aboutTitle'), 'Before you begin'), 'about', true);
+    mk(t(uiKey('creditsTitle'), 'Credits'), 'credits', true);
     if (isElectron()) mk(t(uiKey('exitGame'), 'Exit game'), 'exit', true);
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
