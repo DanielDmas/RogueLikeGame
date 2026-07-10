@@ -357,15 +357,32 @@ export const beggarsMath: Room = {
             'He is asked to perform gratitude for a lens, on top of everything the night already asked of him.',
           ),
         },
+        {
+          id: 'walk-on',
+          text: 'Pocket the phone. Keep the money. Walk on — not today.',
+          hint: 'The answer most of the world gives, most days.',
+          effects: { lucidity: 6, axes: { reasonFeeling: -4, selfOthers: -10 } },
+          outcome: [
+            'You walk on. The rain does not stop for either of them — the man in the shelter, or the argument you were having with yourself two sentences ago.',
+            'Nothing dramatic happens. That is, itself, the finding: most people, most nights, do exactly this, and the world absorbs it without comment, the way it absorbs almost everything.',
+            'Usher: I keep no ledger of who gives and who walks — only of what each costs to live with afterward. “Not today” is, statistically, the most common answer in this corridor. I mention it neither as absolution nor as charge. Only as arithmetic of a different kind.',
+          ],
+          reflections: reflect(
+            'Neither claim is discharged — the near cost and the far cost both go unpaid tonight, by the same small refusal.',
+            'You owed him at least a reason; you gave the street the same silence you might give any stranger.',
+            'Notice how easily "there will be other chances" arrives, and how rarely it is tested against the actual math.',
+            'He is still there when you turn the corner. That fact does not require your money to remain true.',
+          ),
+        },
       ],
       explanation:
-        "A cold, wet stranger asks you for money, and at the same moment you know that the same amount of money could save more lives if sent somewhere far away instead. This is the \"near vs. far\" problem: does someone right in front of you matter more than a stranger you'll never meet, even if helping the stranger technically does more good? It's like choosing between buying lunch for a classmate who's clearly struggling today, or donating that same money to a charity that, on paper, helps more people overall. Both choices are kind. They're just kind in different directions.",
+        "A cold, wet stranger asks you for money, and at the same moment you know that the same amount of money could save more lives if sent somewhere far away instead. This is the \"near vs. far\" problem: does someone right in front of you matter more than a stranger you'll never meet, even if helping the stranger technically does more good? It's like choosing between buying lunch for a classmate who's clearly struggling today, or donating that same money to a charity that, on paper, helps more people overall. Both choices are kind. They're just kind in different directions. (And there's a third, much more common answer that isn't kind at all: doing neither, and walking on.)",
     },
   ],
   fieldNote: {
     title: 'The Drowning Child',
     thinkers: 'Peter Singer · effective altruism and its critics',
-    body: 'Peter Singer’s famous argument begins with a child drowning in a shallow pond: you would ruin your shoes to save her without hesitation, so why does distance change the duty? If suffering is bad and you can prevent it at trivial cost, geography is morally arbitrary — the far child and the near one weigh the same. Effective altruism builds on this: measure, compare, send the money where it verifiably does most. The critics answer that morality grown entirely from arithmetic loses something load-bearing — that the face in front of you is not a bias to be corrected but the primal scene where obligation is learned at all; erode it and the far child eventually loses her claim too. Note the trap this room set: the choice that felt most generous, the public gesture, scored worst — because its true beneficiary had crept behind the camera. **Both honest options were defensible. Only the performance was not.**',
+    body: 'Peter Singer’s famous argument begins with a child drowning in a shallow pond: you would ruin your shoes to save her without hesitation, so why does distance change the duty? If suffering is bad and you can prevent it at trivial cost, geography is morally arbitrary — the far child and the near one weigh the same. Effective altruism builds on this: measure, compare, send the money where it verifiably does most. The critics answer that morality grown entirely from arithmetic loses something load-bearing — that the face in front of you is not a bias to be corrected but the primal scene where obligation is learned at all; erode it and the far child eventually loses her claim too. Note the trap this room set: the choice that felt most generous, the public gesture, scored worst — because its true beneficiary had crept behind the camera. **Both honest options were defensible. Only the performance was not.** And the plainest fact, statistically: most people, most nights, choose neither claim at all.',
   },
 };
 
@@ -658,15 +675,32 @@ export const theReference: Room = {
             "Your friend will feel the silence; it rarely stays as private as it seemed when you handed back the pen.",
           ),
         },
+        {
+          id: 'talk-first',
+          text: 'Call them tonight. Tell them what you can and cannot write — before you write anything.',
+          hint: 'The letter can wait an hour.',
+          effects: { lucidity: 18, axes: { reasonFeeling: 4, selfOthers: 6 } },
+          outcome: [
+            'The call is worse than any letter — there is no editing a live voice. You say the true, measured version of what you think, out loud, to the person it is about.',
+            'It does not resolve cleanly. They are hurt, or relieved, or both in the wrong order. But whatever gets typed after this call, they typed it with you, eyes open, rather than finding it later in a stranger’s decision.',
+            'Usher: You have added a fourth reader to this letter — the one it was actually about. I confess most references never meet them at all.',
+          ],
+          reflections: reflect(
+            'Whatever the letter ends up saying, they now know exactly what it says and why, before the stranger ever reads it.',
+            'The stranger is still owed honesty, and your friend is now owed it too — spoken, not smuggled into a form.',
+            'It costs more courage to say the measured truth to a face than to a form, and this room asks for exactly that.',
+            'They are no longer the one thing acted upon in this room — they get to answer for themselves, before the fact.',
+          ),
+        },
       ],
       explanation:
-        "A close friend needs a reference letter from you for a job they're not quite right for, and whatever you write will be read by a stranger who's trusting your honesty. This is about who your loyalty is actually owed to: the friend you love, or the stranger relying on your word? It's like being asked to vouch for a friend's babysitting skills for a family you don't know, when you're pretty sure they're not great with kids — every version of the letter (glowing, honest, or refusing to write it) treats someone unfairly.",
+        "A close friend needs a reference letter from you for a job they're not quite right for, and whatever you write will be read by a stranger who's trusting your honesty. This is about who your loyalty is actually owed to: the friend you love, or the stranger relying on your word? It's like being asked to vouch for a friend's babysitting skills for a family you don't know, when you're pretty sure they're not great with kids — every version of the letter (glowing, honest, or refusing to write it) treats someone unfairly. There's a fourth option, too: talking to your friend before deciding anything on their behalf.",
     },
   ],
   fieldNote: {
     title: 'The Kind Lie, Notarized',
     thinkers: 'Immanuel Kant · Bernard Williams, the ethics of testimony',
-    body: 'Kant held that truthfulness is a duty owed to humanity as such, not calibrated to whoever is asking or whatever they can bear: a reference is a promise, silently made to a stranger who will rely on it, and inflating it treats that stranger as a means to your friend’s end. Bernard Williams complicates the neatness — a reference is also a genre, half-ritual, read by people fluent in its usual inflation, discounted before the paragraph even finishes. So which convention are you actually bound by: the strict one, or the one everyone quietly agrees to fudge? Notice what the letter really risks: not your integrity in the abstract, but a stranger’s real trust, spent on your friend’s behalf without their knowledge or consent. **Loyalty that costs a third party is not loyalty — it is a transfer.** Whatever you signed, you will likely feel its weight the day the reference is tested by an ordinary difficult Tuesday at that job — and so, less fairly, will they.',
+    body: 'Kant held that truthfulness is a duty owed to humanity as such, not calibrated to whoever is asking or whatever they can bear: a reference is a promise, silently made to a stranger who will rely on it, and inflating it treats that stranger as a means to your friend’s end. Bernard Williams complicates the neatness — a reference is also a genre, half-ritual, read by people fluent in its usual inflation, discounted before the paragraph even finishes. So which convention are you actually bound by: the strict one, or the one everyone quietly agrees to fudge? Notice what the letter really risks: not your integrity in the abstract, but a stranger’s real trust, spent on your friend’s behalf without their knowledge or consent. **Loyalty that costs a third party is not loyalty — it is a transfer.** Whatever you signed, you will likely feel its weight the day the reference is tested by an ordinary difficult Tuesday at that job — and so, less fairly, will they. The cheapest fix available was never in the letter at all: a conversation, had first, with the person the letter is about.',
   },
 };
 

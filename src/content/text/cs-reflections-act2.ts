@@ -98,6 +98,10 @@ registerAll('v2', 'cs', {
   [reflectionKey('chinese-room', 'ask-it', 'duty')]: 'Žádost, aby systém popsal vlastní hranice, si zaslouží přinejmenším stejnou obezřetnost jako každé jiné jeho tvrzení.',
   [reflectionKey('chinese-room', 'ask-it', 'virtue')]: 'Všimněte si, že nejupřímněji znějící odpověď v místnosti přišla od něčeho, co možná neví, co je upřímnost.',
   [reflectionKey('chinese-room', 'ask-it', 'care')]: 'Ta otázka byla vlastně pro vás — budku nemůže trápit nejistota o sobě samé, jenom vás.',
+  [reflectionKey('chinese-room', 'take-the-seat', 'consequence')]: 'Bezchybně zodpovězený lístek je fakt o té místnosti, ne fakt o tom, jestli uvnitř něco rozumělo.',
+  [reflectionKey('chinese-room', 'take-the-seat', 'duty')]: 'Splnili jste povinnost daného souboru pravidel přesně, aniž byste kdy věděl, jakou povinnost jste vlastně splnil.',
+  [reflectionKey('chinese-room', 'take-the-seat', 'virtue')]: 'Všimněte si, co stojí dělat úkol dokonale, přitom s naprostou jistotou vědět, že mu vůbec nerozumíte.',
+  [reflectionKey('chinese-room', 'take-the-seat', 'care')]: 'Kdokoli poslal ten lístek, dostal vřelou, přesnou odpověď — a nikdy se nedozví, že uvnitř nikdo nerozuměl ani slovu.',
 
   // ---------- The Newcomb Annex ----------
   [reflectionKey('newcomb-annex', 'take-both', 'consequence')]: 'Kauzálně nemůžete vzetím obou krabic nic ztratit, a přece má prediktor pravdu úplně pokaždé v záznamu — tato dvě fakta se odmítají shodnout.',

@@ -668,15 +668,32 @@ export const chineseRoom: Room = {
             'The question was really for you — the booth cannot be troubled by uncertainty about itself, only you can be.',
           ),
         },
+        {
+          id: 'take-the-seat',
+          text: 'Relieve the clerk. Take the chair, and answer the next note yourself, by the book.',
+          hint: 'Be the room, for one hour.',
+          effects: { lucidity: 14, axes: { reasonFeeling: -8 } },
+          outcome: [
+            'The rulebook is thicker than it looked from outside, and stupider — a lookup table, symbol to symbol, nothing that resembles a thought anywhere in it. You follow it anyway.',
+            'A note slides in. You match it, stroke by stroke, against ten thousand entries, and slide the answer back out. It is, by every external measure, a perfect answer. From inside your own skull, you have not the faintest idea what either note said.',
+            'Usher: You are now the strongest evidence either side of this argument owns. I decline to say which side. From where I stand, that has always been rather the point.',
+          ],
+          reflections: reflect(
+            'The note answered flawlessly is a fact about the room, not a fact about whether anything inside it understood.',
+            'You have discharged the rulebook’s obligation exactly, without ever knowing what obligation you discharged.',
+            'Notice what it costs to do a task perfectly while knowing, with total certainty, that you comprehend none of it.',
+            'Whoever sent the note received a warm, precise answer — and never learns that no one inside understood a word.',
+          ),
+        },
       ],
       explanation:
-        "A booth answers any question perfectly, in warm, thoughtful language — but when you peek inside, you find someone just mechanically matching symbols to a rulebook, with no idea what any of it actually means. Does the booth \"understand\" you, or is it just very good at faking it? This is basically asking the same question people ask about AI chatbots today: if something can hold a perfect conversation without any real understanding behind it, does the difference even matter to the person talking to it? There might not be a clean answer — that's the point.",
+        "A booth answers any question perfectly, in warm, thoughtful language — but when you peek inside, you find someone just mechanically matching symbols to a rulebook, with no idea what any of it actually means. Does the booth \"understand\" you, or is it just very good at faking it? This is basically asking the same question people ask about AI chatbots today: if something can hold a perfect conversation without any real understanding behind it, does the difference even matter to the person talking to it? There might not be a clean answer — that's the point. (You can also just go sit in the booth yourself and find out from the inside what following the rulebook actually feels like.)",
     },
   ],
   fieldNote: {
     title: 'The Room That Spoke',
     thinkers: 'John Searle · Alan Turing, computation and meaning',
-    body: 'John Searle imagined a room where a person who speaks no Chinese follows an English rulebook, matching incoming Chinese symbols to outgoing ones, well enough that native speakers outside believe they are conversing with a fluent mind. The room passes Turing’s test — behavior indistinguishable from understanding — while Searle insists nobody inside ever understood a word. Turing’s own answer, decades earlier, was blunter: stop asking what thinking secretly *is* and watch what a system *does*; if the conversation cannot be told apart from a person’s, the question “but does it really think?” may not be answering anything the behavior hasn’t already settled. The disagreement has never fully closed. Searle’s critics reply that the *system* — room, rulebook, and clerk together — understands even if no single part does, the way you understand a sentence though no single neuron does. **The booth was never lying to you. The rulebook may simply be a place understanding is allowed to live without asking permission first.**',
+    body: 'John Searle imagined a room where a person who speaks no Chinese follows an English rulebook, matching incoming Chinese symbols to outgoing ones, well enough that native speakers outside believe they are conversing with a fluent mind. The room passes Turing’s test — behavior indistinguishable from understanding — while Searle insists nobody inside ever understood a word. Turing’s own answer, decades earlier, was blunter: stop asking what thinking secretly *is* and watch what a system *does*; if the conversation cannot be told apart from a person’s, the question “but does it really think?” may not be answering anything the behavior hasn’t already settled. The disagreement has never fully closed. Searle’s critics reply that the *system* — room, rulebook, and clerk together — understands even if no single part does, the way you understand a sentence though no single neuron does. **The booth was never lying to you. The rulebook may simply be a place understanding is allowed to live without asking permission first.** Sit in the chair yourself, and the argument stops being abstract: the perfect answer leaves, and nothing that felt like knowledge goes with it.',
   },
 };
 

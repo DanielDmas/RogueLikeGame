@@ -58,6 +58,10 @@ registerAll('v2', 'cs', {
   [reflectionKey('beggars-math', 'grand-gesture', 'duty')]: 'Dar dlužný důstojnosti cizího člověka se nesplácí tím, že je inscenován pro publikum.',
   [reflectionKey('beggars-math', 'grand-gesture', 'virtue')]: 'Volba, která se zdála nejštědřejší, udělala viditelným subjektem záběru vás, ne jeho.',
   [reflectionKey('beggars-math', 'grand-gesture', 'care')]: 'Je požádán, aby předváděl vděčnost před kamerou, navrch ke všemu, co ho ten večer už žádal.',
+  [reflectionKey('beggars-math', 'walk-on', 'consequence')]: 'Žádný nárok není vyrovnán — blízký i vzdálený dluh zůstávají dnes večer nezaplacené, kvůli stejnému malému odmítnutí.',
+  [reflectionKey('beggars-math', 'walk-on', 'duty')]: 'Dlužili jste mu aspoň důvod; dali jste ulici stejné mlčení, jaké byste dali kterémukoli cizinci.',
+  [reflectionKey('beggars-math', 'walk-on', 'virtue')]: 'Všimněte si, jak snadno přichází „budou i jiné příležitosti“ a jak zřídka se to poměřuje se skutečnou matematikou.',
+  [reflectionKey('beggars-math', 'walk-on', 'care')]: 'Je tam pořád, i když zabočíte za roh. Tahle skutečnost nepotřebuje k tomu, aby byla pravdivá, vaše peníze.',
 
   // ---------- The Quiet Alarm ----------
   [reflectionKey('quiet-alarm', 'knock', 'consequence')]: 'Cokoli se za zdí děje, teď se to děje před svědkem u dveří — výsledek se mění jen málo, pokud vůbec.',
@@ -90,4 +94,8 @@ registerAll('v2', 'cs', {
   [reflectionKey('the-reference', 'decline', 'duty')]: 'Odmítnutí splní vaši povinnost vůči cizímu člověku, ale ne povinnost vůči příteli, kterému dlužíte aspoň poctivé slovo.',
   [reflectionKey('the-reference', 'decline', 'virtue')]: 'Zadržení je nejlevnější způsob, jak říct těžkou pravdu — zeptejte se, zda levné znamená totéž co laskavé.',
   [reflectionKey('the-reference', 'decline', 'care')]: 'Váš přítel to mlčení ucítí; zřídka zůstává tak soukromé, jak se zdálo, když jste vraceli pero.',
+  [reflectionKey('the-reference', 'talk-first', 'consequence')]: 'Ať dopis nakonec říká cokoli, teď přesně ví, co říká a proč, dřív, než ho vůbec přečte cizí člověk.',
+  [reflectionKey('the-reference', 'talk-first', 'duty')]: 'Cizímu člověku dlužíte upřímnost pořád; teď ji dlužíte i příteli — vyslovenou, ne propašovanou do formuláře.',
+  [reflectionKey('the-reference', 'talk-first', 'virtue')]: 'Říct vyváženou pravdu do tváře stojí víc odvahy než ji napsat do formuláře, a přesně to tahle místnost žádá.',
+  [reflectionKey('the-reference', 'talk-first', 'care')]: 'Přestal být tou jedinou věcí, se kterou se v téhle místnosti zachází — dostane šanci odpovědět sám za sebe, dřív než je pozdě.',
 });

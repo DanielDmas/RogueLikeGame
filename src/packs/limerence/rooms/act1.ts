@@ -685,6 +685,23 @@ export const theRumor: Room = {
           ),
         },
         {
+          id: 'ask-her-plainly',
+          text: 'Answer her text. Tell her what you heard, once, plainly — then take her answer.',
+          hint: 'The question, without the courtroom',
+          effects: { lucidity: 15, axes: { reasonFeeling: 4, selfOthers: 6 } },
+          outcome: [
+            'You answer the eleven-times-read text with one sentence: what you heard, said once, without a courtroom built around it.',
+            'She tells you what happened. You cannot verify it and you do not try to — that was never the deal you just made. A question, asked plainly, gets an answer; it does not get a polygraph.',
+            'She also knows something now she didn’t an hour ago: that the rumor reached you, and lived in you, for however long it took to finally text back. That cost something too.',
+          ],
+          reflections: reflect(
+            'You traded the paralysis of not-knowing for an answer you cannot independently verify — a real, bounded trade.',
+            'She was owed a direct question before anything else — not a trap, not a wall of silence, a question.',
+            'Asking plainly, once, and then actually listening, is harder than it sounds and rarer than it should be.',
+            'She now knows the rumor reached you and sat there for hours before you spoke — that, too, is something she has to carry.',
+          ),
+        },
+        {
           id: 'interrogate',
           text: 'Ask her everything. Dates, names, specifics.',
           hint: 'Demand the full account',

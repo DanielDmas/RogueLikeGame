@@ -42,10 +42,11 @@ describe('LIMERENCE Act III — room-by-room content integrity (spec 04-rooms-ac
     expect(suite.secret!({ ...newRun(), prior: { runs: 1, endingId: null, transcript: [] } })).toBe(true);
   });
 
-  it('every regular pool room offers exactly 4 base choices in its first stage (excluding any additive ✧ keepsake bonus choice), each with 4-tradition reflections (except the-usual-suite, which is a 3-choice witnessing room)', () => {
+  it('every regular pool room offers exactly 4 base choices in its first stage (excluding any additive ✧ keepsake bonus choice), each with 4-tradition reflections (except the-usual-suite, a 3-choice witnessing room, and the-discovery, which gained a 5th base choice — `steady-then-ask` — in the choice-completeness audit)', () => {
+    const EXPECTED_BASE_COUNT: Record<string, number> = { 'the-discovery': 5 };
     for (const id of ACT3_REGULAR_IDS) {
       const baseChoices = room(id).stages[0].choices.filter((c) => !c.keepsakeId);
-      expect(baseChoices, `${id} should have 4 base choices`).toHaveLength(4);
+      expect(baseChoices, `${id} should have ${EXPECTED_BASE_COUNT[id] ?? 4} base choices`).toHaveLength(EXPECTED_BASE_COUNT[id] ?? 4);
       for (const c of baseChoices) {
         expect(c.reflections, `${id}/${c.id} has no reflections`).toBeDefined();
         expect(c.reflections).toHaveLength(4);

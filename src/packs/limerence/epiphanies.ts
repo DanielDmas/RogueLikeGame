@@ -19,7 +19,13 @@ const countOf = (profile: Profile, keys: string[]) => keys.filter((k) => has(pro
 // is `${roomId}:${choiceId}`, matched against the room/choice ids actually
 // authored in `rooms/*.ts`.
 const TESTING = ['the-read-receipt:bait', 'the-rumor:set-the-trap', 'the-discovery:gather-first'];
-const ASKING = ['the-read-receipt:ask-tomorrow', 'the-rumor:ask-the-accuser', 'the-drift:raise-it'];
+const ASKING = [
+  'the-read-receipt:ask-tomorrow',
+  'the-rumor:ask-the-accuser',
+  'the-rumor:ask-her-plainly',
+  'the-drift:raise-it',
+  'the-discovery:steady-then-ask',
+];
 const SUPPRESSION = [
   'the-screenshot:stay-out',
   'the-distance:bury-it',

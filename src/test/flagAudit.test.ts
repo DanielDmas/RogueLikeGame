@@ -100,6 +100,7 @@ const LIMERENCE_ALLOWLIST: Record<string, string> = {
   'stayed-the-third': 'the-other-side-of-the-door — read indirectly via act4.ts’s YOURS_FLAGS array + .some(hasFlag), not a literal hasFlag call, but genuinely consumed.',
   'told-the-wife': 'the-other-side-of-the-door — no current downstream reader.',
   'crossed-at-the-conference': 'the-colleague — read indirectly via act4.ts’s YOURS_FLAGS array + .some(hasFlag), not a literal hasFlag call, but genuinely consumed.',
+  'steadied-first': 'the-discovery’s steady-then-ask choice — read indirectly via act4.ts’s THEIRS_FLAGS array + .some(hasFlag), not a literal hasFlag call, but genuinely consumed. Also joins the ASKING lineage in epiphanies.ts (matched by choice id, not this flag).',
   'kept-the-door-open': "the-colleague's postpone choice — deferred-decision marker, no current downstream reader.",
   'honored-the-veto': 'the-veto — compliance-lineage marker, no current downstream reader.',
   'veto-war': "the-veto's counter-veto choice — escalation-lineage marker, no current downstream reader.",

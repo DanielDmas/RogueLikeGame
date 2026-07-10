@@ -598,6 +598,26 @@ export const theDiscovery: Room = {
             'This denies both of you the conversation that might have changed what tonight actually meant.',
           ),
         },
+        {
+          id: 'steady-then-ask',
+          text: 'Put the phone down. Walk the block until your hands are yours again — then ask Dana directly, tonight, with no case built.',
+          hint: 'Wait out the flood, not the question',
+          effects: { lucidity: 14, hearts: -1, axes: { controlAcceptance: 6 }, flags: ['steadied-first'] },
+          outcome: [
+            'Twenty minutes, cold air, no phone. Not calm, exactly — just past the point where the body is running the conversation instead of you.',
+            (s: RunState) =>
+              seedSplit2(s)
+                ? 'You come back in and ask, once, directly. Dana tells you: an affair, real, six weeks old. It is exactly as bad as the walk let you fear it might be — but you hear the whole sentence, not just the first flooded half of it.'
+                : 'You come back in and ask, once, directly. Dana tells you: a sibling, a surprise party, three weeks of excited planning. Nothing. You believe it, mostly because you asked in a state that could actually recognize an answer.',
+            'The desk keeps no separate ledger for what got said flooded and what got said steady — but you do, and this time there is nothing filed under the first column.',
+          ],
+          reflections: reflect(
+            'The delay costs you twenty minutes of not-knowing and buys a conversation neither of you has to walk back later.',
+            'Dana was owed a direct question, not a verdict delivered flooded or a case built in secret — this is the plainer duty, kept.',
+            'Choosing to steady yourself before a hard conversation is a discipline, not a dodge — it costs real effort to do under pressure.',
+            'Whatever the truth turns out to be, Dana gets asked once, plainly, by someone capable of actually hearing the answer.',
+          ),
+        },
       ],
       explanation:
         'What researchers call flooding — the body’s alarm response overwhelming higher reasoning — explains why the first conversation after a suspected betrayal usually goes worst: elevated heart rate and diffuse physiological arousal genuinely impair the ability to think clearly for roughly twenty minutes, a window most confrontations don’t wait out. What the research on discovery conversations consistently recommends is structural: delay, breathing, even a script, rather than trusting the flooded moment to produce anything reliable. And a humbling base rate worth remembering: hearts on phones have more owners than the worst-case story usually considers.',

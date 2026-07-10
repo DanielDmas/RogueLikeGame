@@ -14,7 +14,7 @@ const reflect = (consequence: string, duty: string, virtue: string, care: string
 ];
 
 const YOURS_FLAGS = ['confessed-whole', 'crossed-at-the-conference', 'carried-alone', 'trickle-truth', 'stayed-the-third'];
-const THEIRS_FLAGS = ['played-detective', 'chose-not-to-know'];
+const THEIRS_FLAGS = ['played-detective', 'chose-not-to-know', 'steadied-first'];
 
 export const theKitchenTable: Room = {
   id: 'the-kitchen-table',
