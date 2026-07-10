@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { makeRegistry } from '../engine/storyEngine';
 import { isHiddenFromCodex, visibleRoomCount } from '../engine/ledger';
 import { defaultProfile } from '../engine/saveStore';
+import { newRun } from '../engine/gameState';
+import { setLocale, getLocale } from '../engine/text/resolver';
 import { anamnesisPack } from '../packs/anamnesis';
 import { limerencePack } from '../packs/limerence';
 import type { ContentPack } from '../packs/types';
@@ -82,4 +84,26 @@ describe('choices.ts ✧ keepsake tooltip: every keepsake-gated choice’s id re
       }
     });
   }
+});
+
+describe('guide bark/act-intro text keys are pack-scoped — LIMERENCE deliberately reuses ANAMNESIS’s own bark/act-intro id vocabulary (understory-hint, reason-low, generic0…, act numbers 1-4) to mirror its structure; both packs’ modules are bundled together, so an unscoped key would let ANAMNESIS’s registered translations silently override LIMERENCE’s (or vice versa)', () => {
+  it('a door-bark that mirrors an ANAMNESIS bark id (e.g. "reason-low") never renders ANAMNESIS’s Usher-voiced text for LIMERENCE, in any locale both packs might register translations for', () => {
+    const savedLocale = getLocale();
+    try {
+      for (const lang of ['en', 'cs', 'fa', 'de', 'fr'] as const) {
+        setLocale(lang, 'v2');
+        const run = { ...newRun(), axes: { reasonFeeling: -40, selfOthers: 0, controlAcceptance: 0 }, visited: ['a', 'b'] };
+        const limerenceBark = limerencePack.guide.doorBark(run, 0, 2, false);
+        expect(limerenceBark, `LIMERENCE's doorBark in ${lang} must never read "Usher:" (ANAMNESIS's persona)`).not.toContain('Usher:');
+      }
+    } finally {
+      setLocale(savedLocale.lang, savedLocale.version);
+    }
+  });
+
+  it('guide.firstHeartLossBarkFallback / rememberedRoomBarkFallback are pack-specific, not the hardcoded ANAMNESIS strings that used to live directly in engine/flow.ts', () => {
+    expect(limerencePack.guide.firstHeartLossBarkFallback).not.toEqual(anamnesisPack.guide.firstHeartLossBarkFallback);
+    expect(limerencePack.guide.firstHeartLossBarkFallback).not.toContain('the facility');
+    expect(limerencePack.guide.rememberedRoomBarkFallback).toContain('Porter');
+  });
 });

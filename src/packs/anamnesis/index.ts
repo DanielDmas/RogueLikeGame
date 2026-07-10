@@ -91,6 +91,9 @@ export const anamnesisPack: ContentPack = {
     actIntroText,
     examinedActBarkFallback: EXAMINED_ACT_BARK_FALLBACK,
     figure: usherFigure,
+    firstHeartLossBarkFallback:
+      'Usher: There — a heart, spent. Feel that. It is the facility keeping an honest ledger, nothing more. You have {hearts} left. Not a countdown to failure; simply what that choice cost.',
+    rememberedRoomBarkFallback: 'You remember this room.',
   },
 
   skin: {

@@ -22,10 +22,22 @@ export const endingNoteTitleKey = (id: string) => `ending.${id}.note.title`;
 export const endingNoteThinkersKey = (id: string) => `ending.${id}.note.thinkers`;
 export const endingNoteBodyKey = (id: string) => `ending.${id}.note.body`;
 
-export const actNameKey = (act: number) => `act.name.${act}`;
-export const actIntroKey = (act: number) => `act.intro.${act}`;
+// `packId` scopes a key to a specific pack (`pack.meta.id`) — needed only for
+// vocabulary genuinely shared *by name* across packs (act numbers, guide-bark
+// category ids like "reason-low"). Omitted, or 'anamnesis' itself, resolves
+// to the original unscoped key, so ANAMNESIS's existing translations never
+// need re-registering; any other pack id gets its own namespace. Without
+// this, a second pack reusing the same act-intro/bark id vocabulary (as
+// LIMERENCE's guide.ts deliberately does, to mirror ANAMNESIS's structure)
+// would silently resolve to ANAMNESIS's own registered translations, since
+// both packs' modules are bundled together and register into one shared
+// key→text map (see spec 08 — one engine, many packs, one text catalog).
+const scoped = (base: string, packId?: string) => (packId && packId !== 'anamnesis' ? `${base}.${packId}` : base);
 
-export const usherBarkKey = (id: string) => `usher.bark.${id}`;
+export const actNameKey = (act: number, packId?: string) => scoped(`act.name.${act}`, packId);
+export const actIntroKey = (act: number, packId?: string) => scoped(`act.intro.${act}`, packId);
+
+export const usherBarkKey = (id: string, packId?: string) => scoped(`usher.bark.${id}`, packId);
 
 export const uiKey = (id: string) => `ui.${id}`;
 

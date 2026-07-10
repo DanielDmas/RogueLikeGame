@@ -487,7 +487,7 @@ export class Game {
       if (shouldShowSocraticAside(this.state)) {
         const fallback = this.pack.guide.examinedActBarkFallback[this.state.act as 1 | 2 | 3 | 4];
         await this.text.playBeats(
-          [t(usherBarkKey(`examined-act${this.state.act}`), fallback)],
+          [t(usherBarkKey(`examined-act${this.state.act}`, this.pack.meta.id), fallback)],
           this.state,
           { title: this.actNameFor(this.state.act) },
           { tokens: this.tokens() },
@@ -597,7 +597,7 @@ export class Game {
     const startStage = this.state.currentStage ?? 0;
     if (remembered && startStage === 0) {
       await this.text.playBeats(
-        [t(usherBarkKey('remembered-room'), 'You remember this room.')],
+        [t(usherBarkKey('remembered-room', this.pack.meta.id), this.pack.guide.rememberedRoomBarkFallback)],
         this.state,
         { title, type: room.type, icon },
         { tokens },
@@ -664,7 +664,7 @@ export class Game {
         this.profile.hasSeenHeartLoss = true;
         await this.persist();
         await this.text.playBeats(
-          [t(usherBarkKey('first-heart-loss'), 'Usher: There — a heart, spent. Feel that. It is the facility keeping an honest ledger, nothing more. You have {hearts} left. Not a countdown to failure; simply what that choice cost.')],
+          [t(usherBarkKey('first-heart-loss', this.pack.meta.id), this.pack.guide.firstHeartLossBarkFallback)],
           this.state,
           { title, type: room.type, icon },
           { tokens: { ...tokens, hearts: String(this.state.hearts) } },
@@ -731,7 +731,7 @@ export class Game {
   }
 
   private actNameFor(act: RunState['act']): string {
-    return t(actNameKey(act), this.pack.graph.actNamesEn[act]);
+    return t(actNameKey(act, this.pack.meta.id), this.pack.graph.actNamesEn[act]);
   }
 
   private async playEnding(endingId: string): Promise<void> {

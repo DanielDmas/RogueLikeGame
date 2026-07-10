@@ -18,7 +18,12 @@ import { HEART_SVG } from '../../ui/dom';
 import { choseIn } from '../../engine/gameState';
 import { mirrorUnlocked, patternAvailable, computePatternEligible, PATTERN_CLARITY } from './endingLogic';
 import { limerenceEpiphanies } from './epiphanies';
-import { limerenceDoorBark, limerenceActIntroText } from './guide';
+import {
+  limerenceDoorBark,
+  limerenceActIntroText,
+  LIMERENCE_FIRST_HEART_LOSS_BARK_FALLBACK,
+  LIMERENCE_REMEMBERED_ROOM_BARK_FALLBACK,
+} from './guide';
 
 /** Minor-leaning progressions per floor (spec `docs/design-limerence/`
  * creative bible: "act progressions in minor-leaning keys"), warming toward
@@ -174,6 +179,8 @@ export const limerencePack: ContentPack = {
     actIntroText: limerenceActIntroText,
     examinedActBarkFallback: EXAMINED_ACT_BARK_FALLBACK,
     figure: porterFigure,
+    firstHeartLossBarkFallback: LIMERENCE_FIRST_HEART_LOSS_BARK_FALLBACK,
+    rememberedRoomBarkFallback: LIMERENCE_REMEMBERED_ROOM_BARK_FALLBACK,
   },
 
   skin: {

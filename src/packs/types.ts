@@ -75,6 +75,14 @@ export interface ContentPack {
     actIntroText(act: number): string | undefined;
     examinedActBarkFallback: Record<1 | 2 | 3 | 4, string>;
     figure(): GuideFigure;
+    /** Shown once per profile, ever, right after the very first heart/Trust
+     * loss — a calm explanation so it reads as a mechanic, not a shock.
+     * Template string; `{hearts}` is substituted with the count remaining,
+     * same token mechanism as every other beat. */
+    firstHeartLossBarkFallback: string;
+    /** Shown once, at the top of a room resumed mid-stage after a
+     * quit-and-reload (spec: `RunState.currentStage` mid-room). */
+    rememberedRoomBarkFallback: string;
   };
 
   skin: {

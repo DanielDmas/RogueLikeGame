@@ -765,7 +765,7 @@ export function showCodex(ui: HTMLElement, profile: Profile, pack: ContentPack):
       grid.appendChild(card);
     };
 
-    const actNameFor = (act: Room['act']) => t(actNameKey(act), pack.graph.actNamesEn[act]);
+    const actNameFor = (act: Room['act']) => t(actNameKey(act, pack.meta.id), pack.graph.actNamesEn[act]);
 
     for (const room of pack.rooms) {
       if (isHiddenFromCodex(room.id, profile, pack.graph.understorySequence)) continue;
