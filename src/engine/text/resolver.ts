@@ -58,6 +58,19 @@ export function registerAll(version: TextVersion, lang: Lang, entries: Record<st
   for (const key of Object.keys(entries)) register(key, version, lang, entries[key]);
 }
 
+/** Every key that has a registered override for the given (version, lang) —
+ * used only by the test suite's dead/mistyped-key audit (a translation file
+ * with a typo'd room/choice id silently registers a key nothing ever reads,
+ * since `t()` just falls back to English on a miss with no error). Not used
+ * by any runtime code path. */
+export function registeredKeys(version: TextVersion, lang: Lang): string[] {
+  const keys: string[] = [];
+  for (const [key, vm] of overrides) {
+    if (vm[version]?.[lang] !== undefined) keys.push(key);
+  }
+  return keys;
+}
+
 function lookup(key: string, version: TextVersion, lang: Lang): OverrideValue | undefined {
   return overrides.get(key)?.[version]?.[lang];
 }
