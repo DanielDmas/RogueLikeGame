@@ -1762,4 +1762,58 @@ too). `package.json`'s electron-builder config renamed the product to "The
 Vestibule" (`files` now points at `dist-web/**/*`), and
 `release-windows.yml` no longer runs a separate `npm run build` step
 before packaging (redundant with the new pre-hook).
-- [ ] L6. Czech translation.
+- [ ] L6. Czech translation (**in progress, 2026-07-10** — full parity
+      with ANAMNESIS across cs/fa/de/fr, not just Czech, per owner
+      instruction; see below).
+
+**Owner-requested polish batch (2026-07-10):** five choice-completeness
+gaps closed (3 ANAMNESIS, 2 LIMERENCE — see UPGRADE_PLAN's commit log for
+specifics); Steam/DVD packaging readiness (LICENSE, third-party notices,
+in-game credits screen, age-advisory badge); the-therapist's one missing
+explanation closed and both the explanation-coverage and choice-
+capitalization audits made permanent pack-generic tests; the door tooltip
+given real clearance from the door glow and the "?" explain button made
+more discoverable (bigger, filled, idle pulse); publication years added
+to every confidently-dateable field-note citation in both packs, all
+languages. Also found and fixed a real (not just theoretical) cross-pack
+text leak: LIMERENCE's guide barks/act-intros reused ANAMNESIS's exact
+key vocabulary, so both packs' translations — bundled together in every
+build — collided; ANAMNESIS's Czech/Usher lines could silently render
+inside a LIMERENCE playthrough, and the first-heart-loss message was
+hardcoded Usher/"the facility" text with no LIMERENCE override at all.
+Fixed at the key-generation level (optional `packId` scoping,
+ANAMNESIS's own keys unchanged) — this was a real prerequisite for
+starting LIMERENCE's translation work safely.
+
+**Two items explicitly deferred to their own planning pass, not
+implemented this round (owner instruction: plan, don't build yet):**
+
+- **LIMERENCE visual language rework.** Owner's ask: make the scenery/
+  animations read more specifically as "a relationship at its breaking
+  point" rather than a recolored ANAMNESIS corridor, and make light mode
+  livelier/more colorful — considered an inverted door/environment
+  palette in light mode, more visual elements generally. Scoping notes
+  for whoever picks this up: `packs/limerence/theme.ts` already gives
+  each floor its own palette and `theme-light` CSS variables exist
+  (`styles.css` `body.pack-limerence.theme-light`) but the *geometry*
+  (corridor shape, particle behavior, door proportions) is still
+  ANAMNESIS's `corridorTheme()` reused wholesale — a genuine rework would
+  give LIMERENCE its own scene-builder functions (mirroring
+  `scene/themes.ts`'s pattern) per floor, not just recolor the existing
+  one. Light mode specifically needs its own pass: right now
+  `theme-light` mostly just swaps CSS chrome variables; the *3D scene*
+  doesn't currently branch on light/dark at all (`buildTheme(id)` takes
+  only the floor id), so a livelier light mode would need `buildTheme` to
+  also receive the active theme mode.
+- **Per-choice visual cues inside a room.** LIMERENCE already has (a) 34
+  door icons (`packs/limerence/icons.ts`) and (b) 6 bespoke dioramas for
+  signature rooms (`packs/limerence/dioramas.ts`) — matching ANAMNESIS's
+  own scope (bespoke dioramas for signature rooms only, not all ~34).
+  Whether the owner wants *more* than that — e.g. a diorama accent that
+  changes per which choice was taken within a room, the way ANAMNESIS's
+  `marys-room`/`open-drawer` diorama-accent hook works
+  (`dioramaAccentHooks`) — needs a decision: either (a) extend
+  `dioramaAccentHooks` to more LIMERENCE rooms (cheap, reuses existing
+  infra), or (b) give more rooms their own bespoke diorama entirely
+  (expensive, ~1 diorama per room × up to 28 more rooms). Recommend (a)
+  as the pragmatic middle ground unless told otherwise.
