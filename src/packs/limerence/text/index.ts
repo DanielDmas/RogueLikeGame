@@ -22,6 +22,8 @@ import './cs-epiphanies';
 import './cs-guide';
 import './fa-rooms';
 import './fa-reflections-act1';
+import './fa-rooms-act2';
+import './fa-reflections-act2';
 
 export * from '../../../engine/text/resolver';
 export * from '../../../engine/text/keys';
