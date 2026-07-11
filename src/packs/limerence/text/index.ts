@@ -16,6 +16,10 @@ import './cs-rooms-act4';
 import './cs-reflections-act4';
 import './cs-rooms-understory';
 import './cs-reflections-understory';
+import './cs-endings';
+import './cs-keepsakes';
+import './cs-epiphanies';
+import './cs-guide';
 
 export * from '../../../engine/text/resolver';
 export * from '../../../engine/text/keys';
