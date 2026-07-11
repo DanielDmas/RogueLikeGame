@@ -12,6 +12,10 @@ import './cs-rooms-act2';
 import './cs-reflections-act2';
 import './cs-rooms-act3';
 import './cs-reflections-act3';
+import './cs-rooms-act4';
+import './cs-reflections-act4';
+import './cs-rooms-understory';
+import './cs-reflections-understory';
 
 export * from '../../../engine/text/resolver';
 export * from '../../../engine/text/keys';
