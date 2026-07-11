@@ -30,6 +30,10 @@ import './fa-rooms-act4';
 import './fa-reflections-act4';
 import './fa-rooms-understory';
 import './fa-reflections-understory';
+import './fa-endings';
+import './fa-keepsakes';
+import './fa-epiphanies';
+import './fa-guide';
 
 export * from '../../../engine/text/resolver';
 export * from '../../../engine/text/keys';
