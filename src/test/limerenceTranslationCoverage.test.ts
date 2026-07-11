@@ -22,13 +22,13 @@ import {
 } from '../engine/text/keys';
 
 // LIMERENCE's own deep-translation-coverage sweep, mirroring
-// translationCoverage.test.ts's ANAMNESIS checks. Scoped to 'cs' only —
-// LIMERENCE's Czech pass (prologue through Understory, endings, keepsakes,
-// epiphanies, and guide/advisory copy) is complete as of this test's
-// authoring; fa/de/fr are not yet translated for this pack, so they are
-// deliberately absent from LANGS below rather than listed as failing.
-// Extend LANGS as each future LIMERENCE language pass lands.
-const LANGS = ['cs'] as const;
+// translationCoverage.test.ts's ANAMNESIS checks. Scoped to 'cs' and 'fa' —
+// LIMERENCE's Czech and Farsi passes (prologue through Understory, endings,
+// keepsakes, epiphanies, and guide/advisory copy) are both complete as of
+// this test's authoring; de/fr are not yet translated for this pack, so
+// they are deliberately absent from LANGS below rather than listed as
+// failing. Extend LANGS as each future LIMERENCE language pass lands.
+const LANGS = ['cs', 'fa'] as const;
 
 describe('LIMERENCE deep translation coverage — every room beat/choice/field-note/ending/epiphany/keepsake (v2)', () => {
   afterEach(() => setLocale('en', 'v2'));
