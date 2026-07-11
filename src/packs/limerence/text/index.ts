@@ -34,6 +34,8 @@ import './fa-endings';
 import './fa-keepsakes';
 import './fa-epiphanies';
 import './fa-guide';
+import './de-rooms';
+import './de-reflections-act1';
 
 export * from '../../../engine/text/resolver';
 export * from '../../../engine/text/keys';
