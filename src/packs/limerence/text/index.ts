@@ -20,6 +20,8 @@ import './cs-endings';
 import './cs-keepsakes';
 import './cs-epiphanies';
 import './cs-guide';
+import './fa-rooms';
+import './fa-reflections-act1';
 
 export * from '../../../engine/text/resolver';
 export * from '../../../engine/text/keys';
