@@ -10,6 +10,8 @@ import './cs-rooms';
 import './cs-reflections-act1';
 import './cs-rooms-act2';
 import './cs-reflections-act2';
+import './cs-rooms-act3';
+import './cs-reflections-act3';
 
 export * from '../../../engine/text/resolver';
 export * from '../../../engine/text/keys';
