@@ -24,6 +24,8 @@ import './fa-rooms';
 import './fa-reflections-act1';
 import './fa-rooms-act2';
 import './fa-reflections-act2';
+import './fa-rooms-act3';
+import './fa-reflections-act3';
 
 export * from '../../../engine/text/resolver';
 export * from '../../../engine/text/keys';
