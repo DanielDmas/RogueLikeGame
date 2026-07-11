@@ -28,6 +28,8 @@ import './fa-rooms-act3';
 import './fa-reflections-act3';
 import './fa-rooms-act4';
 import './fa-reflections-act4';
+import './fa-rooms-understory';
+import './fa-reflections-understory';
 
 export * from '../../../engine/text/resolver';
 export * from '../../../engine/text/keys';
