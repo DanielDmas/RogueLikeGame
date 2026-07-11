@@ -8,6 +8,8 @@
 // spec-08-§3 "every t() call has an honest English fallback" guarantee).
 import './cs-rooms';
 import './cs-reflections-act1';
+import './cs-rooms-act2';
+import './cs-reflections-act2';
 
 export * from '../../../engine/text/resolver';
 export * from '../../../engine/text/keys';
