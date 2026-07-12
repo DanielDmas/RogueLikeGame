@@ -44,6 +44,10 @@ import './de-rooms-act4';
 import './de-reflections-act4';
 import './de-rooms-understory';
 import './de-reflections-understory';
+import './de-endings';
+import './de-keepsakes';
+import './de-epiphanies';
+import './de-guide';
 
 export * from '../../../engine/text/resolver';
 export * from '../../../engine/text/keys';
