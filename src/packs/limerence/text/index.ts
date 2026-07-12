@@ -54,6 +54,8 @@ import './fr-rooms-act2';
 import './fr-reflections-act2';
 import './fr-rooms-act3';
 import './fr-reflections-act3';
+import './fr-rooms-act4';
+import './fr-reflections-act4';
 
 export * from '../../../engine/text/resolver';
 export * from '../../../engine/text/keys';
