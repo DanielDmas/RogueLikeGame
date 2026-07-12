@@ -56,6 +56,8 @@ import './fr-rooms-act3';
 import './fr-reflections-act3';
 import './fr-rooms-act4';
 import './fr-reflections-act4';
+import './fr-rooms-understory';
+import './fr-reflections-understory';
 
 export * from '../../../engine/text/resolver';
 export * from '../../../engine/text/keys';
