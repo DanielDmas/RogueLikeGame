@@ -36,6 +36,8 @@ import './fa-epiphanies';
 import './fa-guide';
 import './de-rooms';
 import './de-reflections-act1';
+import './de-rooms-act2';
+import './de-reflections-act2';
 
 export * from '../../../engine/text/resolver';
 export * from '../../../engine/text/keys';
