@@ -58,6 +58,10 @@ import './fr-rooms-act4';
 import './fr-reflections-act4';
 import './fr-rooms-understory';
 import './fr-reflections-understory';
+import './fr-endings';
+import './fr-keepsakes';
+import './fr-epiphanies';
+import './fr-guide';
 
 export * from '../../../engine/text/resolver';
 export * from '../../../engine/text/keys';
