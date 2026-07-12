@@ -8,6 +8,7 @@
   --gold-dim: rgba(212, 179, 106, 0.35);
   --bg: #14110d;
   --panel: rgba(20, 17, 13, 0.82);
+  --panel-hover: rgba(32, 27, 21, 0.9);
   --panel-edge: rgba(212, 179, 106, 0.18);
   --danger: #b3543f;
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -29,12 +30,19 @@ body.pack-limerence {
   --gold-dim: rgba(224, 153, 106, 0.35);
   --bg: #0d1116;
   --panel: rgba(13, 17, 22, 0.84);
+  --panel-hover: rgba(22, 29, 34, 0.92);
   --panel-edge: rgba(90, 168, 168, 0.2);
   --danger: #b3543f;
   --field-note-grad: linear-gradient(180deg, #171d20 0%, #0e1215 100%);
   --overlay-grad: radial-gradient(ellipse at 50% 40%, rgba(15, 19, 24, 0.9) 0%, rgba(6, 8, 10, 0.97) 100%);
 }
 
+/* The morning-after read of the same hotel (spec 07's light-mode note,
+   settings copy: "same rooms, softer light"). Deliberately a *paper* /
+   *daylight-through-curtains* palette — warm off-white panels, ink-on-paper
+   text, a muted clay-amber accent — rather than a cold inverted dark theme,
+   so it reads as natural morning light rather than a mechanical color swap.
+   Scoped to LIMERENCE only (ANAMNESIS keeps its single authored tone). */
 body.pack-limerence.theme-light {
   --ink: #2b2620;
   --ink-dim: #5c5346;
@@ -43,10 +51,39 @@ body.pack-limerence.theme-light {
   --gold-dim: rgba(184, 118, 58, 0.28);
   --bg: #f2ece0;
   --panel: rgba(255, 251, 244, 0.9);
+  --panel-hover: rgba(255, 244, 227, 0.96);
   --panel-edge: rgba(90, 140, 140, 0.3);
   --danger: #a13f2e;
   --field-note-grad: linear-gradient(180deg, #fffaf2 0%, #f3ecdf 100%);
   --overlay-grad: radial-gradient(ellipse at 50% 40%, rgba(246, 240, 228, 0.92) 0%, rgba(234, 224, 206, 0.97) 100%);
+}
+
+/* The 3D corridor itself (doors, walls, dust, dioramas) stays the hotel's
+   authored dark palette in both themes on purpose — see
+   packs/limerence/theme.ts's header: "the hotel at night" is the game's
+   actual setting, not a rendering default, and re-lighting five bespoke
+   floor scenes for a literal daylight look would fight that. Light mode
+   instead governs the *readable* layer that sits on top of it. The one
+   place that split needs help: HUD chrome (hearts, lucidity dot, menu/lang
+   buttons, the act label) floats directly on the scene with no panel behind
+   it, so it can't switch to the light theme's dark ink without vanishing
+   against a background that never lightens. Keep it in a pale, shadowed
+   register regardless of theme instead. */
+body.pack-limerence.theme-light .hud::before {
+  content: '';
+  position: absolute; inset: -20px -26px auto -26px; height: 108px;
+  background: linear-gradient(180deg, rgba(8, 10, 13, 0.4) 0%, rgba(8, 10, 13, 0) 100%);
+  pointer-events: none; z-index: -1;
+}
+body.pack-limerence.theme-light .hud { position: relative; }
+body.pack-limerence.theme-light .menu-btn {
+  color: rgba(237, 231, 221, 0.86);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
+}
+body.pack-limerence.theme-light .menu-btn:hover { color: #fff; border-color: rgba(237, 231, 221, 0.4); }
+body.pack-limerence.theme-light .act-label {
+  color: rgba(237, 231, 221, 0.68);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -154,15 +191,18 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 .room-title-right { display: flex; align-items: center; gap: 10px; }
 
 .explain-btn {
-  flex-shrink: 0; width: 25px; height: 25px; border-radius: 50%;
-  border: 1.4px solid var(--gold); background: rgba(212, 179, 106, 0.12); color: var(--gold);
-  font-family: var(--serif); font-size: 13.5px; font-weight: 600; font-style: italic; letter-spacing: 0;
+  flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%;
+  border: 2px solid var(--gold); background: color-mix(in srgb, var(--gold) 16%, transparent); color: var(--gold);
+  font-family: var(--sans); font-size: 16px; font-weight: 700; font-style: normal; letter-spacing: 0;
   line-height: 1; display: flex; align-items: center; justify-content: center;
-  cursor: pointer; opacity: 0.92; transition: opacity 0.2s var(--ease), border-color 0.2s var(--ease), background 0.2s var(--ease), transform 0.2s var(--ease);
+  cursor: pointer; opacity: 0.98;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 10%, transparent), 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: opacity 0.2s var(--ease), border-color 0.2s var(--ease), background 0.2s var(--ease), transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
   animation: pulse 3.2s ease-in-out infinite;
 }
 .explain-btn:hover, .explain-btn:focus-visible {
-  opacity: 1; border-color: var(--gold); background: rgba(212, 179, 106, 0.22); transform: scale(1.08);
+  opacity: 1; border-color: var(--gold); background: color-mix(in srgb, var(--gold) 32%, transparent); transform: scale(1.1);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--gold) 16%, transparent), 0 2px 10px rgba(0, 0, 0, 0.35);
   animation: none;
 }
 .reduced-motion .explain-btn { animation: none; opacity: 1; }
@@ -193,32 +233,43 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 .beat-dot.done { background: var(--gold); opacity: 0.9; }
 
 /* ---------- Examined Path: the Annex's Reflection card (spec 05) ----------
-   Deliberately quieter than .text-panel — a dimmer border, no drop shadow,
-   smaller type — so plural commentary never reads as more authoritative
-   than the room's own beats. */
+   Sized and weighted to match .field-note — full-width, generous padding,
+   body-size type — so it reads as a real second panel worth reading rather
+   than a cramped footnote; it stays visually distinct from .text-panel
+   (dimmer border, no drop shadow, italic body) so plural commentary still
+   never reads as more authoritative than the room's own beats. That
+   distinction is carried by tone, not by cramming it into less space. */
 .reflection-card {
-  width: min(1040px, 92vw);
+  width: min(1040px, calc(100% - 40px));
   background: var(--panel);
-  border: 1px solid rgba(212, 179, 106, 0.09);
+  border: 1px solid rgba(212, 179, 106, 0.14);
   border-radius: 14px;
-  padding: 18px 30px 16px;
+  padding: 28px 36px 24px;
   margin-top: 10px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.4);
+  max-height: 72vh;
+  overflow-y: auto;
 }
 .reflection-header {
-  font-family: var(--sans); font-size: 9.5px; letter-spacing: 0.28em; text-transform: uppercase;
-  color: var(--ink-faint); margin-bottom: 12px;
+  font-family: var(--sans); font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 18px;
 }
-.reflection-rows { display: flex; flex-direction: column; gap: 9px; }
-.reflection-row { display: flex; gap: 12px; align-items: baseline; }
+.reflection-rows { display: flex; flex-direction: column; gap: 16px; }
+.reflection-row { display: flex; gap: 18px; align-items: baseline; }
 .reflection-tradition {
-  flex-shrink: 0; min-width: 84px;
-  font-family: var(--sans); font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  flex-shrink: 0; min-width: 104px;
+  font-family: var(--sans); font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--ink-faint);
 }
 .reflection-text {
-  font-family: var(--serif); font-size: 14.5px; font-style: italic; line-height: 1.5; color: var(--ink-dim);
+  font-family: var(--serif); font-size: 16.5px; font-style: italic; line-height: 1.6; color: var(--ink-dim);
 }
-.reflection-card .advance-hint { margin-top: 12px; }
+.reflection-card .advance-hint { margin-top: 18px; }
+@media (max-width: 640px) {
+  .reflection-card { padding: 20px 20px 18px; }
+  .reflection-row { flex-direction: column; gap: 4px; }
+  .reflection-tradition { min-width: 0; }
+}
 
 /* ---------- choices ---------- */
 .choices { width: min(1040px, 92vw); display: flex; flex-direction: column; gap: 8px; }
@@ -255,7 +306,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 .reduced-motion .choice-card { animation-duration: 0.15s; }
 
 .choice-card:hover, .choice-card.hover, .choice-card:focus-visible {
-  border-color: var(--gold-dim); background: rgba(22, 20, 16, 0.9); transform: translateY(-1px);
+  border-color: var(--gold-dim); background: var(--panel-hover); transform: translateY(-1px);
 }
 .choice-card .num {
   font-size: 10px; color: var(--gold); letter-spacing: 0.2em; font-family: var(--sans);
