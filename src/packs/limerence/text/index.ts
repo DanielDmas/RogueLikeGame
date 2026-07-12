@@ -40,6 +40,8 @@ import './de-rooms-act2';
 import './de-reflections-act2';
 import './de-rooms-act3';
 import './de-reflections-act3';
+import './de-rooms-act4';
+import './de-reflections-act4';
 
 export * from '../../../engine/text/resolver';
 export * from '../../../engine/text/keys';
