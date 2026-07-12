@@ -48,6 +48,8 @@ import './de-endings';
 import './de-keepsakes';
 import './de-epiphanies';
 import './de-guide';
+import './fr-rooms';
+import './fr-reflections-act1';
 
 export * from '../../../engine/text/resolver';
 export * from '../../../engine/text/keys';
