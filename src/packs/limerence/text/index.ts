@@ -50,6 +50,8 @@ import './de-epiphanies';
 import './de-guide';
 import './fr-rooms';
 import './fr-reflections-act1';
+import './fr-rooms-act2';
+import './fr-reflections-act2';
 
 export * from '../../../engine/text/resolver';
 export * from '../../../engine/text/keys';
