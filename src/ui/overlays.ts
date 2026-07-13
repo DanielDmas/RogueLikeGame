@@ -440,11 +440,17 @@ export function showSettings(ui: HTMLElement, settings: Settings, actions: Setti
       el('div', 'title-sub', t(uiKey('settingsFooter'), 'quality changes apply on next load · everything else applies immediately')),
     );
     const back = el('button', 'title-btn', t(uiKey('done'), 'Done'));
-    back.addEventListener('click', () => {
+    const close = () => {
       for (const off of fullscreenListeners) off();
+      removeEventListener('keydown', onEscape);
       o.remove();
       resolve(current);
-    });
+    };
+    const onEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close();
+    };
+    addEventListener('keydown', onEscape);
+    back.addEventListener('click', close);
     footer.append(back);
     panel.append(footer);
     o.appendChild(panel);
@@ -621,10 +627,16 @@ export function showAbout(ui: HTMLElement, pack: ContentPack): Promise<void> {
     panel.append(body);
     const back = el('button', 'title-btn', t(uiKey('back'), 'Back'));
     back.style.marginTop = '26px';
-    back.addEventListener('click', () => {
+    const close = () => {
+      removeEventListener('keydown', onEscape);
       o.remove();
       resolve();
-    });
+    };
+    const onEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close();
+    };
+    addEventListener('keydown', onEscape);
+    back.addEventListener('click', close);
     panel.append(back);
     o.appendChild(panel);
   });
@@ -837,10 +849,16 @@ export function showCodex(ui: HTMLElement, profile: Profile, pack: ContentPack):
 
     const back = el('button', 'title-btn', t(uiKey('back'), 'Back'));
     back.style.marginTop = '30px';
-    back.addEventListener('click', () => {
+    const close = () => {
+      removeEventListener('keydown', onEscape);
       o.remove();
       resolve();
-    });
+    };
+    const onEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close();
+    };
+    addEventListener('keydown', onEscape);
+    back.addEventListener('click', close);
     panel.append(grid, shelf, back);
     o.appendChild(panel);
   });
@@ -883,10 +901,16 @@ export function showLedger(
 
     const back = el('button', 'title-btn', t(uiKey('back'), 'Back'));
     back.style.marginTop = '26px';
-    back.addEventListener('click', () => {
+    const close = () => {
+      removeEventListener('keydown', onEscape);
       o.remove();
       resolve();
-    });
+    };
+    const onEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close();
+    };
+    addEventListener('keydown', onEscape);
+    back.addEventListener('click', close);
     panel.append(back);
     o.appendChild(panel);
   });

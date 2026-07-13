@@ -337,7 +337,11 @@ export class SceneDirector {
     if (this.theme) {
       this.scene.remove(this.theme.group);
       this.theme.group.traverse((o) => {
-        if (o instanceof THREE.Mesh) o.geometry.dispose();
+        if (o instanceof THREE.Mesh || o instanceof THREE.Points || o instanceof THREE.Line) {
+          o.geometry.dispose();
+          if (o.material instanceof THREE.Material) o.material.dispose();
+          else if (Array.isArray(o.material)) o.material.forEach((m) => m.dispose());
+        }
       });
     }
     this.theme = this.visuals.buildTheme(id);

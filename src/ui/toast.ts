@@ -31,3 +31,12 @@ export function showRestoredFromBackupToast(ui: HTMLElement, reducedMotion = fal
   );
   showToast(ui, text, reducedMotion, speedMultiplier, 3200);
 }
+
+/** 6.2: shown when a save write itself fails (e.g. `QuotaExceededError` in a
+ * full/private-browsing storage quota) — so the failure is visible instead of
+ * silently poisoning the persist chain. Held as long as the restore notice
+ * since it's likewise something the player should actually read. */
+export function showSaveFailedToast(ui: HTMLElement, reducedMotion = false, speedMultiplier = 1): void {
+  const text = t(uiKey('saveFailed'), 'Your progress could not be saved — storage may be full.');
+  showToast(ui, text, reducedMotion, speedMultiplier, 3200);
+}

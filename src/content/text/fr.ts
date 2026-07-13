@@ -60,6 +60,7 @@ registerAll('v2', 'fr', {
   [uiKey('recoveryBody')]: 'Quelque chose dans les rouages a perdu l’équilibre. Votre dossier est en sécurité — rien de ce que vous avez fait ici n’est perdu.',
   [uiKey('recoveryReturn')]: 'Retour à l’écran-titre',
   [uiKey('restoredFromBackup')]: 'Votre dernière sauvegarde n’a pas pu être chargée — restaurée depuis la sauvegarde précédente. Rien ne devrait manquer.',
+  [uiKey('saveFailed')]: 'Votre progression n’a pas pu être enregistrée — l’espace de stockage est peut-être plein.',
   [uiKey('exportProfile')]: 'Exporter le profil',
   [uiKey('exportProfileDesc')]: 'Télécharge tout votre profil sous forme de fichier — une sauvegarde personnelle, ou de quoi envoyer si vous avez un jour besoin d’aide.',
   [uiKey('exportProfileButton')]: 'Télécharger',

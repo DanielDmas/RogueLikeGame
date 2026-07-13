@@ -16,10 +16,13 @@ const LANG_SHORT: Record<Lang, string> = { en: 'EN', cs: 'CS', fa: 'FA', de: 'DE
 
 export class Hud {
   private root: HTMLElement;
+  private heartsEl!: HTMLElement;
   private heartEls: HTMLElement[] = [];
   private lucidityEl: HTMLElement;
   private actEl: HTMLElement;
   private langBtn: HTMLButtonElement;
+  private menuBtn!: HTMLButtonElement;
+  private skin: { heartsSvg: string; heartsAriaLabel?: string; heartsTooltip?: string; lucidityTooltip?: string };
 
   /**
    * `onLanguageChange` fires immediately on click — no pause menu required.
@@ -35,8 +38,10 @@ export class Hud {
     onLanguageChange: (lang: Lang) => void,
     skin: { heartsSvg: string; heartsAriaLabel?: string; heartsTooltip?: string; lucidityTooltip?: string },
   ) {
+    this.skin = skin;
     this.root = el('div', 'hud');
     const hearts = el('div', 'hearts');
+    this.heartsEl = hearts;
     hearts.setAttribute('role', 'status');
     hearts.setAttribute('aria-label', t(uiKey('heartsAriaLabel'), skin.heartsAriaLabel ?? DEFAULT_HEARTS_ARIA_LABEL));
     hearts.title = t(uiKey('heartsTooltip'), skin.heartsTooltip ?? DEFAULT_HEARTS_TOOLTIP);
@@ -57,9 +62,9 @@ export class Hud {
       this.langBtn.textContent = LANG_SHORT[currentLang];
       onLanguageChange(currentLang);
     });
-    const menuBtn = el('button', 'menu-btn', t(uiKey('menu'), 'Menu'));
-    menuBtn.addEventListener('click', onMenu);
-    right.append(this.lucidityEl, this.langBtn, menuBtn);
+    this.menuBtn = el('button', 'menu-btn', t(uiKey('menu'), 'Menu'));
+    this.menuBtn.addEventListener('click', onMenu);
+    right.append(this.lucidityEl, this.langBtn, this.menuBtn);
     this.root.append(hearts, right);
 
     this.actEl = el('div', 'act-label');
@@ -78,9 +83,16 @@ export class Hud {
     this.actEl.textContent = label;
   }
 
-  /** Keeps the HUD's language abbreviation in sync if language is instead changed via Settings. */
+  /** Keeps the HUD's language abbreviation — and every tooltip/aria-label
+   * that was resolved once at construction time (6.4.4) — in sync when the
+   * language changes, whether from the HUD's own button or from Settings. */
   setLanguage(lang: Lang) {
     this.langBtn.textContent = LANG_SHORT[lang];
+    this.heartsEl.setAttribute('aria-label', t(uiKey('heartsAriaLabel'), this.skin.heartsAriaLabel ?? DEFAULT_HEARTS_ARIA_LABEL));
+    this.heartsEl.title = t(uiKey('heartsTooltip'), this.skin.heartsTooltip ?? DEFAULT_HEARTS_TOOLTIP);
+    this.lucidityEl.title = t(uiKey('lucidityTooltip'), this.skin.lucidityTooltip ?? DEFAULT_LUCIDITY_TOOLTIP);
+    this.langBtn.title = t(uiKey('hudLanguageTooltip'), 'Change language (applies from the next beat onward)');
+    this.menuBtn.textContent = t(uiKey('menu'), 'Menu');
   }
 
   show() {

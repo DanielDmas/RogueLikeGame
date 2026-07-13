@@ -14,7 +14,7 @@ import { TextPanel } from '../ui/textPanel';
 import { ChoicePanel } from '../ui/choices';
 import { ReflectionPanel } from '../ui/reflection';
 import { showFieldNote } from '../ui/fieldNote';
-import { showSavedToast } from '../ui/toast';
+import { showSavedToast, showSaveFailedToast } from '../ui/toast';
 import {
   showAbout,
   showCredits,
@@ -268,6 +268,21 @@ export class Game {
     return s.typewriter && !s.reducedMotion;
   }
 
+  /** Chains `save(profile)` onto `persistChain`, so writes always reach the
+   * store in call order — even when a caller fires persist() without
+   * awaiting it. 6.2: the chain always settles *fulfilled* (a failed write
+   * is caught here, not left to reject the chain), so one storage-quota
+   * failure can't silently poison every persist() from then on — later
+   * saves still get attempted, and the player is told once via toast rather
+   * than the failure vanishing into an unhandled rejection. */
+  private chainSave(profile: Profile): Promise<void> {
+    this.persistChain = this.persistChain.then(() => this.store.save(PROFILE_ID, profile)).catch((err) => {
+      console.error('save failed', err);
+      showSaveFailedToast(this.ui, this.profile.settings.reducedMotion, this.speedMultiplier);
+    });
+    return this.persistChain;
+  }
+
   private async persist(showToast = false) {
     // Only stamp profile.run from this.state while an actual run is live.
     // this.state defaults to a placeholder newRun() at construction time —
@@ -278,12 +293,7 @@ export class Game {
     // (which would make the title screen wrongly offer "Continue the
     // journey" to a player who never actually started playing).
     if (this.inGame) this.profile.run = this.state.finished ? null : this.state;
-    // Chained rather than a bare `await this.store.save(...)`, so that this
-    // call's write is guaranteed to reach the store after every earlier
-    // persist() call's write, regardless of whether those earlier calls were
-    // themselves awaited by their caller.
-    this.persistChain = this.persistChain.then(() => this.store.save(PROFILE_ID, this.profile));
-    await this.persistChain;
+    await this.chainSave(this.profile);
     // Shown only at natural checkpoints (door chosen, room completed, settings
     // saved) — never on the silent per-stage safety-net persist, or it would nag.
     if (showToast) {
@@ -302,15 +312,13 @@ export class Game {
    * on-screen UI (whatever was showing when the run was reset) never disagree. */
   private async resetRun() {
     this.profile.run = null;
-    this.persistChain = this.persistChain.then(() => this.store.save(PROFILE_ID, this.profile));
-    await this.persistChain;
+    await this.chainSave(this.profile);
     location.reload();
   }
 
   /** Wipes the whole profile back to defaults and starts over from a clean title screen. */
   private async resetProgress() {
-    this.persistChain = this.persistChain.then(() => this.store.save(PROFILE_ID, defaultProfile()));
-    await this.persistChain;
+    await this.chainSave(defaultProfile());
     location.reload();
   }
 
@@ -334,8 +342,7 @@ export class Game {
     }
     if (typeof parsed !== 'object' || parsed === null) return false;
     const hydrated = hydrateProfile(parsed as Partial<Profile>);
-    this.persistChain = this.persistChain.then(() => this.store.save(PROFILE_ID, hydrated));
-    void this.persistChain.then(() => location.reload());
+    void this.chainSave(hydrated).then(() => location.reload());
     return true;
   }
 
@@ -657,7 +664,7 @@ export class Game {
       });
       this.hud.update(this.state.hearts, this.state.lucidity);
       if (room.id === this.pack.hooks.lastMessageId) {
-        this.profile.lastMessage = choice.text.replace(/^“|”$/g, '');
+        this.profile.lastMessage = choice.text.replace(/^[“"']|[”"']$/g, '');
       }
       // Shown once per profile, ever — a brief, calm explanation of what just
       // happened, so the first heart loss reads as a mechanic, not a shock.

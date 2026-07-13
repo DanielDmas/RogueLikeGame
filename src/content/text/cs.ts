@@ -57,6 +57,7 @@ registerAll('v2', 'cs', {
   [uiKey('recoveryBody')]: 'Něco v soukolí ztratilo rovnováhu. Váš soubor je v bezpečí — nic z toho, co jste tu udělali, se neztratilo.',
   [uiKey('recoveryReturn')]: 'Zpět na titulní obrazovku',
   [uiKey('restoredFromBackup')]: 'Vaše poslední uložení se nepodařilo načíst — obnoveno z předchozí zálohy. Nic by nemělo chybět.',
+  [uiKey('saveFailed')]: 'Váš postup se nepodařilo uložit — úložiště je možná plné.',
   [uiKey('exportProfile')]: 'Exportovat profil',
   [uiKey('exportProfileDesc')]: 'Stáhne celý váš profil jako soubor — osobní záloha, nebo něco, co můžete poslat, pokud budete potřebovat pomoc.',
   [uiKey('exportProfileButton')]: 'Stáhnout',

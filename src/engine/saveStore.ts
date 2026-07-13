@@ -125,7 +125,12 @@ export function defaultProfile(): Profile {
       renderScale: 'standard',
       uiZoom: 1,
       examinedPathDefault: false,
-      theme: 'dark',
+      // 9.5.4: honors the OS-level light-mode preference on first boot, same
+      // pattern as reducedMotion above. Harmless for ANAMNESIS (which ignores
+      // `theme` entirely, per `visuals.supportsLightTheme`) and correct for
+      // LIMERENCE, whose hotel skin actually supports both tones.
+      theme:
+        typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: light)').matches ? 'light' : 'dark',
     },
     persona: { preset: '', name: '', blurb: '' },
     hasSeenHeartLoss: false,
