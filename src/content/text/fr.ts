@@ -80,6 +80,8 @@ registerAll('v2', 'fr', {
   [uiKey('ledger')]: 'Le carnet du voyageur',
   [uiKey('epiphaniesTitle')]: 'Révélations',
   [uiKey('epiphanyEarned')]: 'consignée ce soir',
+  [uiKey('pivotalChoicesHeader')]: 'ce que vous avez choisi',
+  [uiKey('doorsNeverOpenedHeader')]: 'les portes que vous n’avez jamais ouvertes',
   [uiKey('ledgerRuns')]: 'Voyages accomplis',
   [uiKey('ledgerRooms')]: 'Pièces contemplées',
   [uiKey('ledgerEndings')]: 'Fins contemplées',

@@ -77,6 +77,8 @@ registerAll('v2', 'cs', {
   [uiKey('ledger')]: 'Cestovatelský deník',
   [uiKey('epiphaniesTitle')]: 'Poznání',
   [uiKey('epiphanyEarned')]: 'zaznamenáno dnes večer',
+  [uiKey('pivotalChoicesHeader')]: 'co jste si zvolili',
+  [uiKey('doorsNeverOpenedHeader')]: 'dveře, které jste nikdy neotevřeli',
   [uiKey('ledgerRuns')]: 'Dokončené cesty',
   [uiKey('ledgerRooms')]: 'Spatřené místnosti',
   [uiKey('ledgerEndings')]: 'Spatřené konce',

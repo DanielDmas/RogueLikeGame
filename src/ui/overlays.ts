@@ -1021,6 +1021,13 @@ export interface EndScreenData {
   /** The active pack's own epiphany defs, needed to resolve `newEpiphanies`
    * ids to fallback text — required whenever `newEpiphanies` is non-empty. */
   epiphanies?: EpiphanyDef[];
+  /** T4 "Morning Report": this run's pivotal choices (the ones that moved
+   * an axis or cost/spared a heart), already translated and in the order
+   * taken — empty renders nothing extra. */
+  pivotalChoices?: string[];
+  /** T4: a few named doors this run never opened, as their one-line
+   * teasers — already translated. Empty renders nothing extra. */
+  doorsNeverOpened?: string[];
 }
 
 export function showEndScreen(ui: HTMLElement, data: EndScreenData): Promise<'again' | 'codex' | 'title'> {
@@ -1052,6 +1059,22 @@ export function showEndScreen(ui: HTMLElement, data: EndScreenData): Promise<'ag
       const block = el('div', 'epiphany-block');
       block.append(el('h4', undefined, t(uiKey('epiphanyEarned'), 'filed tonight')));
       for (const id of data.newEpiphanies) block.append(el('div', 'epiphany-line', epiphanyLine(id, data.epiphanies ?? [])));
+      inner.append(block);
+    }
+
+    // T4 "Morning Report": the run's pivotal choices, quoted back.
+    if (data.pivotalChoices && data.pivotalChoices.length > 0) {
+      const block = el('div', 'morning-report-block');
+      block.append(el('h4', undefined, t(uiKey('pivotalChoicesHeader'), 'what you chose')));
+      for (const line of data.pivotalChoices) block.append(el('div', 'morning-report-line', `“${line}”`));
+      inner.append(block);
+    }
+
+    // T4: a few named doors this run never opened.
+    if (data.doorsNeverOpened && data.doorsNeverOpened.length > 0) {
+      const block = el('div', 'morning-report-block');
+      block.append(el('h4', undefined, t(uiKey('doorsNeverOpenedHeader'), 'doors you never opened')));
+      for (const line of data.doorsNeverOpened) block.append(el('div', 'morning-report-line', line));
       inner.append(block);
     }
 

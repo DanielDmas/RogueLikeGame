@@ -662,6 +662,14 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 }
 .epiphany-line { font-family: var(--serif); font-size: 13.5px; font-style: italic; color: var(--ink-dim); text-align: center; }
 
+/* T4 "Morning Report": pivotal choices + doors never opened, on the end screen. */
+.morning-report-block { margin-top: 20px; width: min(680px, 92vw); }
+.morning-report-block h4 {
+  font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-faint);
+  text-align: center; margin-bottom: 10px;
+}
+.morning-report-line { font-family: var(--serif); font-size: 13.5px; color: var(--ink-dim); text-align: center; margin-bottom: 4px; }
+
 /* ---------- misc ---------- */
 .fade-in { animation: fadein 1.4s var(--ease); }
 @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }

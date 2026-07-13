@@ -80,6 +80,8 @@ registerAll('v2', 'de', {
   [uiKey('ledger')]: 'Reisetagebuch',
   [uiKey('epiphaniesTitle')]: 'Erkenntnisse',
   [uiKey('epiphanyEarned')]: 'heute Abend vermerkt',
+  [uiKey('pivotalChoicesHeader')]: 'was Sie gewählt haben',
+  [uiKey('doorsNeverOpenedHeader')]: 'Türen, die Sie nie geöffnet haben',
   [uiKey('ledgerRuns')]: 'Abgeschlossene Durchläufe',
   [uiKey('ledgerRooms')]: 'Erblickte Räume',
   [uiKey('ledgerEndings')]: 'Erblickte Enden',

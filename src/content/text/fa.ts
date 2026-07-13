@@ -78,6 +78,8 @@ registerAll('v2', 'fa', {
   [uiKey('ledger')]: 'دفترِ مسافر',
   [uiKey('epiphaniesTitle')]: 'بصیرت‌ها',
   [uiKey('epiphanyEarned')]: 'امشب ثبت شد',
+  [uiKey('pivotalChoicesHeader')]: 'آنچه انتخاب کردید',
+  [uiKey('doorsNeverOpenedHeader')]: 'دری که هرگز نگشودید',
   [uiKey('ledgerRuns')]: 'سفرهای کامل‌شده',
   [uiKey('ledgerRooms')]: 'اتاق‌های دیده‌شده',
   [uiKey('ledgerEndings')]: 'پایان‌های دیده‌شده',

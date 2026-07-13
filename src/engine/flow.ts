@@ -3,7 +3,7 @@ import type { ContentPack } from '../packs/types';
 import { keepsakesEarnedByFlags } from '../content/keepsakes';
 import { applyEffects, newRun } from './gameState';
 import { shouldShowReflections, shouldShowSocraticAside } from './reflections';
-import { evaluateEpiphanies } from './ledger';
+import { evaluateEpiphanies, isHiddenFromCodex } from './ledger';
 import { backfillVisitedForJump, completeRoom, makeRegistry, offeredDoors, type RoomRegistry } from './storyEngine';
 import { defaultProfile, hydrateProfile, type Profile, type SaveStore } from './saveStore';
 import { SceneDirector } from '../scene/director';
@@ -39,6 +39,7 @@ import {
   roomBeatKey,
   roomExplanationKey,
   roomChoiceOutcomeKey,
+  roomChoiceTextKey,
   roomNoteTitleKey,
   roomNoteThinkersKey,
   roomNoteBodyKey,
@@ -857,6 +858,23 @@ export class Game {
             : t(roomNoteTitleKey(room.id), room.fieldNote?.title ?? ''),
       }));
 
+    // T4 "Morning Report": the run's pivotal choices, quoted back — the
+    // ones that actually moved an axis or cost/spared a heart, in the order
+    // taken, capped at 4 so the screen stays a glance, not a transcript dump.
+    const pivotalChoices = this.state.transcript
+      .filter((entry) => (entry.effects?.axes && Object.values(entry.effects.axes).some((v) => v)) || entry.effects?.hearts)
+      .slice(0, 4)
+      .map((entry) => t(roomChoiceTextKey(entry.roomId, entry.choiceId), entry.choiceText));
+
+    // T4: a few named doors this run never opened — teasers only, the same
+    // one-line hook shown on an unvisited door card, never a spoiler. Capped
+    // at 3 and drawn only from rooms the codex doesn't already hide (spec 06
+    // §5 — the Understory shouldn't advertise itself here either).
+    const doorsNeverOpened = this.pack.rooms
+      .filter((r) => !this.state.visited.includes(r.id) && !isHiddenFromCodex(r.id, this.profile, this.pack.graph.understorySequence))
+      .slice(0, 3)
+      .map((r) => t(roomTeaserKey(r.id), r.teaser));
+
     for (;;) {
       const action = await showEndScreen(this.ui, {
         ending,
@@ -867,6 +885,8 @@ export class Game {
         newNotes: this.profile.codexUnlocked.length - this.runStartNotes,
         newEpiphanies,
         epiphanies: this.pack.epiphanies,
+        pivotalChoices,
+        doorsNeverOpened,
       });
       if (action === 'codex') {
         await showCodex(this.ui, this.profile, this.pack);
