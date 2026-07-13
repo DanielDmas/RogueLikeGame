@@ -1,7 +1,7 @@
 import type { Persona, Profile, Settings } from '../engine/saveStore';
 import type { Ending, FieldNote, Room } from '../engine/schema';
 import type { ContentPack, EpiphanyDef } from '../packs/types';
-import { epiphanyLine, epiphanyLines, isHiddenFromCodex, ledgerStats } from '../engine/ledger';
+import { earnedGuestStamps, epiphanyLine, epiphanyLines, isHiddenFromCodex, ledgerStats } from '../engine/ledger';
 import type { RoomRegistry } from '../engine/storyEngine';
 import { clear, el } from './dom';
 import { showFieldNote } from './fieldNote';
@@ -20,6 +20,7 @@ import {
   endingNoteBodyKey,
   keepsakeKey,
   actNameKey,
+  stampKey,
 } from '../engine/text/keys';
 import { LANGUAGE_LABELS } from './locale';
 import { nextLang } from '../engine/text/resolver';
@@ -1036,6 +1037,17 @@ export function showLedger(
       const epiphanies = el('div', 'ledger-epiphanies');
       for (const line of lines) epiphanies.append(el('div', 'ledger-epiphany-line', line));
       panel.append(epiphanies);
+    }
+
+    // T8: guest stamps — diegetic, spoiler-free milestones, purely a read of
+    // counters already tracked. No locked slots (mirrors the epiphanies
+    // block above): an unearned stamp simply isn't shown yet.
+    const stamps = earnedGuestStamps(profile, registry, understorySequence);
+    if (stamps.length > 0) {
+      panel.append(el('h2', 'ledger-epiphanies-title', t(uiKey('guestStampsTitle'), 'Guest stamps')));
+      const stampsEl = el('div', 'ledger-stamps');
+      for (const stamp of stamps) stampsEl.append(el('div', 'guest-stamp', t(stampKey(stamp.id), stamp.fallback)));
+      panel.append(stampsEl);
     }
 
     const back = el('button', 'title-btn', t(uiKey('back'), 'Back'));

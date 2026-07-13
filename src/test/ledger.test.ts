@@ -6,14 +6,18 @@ import { makeRegistry } from '../engine/storyEngine';
 import { newRun } from '../engine/gameState';
 import { defaultProfile, type Profile } from '../engine/saveStore';
 import {
+  earnedGuestStamps,
   epiphanyLine,
   evaluateEpiphanies,
+  GUEST_STAMPS,
   isHiddenFromCodex,
   ledgerStats,
   mostWalkedRoomId,
   visibleRoomCount,
 } from '../engine/ledger';
 import { anamnesisPack } from '../packs/anamnesis';
+import { t } from '../engine/text/resolver';
+import { stampKey } from '../engine/text/keys';
 import '../content/text';
 
 const registry = makeRegistry(allRooms);
@@ -160,6 +164,43 @@ describe('evaluateEpiphanies (Milestone 5, Phase P)', () => {
   it('every epiphany id has a translated line distinct from its raw slug', () => {
     for (const id of EPIPHANY_IDS) {
       expect(epiphanyLine(id, epiphanies)).not.toBe(id);
+    }
+  });
+});
+
+describe('T8 — guest stamps: diegetic, spoiler-free milestones, pure reads of existing counters', () => {
+  it('a fresh profile has earned none of them', () => {
+    expect(earnedGuestStamps(defaultProfile(), registry)).toEqual([]);
+  });
+
+  it('clean-bill: earned only after at least one completed run with zero lifetime hearts lost', () => {
+    expect(earnedGuestStamps(profileWith({ runsCompleted: 0, heartsLost: 0 }), registry).map((s) => s.id)).not.toContain('clean-bill');
+    expect(earnedGuestStamps(profileWith({ runsCompleted: 1, heartsLost: 1 }), registry).map((s) => s.id)).not.toContain('clean-bill');
+    expect(earnedGuestStamps(profileWith({ runsCompleted: 1, heartsLost: 0 }), registry).map((s) => s.id)).toContain('clean-bill');
+  });
+
+  it('frequent-guest: earned at 5+ completed runs, not before', () => {
+    expect(earnedGuestStamps(profileWith({ runsCompleted: 4 }), registry).map((s) => s.id)).not.toContain('frequent-guest');
+    expect(earnedGuestStamps(profileWith({ runsCompleted: 5 }), registry).map((s) => s.id)).toContain('frequent-guest');
+  });
+
+  it('below-the-surface / on-the-record / student-of-the-place: each reads exactly its own counter', () => {
+    expect(earnedGuestStamps(profileWith({ understoryDescents: 1 }), registry).map((s) => s.id)).toContain('below-the-surface');
+    expect(earnedGuestStamps(profileWith({ examinedRuns: 1 }), registry).map((s) => s.id)).toContain('on-the-record');
+    expect(earnedGuestStamps(profileWith({ epiphanies: ['a', 'b', 'c'] }), registry).map((s) => s.id)).toContain('student-of-the-place');
+    expect(earnedGuestStamps(profileWith({ epiphanies: ['a', 'b'] }), registry).map((s) => s.id)).not.toContain('student-of-the-place');
+  });
+
+  it('full-house: earned once every base (non-understory) room is unlocked in the codex', () => {
+    const allBaseIds = registry.all().map((r) => r.id);
+    const missingOne = allBaseIds.filter((id) => id !== 'wallet');
+    expect(earnedGuestStamps(profileWith({ codexUnlocked: missingOne }), registry).map((s) => s.id)).not.toContain('full-house');
+    expect(earnedGuestStamps(profileWith({ codexUnlocked: allBaseIds }), registry).map((s) => s.id)).toContain('full-house');
+  });
+
+  it('every stamp id has a translated line distinct from its raw slug', () => {
+    for (const stamp of GUEST_STAMPS) {
+      expect(t(stampKey(stamp.id), stamp.fallback)).not.toBe(stamp.id);
     }
   });
 });

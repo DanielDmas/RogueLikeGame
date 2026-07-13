@@ -3,7 +3,7 @@
 // long-form room prose (beats, choice outcomes, field notes) is not yet
 // translated and gracefully falls back to English v2 (see resolver.ts).
 import { registerAll } from '../../engine/text/resolver';
-import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey, keepsakeKey } from '../../engine/text/keys';
+import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey, keepsakeKey, stampKey } from '../../engine/text/keys';
 
 registerAll('v2', 'cs', {
   [uiKey('abandonToTitle')]: 'Opustit a vrátit se na titulní obrazovku',
@@ -80,6 +80,13 @@ registerAll('v2', 'cs', {
   [uiKey('registerUnderstoryFloor')]: 'Podzemí',
   [uiKey('registerDoorsWalked')]: 'projitých dveří',
   [uiKey('epiphaniesTitle')]: 'Poznání',
+  [uiKey('guestStampsTitle')]: 'Razítka hosta',
+  [stampKey('full-house')]: 'Plný dům — každý pokoj v knize',
+  [stampKey('clean-bill')]: 'Odjel s každým srdcem, pokaždé',
+  [stampKey('frequent-guest')]: 'Stálý host',
+  [stampKey('below-the-surface')]: 'Nalezl cestu dolů',
+  [stampKey('on-the-record')]: 'Šel po zkoumané stezce',
+  [stampKey('student-of-the-place')]: 'Znalec tohoto místa',
   [uiKey('epiphanyEarned')]: 'zaznamenáno dnes večer',
   [uiKey('pivotalChoicesHeader')]: 'co jste si zvolili',
   [uiKey('doorsNeverOpenedHeader')]: 'dveře, které jste nikdy neotevřeli',

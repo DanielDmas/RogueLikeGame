@@ -183,3 +183,39 @@ export function evaluateEpiphanies(
   }
   return newly;
 }
+
+/** T8 — Guest stamps: diegetic, spoiler-free milestones rendered as rubber
+ * stamps in the Ledger. Deliberately generic and pack-agnostic (pure reads
+ * of counters every profile already tracks, no pack-specific content or
+ * choice ids) — unlike epiphanies, one shared list serves both packs. Never
+ * consulted by any gameplay predicate; display-only, same hard guarantee
+ * as every other Ledger-only field. */
+export interface GuestStamp {
+  id: string;
+  fallback: string;
+  predicate: (profile: Profile, registry: RoomRegistry, understorySequence: readonly string[]) => boolean;
+}
+
+export const GUEST_STAMPS: GuestStamp[] = [
+  { id: 'full-house', fallback: 'Full house — every room on file', predicate: codexCompletePredicate },
+  {
+    id: 'clean-bill',
+    fallback: 'Checked out with every heart, every time',
+    predicate: (profile) => profile.runsCompleted >= 1 && profile.heartsLost === 0,
+  },
+  { id: 'frequent-guest', fallback: 'A frequent guest', predicate: (profile) => profile.runsCompleted >= 5 },
+  { id: 'below-the-surface', fallback: 'Found the way below', predicate: (profile) => profile.understoryDescents >= 1 },
+  { id: 'on-the-record', fallback: 'Took the Examined Path', predicate: (profile) => profile.examinedRuns >= 1 },
+  { id: 'student-of-the-place', fallback: 'A student of the place', predicate: (profile) => profile.epiphanies.length >= 3 },
+];
+
+/** Every stamp currently earned, in `GUEST_STAMPS` order. `understorySequence`
+ * defaults to ANAMNESIS's own (spec 08 §3 pattern) — pass a pack's own for
+ * `full-house` to read that pack's own room set correctly. */
+export function earnedGuestStamps(
+  profile: Profile,
+  registry: RoomRegistry,
+  understorySequence: readonly string[] = UNDERSTORY_SEQUENCE,
+): GuestStamp[] {
+  return GUEST_STAMPS.filter((s) => s.predicate(profile, registry, understorySequence));
+}

@@ -674,6 +674,18 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 .ledger-epiphanies { margin-top: 12px; width: min(680px, 92vw); display: flex; flex-direction: column; gap: 8px; }
 .ledger-epiphany-line { font-family: var(--serif); font-size: 13.5px; font-style: italic; color: var(--ink-dim); text-align: center; }
 
+/* T8: guest stamps — a diegetic "rubber stamp" mark, not an achievement
+   badge; deliberately understated (a border and letterspacing, not a
+   medal), rotated a few degrees per card for a hand-stamped feel. */
+.ledger-stamps { margin-top: 12px; width: min(680px, 92vw); display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.guest-stamp {
+  font-family: var(--sans); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--gold-dim); border: 1.5px solid var(--gold-dim); border-radius: 4px; padding: 6px 12px;
+  transform: rotate(-2deg); opacity: 0.85;
+}
+.guest-stamp:nth-child(3n+2) { transform: rotate(1.5deg); }
+.guest-stamp:nth-child(3n) { transform: rotate(-1deg); }
+
 .epiphany-block { margin-top: 24px; width: min(680px, 92vw); }
 .epiphany-block h4 {
   font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-faint);

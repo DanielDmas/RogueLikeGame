@@ -51,3 +51,8 @@ export const traditionLabelKey = (tradition: string) => `ui.tradition.${traditio
 
 /** Spec 06 — The Traveler's Ledger & Epiphanies. */
 export const epiphanyKey = (id: string) => `epiphany.${id}`;
+
+/** T8 — Guest stamps. Generic and identical for both packs (pure counter
+ * reads, no pack-specific content), so — unlike epiphanies — these are
+ * registered once, unscoped, shared by both packs' bundled text modules. */
+export const stampKey = (id: string) => `stamp.${id}`;

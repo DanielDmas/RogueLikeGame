@@ -6,7 +6,7 @@
 // the infrastructure + UI/structural layer, translated from the English v2
 // source directly (never via Czech), matching cs.ts's key inventory.
 import { registerAll } from '../../engine/text/resolver';
-import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey, keepsakeKey } from '../../engine/text/keys';
+import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey, keepsakeKey, stampKey } from '../../engine/text/keys';
 
 registerAll('v2', 'de', {
   [uiKey('abandonToTitle')]: 'Aufgeben und zum Titelbildschirm zurückkehren',
@@ -83,6 +83,13 @@ registerAll('v2', 'de', {
   [uiKey('registerUnderstoryFloor')]: 'Das Untergeschoss',
   [uiKey('registerDoorsWalked')]: 'durchschrittene Türen',
   [uiKey('epiphaniesTitle')]: 'Erkenntnisse',
+  [uiKey('guestStampsTitle')]: 'Gäste-Stempel',
+  [stampKey('full-house')]: 'Volles Haus — jeder Raum aktenkundig',
+  [stampKey('clean-bill')]: 'Jedes Mal mit jedem Herzen abgereist',
+  [stampKey('frequent-guest')]: 'Ein Stammgast',
+  [stampKey('below-the-surface')]: 'Den Weg nach unten gefunden',
+  [stampKey('on-the-record')]: 'Den Prüfenden Pfad gegangen',
+  [stampKey('student-of-the-place')]: 'Ein Kenner dieses Ortes',
   [uiKey('epiphanyEarned')]: 'heute Abend vermerkt',
   [uiKey('pivotalChoicesHeader')]: 'was Sie gewählt haben',
   [uiKey('doorsNeverOpenedHeader')]: 'Türen, die Sie nie geöffnet haben',

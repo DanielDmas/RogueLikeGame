@@ -6,7 +6,7 @@
 // the infrastructure + UI/structural layer, translated from the English v2
 // source directly (never via Czech), matching cs.ts's key inventory.
 import { registerAll } from '../../engine/text/resolver';
-import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey, keepsakeKey } from '../../engine/text/keys';
+import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey, keepsakeKey, stampKey } from '../../engine/text/keys';
 
 registerAll('v2', 'fr', {
   [uiKey('abandonToTitle')]: 'Abandonner et revenir à l’écran-titre',
@@ -83,6 +83,13 @@ registerAll('v2', 'fr', {
   [uiKey('registerUnderstoryFloor')]: 'Le sous-sol',
   [uiKey('registerDoorsWalked')]: 'portes franchies',
   [uiKey('epiphaniesTitle')]: 'Révélations',
+  [uiKey('guestStampsTitle')]: 'Tampons du registre',
+  [stampKey('full-house')]: 'Complet — chaque chambre au dossier',
+  [stampKey('clean-bill')]: 'Reparti avec chaque cœur, à chaque fois',
+  [stampKey('frequent-guest')]: 'Un habitué',
+  [stampKey('below-the-surface')]: 'A trouvé le chemin vers le bas',
+  [stampKey('on-the-record')]: 'A suivi le Chemin de l’examen',
+  [stampKey('student-of-the-place')]: 'Un connaisseur des lieux',
   [uiKey('epiphanyEarned')]: 'consignée ce soir',
   [uiKey('pivotalChoicesHeader')]: 'ce que vous avez choisi',
   [uiKey('doorsNeverOpenedHeader')]: 'les portes que vous n’avez jamais ouvertes',

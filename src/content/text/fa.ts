@@ -4,7 +4,7 @@
 // translated and gracefully falls back to English v2 (see resolver.ts).
 // RTL layout and the Vazirmatn webfont are applied in ui/locale.ts.
 import { registerAll } from '../../engine/text/resolver';
-import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey, keepsakeKey } from '../../engine/text/keys';
+import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey, keepsakeKey, stampKey } from '../../engine/text/keys';
 
 registerAll('v2', 'fa', {
   [uiKey('abandonToTitle')]: 'رها کردن و بازگشت به صفحه‌ی عنوان',
@@ -81,6 +81,13 @@ registerAll('v2', 'fa', {
   [uiKey('registerUnderstoryFloor')]: 'طبقه‌ی زیرین',
   [uiKey('registerDoorsWalked')]: 'دری که پیموده‌اید',
   [uiKey('epiphaniesTitle')]: 'بصیرت‌ها',
+  [uiKey('guestStampsTitle')]: 'مهرهای مهمان',
+  [stampKey('full-house')]: 'خانه‌ی پر — هر اتاق در پرونده',
+  [stampKey('clean-bill')]: 'هر بار با تمام قلب‌ها رفت',
+  [stampKey('frequent-guest')]: 'مهمانی همیشگی',
+  [stampKey('below-the-surface')]: 'راه پایین را یافت',
+  [stampKey('on-the-record')]: 'مسیر بازاندیشی را پیمود',
+  [stampKey('student-of-the-place')]: 'شناسنده‌ی این مکان',
   [uiKey('epiphanyEarned')]: 'امشب ثبت شد',
   [uiKey('pivotalChoicesHeader')]: 'آنچه انتخاب کردید',
   [uiKey('doorsNeverOpenedHeader')]: 'دری که هرگز نگشودید',
