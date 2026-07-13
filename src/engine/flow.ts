@@ -30,6 +30,7 @@ import {
 } from '../ui/overlays';
 import { el } from '../ui/dom';
 import { sound } from '../audio/soundEngine';
+import { voiceover } from '../audio/voiceover';
 import { setLocale, t } from './text/resolver';
 import {
   roomTitleKey,
@@ -153,6 +154,9 @@ export class Game {
     );
     this.text = new TextPanel(stageBottom, ui);
     this.text.setSpeakerPrefixes(pack.guide.speakerPrefixes);
+    // F2: fetches public/av-manifest.json once, at boot — best-effort, never
+    // blocks startup; narration stays dormant if it's missing or empty.
+    void voiceover.init(pack.meta.id, profile.settings.language);
     this.choices = new ChoicePanel(stageBottom);
     this.reflection = new ReflectionPanel(stageBottom);
 
@@ -248,9 +252,12 @@ export class Game {
     sound.setSfxEnabled(s.sfx);
     sound.setMusicVolume(s.musicVolume);
     sound.setSfxVolume(s.sfxVolume);
+    sound.setVoiceEnabled(s.narrationEnabled);
+    sound.setVoiceVolume(s.narrationVolume);
     setLocale(s.language, s.textVersion);
     applyLocaleToDocument(s.language);
     this.hud.setLanguage(s.language);
+    voiceover.setLanguage(s.language);
   }
 
   /** `{name}`/`{blurb}` (and future tokens) available for interpolation into any displayed text. */
@@ -283,6 +290,15 @@ export class Game {
       showSaveFailedToast(this.ui, this.profile.settings.reducedMotion, this.speedMultiplier);
     });
     return this.persistChain;
+  }
+
+  /** F3: sets the generative bed's act (as always) and, if the active
+   * pack's manifest has a file for this act's music slot, crossfades to it
+   * — a no-op past `sound.setAct` while the manifest is empty, which it is
+   * until real tracks exist. */
+  private setActMusic(act: Parameters<typeof sound.setAct>[0]) {
+    sound.setAct(act);
+    sound.setMusicFile(voiceover.musicUrlFor(`act${act}`));
   }
 
   private async persist(showToast = false) {
@@ -357,6 +373,7 @@ export class Game {
       onImportProfile: (raw) => this.importProfile(raw),
       exportPrefix: this.pack.meta.exportPrefix,
       themeSelectable: this.pack.visuals.supportsLightTheme,
+      narrationAvailable: voiceover.packHasAnyVoice(),
     };
   }
 
@@ -415,7 +432,7 @@ export class Game {
       return this.runLoop();
     }
     this.director.setTheme(0);
-    sound.setAct(0);
+    this.setActMusic(0);
     this.director.setPaused(true);
     this.director.setParallax(true);
     for (;;) {
@@ -492,7 +509,7 @@ export class Game {
       await this.fade(true);
       this.director.setTheme(theme);
       this.currentTheme = theme;
-      sound.setAct(theme);
+      this.setActMusic(theme);
       await this.fade(false);
       const intro = this.pack.guide.actIntroText(this.state.act);
       if (intro && this.state.act > 0) {
@@ -781,7 +798,7 @@ export class Game {
     await this.fade(true);
     this.director.setTheme(5);
     this.currentTheme = 5;
-    sound.setAct(5);
+    this.setActMusic(5);
     this.hud.hide();
     await this.fade(false);
     sound.ending();

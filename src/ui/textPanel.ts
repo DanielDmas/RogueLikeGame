@@ -1,6 +1,7 @@
 import type { Beat, RunState } from '../engine/schema';
 import { clear, el } from './dom';
 import { sound } from '../audio/soundEngine';
+import { voiceover } from '../audio/voiceover';
 import { t, applyTokens } from '../engine/text/resolver';
 import { uiKey } from '../engine/text/keys';
 import { showExplanation } from './explanation';
@@ -70,11 +71,12 @@ export class TextPanel {
     },
   ): Promise<void> {
     const resolved = beats
-      .map((b, i) => resolveBeat(b, state, opts?.keyOf?.(i), opts?.tokens, this.speakerPrefixes))
+      .map((b, i) => ({ ...resolveBeat(b, state, opts?.keyOf?.(i), opts?.tokens, this.speakerPrefixes), key: opts?.keyOf?.(i) }))
       .filter((r) => r.text.length > 0);
     if (resolved.length === 0) return;
     const texts = resolved.map((r) => r.text);
     const spoken = resolved.map((r) => r.isSpoken);
+    const keys = resolved.map((r) => r.key);
 
     const panel = el('div', `text-panel fade-in${this.remembered ? ' remembered' : ''}`);
     if (header) {
@@ -141,18 +143,24 @@ export class TextPanel {
       back.classList.toggle('visible', i > 0);
       const instant = i <= maxSeen;
       if (i > maxSeen) maxSeen = i;
-      await this.showBeat(beatEl, texts[i], spoken[i], instant);
+      await this.showBeat(beatEl, texts[i], spoken[i], instant, keys[i]);
       hint.textContent = i === texts.length - 1 ? t(uiKey('advanceHintContinue'), 'continue') : t(uiKey('advanceHintClick'), 'click · space');
       const nav = await this.waitAdvance(panel, back, dotEls, maxSeen);
+      voiceover.stop();
       if (nav.type === 'back') i = Math.max(0, i - 1);
       else if (nav.type === 'jump') i = nav.index;
       else i++;
     }
     back.classList.remove('visible');
+    voiceover.stop();
   }
 
-  private async showBeat(beatEl: HTMLElement, text: string, isSpoken: boolean, instant = false): Promise<void> {
+  /** F2: `key`, if given and the manifest has a narration file for it (the
+   * active pack/language), plays alongside the beat — a silent no-op
+   * otherwise, since the manifest is empty until real recordings exist. */
+  private async showBeat(beatEl: HTMLElement, text: string, isSpoken: boolean, instant = false, key?: string): Promise<void> {
     beatEl.classList.toggle('usher', isSpoken);
+    if (key) voiceover.play(key);
     if (!this.typewriter || instant) {
       beatEl.textContent = text;
       return;
@@ -245,6 +253,7 @@ export class TextPanel {
   }
 
   hide() {
+    voiceover.stop();
     if (this.panel) {
       this.panel.remove();
       this.panel = null;

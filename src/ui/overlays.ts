@@ -148,6 +148,10 @@ export interface SettingsActions {
   exportPrefix: string;
   /** Whether to offer the light/dark toggle (pack.visuals.supportsLightTheme). */
   themeSelectable: boolean;
+  /** F2: whether the active pack's manifest has ANY narration files, in any
+   * language — the Narration row only renders when true, so the feature
+   * stays completely invisible until real recordings actually exist. */
+  narrationAvailable: boolean;
 }
 
 /** A row: label + control on one line, a short explanatory line underneath. */
@@ -209,6 +213,7 @@ export function showSettings(ui: HTMLElement, settings: Settings, actions: Setti
       key:
         | 'music'
         | 'sfx'
+        | 'narrationEnabled'
         | 'typewriter'
         | 'reducedMotion'
         | 'highContrast'
@@ -359,6 +364,29 @@ export function showSettings(ui: HTMLElement, settings: Settings, actions: Setti
     sfxVolTop.append(sfxSlider);
     sfxVolRow.append(sfxVolTop);
     audioBody.append(sfxVolRow);
+
+    // F2: only rendered once the active pack's manifest actually has
+    // narration files — invisible, not merely silent, until then.
+    if (actions.narrationAvailable) {
+      toggleRow(audioBody, 'narrationEnabled', t(uiKey('settingNarration'), 'Narration'), t(uiKey('settingNarrationDesc'), 'Spoken lines, where recorded.'));
+      const narrationVolRow = el('div', 'setting-row slider-row');
+      const narrationVolTop = el('div', 'setting-row-top');
+      narrationVolTop.append(el('span', 'lbl', t(uiKey('settingNarrationVolume'), 'Narration volume')));
+      const narrationSlider = el('input', 'volume-slider') as HTMLInputElement;
+      narrationSlider.type = 'range';
+      narrationSlider.min = '0';
+      narrationSlider.max = '100';
+      narrationSlider.step = '5';
+      narrationSlider.value = String(Math.round(current.narrationVolume * 100));
+      narrationSlider.addEventListener('input', () => {
+        const v = Number(narrationSlider.value) / 100;
+        current.narrationVolume = v;
+        sound.setVoiceVolume(v);
+      });
+      narrationVolTop.append(narrationSlider);
+      narrationVolRow.append(narrationVolTop);
+      audioBody.append(narrationVolRow);
+    }
 
     // ---------- Text & Language ----------
     const { section: textSection, body: textBody } = sectionEl(t(uiKey('settingsSectionText'), 'Text & Language'));

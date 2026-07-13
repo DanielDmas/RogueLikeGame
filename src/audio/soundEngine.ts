@@ -120,12 +120,30 @@ export class SoundEngine {
   private accentCreakTimer: ReturnType<typeof setTimeout> | null = null;
   /** Guards against attaching the `visibilitychange` listener twice — `ensureCtx()` can run its setup block only once, but this is the explicit guard against future refactors. */
   private visibilityHandlerAdded = false;
+  /** F2: narration bus — independent of music/sfx so a spoken line survives either being muted. */
+  private voiceGain: GainNode | null = null;
+  private voiceEnabled = true;
+  private voiceVolume = 0.9;
+  private voiceConnectedElements = new WeakSet<HTMLMediaElement>();
+  /** F3: the generative bed (chords + noise pad) routes through this bus
+   * instead of straight into `musicGain`, so a file-based music track can
+   * duck it to silence without touching the `musicGain` toggle/volume the
+   * player actually controls. Stays at gain 1 forever unless `setMusicFile`
+   * is ever called with a real url — which it isn't until a pack's manifest
+   * actually has a music file for the active slot. */
+  private genDuck: GainNode | null = null;
+  private fileMusicGain: GainNode | null = null;
+  private fileMusicEl: HTMLAudioElement | null = null;
+  private fileMusicConnected = false;
 
   private musicTarget(): number {
     return this.musicEnabled ? this.musicVolume : 0;
   }
   private sfxTarget(): number {
     return this.sfxEnabled ? this.sfxVolume : 0;
+  }
+  private voiceTarget(): number {
+    return this.voiceEnabled ? this.voiceVolume : 0;
   }
 
   /** Testable without an AudioContext: the effective (enabled × volume) level each bus would play at. */
@@ -134,6 +152,62 @@ export class SoundEngine {
   }
   getSfxLevel(): number {
     return this.sfxTarget();
+  }
+  getVoiceLevel(): number {
+    return this.voiceTarget();
+  }
+
+  setVoiceEnabled(v: boolean) {
+    this.voiceEnabled = v;
+    if (this.voiceGain) this.voiceGain.gain.setTargetAtTime(this.voiceTarget(), this.now(), 0.1);
+  }
+
+  /** 0–1. Only audible while narration is enabled. */
+  setVoiceVolume(v: number) {
+    this.voiceVolume = Math.max(0, Math.min(1, v));
+    if (this.voiceGain) this.voiceGain.gain.setTargetAtTime(this.voiceTarget(), this.now(), 0.05);
+  }
+
+  /** F2: routes an `<audio>` element (owned by `src/audio/voiceover.ts`)
+   * into the narration bus. A media element can only ever be wrapped in one
+   * `MediaElementAudioSourceNode` for its whole lifetime, so this is a
+   * no-op past the first call for a given element. */
+  connectVoiceElement(el: HTMLMediaElement) {
+    if (this.voiceConnectedElements.has(el)) return;
+    this.voiceConnectedElements.add(el);
+    const ctx = this.ensureCtx();
+    const src = ctx.createMediaElementSource(el);
+    src.connect(this.voiceGain!);
+  }
+
+  /** F3: crossfades to a file-based music track for the current slot, if
+   * `url` is given — ducking the generative bed to silence and looping the
+   * file through `musicGain` (so the player's existing music toggle/volume
+   * still governs it). Passing `null` (the default — no manifest entry for
+   * this slot) crossfades back to the generative bed, exactly today's
+   * behavior. */
+  setMusicFile(url: string | null) {
+    const ctx = this.ensureCtx();
+    const t = ctx.currentTime;
+    if (url) {
+      if (!this.fileMusicEl) {
+        this.fileMusicEl = new Audio();
+        this.fileMusicEl.loop = true;
+      }
+      if (!this.fileMusicConnected) {
+        this.fileMusicConnected = true;
+        const src = ctx.createMediaElementSource(this.fileMusicEl);
+        src.connect(this.fileMusicGain!);
+      }
+      if (this.fileMusicEl.src !== location.origin + url) this.fileMusicEl.src = url;
+      void this.fileMusicEl.play().catch(() => {});
+      this.genDuck!.gain.setTargetAtTime(0, t, 1.5);
+      this.fileMusicGain!.gain.setTargetAtTime(1, t, 1.5);
+    } else {
+      this.fileMusicEl?.pause();
+      this.genDuck!.gain.setTargetAtTime(1, t, 1.5);
+      this.fileMusicGain!.gain.setTargetAtTime(0, t, 1.5);
+    }
   }
 
   /** Called once at boot with the active pack's audio identity — swaps in
@@ -241,6 +315,22 @@ export class SoundEngine {
     sfxGain.connect(master);
     this.sfxGain = sfxGain;
 
+    // F2: narration bus.
+    const voiceGain = ctx.createGain();
+    voiceGain.gain.value = this.voiceTarget();
+    voiceGain.connect(master);
+    this.voiceGain = voiceGain;
+
+    // F3: generative-bed duck + file-music bus (see field comments above).
+    const genDuck = ctx.createGain();
+    genDuck.gain.value = 1;
+    genDuck.connect(musicGain);
+    this.genDuck = genDuck;
+    const fileMusicGain = ctx.createGain();
+    fileMusicGain.gain.value = 0;
+    fileMusicGain.connect(musicGain);
+    this.fileMusicGain = fileMusicGain;
+
     // Convolution reverb bus (spec 07 §Q5.1): a shared impulse response built
     // once; individual sounds tap into `reverbSend` at their own wet amount
     // (heartLoss 0.5, ending 0.35, noteOpen 0.15 — see those methods) rather
@@ -264,7 +354,7 @@ export class SoundEngine {
     // act change, still connected to a gain node nothing plays through.
     const chordBus = ctx.createGain();
     chordBus.gain.value = 1;
-    chordBus.connect(musicGain);
+    chordBus.connect(genDuck);
     this.chordBus = chordBus;
 
     const chordGain = ctx.createGain();
@@ -286,7 +376,7 @@ export class SoundEngine {
     // a faint filtered-noise breath pad, under the chord
     const noiseGain = ctx.createGain();
     noiseGain.gain.value = 0.018;
-    noiseGain.connect(musicGain);
+    noiseGain.connect(genDuck);
     const bufferSize = 2 * ctx.sampleRate;
     const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
     const data = buffer.getChannelData(0);

@@ -1,0 +1,46 @@
+import { describe, expect, it } from 'vitest';
+import { manifestHasVoice, manifestPackHasAnyVoice, voiceUrl, musicUrl, EMPTY_MANIFEST, type AvManifest } from '../audio/voiceover';
+
+describe('F2/F3 — av-manifest.json query helpers (pure, no fetch/DOM needed)', () => {
+  it('EMPTY_MANIFEST (the shipped default — no audio files exist yet) reports no voice/music anywhere', () => {
+    expect(manifestHasVoice(EMPTY_MANIFEST, 'anamnesis', 'en', 'room.wallet.stage0.beat0')).toBe(false);
+    expect(manifestPackHasAnyVoice(EMPTY_MANIFEST, 'anamnesis')).toBe(false);
+    expect(voiceUrl(EMPTY_MANIFEST, 'anamnesis', 'en', 'room.wallet.stage0.beat0')).toBeNull();
+    expect(musicUrl(EMPTY_MANIFEST, 'anamnesis', 'act0')).toBeNull();
+  });
+
+  const manifest: AvManifest = {
+    voice: {
+      limerence: {
+        en: { 'room.the-cave.stage0.beat0': 'room.the-cave.stage0.beat0.mp3' },
+        cs: {},
+      },
+    },
+    music: {
+      anamnesis: { act0: 'act0.mp3' },
+    },
+  };
+
+  it('manifestHasVoice is true only for the exact pack+lang+key the manifest actually lists', () => {
+    expect(manifestHasVoice(manifest, 'limerence', 'en', 'room.the-cave.stage0.beat0')).toBe(true);
+    expect(manifestHasVoice(manifest, 'limerence', 'en', 'room.the-cave.stage0.beat1')).toBe(false);
+    expect(manifestHasVoice(manifest, 'limerence', 'cs', 'room.the-cave.stage0.beat0')).toBe(false);
+    expect(manifestHasVoice(manifest, 'anamnesis', 'en', 'room.the-cave.stage0.beat0')).toBe(false);
+  });
+
+  it('manifestPackHasAnyVoice is true for limerence (has en files) and false for anamnesis (no voice section at all)', () => {
+    expect(manifestPackHasAnyVoice(manifest, 'limerence')).toBe(true);
+    expect(manifestPackHasAnyVoice(manifest, 'anamnesis')).toBe(false);
+  });
+
+  it('voiceUrl builds the folder-convention path from the manifest filename, or null if absent', () => {
+    expect(voiceUrl(manifest, 'limerence', 'en', 'room.the-cave.stage0.beat0')).toBe('/voice/limerence/en/room.the-cave.stage0.beat0.mp3');
+    expect(voiceUrl(manifest, 'limerence', 'en', 'nope')).toBeNull();
+  });
+
+  it('musicUrl builds the folder-convention path for a pack+slot, or null if the slot has no file', () => {
+    expect(musicUrl(manifest, 'anamnesis', 'act0')).toBe('/music/anamnesis/act0.mp3');
+    expect(musicUrl(manifest, 'anamnesis', 'act1')).toBeNull();
+    expect(musicUrl(manifest, 'limerence', 'act0')).toBeNull();
+  });
+});

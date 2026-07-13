@@ -30,6 +30,13 @@ export interface Settings {
    * (AA/bloom only) — a fog-and-text game reads fine at 30fps, and it's the
    * single biggest remaining GPU-load lever after `quality`/`renderScale`. */
   fpsCap: 30 | 60;
+  /** F2: narration playback — only ever has an audible effect once a pack's
+   * manifest actually has voice files; the Settings row itself stays hidden
+   * until then (`voiceover.packHasAnyVoice()`), so these fields sit dormant
+   * on every save until that day. */
+  narrationEnabled: boolean;
+  /** 0–1. Only audible while narrationEnabled is on. */
+  narrationVolume: number;
 }
 
 /** Cosmetic only — no mechanical effect. Empty name means "not chosen yet". */
@@ -134,6 +141,8 @@ export function defaultProfile(): Profile {
       uiZoom: 1,
       examinedPathDefault: false,
       fpsCap: 30,
+      narrationEnabled: true,
+      narrationVolume: 0.9,
       // 9.5.4: honors the OS-level light-mode preference on first boot, same
       // pattern as reducedMotion above. Harmless for ANAMNESIS (which ignores
       // `theme` entirely, per `visuals.supportsLightTheme`) and correct for
