@@ -163,6 +163,306 @@ function theColleagueDiorama(quality: Quality): Diorama {
   };
 }
 
+// ---------- the-front-desk: counter + bell + departures board ----------
+function theFrontDeskDiorama(quality: Quality): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0, DIORAMA_Z);
+  const counter = box(2.2, 0.5, 0.7, mat(0x1c1611));
+  counter.position.set(0, 0.25, 0);
+  const bellMat = mat(0x2a2114, 0xd4b36a, 0.5, { metalness: 0.6, roughness: 0.3 });
+  const bell = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.1, 12), bellMat);
+  bell.position.set(0.6, 0.56, 0);
+  const boardMat = mat(0x0a0a0c, 0xd89055, 0.35);
+  const board = box(1.0, 0.5, 0.05, boardMat);
+  board.position.set(-0.4, 1.1, -0.5);
+  const light = new THREE.PointLight(0xd89055, 0.5, 4, quality === 'high' ? 2 : 1.4);
+  light.position.set(-0.4, 1.1, -0.1);
+  group.add(counter, bell, board, light);
+  return {
+    group,
+    tick(t) {
+      // The board flickers as though rows are turning over, arrivals and departures both.
+      boardMat.emissiveIntensity = 0.25 + Math.abs(Math.sin(t * 3.1)) * 0.25;
+    },
+    dispose: trackDispose(group),
+  };
+}
+
+// ---------- the-password: a phone between two padlocks ----------
+function thePasswordDiorama(quality: Quality): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0.85, DIORAMA_Z);
+  const phoneMat = mat(0x0a0a0c, 0xd4b36a, 0.55);
+  const phone = box(0.36, 0.66, 0.03, phoneMat);
+  const lockMat = mat(0x201a12, 0x000000, 0, { metalness: 0.7, roughness: 0.35 });
+  const lock = (dx: number) => {
+    const g = new THREE.Group();
+    const body = box(0.16, 0.14, 0.05, lockMat);
+    const shackle = new THREE.Mesh(new THREE.TorusGeometry(0.07, 0.014, 8, 16, Math.PI), lockMat);
+    shackle.position.set(0, 0.09, 0);
+    g.add(body, shackle);
+    g.position.set(dx, 0, 0.08);
+    return g;
+  };
+  const light = new THREE.PointLight(0xd4b36a, 0.7, 4, quality === 'high' ? 2 : 1.4);
+  light.position.set(0, 0, 0.5);
+  group.add(phone, lock(-0.42), lock(0.42), light);
+  return {
+    group,
+    tick(t) {
+      phoneMat.emissiveIntensity = 0.4 + Math.sin(t * 1.6) * 0.2;
+    },
+    dispose: trackDispose(group),
+  };
+}
+
+// ---------- the-party: a bottle amid a ring of phone-lights ----------
+function thePartyDiorama(quality: Quality): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0, DIORAMA_Z);
+  const bottle = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 0.4, 10), mat(0x0e2a1e, 0x2a5a3e, 0.15));
+  bottle.position.set(0, 0.2, 0);
+  const glows: { mat: THREE.MeshStandardMaterial; phase: number }[] = [];
+  const ringCount = quality === 'high' ? 8 : 5;
+  for (let i = 0; i < ringCount; i++) {
+    const angle = (i / ringCount) * Math.PI * 2;
+    const m = mat(0x0a0a0c, 0x5aa8a8, 0.5);
+    const light = new THREE.Mesh(new THREE.SphereGeometry(0.045, 8, 6), m);
+    light.position.set(Math.cos(angle) * 0.9, 0.05, Math.sin(angle) * 0.5);
+    glows.push({ mat: m, phase: i * 0.7 });
+    group.add(light);
+  }
+  const pointLight = new THREE.PointLight(0x5aa8a8, 0.7, 4.5, quality === 'high' ? 2 : 1.4);
+  pointLight.position.set(0, 0.4, 0.3);
+  group.add(bottle, pointLight);
+  return {
+    group,
+    tick(t) {
+      for (const g of glows) g.mat.emissiveIntensity = 0.3 + Math.sin(t * 2.2 + g.phase) * 0.3;
+    },
+    dispose: trackDispose(group),
+  };
+}
+
+// ---------- the-forward: a grid of glowing rectangles, one red ----------
+function theForwardDiorama(quality: Quality): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0.85, DIORAMA_Z);
+  const cols = 4;
+  const rows = quality === 'high' ? 3 : 2;
+  let flagged: THREE.MeshStandardMaterial | null = null;
+  const flagIndex = Math.floor((rows * cols) / 2);
+  let i = 0;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const isFlagged = i === flagIndex;
+      const m = mat(0x0a0a0c, isFlagged ? 0xb84a3c : 0x5a6a72, isFlagged ? 0.6 : 0.2);
+      const tile = box(0.32, 0.22, 0.02, m);
+      tile.position.set((c - (cols - 1) / 2) * 0.42, (r - (rows - 1) / 2) * 0.32, 0);
+      if (isFlagged) flagged = m;
+      group.add(tile);
+      i++;
+    }
+  }
+  const light = new THREE.PointLight(0xb84a3c, 0.5, 3.5, quality === 'high' ? 2 : 1.4);
+  light.position.set(0, 0, 0.6);
+  group.add(light);
+  return {
+    group,
+    tick(t) {
+      if (flagged) flagged.emissiveIntensity = 0.45 + Math.sin(t * 2.6) * 0.25;
+    },
+    dispose: trackDispose(group),
+  };
+}
+
+// ---------- the-rumor: one huge unanswered message bubble ----------
+function theRumorDiorama(quality: Quality): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0.9, DIORAMA_Z);
+  const bubbleMat = mat(0x1a1418, 0xb84a3c, 0.3);
+  const bubble = new THREE.Mesh(new THREE.SphereGeometry(0.55, quality === 'high' ? 20 : 12, quality === 'high' ? 16 : 10), bubbleMat);
+  const tailMat = mat(0x1a1418, 0xb84a3c, 0.3);
+  const tail = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.22, 3), tailMat);
+  tail.position.set(-0.4, -0.55, 0);
+  tail.rotation.z = 0.6;
+  const light = new THREE.PointLight(0xb84a3c, 0.4, 4, quality === 'high' ? 2 : 1.4);
+  light.position.set(0, 0, 0.8);
+  group.add(bubble, tail, light);
+  return {
+    group,
+    tick(t) {
+      // A slow, anxious pulse — never resolving, never answered.
+      const pulse = 0.22 + Math.sin(t * 0.9) * 0.1;
+      bubbleMat.emissiveIntensity = pulse;
+      tailMat.emissiveIntensity = pulse;
+    },
+    dispose: trackDispose(group),
+  };
+}
+
+// ---------- the-distance: two phones face-up on one bed ----------
+function theDistanceDiorama(quality: Quality): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0, DIORAMA_Z);
+  const bed = box(2.6, 0.18, 1.5, mat(0x1c1611));
+  bed.position.set(0, 0.09, 0);
+  const matA = mat(0x0a0a0c, 0xd4b36a, 0.55);
+  const matB = mat(0x0a0a0c, 0x5aa8a8, 0.55);
+  const phoneA = box(0.3, 0.02, 0.56, matA);
+  phoneA.position.set(-0.55, 0.19, 0);
+  const phoneB = box(0.3, 0.02, 0.56, matB);
+  phoneB.position.set(0.55, 0.19, 0);
+  const light = new THREE.PointLight(0xd4b36a, 0.6, 4.5, quality === 'high' ? 2 : 1.4);
+  light.position.set(0, 0.5, 0.2);
+  group.add(bed, phoneA, phoneB, light);
+  return {
+    group,
+    tick(t) {
+      // The two screens never brighten in sync — each waits on the other.
+      matA.emissiveIntensity = 0.4 + Math.sin(t * 1.3) * 0.2;
+      matB.emissiveIntensity = 0.4 + Math.sin(t * 1.3 + Math.PI) * 0.2;
+    },
+    dispose: trackDispose(group),
+  };
+}
+
+// ---------- the-ex: a phone glowing 23:51 in the dark ----------
+function theExDiorama(quality: Quality): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0.85, DIORAMA_Z);
+  const phoneMat = mat(0x050505, 0x5aa8a8, 0.55);
+  const phone = box(0.42, 0.78, 0.03, phoneMat);
+  const light = new THREE.PointLight(0x5aa8a8, 0.9, 3.5, quality === 'high' ? 2 : 1.4);
+  light.position.set(0, 0, 0.4);
+  group.add(phone, light);
+  return {
+    group,
+    tick(t) {
+      const pulse = 0.5 + Math.sin(t * 1.1) * 0.25;
+      phoneMat.emissiveIntensity = pulse;
+      light.intensity = pulse * 0.9;
+    },
+    dispose: trackDispose(group),
+  };
+}
+
+// ---------- the-confession: an arrivals board + one suitcase ----------
+function theConfessionDiorama(quality: Quality): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0, DIORAMA_Z);
+  const boardMat = mat(0x0a0a0c, 0xd89055, 0.35);
+  const board = box(1.3, 0.7, 0.06, boardMat);
+  board.position.set(0, 1.1, -0.5);
+  const caseMat = mat(0x241d14);
+  const suitcase = box(0.5, 0.34, 0.16, caseMat);
+  suitcase.position.set(0.3, 0.17, 0.4);
+  const handle = box(0.16, 0.05, 0.02, mat(0x14100c));
+  handle.position.set(0.3, 0.36, 0.4);
+  const light = new THREE.PointLight(0xd89055, 0.5, 4, quality === 'high' ? 2 : 1.4);
+  light.position.set(0, 1.1, -0.1);
+  group.add(board, suitcase, handle, light);
+  return {
+    group,
+    tick(t) {
+      boardMat.emissiveIntensity = 0.25 + Math.abs(Math.sin(t * 2.4)) * 0.25;
+    },
+    dispose: trackDispose(group),
+  };
+}
+
+// ---------- the-discovery: a face-down phone under a cone of kitchen light ----------
+function theDiscoveryDiorama(quality: Quality): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0, DIORAMA_Z);
+  const table = box(1.4, 0.06, 0.9, mat(0x1e1710));
+  table.position.set(0, 0.5, 0);
+  const phoneMat = mat(0x0a0a0c, 0x000000, 0);
+  const phone = box(0.32, 0.02, 0.6, phoneMat);
+  phone.position.set(0, 0.54, 0);
+  const spot = new THREE.SpotLight(0xd4b36a, quality === 'high' ? 1.4 : 1.0, 3, Math.PI / 6, 0.4);
+  spot.position.set(0, 1.6, 0);
+  spot.target.position.set(0, 0.5, 0);
+  group.add(table, phone, spot, spot.target);
+  return {
+    group,
+    tick(t) {
+      // The light itself is steady; only the phone's silence, face-down, moves the scene.
+      spot.intensity = (quality === 'high' ? 1.4 : 1.0) + Math.sin(t * 0.4) * 0.08;
+    },
+    dispose: trackDispose(group),
+  };
+}
+
+// ---------- the-wedding-eve: a dress form + one waiting chair ----------
+function theWeddingEveDiorama(quality: Quality): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0, DIORAMA_Z);
+  const formMat = mat(0x2a2430, 0xffffff, 0.08);
+  const stand = box(0.04, 0.7, 0.04, mat(0x14100c));
+  stand.position.set(-0.4, 0.35, 0);
+  const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.22, 0.35, 6, quality === 'high' ? 12 : 8), formMat);
+  torso.position.set(-0.4, 0.95, 0);
+  const chairMat = mat(0x1a1414);
+  const chair = box(0.32, 0.42, 0.32, chairMat);
+  chair.position.set(0.5, 0.21, 0.2);
+  const light = new THREE.PointLight(0xffffff, 0.35, 4, quality === 'high' ? 2 : 1.4);
+  light.position.set(-0.4, 1.3, 0.4);
+  group.add(stand, torso, chair, light);
+  return { group, tick() {}, dispose: trackDispose(group) };
+}
+
+// ---------- the-unsent: a writing desk + brass letter scale ----------
+function theUnsentDiorama(quality: Quality): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0, DIORAMA_Z);
+  const desk = box(1.5, 0.06, 0.8, mat(0x1e1710));
+  desk.position.set(0, 0.6, 0);
+  const paper = box(0.4, 0.01, 0.5, mat(0xe8dcc4, 0x000000, 0));
+  paper.position.set(-0.3, 0.64, 0);
+  const scaleMat = mat(0x8a6a2a, 0xd4b36a, 0.25, { metalness: 0.75, roughness: 0.3 });
+  const base = box(0.14, 0.03, 0.14, scaleMat);
+  base.position.set(0.4, 0.64, 0);
+  const arm = box(0.24, 0.015, 0.015, scaleMat);
+  arm.position.set(0.4, 0.75, 0);
+  const pan = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.008, 12), scaleMat);
+  pan.position.set(0.5, 0.71, 0);
+  const light = new THREE.PointLight(0xd4b36a, 0.5, 4, quality === 'high' ? 2 : 1.4);
+  light.position.set(0, 1.0, 0.3);
+  group.add(desk, paper, base, arm, pan, light);
+  return {
+    group,
+    tick(t) {
+      arm.rotation.z = Math.sin(t * 0.6) * 0.03;
+    },
+    dispose: trackDispose(group),
+  };
+}
+
+// ---------- the-morning-desk: an open ledger on the counter, dawn light ----------
+function theMorningDeskDiorama(quality: Quality): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0, DIORAMA_Z);
+  const counter = box(2.0, 0.5, 0.7, mat(0x1c1611));
+  counter.position.set(0, 0.25, 0);
+  const ledgerMat = mat(0xe8dcc4, 0xd4b36a, 0.1);
+  const ledger = box(0.5, 0.03, 0.36, ledgerMat);
+  ledger.position.set(0, 0.53, 0);
+  const dawn = new THREE.HemisphereLight(0xf0c890, 0x1a1410, 0.5);
+  const light = new THREE.PointLight(0xf0c890, 0.6, 4.5, quality === 'high' ? 2 : 1.4);
+  light.position.set(0, 1.0, 0.3);
+  group.add(counter, ledger, dawn, light);
+  return {
+    group,
+    tick(t) {
+      // Dawn brightening, slow and one-directional — the run is ending.
+      const rise = 0.4 + Math.min(0.3, Math.max(0, (t % 40) / 40) * 0.3);
+      light.intensity = rise;
+    },
+    dispose: trackDispose(group),
+  };
+}
+
 type DioramaBuilder = (quality: Quality) => Diorama;
 
 const REGISTRY: Record<string, DioramaBuilder> = {
@@ -172,6 +472,18 @@ const REGISTRY: Record<string, DioramaBuilder> = {
   'the-kitchen-table': theKitchenTableDiorama,
   'the-second-account': theSecondAccountDiorama,
   'the-colleague': theColleagueDiorama,
+  'the-front-desk': theFrontDeskDiorama,
+  'the-password': thePasswordDiorama,
+  'the-party': thePartyDiorama,
+  'the-forward': theForwardDiorama,
+  'the-rumor': theRumorDiorama,
+  'the-distance': theDistanceDiorama,
+  'the-ex': theExDiorama,
+  'the-confession': theConfessionDiorama,
+  'the-discovery': theDiscoveryDiorama,
+  'the-wedding-eve': theWeddingEveDiorama,
+  'the-unsent': theUnsentDiorama,
+  'the-morning-desk': theMorningDeskDiorama,
 };
 
 export function limerenceDioramaFor(roomId: string, quality: Quality): Diorama | null {
