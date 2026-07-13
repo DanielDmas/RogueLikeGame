@@ -137,6 +137,7 @@ export class Game {
       pack.visuals,
       pack.guide.figure,
       profile.settings.renderScale,
+      profile.settings.fpsCap,
     );
     this.director.setSpeedMultiplier(this.speedMultiplier);
     this.hud = new Hud(
@@ -241,6 +242,7 @@ export class Game {
     this.director.setReducedMotion(s.reducedMotion);
     this.director.setDynamicScenery(s.dynamicScenery);
     this.director.setRenderScale(s.renderScale);
+    this.director.setFpsCap(s.fpsCap);
     applyUiZoom(s.uiZoom);
     sound.setMusicEnabled(s.music);
     sound.setSfxEnabled(s.sfx);

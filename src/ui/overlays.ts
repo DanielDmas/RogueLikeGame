@@ -269,6 +269,23 @@ export function showSettings(ui: HTMLElement, settings: Settings, actions: Setti
       ),
     );
 
+    const fpsCapOrder: Settings['fpsCap'][] = [30, 60];
+    const fpsCapLabel = (v: Settings['fpsCap']) =>
+      v === 30 ? t(uiKey('fpsCap30'), 'Frame rate: 30fps (smoother on weaker graphics cards)') : t(uiKey('fpsCap60'), 'Frame rate: 60fps');
+    const fpsCapBtn = el('button', 'toggle cycle', fpsCapLabel(current.fpsCap));
+    fpsCapBtn.addEventListener('click', () => {
+      const i = fpsCapOrder.indexOf(current.fpsCap);
+      current.fpsCap = fpsCapOrder[(i + 1) % fpsCapOrder.length];
+      fpsCapBtn.textContent = fpsCapLabel(current.fpsCap);
+    });
+    displayBody.append(
+      settingRow(
+        t(uiKey('settingFpsCap'), 'Frame rate cap'),
+        t(uiKey('settingFpsCapDesc'), 'Lower uses noticeably less graphics power — this is a fog-and-text game, not an action one.'),
+        fpsCapBtn,
+      ),
+    );
+
     const zoomRow = el('div', 'setting-row');
     const zoomTop = el('div', 'setting-row-top');
     zoomTop.append(el('span', 'lbl', t(uiKey('settingUiZoom'), 'Interface size')));

@@ -97,16 +97,28 @@ describe('hasSeenHeartLoss — first-heart-loss one-time moment (Phase G3)', () 
 describe('render scale + UI zoom — defaults and migration (Milestone 4)', () => {
   const base = defaultProfile().settings;
 
-  it('renderScale defaults to standard, uiZoom defaults to 1 (100%)', () => {
-    expect(base.renderScale).toBe('standard');
+  it('renderScale defaults to performance (1.3: GPU-safe floor tier for new profiles), uiZoom defaults to 1 (100%)', () => {
+    expect(base.renderScale).toBe('performance');
     expect(base.uiZoom).toBe(1);
   });
 
   it('a save from before renderScale/uiZoom existed backfills both from defaults', () => {
     const legacy = { music: true, sfx: true } as never;
     const migrated = migrateSettings(legacy, base);
-    expect(migrated.renderScale).toBe('standard');
+    expect(migrated.renderScale).toBe('performance');
     expect(migrated.uiZoom).toBe(1);
+  });
+
+  it('1.3: quality and fpsCap default to the GPU-safe floor tier for new profiles (low quality, 30fps) — Cinematic is opt-in', () => {
+    expect(base.quality).toBe('low');
+    expect(base.fpsCap).toBe(30);
+  });
+
+  it('an existing quality/fpsCap choice survives migration untouched (existing saves keep whatever they had, even the old high/60 default)', () => {
+    const saved = { quality: 'high', fpsCap: 60 } as never;
+    const migrated = migrateSettings(saved, base);
+    expect(migrated.quality).toBe('high');
+    expect(migrated.fpsCap).toBe(60);
   });
 
   it('an existing renderScale/uiZoom choice survives migration untouched', () => {

@@ -26,6 +26,10 @@ export interface Settings {
    * `visuals.supportsLightTheme` is true; ANAMNESIS ignores it and keeps
    * its single fitting tone. */
   theme: 'dark' | 'light';
+  /** 1.3.2: caps the 3D render loop's frame rate, independent of `quality`
+   * (AA/bloom only) — a fog-and-text game reads fine at 30fps, and it's the
+   * single biggest remaining GPU-load lever after `quality`/`renderScale`. */
+  fpsCap: 30 | 60;
 }
 
 /** Cosmetic only — no mechanical effect. Empty name means "not chosen yet". */
@@ -114,7 +118,11 @@ export function defaultProfile(): Profile {
         typeof window !== 'undefined' &&
         window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
       highContrast: false,
-      quality: 'high',
+      // 1.3: new profiles default to the floor tier — plain renderer (no
+      // bloom composer), 0.75x DPR, 30fps — so the game runs on a decade-old
+      // GPU without configuration. "Cinematic" (quality: 'high', standard
+      // render scale, 60fps) is an opt-in the player can pick in Settings.
+      quality: 'low',
       music: true,
       sfx: true,
       musicVolume: 0.7,
@@ -122,9 +130,10 @@ export function defaultProfile(): Profile {
       textVersion: 'v2',
       language: 'en',
       dynamicScenery: false,
-      renderScale: 'standard',
+      renderScale: 'performance',
       uiZoom: 1,
       examinedPathDefault: false,
+      fpsCap: 30,
       // 9.5.4: honors the OS-level light-mode preference on first boot, same
       // pattern as reducedMotion above. Harmless for ANAMNESIS (which ignores
       // `theme` entirely, per `visuals.supportsLightTheme`) and correct for

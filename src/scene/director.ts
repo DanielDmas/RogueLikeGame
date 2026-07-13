@@ -130,6 +130,10 @@ export class SceneDirector {
   private diorama: Diorama | null = null;
   private dioramaRoomId: string | null = null;
   private quality: 'low' | 'high';
+  /** 1.3.2: caps the render loop's frame rate independently of `quality`
+   * (AA/bloom) — a fog-and-text game reads fine at 30fps, and halving the
+   * frame rate roughly halves render-thread GPU time on the same settings. */
+  private fpsCap: number = TARGET_FPS;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -139,10 +143,12 @@ export class SceneDirector {
     visuals: ContentPack['visuals'],
     guideFigure: () => GuideFigure,
     renderScale: RenderScale = 'standard',
+    fpsCap: number = TARGET_FPS,
   ) {
     this.events = events;
     this.renderScale = renderScale;
     this.quality = quality;
+    this.fpsCap = fpsCap;
     this.visuals = visuals;
     this.usher = guideFigure();
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: quality === 'high' });
@@ -175,6 +181,11 @@ export class SceneDirector {
 
   setReducedMotion(v: boolean) {
     this.reducedMotion = v;
+  }
+
+  /** Applies a new fps cap live (no reload needed). */
+  setFpsCap(v: number) {
+    this.fpsCap = v;
   }
 
   /** Suspends the render loop entirely (a DOM overlay is covering the whole scene) — the single biggest idle GPU/battery saving available. */
@@ -512,7 +523,7 @@ export class SceneDirector {
     // of the suspend.
     if ((this.paused && !this.parallaxEnabled) || document.hidden) return;
     const now = performance.now();
-    if (!shouldRenderFrame(now, this.lastFrameTime)) return;
+    if (!shouldRenderFrame(now, this.lastFrameTime, this.fpsCap)) return;
     this.lastFrameTime = now;
     this.frameTimestamps.push(now);
     while (this.frameTimestamps.length > 0 && now - this.frameTimestamps[0] > 2000) this.frameTimestamps.shift();
