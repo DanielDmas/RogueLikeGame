@@ -493,6 +493,25 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 .codex-card .cx-thinkers { font-family: var(--serif); font-style: italic; font-size: 12px; color: var(--ink-dim); }
 .codex-card.ending-card .cx-title { color: var(--gold); }
 
+/* T2: The Hotel Register — a facility map, grouped by floor. Unvisited
+   doors stay dark but still carry their own teaser text (unlike the
+   Codex's blank "not yet walked" placeholder) — a taste of what's behind. */
+.register-total { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint); text-align: center; margin-top: 10px; }
+.register-floors { margin-top: 22px; display: flex; flex-direction: column; gap: 24px; }
+.register-floor-title { font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; text-align: left; }
+.register-doors { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.register-door {
+  text-align: left; background: var(--panel); border: 1px solid var(--panel-edge); border-radius: 8px;
+  padding: 12px 14px; display: flex; align-items: center; gap: 10px; min-height: 52px;
+  transition: border-color 0.25s;
+}
+.register-door.visited:hover { border-color: var(--gold-dim); cursor: pointer; }
+.register-door.unvisited { opacity: 0.4; cursor: default; border-style: dashed; }
+.register-door-icon { width: 22px; height: 22px; color: var(--gold); flex-shrink: 0; }
+.register-door-icon svg { width: 100%; height: 100%; }
+.register-door-title { font-family: var(--serif); font-size: 14px; color: var(--ink); }
+.register-door-teaser { font-family: var(--serif); font-style: italic; font-size: 12px; color: var(--ink-faint); }
+
 /* keepsakes shelf — whisper-quiet, no popups, no attention drawn to the doors */
 .codex-shelf { margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--panel-edge); }
 .shelf-title { font-size: 9.5px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }

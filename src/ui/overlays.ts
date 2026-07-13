@@ -9,6 +9,7 @@ import { t } from '../engine/text/resolver';
 import {
   uiKey,
   roomTitleKey,
+  roomTeaserKey,
   roomNoteTitleKey,
   roomNoteThinkersKey,
   roomNoteBodyKey,
@@ -27,7 +28,7 @@ import { sound } from '../audio/soundEngine';
 import { isElectron, isFullscreen, toggleFullscreen } from './fullscreen';
 import { applyUiZoom } from './zoom';
 
-export type TitleAction = 'new' | 'continue' | 'codex' | 'ledger' | 'settings' | 'persona' | 'about' | 'credits' | 'vestibule' | 'exit';
+export type TitleAction = 'new' | 'continue' | 'codex' | 'ledger' | 'register' | 'settings' | 'persona' | 'about' | 'credits' | 'vestibule' | 'exit';
 
 function overlay(ui: HTMLElement): HTMLElement {
   const o = el('div', 'overlay fade-in');
@@ -85,6 +86,8 @@ export function showTitle(ui: HTMLElement, profile: Profile, pack: ContentPack):
     cx.addEventListener('click', () => done('codex'));
     const lg = el('button', 'title-btn small', t(uiKey('ledger'), "Traveler's Ledger"));
     lg.addEventListener('click', () => done('ledger'));
+    const rg = el('button', 'title-btn small', t(uiKey('hotelRegister'), 'The Register'));
+    rg.addEventListener('click', () => done('register'));
     const pe = el(
       'button',
       'title-btn small',
@@ -99,7 +102,7 @@ export function showTitle(ui: HTMLElement, profile: Profile, pack: ContentPack):
     ab.addEventListener('click', () => done('about'));
     const cr = el('button', 'title-btn small', t(uiKey('creditsTitle'), 'Credits'));
     cr.addEventListener('click', () => done('credits'));
-    menu.append(cx, lg, pe, st, ab, cr);
+    menu.append(cx, lg, rg, pe, st, ab, cr);
     // F1: only shown in a built (rozcestník-served) deploy — the dev server
     // serves this pack directly at its root with no `../index.html` sibling
     // to navigate to.
@@ -918,6 +921,89 @@ export function showCodex(ui: HTMLElement, profile: Profile, pack: ContentPack):
 }
 
 /**
+ * T2 "The Hotel Register" — a facility map, not a knowledge archive (that's
+ * the Codex). Draws every floor (Prologue, Act I-IV, and the Understory
+ * once first descended) as a row of doors: visited doors are lit and show
+ * their title; unvisited doors stay dark but still show their own teaser —
+ * unlike the Codex, which deliberately withholds even that until the room
+ * is walked. The point is spatial completion ("finish the place"), not
+ * earned knowledge, so a taste of what's behind an unopened door is exactly
+ * the hook it's meant to be.
+ */
+export function showHotelRegister(ui: HTMLElement, profile: Profile, pack: ContentPack): Promise<void> {
+  return new Promise((resolve) => {
+    const o = overlay(ui);
+    const panel = el('div', 'codex-panel register-panel');
+    panel.append(el('h2', undefined, t(uiKey('hotelRegister'), 'The Register')));
+    panel.append(el('div', 'sub', t(uiKey('registerSub'), 'the shape of the place, whether you have walked it yet or not')));
+
+    const visitedIds = new Set(profile.codexUnlocked);
+    const floors: { label: string; rooms: Room[] }[] = [];
+    const understoryIds = new Set(pack.graph.understorySequence);
+    for (const act of [0, 1, 2, 3, 4] as const) {
+      const rooms = pack.rooms.filter((r) => r.act === act && !understoryIds.has(r.id));
+      if (rooms.length > 0) floors.push({ label: t(actNameKey(act, pack.meta.id), pack.graph.actNamesEn[act]), rooms });
+    }
+    // The Understory floor itself is only drawn once at least one of its
+    // rooms has been walked — same non-spoiler rule as the Codex (spec 06
+    // §5): the register shouldn't be the place a player first learns it exists.
+    if (pack.graph.understorySequence.some((id) => visitedIds.has(id))) {
+      const understoryRooms = pack.rooms.filter((r) => understoryIds.has(r.id));
+      if (understoryRooms.length > 0) floors.push({ label: t(uiKey('registerUnderstoryFloor'), 'The Understory'), rooms: understoryRooms });
+    }
+
+    let totalVisible = 0;
+    let totalVisited = 0;
+    const floorsEl = el('div', 'register-floors');
+    for (const floor of floors) {
+      const visibleRooms = floor.rooms.filter((r) => !isHiddenFromCodex(r.id, profile, pack.graph.understorySequence));
+      if (visibleRooms.length === 0) continue;
+      const section = el('div', 'register-floor');
+      const visitedHere = visibleRooms.filter((r) => visitedIds.has(r.id)).length;
+      totalVisible += visibleRooms.length;
+      totalVisited += visitedHere;
+      section.append(el('h3', 'register-floor-title', `${floor.label} — ${visitedHere} ${t(uiKey('of'), 'of')} ${visibleRooms.length}`));
+      const doors = el('div', 'register-doors');
+      for (const room of visibleRooms) {
+        const visited = visitedIds.has(room.id);
+        const card = el('button', `register-door${visited ? ' visited' : ' unvisited'}`);
+        if (visited) {
+          const icon = el('span', 'register-door-icon');
+          icon.innerHTML = pack.visuals.iconFor(room.id) ?? '';
+          card.append(icon, el('span', 'register-door-title', t(roomTitleKey(room.id), room.title)));
+          if (room.fieldNote) {
+            const note = translateFieldNoteForCodex(room.id, room.fieldNote, false, pack.hooks.lastMessageId);
+            card.addEventListener('click', () => showFieldNote(ui, note, t(uiKey('fieldNoteHeader'), 'Field Note'), pack.visuals.iconFor(room.id)));
+          }
+        } else {
+          card.append(el('span', 'register-door-teaser', t(roomTeaserKey(room.id), room.teaser)));
+        }
+        doors.append(card);
+      }
+      section.append(doors);
+      floorsEl.append(section);
+    }
+    panel.append(el('div', 'register-total', `${totalVisited} ${t(uiKey('of'), 'of')} ${totalVisible} ${t(uiKey('registerDoorsWalked'), 'doors walked')}`));
+    panel.append(floorsEl);
+
+    const back = el('button', 'title-btn', t(uiKey('back'), 'Back'));
+    back.style.marginTop = '26px';
+    const close = () => {
+      removeEventListener('keydown', onEscape);
+      o.remove();
+      resolve();
+    };
+    const onEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close();
+    };
+    addEventListener('keydown', onEscape);
+    back.addEventListener('click', close);
+    panel.append(back);
+    o.appendChild(panel);
+  });
+}
+
+/**
  * The Traveler's Ledger (spec 06): a single quiet screen of stats, plus
  * whichever epiphanies have been earned so far, in earn order. No locked
  * slots, no counts for unearned epiphanies — quiet means quiet.
@@ -969,7 +1055,7 @@ export function showLedger(
   });
 }
 
-export type PauseAction = 'resume' | 'codex' | 'ledger' | 'settings' | 'persona' | 'about' | 'credits' | 'title' | 'vestibule' | 'exit';
+export type PauseAction = 'resume' | 'codex' | 'ledger' | 'register' | 'settings' | 'persona' | 'about' | 'credits' | 'title' | 'vestibule' | 'exit';
 
 export function showPauseMenu(ui: HTMLElement): Promise<PauseAction> {
   return new Promise((resolve) => {
@@ -990,6 +1076,7 @@ export function showPauseMenu(ui: HTMLElement): Promise<PauseAction> {
     mk(t(uiKey('saveAndExit'), 'Save & exit to title'), 'title', true);
     mk(t(uiKey('fieldNotes'), 'Field Notes'), 'codex', true);
     mk(t(uiKey('ledger'), "Traveler's Ledger"), 'ledger', true);
+    mk(t(uiKey('hotelRegister'), 'The Register'), 'register', true);
     mk(t(uiKey('settings'), 'Settings'), 'settings', true);
     mk(t(uiKey('whoAreYou'), 'Who are you?'), 'persona', true);
     mk(t(uiKey('aboutTitle'), 'Before you begin'), 'about', true);
