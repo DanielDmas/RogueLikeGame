@@ -638,7 +638,22 @@ export class Game {
       // panel's place, silently misplacing everything below it.
       this.text.hide();
       const available = stage.choices.filter((c) => !c.available || c.available(this.state));
-      const choice: Choice = await this.choices.pick(available, this.state, room.id, this.pack.keepsakes);
+      // F4: "reread the scene" replays this exact stage's beats read-only —
+      // safe because nothing in `this.state` changes between showing the
+      // choices and the player picking one, so a replay always resolves
+      // identically — then hides the text panel again so the still-pending
+      // choice cards (never re-rendered) take the screen back.
+      const onReread = async () => {
+        await this.text.playBeats(stage.beats, this.state, { title, type: room.type, icon }, {
+          keyOf: (bi) => roomBeatKey(room.id, i, bi),
+          tokens,
+          explain: stage.explanation
+            ? { title, body: t(roomExplanationKey(room.id, i), stage.explanation), icon }
+            : undefined,
+        });
+        this.text.hide();
+      };
+      const choice: Choice = await this.choices.pick(available, this.state, room.id, this.pack.keepsakes, onReread);
       sound.choice();
       const heartsBefore = this.state.hearts;
       const flagsBefore = this.state.flags;

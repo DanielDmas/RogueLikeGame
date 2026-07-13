@@ -17,6 +17,10 @@ export class ChoicePanel {
   private stage: HTMLElement;
   private container: HTMLElement | null = null;
   private keyHandler: ((e: KeyboardEvent) => void) | null = null;
+  /** F4: while a "reread the scene" replay is playing back on top, number-key
+   * picks are suppressed — a player mid-reread who hits 1-3 shouldn't have
+   * it silently register as their answer once the replay finally ends. */
+  private rereading = false;
 
   constructor(stageBottom: HTMLElement) {
     this.stage = stageBottom;
@@ -27,12 +31,37 @@ export class ChoicePanel {
    * resolves the ✧ keepsake-choice tooltip's name; defaults to ANAMNESIS's
    * own list so pre-existing call sites are unaffected, but a second pack
    * (e.g. LIMERENCE) must pass its own or its keepsake choices render with
-   * a nameless tooltip. */
-  pick(choices: Choice[], state: RunState, roomId: string, keepsakes: KeepsakeDef[] = KEEPSAKES): Promise<Choice> {
+   * a nameless tooltip. `onReread`, if given, renders a "⟲ reread the scene"
+   * button above the choices (F4) — clicking it awaits the caller's replay
+   * of this stage's beats (read-only; state never changes mid-stage, so it's
+   * always safe) and returns to these exact same, still-pending choices. */
+  pick(
+    choices: Choice[],
+    state: RunState,
+    roomId: string,
+    keepsakes: KeepsakeDef[] = KEEPSAKES,
+    onReread?: () => Promise<void>,
+  ): Promise<Choice> {
     void state;
     return new Promise((resolve) => {
       const wrap = el('div', 'choices');
       wrap.setAttribute('role', 'group');
+      if (onReread) {
+        const rereadBtn = el('button', 'reread-btn', t(uiKey('rereadScene'), '⟲ reread the scene'));
+        rereadBtn.type = 'button';
+        rereadBtn.addEventListener('click', () => {
+          void (async () => {
+            rereadBtn.disabled = true;
+            this.rereading = true;
+            wrap.classList.add('rereading');
+            await onReread();
+            wrap.classList.remove('rereading');
+            this.rereading = false;
+            rereadBtn.disabled = false;
+          })();
+        });
+        wrap.appendChild(rereadBtn);
+      }
       choices.forEach((c, i) => {
         const card = el('button', 'choice-card');
         if (c.keepsakeId) {
@@ -120,12 +149,14 @@ export class ChoicePanel {
 
   private mount(wrap: HTMLElement, count: number, onNum: (index: number) => void) {
     this.clear();
+    this.rereading = false;
     this.container = wrap;
     this.stage.appendChild(wrap);
     this.keyHandler = (e: KeyboardEvent) => {
       // A pause menu / codex / settings / field note is open on top —
-      // don't silently pick a choice hidden underneath it.
-      if (document.querySelector('.overlay, .field-note')) return;
+      // don't silently pick a choice hidden underneath it. Same guard while
+      // a "reread the scene" replay owns the number keys (F4).
+      if (document.querySelector('.overlay, .field-note') || this.rereading) return;
       const n = parseInt(e.key, 10);
       if (n >= 1 && n <= count) onNum(n - 1);
     };

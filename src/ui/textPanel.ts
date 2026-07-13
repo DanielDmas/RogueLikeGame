@@ -106,28 +106,54 @@ export class TextPanel {
     }
     const beatEl = el('p', 'beat');
     beatEl.setAttribute('aria-live', 'polite');
+    const back = el('button', 'beat-back', '‹');
+    back.type = 'button';
+    const backLabel = t(uiKey('rereadBack'), 'Back — reread the previous beat');
+    back.setAttribute('aria-label', backLabel);
+    back.title = backLabel;
     const dots = el('div', 'beat-progress');
-    const dotEls = texts.map(() => {
+    const dotEls = texts.map((_, i) => {
       const d = el('div', 'beat-dot');
+      d.setAttribute('role', 'button');
+      d.setAttribute('aria-label', t(uiKey('rereadJumpTo'), 'Reread beat {n}').replace('{n}', String(i + 1)));
       dots.appendChild(d);
       return d;
     });
     const hint = el('div', 'advance-hint', t(uiKey('advanceHintClick'), 'click · space'));
-    panel.append(beatEl, dots, hint);
+    panel.append(beatEl, back, dots, hint);
 
     this.replacePanel(panel);
 
-    for (let i = 0; i < texts.length; i++) {
-      dotEls.forEach((d, j) => d.classList.toggle('done', j <= i));
-      await this.showBeat(beatEl, texts[i], spoken[i]);
-      if (i === texts.length - 1) hint.textContent = t(uiKey('advanceHintContinue'), 'continue');
-      await this.waitAdvance(panel);
+    // F4: cursor-based, not a forward-only loop — `‹`/ArrowLeft/Backspace
+    // step back to reread an earlier beat in this same stage; clicking an
+    // already-visited dot jumps straight to it. Only forward, never-before-
+    // shown beats keep the typewriter; every re-visit (backward, or forward
+    // back through already-seen ground) renders instantly — F4's whole point
+    // is a free reread, not a second wait.
+    let i = 0;
+    let maxSeen = -1;
+    while (i < texts.length) {
+      dotEls.forEach((d, j) => {
+        d.classList.toggle('done', j <= Math.max(i, maxSeen));
+        d.classList.toggle('current', j === i);
+        d.classList.toggle('clickable', j <= maxSeen && j !== i);
+      });
+      back.classList.toggle('visible', i > 0);
+      const instant = i <= maxSeen;
+      if (i > maxSeen) maxSeen = i;
+      await this.showBeat(beatEl, texts[i], spoken[i], instant);
+      hint.textContent = i === texts.length - 1 ? t(uiKey('advanceHintContinue'), 'continue') : t(uiKey('advanceHintClick'), 'click · space');
+      const nav = await this.waitAdvance(panel, back, dotEls, maxSeen);
+      if (nav.type === 'back') i = Math.max(0, i - 1);
+      else if (nav.type === 'jump') i = nav.index;
+      else i++;
     }
+    back.classList.remove('visible');
   }
 
-  private async showBeat(beatEl: HTMLElement, text: string, isSpoken: boolean): Promise<void> {
+  private async showBeat(beatEl: HTMLElement, text: string, isSpoken: boolean, instant = false): Promise<void> {
     beatEl.classList.toggle('usher', isSpoken);
-    if (!this.typewriter) {
+    if (!this.typewriter || instant) {
       beatEl.textContent = text;
       return;
     }
@@ -145,33 +171,70 @@ export class TextPanel {
     this.skipTyping = null;
   }
 
-  private waitAdvance(panel: HTMLElement): Promise<void> {
+  private waitAdvance(
+    panel: HTMLElement,
+    backBtn: HTMLElement,
+    dotEls: HTMLElement[],
+    maxSeen: number,
+  ): Promise<{ type: 'forward' } | { type: 'back' } | { type: 'jump'; index: number }> {
     return new Promise((resolve) => {
-      const finish = () => {
-        panel.removeEventListener('click', onClick);
+      const dotHandlers: ((e: Event) => void)[] = [];
+      const cleanup = () => {
+        panel.removeEventListener('click', onForwardClick);
         removeEventListener('keydown', onKey);
-        resolve();
+        backBtn.removeEventListener('click', onBack);
+        dotEls.forEach((d, j) => d.removeEventListener('click', dotHandlers[j]));
       };
-      const onClick = () => {
+      /** Typing-in-progress swallows the first interaction (skip to full text) — same guard for forward, back, and jump. */
+      const guarded = (act: () => void) => {
         if (this.skipTyping) {
           this.skipTyping();
           this.skipTyping = null;
           return;
         }
-        sound.advance();
-        finish();
+        act();
+      };
+      const onForwardClick = () => {
+        guarded(() => {
+          sound.advance();
+          cleanup();
+          resolve({ type: 'forward' });
+        });
+      };
+      const onBack = (e: Event) => {
+        e.stopPropagation();
+        guarded(() => {
+          cleanup();
+          resolve({ type: 'back' });
+        });
       };
       const onKey = (e: KeyboardEvent) => {
+        // A pause menu / codex / settings / field note is open on top —
+        // don't silently advance the room hidden underneath it.
+        if (document.querySelector('.overlay, .field-note')) return;
         if (e.key === ' ' || e.key === 'Enter') {
-          // A pause menu / codex / settings / field note is open on top —
-          // don't silently advance the room hidden underneath it.
-          if (document.querySelector('.overlay, .field-note')) return;
           e.preventDefault();
-          onClick();
+          onForwardClick();
+        } else if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
+          e.preventDefault();
+          onBack(e);
         }
       };
-      panel.addEventListener('click', onClick);
+      dotEls.forEach((d, j) => {
+        const handler = (e: Event) => {
+          e.stopPropagation();
+          if (j > maxSeen) return; // never lets a player jump ahead to an unread beat
+          guarded(() => {
+            cleanup();
+            resolve({ type: 'jump', index: j });
+          });
+        };
+        dotHandlers[j] = handler;
+        d.addEventListener('click', handler);
+      });
+      panel.addEventListener('click', onForwardClick);
       addEventListener('keydown', onKey);
+      backBtn.addEventListener('click', onBack);
     });
   }
 
