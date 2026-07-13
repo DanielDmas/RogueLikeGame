@@ -27,7 +27,7 @@ import { sound } from '../audio/soundEngine';
 import { isElectron, isFullscreen, toggleFullscreen } from './fullscreen';
 import { applyUiZoom } from './zoom';
 
-export type TitleAction = 'new' | 'continue' | 'codex' | 'ledger' | 'settings' | 'persona' | 'about' | 'credits' | 'exit';
+export type TitleAction = 'new' | 'continue' | 'codex' | 'ledger' | 'settings' | 'persona' | 'about' | 'credits' | 'vestibule' | 'exit';
 
 function overlay(ui: HTMLElement): HTMLElement {
   const o = el('div', 'overlay fade-in');
@@ -100,6 +100,14 @@ export function showTitle(ui: HTMLElement, profile: Profile, pack: ContentPack):
     const cr = el('button', 'title-btn small', t(uiKey('creditsTitle'), 'Credits'));
     cr.addEventListener('click', () => done('credits'));
     menu.append(cx, lg, pe, st, ab, cr);
+    // F1: only shown in a built (rozcestník-served) deploy — the dev server
+    // serves this pack directly at its root with no `../index.html` sibling
+    // to navigate to.
+    if (!import.meta.env.DEV) {
+      const vb = el('button', 'title-btn small', t(uiKey('vestibuleButton'), 'The Vestibule — choose a game'));
+      vb.addEventListener('click', () => done('vestibule'));
+      menu.append(vb);
+    }
     // Only the Electron build can actually close its own window — a browser
     // tab can't quit itself, so the button only appears there.
     if (isElectron()) {
@@ -933,7 +941,7 @@ export function showLedger(
   });
 }
 
-export type PauseAction = 'resume' | 'codex' | 'ledger' | 'settings' | 'persona' | 'about' | 'credits' | 'title' | 'exit';
+export type PauseAction = 'resume' | 'codex' | 'ledger' | 'settings' | 'persona' | 'about' | 'credits' | 'title' | 'vestibule' | 'exit';
 
 export function showPauseMenu(ui: HTMLElement): Promise<PauseAction> {
   return new Promise((resolve) => {
@@ -958,6 +966,7 @@ export function showPauseMenu(ui: HTMLElement): Promise<PauseAction> {
     mk(t(uiKey('whoAreYou'), 'Who are you?'), 'persona', true);
     mk(t(uiKey('aboutTitle'), 'Before you begin'), 'about', true);
     mk(t(uiKey('creditsTitle'), 'Credits'), 'credits', true);
+    if (!import.meta.env.DEV) mk(t(uiKey('vestibuleButton'), 'The Vestibule — choose a game'), 'vestibule', true);
     if (isElectron()) mk(t(uiKey('exitGame'), 'Exit game'), 'exit', true);
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {

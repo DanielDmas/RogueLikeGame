@@ -96,6 +96,7 @@ registerAll('v2', 'fa', {
   [uiKey('continue')]: 'ادامه',
   [uiKey('continueJourney')]: 'ادامه‌ی سفر',
   [uiKey('creditsTitle')]: 'دست‌اندرکاران',
+  [uiKey('vestibuleButton')]: 'The Vestibule — انتخاب بازی',
   [uiKey('creditsIntro')]: 'نوشته‌شده، طراحی‌شده و ساخته‌شده به‌طور مستقل.',
   [uiKey('creditsEngine')]: '<b>رندر و صدا.</b> هر عنصر تصویری هندسه‌ای تولیدشده است (Three.js) و هر صدا در زمان اجرا تولید می‌شود — بدون هیچ دارایی هنری یا صوتی خریداری‌شده یا دانلودشده.',
   [uiKey('creditsTooling')]: '<b>ساخته‌شده با.</b> Three.js (مجوز MIT) · TypeScript · Vite · Electron (نسخه‌ی دسکتاپ) · Vitest و Playwright (آزمایش).',

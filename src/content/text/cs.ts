@@ -95,6 +95,7 @@ registerAll('v2', 'cs', {
   [uiKey('continue')]: 'Pokračovat',
   [uiKey('continueJourney')]: 'Pokračovat v cestě',
   [uiKey('creditsTitle')]: 'Titulky',
+  [uiKey('vestibuleButton')]: 'The Vestibule — vyberte hru',
   [uiKey('creditsIntro')]: 'Napsáno, navrženo a vytvořeno nezávisle.',
   [uiKey('creditsEngine')]: '<b>Vykreslování a zvuk.</b> Každý vizuál je generovaná geometrie (Three.js) a každý zvuk je generován za běhu — žádné zakoupené ani stažené výtvarné či zvukové materiály.',
   [uiKey('creditsTooling')]: '<b>Postaveno na.</b> Three.js (licence MIT) · TypeScript · Vite · Electron (desktopová verze) · Vitest a Playwright (testování).',

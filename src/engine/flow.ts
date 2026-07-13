@@ -391,6 +391,11 @@ export class Game {
       window.close();
       return;
     }
+    if (action === 'vestibule') {
+      await this.persist();
+      location.href = '../index.html';
+      return;
+    }
     this.stageBottom.classList.remove('overlay-hidden');
     this.director.setPaused(false);
   }
@@ -435,6 +440,9 @@ export class Game {
         await this.persist();
       } else if (action === 'exit') {
         window.close();
+      } else if (action === 'vestibule') {
+        await this.persist();
+        location.href = '../index.html';
       } else {
         // Non-negotiable: a player's very first playthrough, ever, sees the
         // "Before you begin" explainer automatically — no one starts not

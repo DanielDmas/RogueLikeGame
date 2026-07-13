@@ -98,6 +98,7 @@ registerAll('v2', 'de', {
   [uiKey('continue')]: 'Weiter',
   [uiKey('continueJourney')]: 'Die Reise fortsetzen',
   [uiKey('creditsTitle')]: 'Mitwirkende',
+  [uiKey('vestibuleButton')]: 'The Vestibule — Spiel wählen',
   [uiKey('creditsIntro')]: 'Unabhängig geschrieben, entworfen und gebaut.',
   [uiKey('creditsEngine')]: '<b>Rendering & Audio.</b> Jedes Bild ist generierte Geometrie (Three.js), und jeder Klang wird zur Laufzeit erzeugt — keine gekauften oder heruntergeladenen Grafik- oder Audio-Assets.',
   [uiKey('creditsTooling')]: '<b>Erstellt mit.</b> Three.js (MIT-Lizenz) · TypeScript · Vite · Electron (Desktop-Build) · Vitest & Playwright (Tests).',

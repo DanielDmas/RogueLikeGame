@@ -98,6 +98,7 @@ registerAll('v2', 'fr', {
   [uiKey('continue')]: 'Continuer',
   [uiKey('continueJourney')]: 'Poursuivre le voyage',
   [uiKey('creditsTitle')]: 'Crédits',
+  [uiKey('vestibuleButton')]: 'The Vestibule — choisir un jeu',
   [uiKey('creditsIntro')]: 'Écrit, conçu et construit de manière indépendante.',
   [uiKey('creditsEngine')]: '<b>Rendu et audio.</b> Chaque visuel est une géométrie générée (Three.js), et chaque son est généré en temps réel — aucun élément graphique ou sonore acheté ou téléchargé.',
   [uiKey('creditsTooling')]: '<b>Construit avec.</b> Three.js (licence MIT) · TypeScript · Vite · Electron (version bureau) · Vitest et Playwright (tests).',
