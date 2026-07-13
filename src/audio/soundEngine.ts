@@ -118,6 +118,8 @@ export class SoundEngine {
   private roomAccent: RoomAccent = null;
   private accentDrone: { osc: OscillatorNode; gain: GainNode } | null = null;
   private accentCreakTimer: ReturnType<typeof setTimeout> | null = null;
+  /** Guards against attaching the `visibilitychange` listener twice — `ensureCtx()` can run its setup block only once, but this is the explicit guard against future refactors. */
+  private visibilityHandlerAdded = false;
 
   private musicTarget(): number {
     return this.musicEnabled ? this.musicVolume : 0;
@@ -189,7 +191,45 @@ export class SoundEngine {
 
     const master = ctx.createGain();
     master.gain.value = 0.55;
-    master.connect(ctx.destination);
+    // 1.2.3: a light limiter on the master bus — a mote landing mid-crossfade
+    // (six chord oscillators + the noise pad + a mote, all summed) can
+    // otherwise push momentary peaks toward clipping on modest DACs. Gentle
+    // settings (soft threshold, low ratio) so it never audibly "pumps".
+    const compressor = ctx.createDynamicsCompressor();
+    compressor.threshold.value = -18;
+    compressor.knee.value = 24;
+    compressor.ratio.value = 3;
+    compressor.attack.value = 0.01;
+    compressor.release.value = 0.25;
+    master.connect(compressor);
+    compressor.connect(ctx.destination);
+
+    // 1.2.1: hidden tabs clamp `setTimeout` while the AudioContext keeps
+    // running — queued chord/mote callbacks fire back-to-back on return,
+    // stacking motes into an audible "chirp". Suspending on hide (and
+    // clearing the pending timers so they don't all fire at once on resume)
+    // fixes it, and saves battery besides.
+    if (typeof document !== 'undefined' && !this.visibilityHandlerAdded) {
+      this.visibilityHandlerAdded = true;
+      document.addEventListener('visibilitychange', () => {
+        if (!this.ctx) return;
+        if (document.hidden) {
+          this.clearTimers();
+          if (this.accentCreakTimer) {
+            clearTimeout(this.accentCreakTimer);
+            this.accentCreakTimer = null;
+          }
+          void this.ctx.suspend().catch(() => {});
+        } else {
+          void this.ctx.resume().catch(() => {});
+          if (this.currentAct !== null) {
+            this.scheduleNextChord();
+            this.scheduleNextMote();
+          }
+          if (this.roomAccent === 'ship') this.scheduleNextCreak();
+        }
+      });
+    }
 
     const musicGain = ctx.createGain();
     musicGain.gain.value = this.musicTarget();
@@ -341,8 +381,14 @@ export class SoundEngine {
     const oldOscs = this.chordOscs;
     const oldGain = this.chordGain!;
     oldGain.gain.cancelScheduledValues(t);
-    oldGain.gain.setTargetAtTime(0, t, 1.4);
-    for (const o of oldOscs) o.stop(t + 5);
+    // 1.2.2: ramp all the way to near-zero before stopping the oscillators —
+    // `setTargetAtTime(0, t, 1.4)` alone is still at ~3% level by t+5, so
+    // `osc.stop()` cut it off discontinuously (an audible click on every
+    // chord cycle and act change). Anchor the ramp at the gain's current
+    // value first, since it may itself be mid-ramp from an earlier crossfade.
+    oldGain.gain.setValueAtTime(oldGain.gain.value, t);
+    oldGain.gain.linearRampToValueAtTime(0.0001, t + 5);
+    for (const o of oldOscs) o.stop(t + 5.05);
 
     const newGain = ctx.createGain();
     newGain.gain.value = 0;
