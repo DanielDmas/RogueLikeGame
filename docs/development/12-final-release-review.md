@@ -184,6 +184,46 @@ Files read end-to-end this pass: `engine/flow.ts` (843 lines), `engine/gameState
 9. Entertainment T2-T4 pre-RC if time allows; T5-T7 post-RC.
 10. Full regression + UAT sweep (now including: understory-fork-offered test for LIMERENCE via a 2nd-run profile; heart-death ending in both packs).
 
+# FOURTH PASS — Player-perspective sweep (content/pack layer + played sequences)
+
+Read this pass: `packs/limerence/index.ts` (full — graph, endingRules, skin, advisory, keepsakes), `packs/limerence/guide.ts` (full), LIMERENCE endings/icons id coverage, act3's secret-room predicate, ANAMNESIS's `engine/endings.ts` evaluator + `content/graph.ts` pool sizes, and traced the exact sequences a player walks (first run onboarding → acts → gates → final door → each of the 5 scripted ending choices; second-run secret/understory paths; light-mode toggle mid-screen; language switch mid-run).
+
+## Part 11 — Player-perspective findings
+
+### P1. HIGH (player-visible everywhere in LIMERENCE) — the Porter never gets his voice styling inside rooms
+
+`packs/types.ts:73` defines `guide.speakerPrefixes` and both packs set it (`limerence/index.ts:181` — `['Porter:', 'THE ROOM:']`), but **nothing consumes it**: `ui/textPanel.ts:8-18` styles spoken lines using only its own hardcoded `SPEAKER_PREFIXES` list, which contains `Usher:`/`The Room:`/`The Door:` variants — **not `Porter:`**. Result: every in-room Porter line (beats like "Porter: Every guest on this floor is certain the silence is about them.", outcome lines, first-heart-loss, act asides) renders as plain narration instead of the guide's gold-italic voice. Door-row barks escape only because `showBark` (textPanel.ts:181) hardcodes the styling class. ANAMNESIS is unaffected — which makes the two games *feel* inconsistently produced to anyone who plays both.
+**Fix:** thread the active pack's `guide.speakerPrefixes` into `TextPanel` (constructor arg or setter from `flow.ts`), use it in `resolveBeat` (keep the decide-from-English-raw rule). Delete the dead pack field OR make it the single source. **Test:** pack-parameterized — a `Porter:` beat resolves `isSpoken=true` under LIMERENCE, `false` under ANAMNESIS's list.
+
+### P2. HIGH (escalates blocker 1.1 to a scripted path, plus a tonal break)
+
+LIMERENCE's quiet ending choice `stop-carrying-it` (`rooms/act4.ts:371`) carries `hearts: -3` — unlike ANAMNESIS's exact counterpart `lie-down` (`content/rooms/act4.ts:348`, **no** hearts effect). Two consequences:
+1. It drives hearts to 0, so **the authored quiet-ending path itself hits crash 1.1** (`playEnding('dissolved')` → `Unknown ending`) — a player deliberately choosing the game's gentlest ending gets the recovery screen. Not just attrition — a guaranteed scripted repro.
+2. Even after 1.1 is fixed: `flow.ts:663-673` plays the *first-heart-loss tutorial bark* ("There — a measure of Trust, spent… You have {hearts} left") **before** the choice's outcome beats — so a careful player whose first-ever heart loss is this triple loss hears a mechanics explainer stamped over the Porter's "No guest dissolves alone on my shift."
+**Fix (content, one line):** remove `hearts: -3` from `stop-carrying-it` — the `choseIn(s,'the-morning-desk','stop-carrying-it') → 'the-ghost'` mapping (limerence/index.ts:150) is already authoritative, exactly how ANAMNESIS's `lie-down → dissolved` works. (Keeps the Ledger's lifetime hearts stat honest too — a chosen ending isn't three "lost hearts".)
+
+### P3. MEDIUM (observed once — needs a scripted repro) — door cards stayed dark after toggling Light mode mid-screen
+
+In this session's UAT screenshots, toggling LIMERENCE's Light mode while a door row was mounted left the two door cards dark while the adjacent bark panel went cream (shots 6b/7); the same screen freshly rendered later showed correct light cards (shots 9/10). CSS variables should cascade live, so the suspect is stale paint with `backdrop-filter` + the `rise` animation's `forwards` fill on `.choice-card`. **Action:** add a UAT step — toggle theme with cards mounted, assert card background luminance — and fix whatever it reveals (likely forcing a reflow or keying the cards' background off a class rather than a frozen composite).
+
+### P4-P6. LOW / content & docs nits
+
+- **P4:** LIMERENCE's act-4 intro says "Three doors remain on this floor, and then the desk" — the sequence is 3 rooms *including* the desk, and once 6.1 (understory fork) is fixed a descending player walks up to 6 rooms on this floor. Reword when 6.1 lands (all 5 languages).
+- **P5:** LIMERENCE's Ledger "Your last message" row stores the-unsent's *choice label* ("Send the blank page.") via `hooks.lastMessageId` — reads as an address label, not a message. Either relabel the row per-pack (skin string, e.g. "The envelope you chose") or store a per-choice display line.
+- **P6:** `limerence/index.ts:306-311` `registerText` comment still says "(currently: the Czech prologue + Act I)" — all four languages are complete; stale comment.
+
+### P7. Player-paths verified CLEAN this pass (no action)
+
+- All five final-gate ending mappings (`stop-carrying-it`/`i-know-every-room`/`laughing-door`/`take-the-desk` + axes fallthrough) present and ordered correctly in both packs' evaluators; `walk-out` falling to the axes triptych is deliberate and mirrored.
+- All 7 LIMERENCE endings have ids, epitaphs, field notes, and ending icons (`icons.ts` covers all seven, including `the-pattern`).
+- Keepsake loop: 4 triggers ↔ 4 earn flags ↔ 4 spend choices, gated by `keepsakesHeld` (profile-stamped at run start) — `the-registry`'s keycard bonus choice availability verified both ways.
+- Graph consistency: LIMERENCE pools 7/8/9(with secret), gates per act, `optionalPerAct {3,3,2}` → run length matches README's claims; ANAMNESIS `OPTIONAL_PER_ACT {3,3,2}` → "15 of 30+3" checks out.
+- Second-run gating: `the-usual-suite` secret (`prior.runs >= 1`, act3.ts:894) and the understory fork's `prior.runs >= 1` (post-6.1) are consistent — a first-run player is never shown either, as designed.
+- Door-bark priority ladder (understory-hint > single-door > first-choice explainer > second-run > axis lines > generic pool), `{name}` token flow through `showBark`, one-heart and high-clarity barks, per-act intros with Trust-cost warnings that match rooms that actually cost hearts in those acts.
+- Onboarding order (auto-About once → persona → Examined Path offer → prologue), advisory badge on title (`.title-age-advisory` styled), Trust/Clarity HUD skin wording, RTL/Farsi font application, hidden-ending codex suppression (`hiddenUntilWitnessed`).
+
+*Part 7's step 1b now also carries P1 + P2 (same first PR as the blockers); P3's repro joins the UAT sweep in step 10; P4-P6 fold into the docs/content pass (step 8).*
+
 # THIRD PASS — Final in-depth review (every remaining file read end-to-end)
 
 Read this pass: `ui/overlays.ts` (all 994 lines), `engine/ledger.ts`, `engine/saveStore.ts` (hydrate/migrate/grandfather), `engine/schema.ts`, `engine/endings.ts`, `engine/reflections.ts`, `engine/text/keys.ts`, `scene/themes.ts` (corridor/machinery/mirror builders), `scene/doors.ts`, `ui/fieldNote.ts`, `ui/dom.ts`, `ui/recovery.ts`, `ui/fullscreen.ts`, `ui/locale.ts`, `ui/toast.ts`, `ui/zoom.ts`, `vite.config.ts`, plus a full XSS/injection audit of every `innerHTML` site and every user-input path.
