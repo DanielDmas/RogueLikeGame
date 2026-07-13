@@ -67,11 +67,11 @@ export function offeredDoors(state: RunState, registry: RoomRegistry, graph: Gra
     if (!next) return [];
     // The understory fork: offered once, only at the threshold (before Act IV
     // begins), only to a returning traveler who hasn't already descended this
-    // run. Taking `boulder` here forfeits the descent for the rest of the run
-    // — the fork never reappears, since `next` advances past 'boulder' the
-    // moment it's visited.
+    // run. Taking the act's first Act-IV room here forfeits the descent for
+    // the rest of the run — the fork never reappears, since `next` advances
+    // past that room the moment it's visited.
     const eligible =
-      next === 'boulder' &&
+      next === graph.act4Sequence[0] &&
       (state.prior?.runs ?? 0) >= 1 &&
       !graph.understorySequence.some((id) => state.visited.includes(id));
     if (eligible) return [registry.get(graph.understorySequence[0]), registry.get(next)];

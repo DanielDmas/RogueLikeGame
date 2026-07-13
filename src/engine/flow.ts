@@ -151,6 +151,7 @@ export class Game {
       pack.skin,
     );
     this.text = new TextPanel(stageBottom, ui);
+    this.text.setSpeakerPrefixes(pack.guide.speakerPrefixes);
     this.choices = new ChoicePanel(stageBottom);
     this.reflection = new ReflectionPanel(stageBottom);
 
@@ -359,7 +360,7 @@ export class Game {
     this.stageBottom.classList.add('overlay-hidden');
     const action = await showPauseMenu(this.ui);
     if (action === 'codex') await showCodex(this.ui, this.profile, this.pack);
-    if (action === 'ledger') await showLedger(this.ui, this.profile, this.registry, this.pack.graph.understorySequence, this.pack.epiphanies);
+    if (action === 'ledger') await showLedger(this.ui, this.profile, this.registry, this.pack.graph.understorySequence, this.pack.epiphanies, this.pack.endingRules.endingsTotal, this.pack.keepsakes.length);
     if (action === 'persona') {
       this.profile.persona = await showPersona(this.ui, this.profile.persona);
       await this.persist();
@@ -411,7 +412,7 @@ export class Game {
       if (action === 'codex') {
         await showCodex(this.ui, this.profile, this.pack);
       } else if (action === 'ledger') {
-        await showLedger(this.ui, this.profile, this.registry, this.pack.graph.understorySequence, this.pack.epiphanies);
+        await showLedger(this.ui, this.profile, this.registry, this.pack.graph.understorySequence, this.pack.epiphanies, this.pack.endingRules.endingsTotal, this.pack.keepsakes.length);
       } else if (action === 'persona') {
         this.profile.persona = await showPersona(this.ui, this.profile.persona);
         await this.persist();
@@ -499,7 +500,7 @@ export class Game {
 
   private async runLoop(): Promise<void> {
     for (;;) {
-      if (this.state.hearts <= 0) return this.playEnding('dissolved');
+      if (this.state.hearts <= 0) return this.playEnding(this.pack.endingRules.evaluate(this.state));
 
       // resume a run that was saved mid-room
       const pending = this.state.currentRoom;

@@ -11,11 +11,15 @@ export const SPEAKER_PREFIXES = ['Usher:', 'The Room:', 'The Door:', 'USHER:', '
  * Resolves a beat to display text. `key`, if given, looks up a translated/
  * alternate-version variant; the *speaker* styling is always decided from
  * the English source (`raw`), never from the (possibly translated) display
- * text, so voice styling survives language/version switches.
+ * text, so voice styling survives language/version switches. `prefixes`
+ * defaults to ANAMNESIS's own list (`SPEAKER_PREFIXES`) — a pack with its own
+ * guide voice (e.g. LIMERENCE's "Porter:") must pass its own
+ * `guide.speakerPrefixes`, or its guide's lines never get the spoken/italic
+ * styling at all.
  */
-function resolveBeat(b: Beat, s: RunState, key?: string, tokens?: Record<string, string>) {
+export function resolveBeat(b: Beat, s: RunState, key?: string, tokens?: Record<string, string>, prefixes: string[] = SPEAKER_PREFIXES) {
   const raw = typeof b === 'function' ? b(s) : b;
-  const isSpoken = SPEAKER_PREFIXES.some((p) => raw.startsWith(p));
+  const isSpoken = prefixes.some((p) => raw.startsWith(p));
   const display = key ? t(key, raw, s) : raw;
   return { text: tokens ? applyTokens(display, tokens) : display, isSpoken };
 }
@@ -27,6 +31,10 @@ export class TextPanel {
   private typewriter = true;
   private remembered = false;
   private skipTyping: (() => void) | null = null;
+  /** The active pack's own guide-voice prefixes (e.g. LIMERENCE's "Porter:")
+   * — defaults to ANAMNESIS's `SPEAKER_PREFIXES` so every pre-existing call
+   * site (and every test) is unaffected until `setSpeakerPrefixes` is called. */
+  private speakerPrefixes: string[] = SPEAKER_PREFIXES;
 
   constructor(stageBottom: HTMLElement, ui: HTMLElement) {
     this.stage = stageBottom;
@@ -35,6 +43,11 @@ export class TextPanel {
 
   setTypewriter(v: boolean) {
     this.typewriter = v;
+  }
+
+  /** Called once at boot with the active pack's `guide.speakerPrefixes`. */
+  setSpeakerPrefixes(prefixes: string[]) {
+    this.speakerPrefixes = prefixes;
   }
 
   setRemembered(v: boolean) {
@@ -57,7 +70,7 @@ export class TextPanel {
     },
   ): Promise<void> {
     const resolved = beats
-      .map((b, i) => resolveBeat(b, state, opts?.keyOf?.(i), opts?.tokens))
+      .map((b, i) => resolveBeat(b, state, opts?.keyOf?.(i), opts?.tokens, this.speakerPrefixes))
       .filter((r) => r.text.length > 0);
     if (resolved.length === 0) return;
     const texts = resolved.map((r) => r.text);

@@ -368,7 +368,7 @@ export const theMorningDesk: Room = {
           id: 'stop-carrying-it',
           text: 'Lie down at the threshold. Let it finish, gently, on your own terms.',
           hint: 'The quiet',
-          effects: { lucidity: 10, hearts: -3, axes: { controlAcceptance: 12 } },
+          effects: { lucidity: 10, axes: { controlAcceptance: 12 } },
           outcome: [
             'You lie down with the morning three steps away, and it is not defeat — the Porter can tell, the lobby can tell. It is a choice, made with open eyes, by someone who walked every floor to earn the right to make it.',
             'Porter (sitting down beside you, setting the ledger aside): "Then I will stay until it is done. No guest dissolves alone on my shift. It is not an ending, you know. It is a tide."',

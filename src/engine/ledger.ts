@@ -66,11 +66,19 @@ export interface LedgerRow {
 
 /** The Ledger's stat rows, in display order. Rows for descents/examined runs
  * are omitted entirely below their threshold (spec 06 §5: "don't advertise
- * the understory"); the last-message row is omitted until one exists. */
+ * the understory"); the last-message row is omitted until one exists.
+ * `endingsTotalFn`/`keepsakeTotal` default to ANAMNESIS's own (spec 08 §3
+ * engine-default/pack-override pattern) — pass a pack's own
+ * `endingRules.endingsTotal`/`keepsakes.length` so a second pack's endings
+ * denominator (and keepsake shelf size) is computed from *its own* rules,
+ * not ANAMNESIS's (otherwise a second pack's Ledger can show a wrong or
+ * even impossible count, e.g. "7 of 6"). */
 export function ledgerStats(
   profile: Profile,
   registry: RoomRegistry,
   understorySequence: readonly string[] = UNDERSTORY_SEQUENCE,
+  endingsTotalFn: (endingsSeen: string[]) => number = endingsTotal,
+  keepsakeTotal: number = 4,
 ): LedgerRow[] {
   const rows: LedgerRow[] = [];
   rows.push({ id: 'runs', label: t(uiKey('ledgerRuns'), 'Runs completed'), value: String(profile.runsCompleted) });
@@ -81,7 +89,7 @@ export function ledgerStats(
   rows.push({
     id: 'endings',
     label: t(uiKey('ledgerEndings'), 'Endings witnessed'),
-    value: `${profile.endingsSeen.length} of ${endingsTotal(profile.endingsSeen)}`,
+    value: `${profile.endingsSeen.length} of ${endingsTotalFn(profile.endingsSeen)}`,
   });
 
   rows.push({ id: 'hearts', label: t(uiKey('ledgerHearts'), 'Hearts lost, lifetime'), value: String(profile.heartsLost) });
@@ -100,7 +108,7 @@ export function ledgerStats(
   rows.push({
     id: 'keepsakes',
     label: t(uiKey('ledgerKeepsakes'), 'Keepsakes on the shelf'),
-    value: `${profile.keepsakes.length} of 4`,
+    value: `${profile.keepsakes.length} of ${keepsakeTotal}`,
   });
 
   if (profile.understoryDescents >= 1) {

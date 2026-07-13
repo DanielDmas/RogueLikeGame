@@ -720,12 +720,16 @@ export function showExaminedPathOffer(ui: HTMLElement, defaultOn: boolean): Prom
  * the codex cards were already rendering translated title/thinkers via
  * roomNoteTitleKey/roomNoteThinkersKey, but the *opened* note was passed the
  * raw English `note` object straight through — cards read translated, the
- * note itself fell back to English. Room 19 (last-message) is the one
+ * note itself fell back to English. The pack's own `lastMessageId` hook room
+ * (ANAMNESIS's `last-message`, LIMERENCE's `the-unsent`) is the one
  * exception: its note is a synthetic, already-translated object built from
- * the player's own sent sentence, so it passes through unchanged.
+ * the player's own sent sentence, so it passes through unchanged — pass the
+ * active pack's `hooks.lastMessageId`, not a hardcoded id, or a second
+ * pack's synthetic note gets silently overwritten by that room's ordinary
+ * (also-registered) translated field note in any non-English locale.
  */
-export function translateFieldNoteForCodex(id: string, note: FieldNote, isEnding: boolean): FieldNote {
-  if (id === 'last-message') return note;
+export function translateFieldNoteForCodex(id: string, note: FieldNote, isEnding: boolean, lastMessageId = 'last-message'): FieldNote {
+  if (id === lastMessageId) return note;
   const bareId = isEnding ? id.replace(/^ending:/, '') : id;
   return isEnding
     ? {
@@ -759,7 +763,7 @@ export function showCodex(ui: HTMLElement, profile: Profile, pack: ContentPack):
       card.append(el('div', 'cx-thinkers', unlocked ? thinkers : notYetWalked));
       if (unlocked && note) {
         const icon = isEnding ? pack.visuals.endingIcons[id.replace(/^ending:/, '')] : pack.visuals.iconFor(id);
-        const translated = translateFieldNoteForCodex(id, note, isEnding);
+        const translated = translateFieldNoteForCodex(id, note, isEnding, pack.hooks.lastMessageId);
         card.addEventListener('click', () => showFieldNote(ui, translated, isEnding ? endingLabel : fieldNoteLabel, icon));
       }
       grid.appendChild(card);
@@ -853,6 +857,8 @@ export function showLedger(
   registry: RoomRegistry,
   understorySequence: readonly string[],
   epiphanies: EpiphanyDef[],
+  endingsTotalFn?: (endingsSeen: string[]) => number,
+  keepsakeTotal?: number,
 ): Promise<void> {
   return new Promise((resolve) => {
     const o = overlay(ui);
@@ -860,7 +866,7 @@ export function showLedger(
     panel.append(el('h2', undefined, t(uiKey('ledger'), "Traveler's Ledger")));
 
     const stats = el('div', 'ledger-stats');
-    for (const row of ledgerStats(profile, registry, understorySequence)) {
+    for (const row of ledgerStats(profile, registry, understorySequence, endingsTotalFn, keepsakeTotal)) {
       const r = el('div', 'ledger-row');
       r.append(el('span', 'ledger-label', row.label), el('span', 'ledger-value', row.value));
       stats.appendChild(r);
