@@ -82,16 +82,14 @@ a game is not the tool. This same note (plus the themes list and a purpose
 statement) shows automatically in-game the first time you begin a run, and
 is re-viewable any time from the title menu's "Before you begin" button.
 
-**Status: content-complete beta.** The Prologue, all four acts (Act I: 7
-rooms + gate · Act II: 8 rooms + gate · Act III: 8 rooms + a secret room +
-gate · Act IV: 3 rooms including the final gate), the Records Office
-(3 optional rooms for returning players), and all 7 endings are real,
-authored content — a full run is fully playable start to finish, including
-its ending, today. All 4 keepsakes have both an earn room and a spend
-room. The one still-open gap: LIMERENCE's Ledger shows generic,
-pack-agnostic epiphany lines rather than its own 12 designed ones (an
-engine-parameterization pass not yet done) — see `UPGRADE_PLAN.md`'s
-LIMERENCE section for the exact remaining scope.
+**Status: complete.** The Prologue, all four acts (Act I: 7 rooms + gate ·
+Act II: 8 rooms + gate · Act III: 8 rooms + a secret room + gate · Act IV:
+3 rooms including the final gate), the Records Office (3 optional rooms for
+returning players), and all 7 endings are real, authored content — a full
+run is fully playable start to finish, including its ending, today. All 4
+keepsakes have both an earn room and a spend room. Its own 12 epiphanies,
+Ledger denominators, and codex notes are computed from LIMERENCE's own
+rules throughout — the pack-parameterization pass is done.
 
 ```bash
 npm run dev:limerence   # play LIMERENCE at the printed local URL
@@ -119,7 +117,7 @@ npm run preview         # serve the production build
 - **Stack:** Vite + TypeScript + Three.js. No framework; DOM overlay for all text (crisp and accessible), WebGL for the scene, parametric geometry only — no downloaded assets.
 - **Content is pure data** (`src/content/rooms/*`): rooms, beats, choices, effects, field notes. The engine (`src/engine/*`) never hardcodes a room.
 - **Saves** are local (`localStorage`) behind an async, server-shaped `SaveStore` interface (`src/engine/saveStore.ts`) so a real backend can drop in later without touching game code. Profiles can also be exported/imported as JSON from Settings → Data.
-- Fully localized into English, Czech, and Farsi (RTL), each with two text voices (an original v1 and a rewritten v2) — ANAMNESIS only; LIMERENCE is English-only so far (Czech is L6, per `UPGRADE_PLAN.md`).
+- Fully localized into English, Czech, Farsi (RTL), German, and French for both ANAMNESIS and LIMERENCE, coverage-tested per pack — ANAMNESIS additionally ships two text voices (an original v1 and a rewritten v2); LIMERENCE ships v2 only (its single, later-designed voice).
 - `dist/`, `dist-web/`, and `release/` are build output and are gitignored — nothing built is committed.
 
 ## Windows executable

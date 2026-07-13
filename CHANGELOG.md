@@ -4,6 +4,40 @@ One line of history per released version. Full detail for every change
 lives in `UPGRADE_PLAN.md` and git history; this file is the short public
 summary.
 
+## v1.0.0-rc.1 — 2026-07-13
+
+Final-release-review pass over the whole package (see
+`docs/development/12-final-release-review.md`). Both games are now content-
+complete, cross-pack-leak-free, and GPU-safe by default.
+
+- **Two release-blocking crashes fixed:** LIMERENCE's own hearts-death
+  ending now resolves correctly instead of throwing (was hardcoded to
+  ANAMNESIS's `dissolved`), and LIMERENCE's Understory/Records Office is
+  now actually reachable (its fork was gated on ANAMNESIS's `'boulder'`
+  room id).
+- Four more cross-pack leaks fixed: the Porter's LIMERENCE-specific voice
+  styling, a scripted quiet-ending path that guaranteed the hearts-death
+  crash, the Ledger's endings/keepsake denominators, and the codex's
+  synthetic last-message note — all previously fell back to ANAMNESIS's
+  own rules for LIMERENCE.
+- Engine hardening: the save-persist chain no longer gets permanently
+  poisoned by one failed write; scene materials are now disposed on every
+  act change (was a slow GPU-memory leak); Escape now closes every
+  overlay, not just the pause menu.
+- Audio: fixed the background-tab "chirp" (AudioContext now suspends/
+  resumes with the tab), the click on every chord crossfade, and added a
+  gentle master-bus compressor against clipping.
+- **GPU-safe defaults:** new profiles start at low quality / performance
+  render scale / 30fps cap — a "Cinematic" preset is now something you
+  opt into in Settings, not the unconfigurable starting point.
+- New: an "Exit to The Vestibule" button in both games' menus; back/reread
+  navigation within a room's beats and at the choice screen; the
+  architecture (folder convention + manifest + engine hooks) for
+  file-dropped voice narration and music, dormant until real audio files
+  are added.
+- LIMERENCE reached full translation parity with ANAMNESIS across all five
+  languages (cs/fa/de/fr, plus English), coverage-tested.
+
 ## v0.2.4-beta — 2026-07-09
 
 **The Vestibule.** This repo now ships a collection of two games sharing

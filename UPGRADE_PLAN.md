@@ -1762,9 +1762,11 @@ too). `package.json`'s electron-builder config renamed the product to "The
 Vestibule" (`files` now points at `dist-web/**/*`), and
 `release-windows.yml` no longer runs a separate `npm run build` step
 before packaging (redundant with the new pre-hook).
-- [ ] L6. Czech translation (**in progress, 2026-07-10** — full parity
+- [x] L6. Czech translation (**complete, 2026-07-13** — full parity
       with ANAMNESIS across cs/fa/de/fr, not just Czech, per owner
-      instruction; see below).
+      instruction; coverage-tested in `limerenceTranslationCoverage.test.ts`.
+      Literal/mechanical-quality re-review of the cs/fa prose remains a
+      separate, deliberately deferred pass — see CLAUDE.md.).
 
 **Owner-requested polish batch (2026-07-10):** five choice-completeness
 gaps closed (3 ANAMNESIS, 2 LIMERENCE — see UPGRADE_PLAN's commit log for
