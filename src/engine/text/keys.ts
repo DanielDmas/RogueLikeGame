@@ -48,6 +48,12 @@ export const uiKey = (id: string) => `ui.${id}`;
  * ANAMNESIS's registered one. */
 export const ledgerLastMessageKey = (packId?: string) => scoped(uiKey('ledgerLastMessage'), packId);
 
+/** T9: the "One Door" title-menu button — both packs show it and share the
+ * same English fallback (the door-choosing mechanic is identical vocabulary
+ * in both games), but each still needs its own registered translation, so
+ * this is scoped the same way ledgerLastMessageKey is. */
+export const oneDoorButtonKey = (packId?: string) => scoped(uiKey('oneDoorButton'), packId);
+
 export const keepsakeKey = (id: string, field: 'name' | 'origin') => `keepsake.${id}.${field}`;
 
 /** Spec 05 — The Examined Path. `tradition` is one of Reflection's four

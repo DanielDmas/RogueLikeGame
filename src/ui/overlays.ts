@@ -22,6 +22,7 @@ import {
   keepsakeKey,
   actNameKey,
   stampKey,
+  oneDoorButtonKey,
 } from '../engine/text/keys';
 import { LANGUAGE_LABELS } from './locale';
 import { nextLang } from '../engine/text/resolver';
@@ -30,7 +31,7 @@ import { sound } from '../audio/soundEngine';
 import { isElectron, isFullscreen, toggleFullscreen } from './fullscreen';
 import { applyUiZoom } from './zoom';
 
-export type TitleAction = 'new' | 'continue' | 'codex' | 'ledger' | 'register' | 'settings' | 'persona' | 'about' | 'credits' | 'vestibule' | 'exit';
+export type TitleAction = 'new' | 'continue' | 'codex' | 'ledger' | 'register' | 'settings' | 'persona' | 'about' | 'credits' | 'vestibule' | 'oneDoor' | 'exit';
 
 function overlay(ui: HTMLElement): HTMLElement {
   const o = el('div', 'overlay fade-in');
@@ -91,6 +92,11 @@ export function showTitle(ui: HTMLElement, profile: Profile, pack: ContentPack):
     lg.addEventListener('click', () => done('ledger'));
     const rg = el('button', 'title-btn small', t(uiKey('hotelRegister'), 'The Register'));
     rg.addEventListener('click', () => done('register'));
+    // T9: a single random room dealt as a standalone vignette — no run
+    // state carried, no ending. A low-commitment on-ramp and a way to meet
+    // a room you haven't opened yet without starting a full journey.
+    const od = el('button', 'title-btn small', t(oneDoorButtonKey(pack.meta.id), 'One Door'));
+    od.addEventListener('click', () => done('oneDoor'));
     const pe = el(
       'button',
       'title-btn small',
@@ -105,7 +111,7 @@ export function showTitle(ui: HTMLElement, profile: Profile, pack: ContentPack):
     ab.addEventListener('click', () => done('about'));
     const cr = el('button', 'title-btn small', t(uiKey('creditsTitle'), 'Credits'));
     cr.addEventListener('click', () => done('credits'));
-    menu.append(cx, lg, rg, pe, st, ab, cr);
+    menu.append(cx, lg, rg, od, pe, st, ab, cr);
     // F1: only shown in a built (rozcestník-served) deploy — the dev server
     // serves this pack directly at its root with no `../index.html` sibling
     // to navigate to.

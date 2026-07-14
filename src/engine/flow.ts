@@ -5,6 +5,7 @@ import { applyEffects, newRun } from './gameState';
 import { shouldShowReflections, shouldShowSocraticAside } from './reflections';
 import { evaluateEpiphanies, isHiddenFromCodex } from './ledger';
 import { backfillVisitedForJump, completeRoom, makeRegistry, offeredDoors, type RoomRegistry } from './storyEngine';
+import { oneDoorPool, pickOneDoorRoom } from './oneDoor';
 import { defaultProfile, hydrateProfile, type Profile, type SaveStore } from './saveStore';
 import { SceneDirector } from '../scene/director';
 import type { DoorSpec } from '../scene/doors';
@@ -88,6 +89,13 @@ export class Game {
    * pitch (spec 07 §Q5.3) for a given door id. */
   private currentDoorSpecs: DoorSpec[] = [];
   private inGame = false;
+  /** T9 — "One Door" mode: a single standalone room dealt from the title
+   * screen, no run state carried forward. Gates enterRoom's permanent,
+   * whole-run-scoped profile side effects (keepsakes, the lifetime
+   * hearts-lost stat, the first-heart-loss explainer) while still letting
+   * the room count toward the Ledger's honest room-visit tally and unlock
+   * its Codex entry — the player genuinely did read it and choose. */
+  private oneDoorMode = false;
   private runStartNotes = 0;
   private uat: boolean;
   private speedMultiplier: number;
@@ -458,6 +466,8 @@ export class Game {
         await showLedger(this.ui, this.profile, this.registry, this.pack.graph.understorySequence, this.pack.epiphanies, this.pack.endingRules.endingsTotal, this.pack.keepsakes.length, this.lastMessageLabel());
       } else if (action === 'register') {
         await showHotelRegister(this.ui, this.profile, this.pack);
+      } else if (action === 'oneDoor') {
+        return this.playOneDoor();
       } else if (action === 'persona') {
         this.profile.persona = await showPersona(this.ui, this.profile.persona);
         await this.persist();
@@ -695,21 +705,26 @@ export class Game {
       if (this.pack.visuals.dioramaAccentHooks.some((h) => h.roomId === room.id && h.choiceId === choice.id)) {
         this.director.setDioramaAccent(true);
       }
-      const firstHeartLoss = this.state.hearts < heartsBefore && !this.profile.hasSeenHeartLoss;
+      // T9: none of this run's permanent, whole-run-scoped profile side
+      // effects apply to a standalone One Door vignette — there is no real
+      // run for a keepsake or a lifetime hearts-lost tick to belong to.
+      const firstHeartLoss = this.state.hearts < heartsBefore && !this.profile.hasSeenHeartLoss && !this.oneDoorMode;
       if (this.state.hearts < heartsBefore) {
         sound.heartLoss();
-        this.profile.heartsLost += heartsBefore - this.state.hearts;
+        if (!this.oneDoorMode) this.profile.heartsLost += heartsBefore - this.state.hearts;
       }
       // Keepsakes (spec 04): earned silently, once per profile ever, the
       // instant their trigger flag is first set — no toast, no interruption.
       // Not retroactive: a flag set by a run before keepsakes shipped grants
       // nothing, since flags reset every run.
-      const newFlags = this.state.flags.filter((f) => !flagsBefore.includes(f));
-      for (const keepsakeId of keepsakesEarnedByFlags(newFlags, this.pack.keepsakeTriggers)) {
-        if (!this.profile.keepsakes.includes(keepsakeId)) this.profile.keepsakes.push(keepsakeId);
-      }
-      if (choice.keepsakeId && !this.profile.keepsakeChoicesTaken.includes(choice.id)) {
-        this.profile.keepsakeChoicesTaken.push(choice.id);
+      if (!this.oneDoorMode) {
+        const newFlags = this.state.flags.filter((f) => !flagsBefore.includes(f));
+        for (const keepsakeId of keepsakesEarnedByFlags(newFlags, this.pack.keepsakeTriggers)) {
+          if (!this.profile.keepsakes.includes(keepsakeId)) this.profile.keepsakes.push(keepsakeId);
+        }
+        if (choice.keepsakeId && !this.profile.keepsakeChoicesTaken.includes(choice.id)) {
+          this.profile.keepsakeChoicesTaken.push(choice.id);
+        }
       }
       this.state.transcript.push({
         roomId: room.id,
@@ -786,6 +801,40 @@ export class Game {
     this.profile.roomVisits[room.id] = (this.profile.roomVisits[room.id] ?? 0) + 1;
     this.state = completeRoom(this.state, room.id, this.registry, this.pack.graph);
     await this.persist(true);
+  }
+
+  /** T9 — "One Door": deals a single random room from the title screen as a
+   * standalone vignette. Reuses enterRoom's exact rendering path (same
+   * TextPanel/ChoicePanel, same field-note reveal, same real choice
+   * consequences within the room) on a throwaway RunState that's never
+   * carried forward — no ending plays, and `this.inGame` stays false
+   * throughout, so persist() never stamps a resumable run into the profile.
+   * Reloads afterward (the same return-to-title path a finished run already
+   * takes) rather than threading the title loop's own theme/music/parallax
+   * state back by hand — simpler and exactly as tested as the normal path. */
+  private async playOneDoor(): Promise<void> {
+    const pool = oneDoorPool(this.pack);
+    if (pool.length === 0) return; // defensive; every shipped pack has eligible rooms
+    const room = pickOneDoorRoom(pool, this.profile.codexUnlocked);
+
+    this.oneDoorMode = true;
+    await this.fade(true);
+    const theme = themeForAct(room.act);
+    this.director.setTheme(theme);
+    this.currentTheme = theme;
+    this.setActMusic(theme);
+    this.director.setPaused(false);
+    this.director.setParallax(false);
+    this.hud.show();
+    this.hud.setAct(this.actNameFor(room.act));
+    await this.fade(false);
+
+    this.state = { ...newRun(), act: room.act };
+    this.hud.update(this.state.hearts, this.state.lucidity);
+    await this.enterRoom(room);
+
+    this.oneDoorMode = false;
+    location.reload();
   }
 
   private getEnding(endingId: string) {
