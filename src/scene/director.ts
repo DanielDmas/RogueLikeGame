@@ -49,6 +49,18 @@ export function shouldRenderFrame(nowMs: number, lastFrameMs: number, targetFps 
   return nowMs - lastFrameMs >= 1000 / targetFps;
 }
 
+/** 1.3 idle downshift: while a text/choice panel is up and nothing is
+ * actively tweening (camera dolly, light-spill fade, Usher walk), the scene
+ * is visually static — no reason to keep rendering at the profile's full
+ * fps cap, even under Cinematic quality. Never raises the fps above the
+ * caller's own cap (a low-quality profile's 30fps cap stays 30, not
+ * "upgraded" to the idle target). Pure, unit-tested; the DOM/tween-state
+ * read that feeds `idleEligible` lives in the loop itself. */
+export function effectiveFps(fpsCap: number, idleEligible: boolean, idleFps = 30): number {
+  if (!idleEligible) return fpsCap;
+  return Math.min(fpsCap, idleFps);
+}
+
 /** Title-screen fog parallax (spec 07 §Q3.2): how far the theme group should
  * shift toward the pointer, clamped to `±max` on each axis. Pure, unit-tested. */
 export function parallaxOffset(pointer: { x: number; y: number }, max = 0.15): { x: number; y: number } {
@@ -527,7 +539,13 @@ export class SceneDirector {
     // of the suspend.
     if ((this.paused && !this.parallaxEnabled) || document.hidden) return;
     const now = performance.now();
-    if (!shouldRenderFrame(now, this.lastFrameTime, this.fpsCap)) return;
+    // 1.3 idle downshift: a text/choice panel showing with no active tween
+    // (dolly, light-spill, Usher walk) means the scene itself is static —
+    // safe to render less often regardless of the profile's own fps cap.
+    const hasActiveTween = !!(this.dollyTween || this.spillTween || this.usherWalk);
+    const idleEligible = !hasActiveTween && document.querySelector('.text-panel, .choices') !== null;
+    const targetFps = effectiveFps(this.fpsCap, idleEligible);
+    if (!shouldRenderFrame(now, this.lastFrameTime, targetFps)) return;
     this.lastFrameTime = now;
     this.frameTimestamps.push(now);
     while (this.frameTimestamps.length > 0 && now - this.frameTimestamps[0] > 2000) this.frameTimestamps.shift();

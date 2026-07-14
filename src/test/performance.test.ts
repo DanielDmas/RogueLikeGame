@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { pixelRatioFor, shouldRenderFrame } from '../scene/director';
+import { effectiveFps, pixelRatioFor, shouldRenderFrame } from '../scene/director';
 import { isElectron } from '../ui/fullscreen';
 
 describe('shouldRenderFrame — the 60 FPS frame limiter (Phase A1)', () => {
@@ -33,6 +33,26 @@ describe('shouldRenderFrame — the 60 FPS frame limiter (Phase A1)', () => {
     // world away from rendering all 240 frames.
     expect(rendered).toBeLessThanOrEqual(62);
     expect(rendered).toBeGreaterThanOrEqual(48);
+  });
+});
+
+describe('effectiveFps — 1.3 idle downshift (a static text/choice screen with no active tween)', () => {
+  it('leaves the fps cap untouched when not idle-eligible', () => {
+    expect(effectiveFps(60, false)).toBe(60);
+    expect(effectiveFps(30, false)).toBe(30);
+  });
+
+  it('downshifts a 60fps (Cinematic) cap to the idle target while idle-eligible', () => {
+    expect(effectiveFps(60, true)).toBe(30);
+  });
+
+  it('never raises fps above the caller\'s own cap — a 30fps profile stays 30, not "upgraded" to the idle target', () => {
+    expect(effectiveFps(30, true)).toBe(30);
+  });
+
+  it('respects a custom idle target', () => {
+    expect(effectiveFps(60, true, 20)).toBe(20);
+    expect(effectiveFps(15, true, 20)).toBe(15); // still never raises above the cap
   });
 });
 
