@@ -109,6 +109,30 @@
         color: var(--ink-faint);
       }
       footer a { color: var(--ink-faint); }
+      /* F3: the landing music toggle — invisible by default (see the script
+         below), shown only once public/music/landing/ actually has a file.
+         Quiet, unobtrusive chrome, matching the Experience Charter's "no
+         dark patterns, no unearned attention" rule — a small text button,
+         not a modal or an autoplaying surprise. */
+      #music-toggle {
+        display: none;
+        margin-top: 28px;
+        background: none;
+        border: 1px solid var(--gold-dim);
+        border-radius: 3px;
+        color: var(--ink-faint);
+        font-family: inherit;
+        font-size: 12px;
+        letter-spacing: 0.04em;
+        padding: 7px 14px;
+        cursor: pointer;
+        transition: border-color 0.2s ease, color 0.2s ease;
+      }
+      #music-toggle:hover, #music-toggle:focus-visible {
+        border-color: var(--gold);
+        color: var(--ink);
+        outline: none;
+      }
     </style>
   </head>
   <body>
@@ -126,8 +150,45 @@
         <p class="door-note">Complete · 4 languages · 7 endings · mature themes (16+)</p>
       </a>
     </div>
+    <button id="music-toggle" type="button" aria-pressed="false">♪ Play quiet music</button>
     <footer>
       Both titles are free, no accounts, nothing tracked. <a href="https://github.com/DanielDmas/RogueLikeGame">Source</a>
     </footer>
+    <script>
+      // F3: file-based landing music (public/music/landing/*, manifest-driven
+      // like every other audio slot in this project — see public/music/
+      // README.md). Stays entirely invisible until a real file exists; when
+      // it does, playback only ever starts on a click, per browser autoplay
+      // policy (and per the Experience Charter — no audio should ever
+      // surprise a first-time visitor).
+      (function () {
+        fetch('./av-manifest.json')
+          .then(function (res) { return res.ok ? res.json() : null; })
+          .then(function (manifest) {
+            var filename = manifest && manifest.music && manifest.music.landing && manifest.music.landing.vestibule;
+            if (!filename) return;
+            var btn = document.getElementById('music-toggle');
+            var audio = new Audio('./music/landing/' + filename);
+            audio.loop = true;
+            audio.volume = 0.35;
+            var playing = false;
+            btn.style.display = 'inline-block';
+            btn.addEventListener('click', function () {
+              playing = !playing;
+              if (playing) {
+                audio.play().catch(function () { playing = false; });
+                btn.textContent = '♪ Pause music';
+              } else {
+                audio.pause();
+                btn.textContent = '♪ Play quiet music';
+              }
+              btn.setAttribute('aria-pressed', String(playing));
+            });
+          })
+          .catch(function () {
+            // offline, manifest missing, etc. — the toggle just never appears.
+          });
+      })();
+    </script>
   </body>
 </html>
