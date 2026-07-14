@@ -305,10 +305,11 @@ export const limerencePack: ContentPack = {
   },
 
   registerText: () => {
-    // The static `import './text'` above already registered the catalog
-    // (currently: the Czech prologue + Act I) by the time any caller
-    // reaches this — see the comment on that import. Any t(key, fallback)
-    // call not yet covered by a registered translation still falls back to
-    // its English literal, so the pack remains fully playable regardless.
+    // The static `import './text'` above already registered the full
+    // catalog (cs/fa/de/fr, end-to-end — rooms, endings, keepsakes,
+    // epiphanies, guide barks) by the time any caller reaches this — see
+    // the comment on that import. Any t(key, fallback) call not yet covered
+    // by a registered translation still falls back to its English literal,
+    // so the pack remains fully playable regardless.
   },
 };
