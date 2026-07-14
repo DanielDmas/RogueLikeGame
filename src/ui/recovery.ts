@@ -1,4 +1,5 @@
 import { el } from './dom';
+import { installFocusTrap } from './focusTrap';
 import { t } from '../engine/text/resolver';
 import { uiKey } from '../engine/text/keys';
 import { shouldTriggerRecovery } from '../engine/recovery';
@@ -19,6 +20,7 @@ function showRecoveryOverlay(ui: HTMLElement): void {
   panel.append(back);
   o.appendChild(panel);
   ui.appendChild(o);
+  installFocusTrap(o);
 }
 
 /** Installs the global safety net (spec 09 §S6): an uncaught exception, a

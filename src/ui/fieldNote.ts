@@ -1,5 +1,6 @@
 import type { FieldNote } from '../engine/schema';
 import { el } from './dom';
+import { installFocusTrap } from './focusTrap';
 import { sound } from '../audio/soundEngine';
 import { t } from '../engine/text/resolver';
 import { uiKey } from '../engine/text/keys';
@@ -37,6 +38,7 @@ export function showFieldNote(ui: HTMLElement, note: FieldNote, label = 'Field N
     const close = el('button', 'fn-close', t(uiKey('continue'), 'Continue'));
     card.append(close);
     ui.appendChild(card);
+    installFocusTrap(card);
 
     sound.noteOpen();
     requestAnimationFrame(() => requestAnimationFrame(() => card.classList.add('open')));

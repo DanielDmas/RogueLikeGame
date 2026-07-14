@@ -4,6 +4,7 @@ import type { ContentPack, EpiphanyDef } from '../packs/types';
 import { earnedGuestStamps, epiphanyLine, epiphanyLines, isHiddenFromCodex, ledgerStats } from '../engine/ledger';
 import type { RoomRegistry } from '../engine/storyEngine';
 import { clear, el } from './dom';
+import { installFocusTrap } from './focusTrap';
 import { showFieldNote } from './fieldNote';
 import { t } from '../engine/text/resolver';
 import {
@@ -34,6 +35,7 @@ export type TitleAction = 'new' | 'continue' | 'codex' | 'ledger' | 'register' |
 function overlay(ui: HTMLElement): HTMLElement {
   const o = el('div', 'overlay fade-in');
   ui.appendChild(o);
+  installFocusTrap(o);
   return o;
 }
 
