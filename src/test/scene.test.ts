@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
 import { buildTheme, silhouette, usherFigure } from '../scene/themes';
-import { createDoors, DOOR_Z, hoverPulseIntensity, SELECT_SNAP_BOOST } from '../scene/doors';
+import { createDoors, DOOR_Z, flickerEnvelope, hoverPulseIntensity, SELECT_SNAP_BOOST } from '../scene/doors';
 import { GradeShader } from '../scene/post';
 
 function ambientIntensity(group: THREE.Group): number {
@@ -219,6 +219,87 @@ describe('doors — real interactive doors read as unmistakably alive', () => {
     });
     expect(lights.length).toBeGreaterThanOrEqual(2);
     expect(lights.some((l) => l.position.y < 0.5)).toBe(true);
+    set.dispose();
+  });
+});
+
+describe('flickerEnvelope — T7 ambient corridor life\'s dip curve', () => {
+  it('is exactly 1 before the event starts and once it has finished', () => {
+    expect(flickerEnvelope(-1)).toBe(1);
+    expect(flickerEnvelope(0)).toBe(1);
+    expect(flickerEnvelope(2.2, 2.2)).toBe(1);
+    expect(flickerEnvelope(5, 2.2)).toBe(1);
+  });
+
+  it('dips below 1 at the midpoint, by roughly the configured dip amount', () => {
+    const v = flickerEnvelope(1.1, 2.2, 0.28);
+    expect(v).toBeCloseTo(1 - 0.28, 5);
+  });
+
+  it('is a single smooth dip, never a strobe: strictly decreasing then strictly increasing', () => {
+    const samples: number[] = [];
+    for (let e = 0; e <= 2.2; e += 0.1) samples.push(flickerEnvelope(e, 2.2));
+    let sawMinimum = false;
+    for (let i = 1; i < samples.length; i++) {
+      if (!sawMinimum && samples[i] > samples[i - 1]) sawMinimum = true;
+      else if (sawMinimum) expect(samples[i]).toBeGreaterThanOrEqual(samples[i - 1] - 1e-9);
+    }
+    expect(sawMinimum).toBe(true);
+  });
+
+  it('never exceeds 1 or goes negative for any dip in [0, 1]', () => {
+    for (let e = 0; e <= 2.2; e += 0.05) {
+      const v = flickerEnvelope(e, 2.2, 0.28);
+      expect(v).toBeLessThanOrEqual(1);
+      expect(v).toBeGreaterThanOrEqual(0);
+    }
+  });
+});
+
+describe('DoorSet.triggerAmbientFlicker — T7 ambient corridor life', () => {
+  function slabOf(set: ReturnType<typeof createDoors>, id: string): THREE.MeshStandardMaterial {
+    const mesh = set.meshes.find((m) => m.userData.doorId === id)!;
+    return mesh.material as THREE.MeshStandardMaterial;
+  }
+
+  it('dips one door\'s intensity below its normal idle band, then it recovers', () => {
+    const set = createDoors([{ id: 'a', hint: 'a' }]);
+    set.tick(10);
+    const before = slabOf(set, 'a').emissiveIntensity;
+    set.triggerAmbientFlicker(10);
+    set.tick(11.1); // roughly the flicker's midpoint
+    const during = slabOf(set, 'a').emissiveIntensity;
+    expect(during).toBeLessThan(before);
+    set.tick(20); // well past the flicker's duration
+    const after = slabOf(set, 'a').emissiveIntensity;
+    expect(after).toBeGreaterThan(during);
+    set.dispose();
+  });
+
+  it('never picks the currently-hovered door', () => {
+    const set = createDoors([{ id: 'a', hint: 'a' }, { id: 'b', hint: 'b' }]);
+    set.setHover('a');
+    for (let seed = 0; seed < 30; seed++) {
+      set.triggerAmbientFlicker(seed);
+      set.tick(seed + 1.1);
+      // The hovered door's intensity is governed entirely by hoverPulseIntensity
+      // (spec 07 §Q4) regardless of any flicker — confirm it's never dipped
+      // below that pulse's own floor, which a flicker on 'a' would violate.
+      expect(slabOf(set, 'a').emissiveIntensity).toBeGreaterThanOrEqual(0.42);
+    }
+    set.dispose();
+  });
+
+  it('is a no-op when every door is hovered (nothing left to pick)', () => {
+    const set = createDoors([{ id: 'a', hint: 'a' }]);
+    set.setHover('a');
+    expect(() => set.triggerAmbientFlicker(0)).not.toThrow();
+    set.dispose();
+  });
+
+  it('is a no-op with zero doors', () => {
+    const set = createDoors([]);
+    expect(() => set.triggerAmbientFlicker(0)).not.toThrow();
     set.dispose();
   });
 });

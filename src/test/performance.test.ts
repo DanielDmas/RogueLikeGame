@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { effectiveFps, pixelRatioFor, shouldRenderFrame } from '../scene/director';
+import { effectiveFps, nextAmbientDelay, pixelRatioFor, shouldRenderFrame } from '../scene/director';
 import { isElectron } from '../ui/fullscreen';
 
 describe('shouldRenderFrame — the 60 FPS frame limiter (Phase A1)', () => {
@@ -53,6 +53,21 @@ describe('effectiveFps — 1.3 idle downshift (a static text/choice screen with 
   it('respects a custom idle target', () => {
     expect(effectiveFps(60, true, 20)).toBe(20);
     expect(effectiveFps(15, true, 20)).toBe(15); // still never raises above the cap
+  });
+});
+
+describe('nextAmbientDelay — T7 ambient corridor life\'s jittered 60-120s timer', () => {
+  it('is always within [60, 120) seconds', () => {
+    for (let seed = 0; seed <= 1; seed += 0.05) {
+      const v = nextAmbientDelay(() => seed);
+      expect(v).toBeGreaterThanOrEqual(60);
+      expect(v).toBeLessThan(120);
+    }
+  });
+
+  it('rand=0 gives the floor, rand near 1 gives near the ceiling', () => {
+    expect(nextAmbientDelay(() => 0)).toBe(60);
+    expect(nextAmbientDelay(() => 0.999999)).toBeCloseTo(120, 1);
   });
 });
 

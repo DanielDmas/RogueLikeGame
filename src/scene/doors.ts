@@ -19,6 +19,12 @@ export interface DoorSet {
   tick(t: number, reducedMotion?: boolean): void;
   /** Snaps a chosen door's glow up immediately on selection, ahead of the doorway light-spill (spec 07 §Q2). */
   snapSelected(id: string): void;
+  /** T7 — ambient corridor life: a rare, brief glow dip on one random
+   * non-hovered door, as though something settled somewhere down the
+   * corridor. No-op if every door is currently hovered (nothing left to
+   * pick) or there are no doors. `t` is the same clock the caller's own
+   * tick() already uses, so the flicker's envelope stays frame-accurate. */
+  triggerAmbientFlicker(t: number): void;
   dispose(): void;
 }
 
@@ -36,6 +42,16 @@ export const SELECT_SNAP_BOOST = 0.35;
 export function hoverPulseIntensity(t: number, base: number, reducedMotion: boolean): number {
   if (reducedMotion) return base + 0.15;
   return base + 0.15 * ((Math.sin(t * 2.2) + 1) / 2);
+}
+
+/** T7 — pure envelope for the ambient-flicker dip: 1 outside `[0, duration]`,
+ * smoothly leaving and returning to 1, bottoming at `1 - dip` at the
+ * midpoint. A single soft dip, never a strobe (matches the door's own
+ * "never a strobe" guarantee on its idle pulse). */
+export function flickerEnvelope(elapsed: number, duration = 2.2, dip = 0.28): number {
+  if (elapsed <= 0 || elapsed >= duration) return 1;
+  const p = elapsed / duration;
+  return 1 - dip * Math.sin(Math.PI * p);
 }
 
 export interface DoorStyle {
@@ -81,6 +97,8 @@ export function createDoors(specs: DoorSpec[], style: DoorStyle = {}): DoorSet {
   const lintels = new Map<string, THREE.Vector3>();
   const phases = new Map<string, number>();
   let hoveredId: string | null = null;
+  let flicker: { doorId: string; startT: number } | null = null;
+  const FLICKER_DURATION = 2.2;
 
   const doorGroups = new Map<string, THREE.Group>();
 
@@ -157,6 +175,7 @@ export function createDoors(specs: DoorSpec[], style: DoorStyle = {}): DoorSet {
       return local.map((v) => door.localToWorld(v.clone()));
     },
     tick(t, reducedMotion = false) {
+      if (flicker && t - flicker.startT >= FLICKER_DURATION) flicker = null;
       for (const [doorId, mat] of slabs) {
         if (doorId === hoveredId) {
           mat.emissiveIntensity = hoverPulseIntensity(t, BASE_INTENSITY, reducedMotion);
@@ -169,6 +188,9 @@ export function createDoors(specs: DoorSpec[], style: DoorStyle = {}): DoorSet {
           if (unsteadyPulse && !reducedMotion) {
             intensity += Math.sin(t * 0.37 + phase * 2.3) * unsteadyPulse;
           }
+          if (flicker && flicker.doorId === doorId) {
+            intensity *= flickerEnvelope(t - flicker.startT, FLICKER_DURATION);
+          }
           mat.emissiveIntensity = intensity;
         }
       }
@@ -176,6 +198,12 @@ export function createDoors(specs: DoorSpec[], style: DoorStyle = {}): DoorSet {
     snapSelected(id) {
       const mat = slabs.get(id);
       if (mat) mat.emissiveIntensity = BASE_INTENSITY + SELECT_SNAP_BOOST;
+    },
+    triggerAmbientFlicker(t) {
+      const candidates = [...slabs.keys()].filter((id) => id !== hoveredId);
+      if (candidates.length === 0) return;
+      const doorId = candidates[Math.floor(Math.random() * candidates.length)];
+      flicker = { doorId, startT: t };
     },
     dispose() {
       group.traverse((o) => {

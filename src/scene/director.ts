@@ -49,6 +49,13 @@ export function shouldRenderFrame(nowMs: number, lastFrameMs: number, targetFps 
   return nowMs - lastFrameMs >= 1000 / targetFps;
 }
 
+/** T7 — ambient corridor life: how long to wait before the next rare,
+ * one-shot flicker event, jittered 60-120s per the design brief. Pure,
+ * unit-tested; `rand` defaults to `Math.random`. */
+export function nextAmbientDelay(rand: () => number = Math.random): number {
+  return 60 + rand() * 60;
+}
+
 /** 1.3 idle downshift: while a text/choice panel is up and nothing is
  * actively tweening (camera dolly, light-spill fade, Usher walk), the scene
  * is visually static — no reason to keep rendering at the profile's full
@@ -131,6 +138,12 @@ export class SceneDirector {
   private speedMultiplier = 1;
   /** Timestamps (ms) of recently-presented frames, for the UAT fps() probe — trimmed to the last ~2s. */
   private frameTimestamps: number[] = [];
+  /** T7 — ambient corridor life: the clock time (elapsedTime) of the next
+   * rare flicker event. Reset on every showDoors() so a freshly-shown door
+   * row always gets a full 60-120s of quiet before its first event, rather
+   * than firing immediately from a timer that had been running since the
+   * last room. */
+  private nextAmbientEventAt = Infinity;
   /** Title-screen-only fog parallax (spec 07 §Q3.2) — off everywhere else. */
   private parallaxEnabled = false;
   private parallaxCurrent = { x: 0, y: 0 };
@@ -387,6 +400,7 @@ export class SceneDirector {
     this.doors = createDoors(specs, this.visuals.doorStyle);
     this.scene.add(this.doors.group);
     this.doorSpecs = new Map(specs.map((s) => [s.id, s]));
+    this.nextAmbientEventAt = this.clock.elapsedTime + nextAmbientDelay();
     // Always frame from a consistent, correctly-centered position — not
     // wherever the previous room's walk-through dolly happened to leave the
     // camera — and pull back if the aspect ratio needs more room to fit
@@ -552,6 +566,17 @@ export class SceneDirector {
 
     const dt = Math.min(this.clock.getDelta(), 0.05);
     const t = this.clock.elapsedTime;
+
+    // T7 — ambient corridor life: a rare, one-shot flicker on some other
+    // door while the player is idle reading the current one, as though
+    // something settled elsewhere down the corridor. Reuses idleEligible
+    // (a door row showing, no active tween) so it never fires mid-transition;
+    // disabled under reduced motion, same guarantee every other ambient
+    // motion in this file already gives.
+    if (this.doors && idleEligible && !this.reducedMotion && t >= this.nextAmbientEventAt) {
+      this.doors.triggerAmbientFlicker(t);
+      this.nextAmbientEventAt = t + nextAmbientDelay();
+    }
 
     this.theme?.tick(t);
     this.usher.tick(t);
