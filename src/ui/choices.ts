@@ -167,6 +167,13 @@ export class ChoicePanel {
     this.rereading = false;
     this.container = wrap;
     this.stage.appendChild(wrap);
+    // P3: once each card's entrance animation actually finishes, drop
+    // `animation` entirely (see the `.choice-card.settled` rule) so a later
+    // theme toggle's --panel change reliably repaints it instead of risking
+    // a stale composited layer.
+    for (const card of wrap.querySelectorAll<HTMLElement>('.choice-card')) {
+      card.addEventListener('animationend', () => card.classList.add('settled'), { once: true });
+    }
     this.keyHandler = (e: KeyboardEvent) => {
       // A pause menu / codex / settings / field note is open on top —
       // don't silently pick a choice hidden underneath it. Same guard while

@@ -328,6 +328,13 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 .choice-card:nth-child(6) { animation-delay: 350ms; }
 @keyframes rise { to { opacity: 1; transform: translateY(0); } }
 .reduced-motion .choice-card { animation-duration: 0.15s; }
+/* P3: a `forwards`-fill animation plus `backdrop-filter` can leave the
+   browser treating a settled card as still-animating for compositing
+   purposes, so a live theme toggle's CSS-variable change (--panel) doesn't
+   always repaint it — the door cards stay dark after switching to Light.
+   `choices.ts` adds this class once the entrance animation actually ends,
+   clearing `animation` so the element returns to the normal paint path. */
+.choice-card.settled { animation: none; }
 
 .choice-card:hover, .choice-card.hover, .choice-card:focus-visible {
   border-color: var(--gold-dim); background: var(--panel-hover); transform: translateY(-1px);
