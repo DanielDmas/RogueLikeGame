@@ -42,6 +42,18 @@ const DIORAMA_ROOM_IDS = [
   'the-veto',
   'the-drift',
   'the-registry',
+  // Ninth session: the last 11 — full 34/34 diorama parity.
+  'the-best-friends-girl',
+  'the-summer-ends',
+  'the-hall-pass',
+  'the-rebound',
+  'the-unicorn',
+  'the-other-side-of-the-door',
+  'the-metamour',
+  'the-usual-suite',
+  'the-usual-room',
+  'the-doors-not-opened',
+  'the-other-side',
 ];
 
 describe('LIMERENCE bespoke room dioramas (F5) — registry, budget, disposal', () => {
@@ -50,6 +62,11 @@ describe('LIMERENCE bespoke room dioramas (F5) — registry, budget, disposal', 
     for (const id of DIORAMA_ROOM_IDS) {
       expect(roomIds.has(id), `diorama registered for unknown room "${id}"`).toBe(true);
     }
+  });
+
+  it('ninth session: full 34/34 diorama parity — every LIMERENCE room has a bespoke diorama', () => {
+    const roomIds = limerencePack.rooms.map((r) => r.id);
+    expect(new Set(DIORAMA_ROOM_IDS)).toEqual(new Set(roomIds));
   });
 
   it('a room with no bespoke diorama falls back to null (act theme alone)', () => {
