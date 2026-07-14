@@ -79,6 +79,11 @@ export function ledgerStats(
   understorySequence: readonly string[] = UNDERSTORY_SEQUENCE,
   endingsTotalFn: (endingsSeen: string[]) => number = endingsTotal,
   keepsakeTotal: number = 4,
+  /** P5: the active pack's own, already-translated label for the last-message
+   * row (`t(scoped(uiKey('ledgerLastMessage'), pack.meta.id), pack.hooks.lastMessageLabel)`).
+   * Defaults to ANAMNESIS's own translated fallback so every pre-existing
+   * call site (and test) is unaffected. */
+  lastMessageLabel: string = t(uiKey('ledgerLastMessage'), 'Your last message'),
 ): LedgerRow[] {
   const rows: LedgerRow[] = [];
   rows.push({ id: 'runs', label: t(uiKey('ledgerRuns'), 'Runs completed'), value: String(profile.runsCompleted) });
@@ -120,7 +125,7 @@ export function ledgerStats(
   }
 
   if (profile.lastMessage) {
-    rows.push({ id: 'last-message', label: t(uiKey('ledgerLastMessage'), 'Your last message'), value: `“${profile.lastMessage}”` });
+    rows.push({ id: 'last-message', label: lastMessageLabel, value: `“${profile.lastMessage}”` });
   }
 
   return rows;

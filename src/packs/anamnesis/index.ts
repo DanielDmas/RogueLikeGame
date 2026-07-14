@@ -124,6 +124,7 @@ export const anamnesisPack: ContentPack = {
   hooks: {
     finalGateId: 'door-that-asks',
     lastMessageId: 'last-message',
+    lastMessageLabel: 'Your last message',
   },
 
   // The static side-effect import above already registered the catalog by

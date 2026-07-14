@@ -44,7 +44,7 @@
 // direct address ("Reisende(r)"), reused here once in the Act I intro where
 // the Porter addresses the player as "traveler" directly.
 import { registerAll } from '../../../engine/text/resolver';
-import { usherBarkKey, actIntroKey, uiKey } from '../../../engine/text/keys';
+import { usherBarkKey, actIntroKey, uiKey, ledgerLastMessageKey } from '../../../engine/text/keys';
 
 const PACK_ID = 'limerence';
 const bark = (id: string) => usherBarkKey(id, PACK_ID);
@@ -98,7 +98,14 @@ registerAll('v2', 'de', {
   [actIntroKey(3, PACK_ID)]:
     'Der Teppich wird dicker. Das sind die Zimmer, die Gäste jahrelang behalten, ohne es so recht zu beabsichtigen — ein ganzes Leben, eingerichtet um eine ungeöffnete Frage herum. Manches von dem, was hinter diesen Türen wartet, hat einen Preis, den du spüren wirst, {name}, nicht nur lesen.',
   [actIntroKey(4, PACK_ID)]:
-    'Der Nebel lichtet sich zu etwas, das fast wie Morgen ist. Auf diesem Stockwerk bleiben drei Türen, und dann die Rezeption. Was hier geschieht, zählt doppelt, was auch immer dir der Portier darüber erzählt, dass das Intervall kein Kontobuch führt. Selbst so kurz vor dem Auschecken kann eine unachtsame Tür noch ein Maß Vertrauen kosten.',
+    'Der Nebel lichtet sich zu etwas, das fast wie Morgen ist. Was von diesem Stockwerk bleibt, und dann die Rezeption. Was hier geschieht, zählt doppelt, was auch immer dir der Portier darüber erzählt, dass das Intervall kein Kontobuch führt. Selbst so kurz vor dem Auschecken kann eine unachtsame Tür noch ein Maß Vertrauen kosten.',
+});
+
+// P5: the Ledger's last-message row label — LIMERENCE's own hook room
+// (the-unsent) captures an envelope choice, not a written message, so it
+// gets its own label rather than ANAMNESIS's "Your last message".
+registerAll('v2', 'de', {
+  [ledgerLastMessageKey(PACK_ID)]: 'Der Umschlag, den du gewählt hast',
 });
 
 // ---------- First-heart-loss / remembered-room fallback barks ----------

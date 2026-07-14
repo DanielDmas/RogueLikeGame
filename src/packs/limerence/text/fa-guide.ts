@@ -33,7 +33,7 @@
 // is transliterated as "اینتروال", the same way this pack's other bespoke
 // proper nouns are handled phonetically.
 import { registerAll } from '../../../engine/text/resolver';
-import { usherBarkKey, actIntroKey, uiKey } from '../../../engine/text/keys';
+import { usherBarkKey, actIntroKey, uiKey, ledgerLastMessageKey } from '../../../engine/text/keys';
 
 const PACK_ID = 'limerence';
 const bark = (id: string) => usherBarkKey(id, PACK_ID);
@@ -85,7 +85,14 @@ registerAll('v2', 'fa', {
   [actIntroKey(3, PACK_ID)]:
     'موکت ضخیم‌تر می‌شود. این‌ها اتاق‌هایی هستند که مهمان‌ها بدونِ آنکه واقعاً قصدش را داشته باشند، سال‌ها نگه می‌دارند — یک زندگیِ کامل، مبله‌شده دورِ یک سوالِ بازنشده. بخشی از آنچه پشتِ این درها منتظر است، بهایی دارد که آن را حس می‌کنید، {name}، نه فقط دربارهٔ آن می‌خوانید.',
   [actIntroKey(4, PACK_ID)]:
-    'مه رقیق می‌شود، رو به چیزی که تقریباً شبیهِ صبح است. در این طبقه سه در باقی مانده، و بعد پذیرش. آنچه اینجا اتفاق می‌افتد دوبرابر حساب می‌شود، هرچه دربان درباره‌ی بی‌دفترحسابی‌بودنِ اینتروال بگوید. حتی این‌قدر نزدیک به تسویه‌حساب، یک درِ بی‌احتیاط هنوز هم می‌تواند یک واحد اعتماد هزینه داشته باشد.',
+    'مه رقیق می‌شود، رو به چیزی که تقریباً شبیهِ صبح است. آنچه از این طبقه باقی مانده، و بعد پذیرش. آنچه اینجا اتفاق می‌افتد دوبرابر حساب می‌شود، هرچه دربان درباره‌ی بی‌دفترحسابی‌بودنِ اینتروال بگوید. حتی این‌قدر نزدیک به تسویه‌حساب، یک درِ بی‌احتیاط هنوز هم می‌تواند یک واحد اعتماد هزینه داشته باشد.',
+});
+
+// P5: the Ledger's last-message row label — LIMERENCE's own hook room
+// (the-unsent) captures an envelope choice, not a written message, so it
+// gets its own label rather than ANAMNESIS's "Your last message".
+registerAll('v2', 'fa', {
+  [ledgerLastMessageKey(PACK_ID)]: 'پاکتی که انتخاب کردید',
 });
 
 // ---------- First-heart-loss / remembered-room fallback barks ----------

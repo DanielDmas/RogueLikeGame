@@ -53,6 +53,7 @@ import {
   uiKey,
   usherBarkKey,
   actNameKey,
+  ledgerLastMessageKey,
 } from './text/keys';
 import { applyLocaleToDocument } from '../ui/locale';
 import { isFullscreen, shouldOpenPauseOnEscape, toggleFullscreen } from '../ui/fullscreen';
@@ -366,6 +367,14 @@ export class Game {
     return true;
   }
 
+  /** P5: the Ledger's last-message row label, resolved from the active
+   * pack's own `hooks.lastMessageLabel` under its pack-scoped key — never
+   * ANAMNESIS's "Your last message" for a pack whose own hook room isn't
+   * really a message (LIMERENCE's `the-unsent` is an envelope choice). */
+  private lastMessageLabel(): string {
+    return t(ledgerLastMessageKey(this.pack.meta.id), this.pack.hooks.lastMessageLabel);
+  }
+
   private settingsActions(): SettingsActions {
     return {
       hasRun: this.inGame || Boolean(this.profile.run && !this.profile.run.finished),
@@ -388,7 +397,7 @@ export class Game {
     this.stageBottom.classList.add('overlay-hidden');
     const action = await showPauseMenu(this.ui);
     if (action === 'codex') await showCodex(this.ui, this.profile, this.pack);
-    if (action === 'ledger') await showLedger(this.ui, this.profile, this.registry, this.pack.graph.understorySequence, this.pack.epiphanies, this.pack.endingRules.endingsTotal, this.pack.keepsakes.length);
+    if (action === 'ledger') await showLedger(this.ui, this.profile, this.registry, this.pack.graph.understorySequence, this.pack.epiphanies, this.pack.endingRules.endingsTotal, this.pack.keepsakes.length, this.lastMessageLabel());
     if (action === 'register') await showHotelRegister(this.ui, this.profile, this.pack);
     if (action === 'persona') {
       this.profile.persona = await showPersona(this.ui, this.profile.persona);
@@ -446,7 +455,7 @@ export class Game {
       if (action === 'codex') {
         await showCodex(this.ui, this.profile, this.pack);
       } else if (action === 'ledger') {
-        await showLedger(this.ui, this.profile, this.registry, this.pack.graph.understorySequence, this.pack.epiphanies, this.pack.endingRules.endingsTotal, this.pack.keepsakes.length);
+        await showLedger(this.ui, this.profile, this.registry, this.pack.graph.understorySequence, this.pack.epiphanies, this.pack.endingRules.endingsTotal, this.pack.keepsakes.length, this.lastMessageLabel());
       } else if (action === 'register') {
         await showHotelRegister(this.ui, this.profile, this.pack);
       } else if (action === 'persona') {

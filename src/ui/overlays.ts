@@ -1017,6 +1017,7 @@ export function showLedger(
   epiphanies: EpiphanyDef[],
   endingsTotalFn?: (endingsSeen: string[]) => number,
   keepsakeTotal?: number,
+  lastMessageLabel?: string,
 ): Promise<void> {
   return new Promise((resolve) => {
     const o = overlay(ui);
@@ -1024,7 +1025,7 @@ export function showLedger(
     panel.append(el('h2', undefined, t(uiKey('ledger'), "Traveler's Ledger")));
 
     const stats = el('div', 'ledger-stats');
-    for (const row of ledgerStats(profile, registry, understorySequence, endingsTotalFn, keepsakeTotal)) {
+    for (const row of ledgerStats(profile, registry, understorySequence, endingsTotalFn, keepsakeTotal, lastMessageLabel)) {
       const r = el('div', 'ledger-row');
       r.append(el('span', 'ledger-label', row.label), el('span', 'ledger-value', row.value));
       stats.appendChild(r);
@@ -1151,7 +1152,16 @@ export function showEndScreen(ui: HTMLElement, data: EndScreenData): Promise<'ag
     inner.append(recap);
 
     const stats = el('div', 'run-stats');
-    stats.innerHTML = `<span>${t(uiKey('statLucidity'), 'lucidity')} <b>${data.lucidity}</b></span><span>${t(uiKey('statHearts'), 'hearts kept')} <b>${data.hearts}</b></span><span>${t(uiKey('statNewNotes'), 'new field notes')} <b>${data.newNotes}</b></span>`;
+    const statSpan = (label: string, value: number) => {
+      const span = el('span');
+      span.append(`${label} `, el('b', undefined, String(value)));
+      return span;
+    };
+    stats.append(
+      statSpan(t(uiKey('statLucidity'), 'lucidity'), data.lucidity),
+      statSpan(t(uiKey('statHearts'), 'hearts kept'), data.hearts),
+      statSpan(t(uiKey('statNewNotes'), 'new field notes'), data.newNotes),
+    );
     inner.append(stats);
 
     if (data.newEpiphanies && data.newEpiphanies.length > 0) {

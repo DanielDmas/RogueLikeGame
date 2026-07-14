@@ -485,9 +485,13 @@ export class SceneDirector {
     }
     const spec = this.doorSpecs.get(id);
     if (!spec) return;
+    // 9.3: authored/translated strings only today, but escape before
+    // interpolating into innerHTML anyway — a translated hint/teaser
+    // containing a stray `<` would otherwise break rendering.
+    const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     this.tooltip.innerHTML = spec.teaser
-      ? `<span class="tip-hint">${spec.hint}</span><span class="tip-teaser">${spec.teaser}</span>`
-      : spec.hint;
+      ? `<span class="tip-hint">${esc(spec.hint)}</span><span class="tip-teaser">${esc(spec.teaser)}</span>`
+      : esc(spec.hint);
     const p = this.doors.lintel(id).clone().project(this.camera);
     // Clear the door's own glow/bloom, which extends well above its lintel —
     // the tooltip box is bottom-anchored here (CSS `translate(-50%, -100%)`),

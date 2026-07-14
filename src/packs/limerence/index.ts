@@ -301,6 +301,7 @@ export const limerencePack: ContentPack = {
   hooks: {
     finalGateId: 'the-morning-desk',
     lastMessageId: 'the-unsent',
+    lastMessageLabel: 'The envelope you chose',
   },
 
   registerText: () => {

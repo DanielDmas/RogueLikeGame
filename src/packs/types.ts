@@ -173,6 +173,11 @@ export interface ContentPack {
     finalGateId: string;
     /** The room id whose outcome captures the profile's last-message codex note. */
     lastMessageId: string;
+    /** P5: the Ledger's label for that captured line — ANAMNESIS's "Your
+     * last message" reads oddly for LIMERENCE's `the-unsent` (an address,
+     * not a message), so each pack supplies its own English fallback;
+     * translated under a pack-scoped key (`scoped(uiKey('ledgerLastMessage'), packId)`). */
+    lastMessageLabel: string;
   };
 
   /** Side-effect import that registers every translation/version entry for

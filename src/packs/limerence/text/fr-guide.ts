@@ -45,7 +45,7 @@
 // approach to gender-neutral direct address, used here once for the
 // English "traveler" vocative.
 import { registerAll } from '../../../engine/text/resolver';
-import { usherBarkKey, actIntroKey, uiKey } from '../../../engine/text/keys';
+import { usherBarkKey, actIntroKey, uiKey, ledgerLastMessageKey } from '../../../engine/text/keys';
 
 const PACK_ID = 'limerence';
 const bark = (id: string) => usherBarkKey(id, PACK_ID);
@@ -99,7 +99,14 @@ registerAll('v2', 'fr', {
   [actIntroKey(3, PACK_ID)]:
     'La moquette s’épaissit. Ce sont les chambres que les invités gardent pendant des années sans vraiment l’avoir voulu — toute une vie meublée autour d’une seule question jamais posée. Certaines des choses qui attendent derrière ces portes ont un prix que tu ressentiras, {name}, pas seulement que tu liras.',
   [actIntroKey(4, PACK_ID)]:
-    'La brume se dissipe vers quelque chose de presque semblable au matin. Trois portes restent sur cet étage, puis la réception. Ce qui se passe ici compte double, quoi qu’en dise le Portier sur le fait que l’Intervalle ne tient aucun registre. Même à si peu de la fin, une porte franchie sans attention peut encore coûter un cœur.',
+    'La brume se dissipe vers quelque chose de presque semblable au matin. Ce qu’il reste de cet étage, puis la réception. Ce qui se passe ici compte double, quoi qu’en dise le Portier sur le fait que l’Intervalle ne tient aucun registre. Même à si peu de la fin, une porte franchie sans attention peut encore coûter un cœur.',
+});
+
+// P5: the Ledger's last-message row label — LIMERENCE's own hook room
+// (the-unsent) captures an envelope choice, not a written message, so it
+// gets its own label rather than ANAMNESIS's "Your last message".
+registerAll('v2', 'fr', {
+  [ledgerLastMessageKey(PACK_ID)]: 'L’enveloppe que tu as choisie',
 });
 
 // ---------- First-heart-loss / remembered-room fallback barks ----------

@@ -22,7 +22,7 @@
 // cs-rooms-understory.ts's "Důvěra, provozovaná místo prožívaná" and the
 // "jasnost"/"Jasnost" usage across cs-reflections-act1/2/3.ts).
 import { registerAll } from '../../../engine/text/resolver';
-import { usherBarkKey, actIntroKey, uiKey } from '../../../engine/text/keys';
+import { usherBarkKey, actIntroKey, uiKey, ledgerLastMessageKey } from '../../../engine/text/keys';
 
 const PACK_ID = 'limerence';
 const bark = (id: string) => usherBarkKey(id, PACK_ID);
@@ -76,7 +76,14 @@ registerAll('v2', 'cs', {
   [actIntroKey(3, PACK_ID)]:
     'Koberec houstne. Tohle jsou pokoje, které si hosté nechávají roky, aniž by to tak úplně chtěli — celý život zařízený kolem jedné neotevřené otázky. Něco z toho, co čeká za těmihle dveřmi, má cenu, kterou ucítíte, {name}, ne jen přečtete.',
   [actIntroKey(4, PACK_ID)]:
-    'Mlha řídne do něčeho, co se skoro podobá ránu. Na tomhle patře zbývají troje dveře, a pak recepce. Co se tu stane, počítá se dvojnásob, ať vám Vrátný o Intervalu bez účetní knihy říká cokoli. I tak blízko odhlášení může neopatrné dveře pořád stát míru Důvěry.',
+    'Mlha řídne do něčeho, co se skoro podobá ránu. Co zbývá na tomhle patře, a pak recepce. Co se tu stane, počítá se dvojnásob, ať vám Vrátný o Intervalu bez účetní knihy říká cokoli. I tak blízko odhlášení může neopatrné dveře pořád stát míru Důvěry.',
+});
+
+// P5: the Ledger's last-message row label — LIMERENCE's own hook room
+// (the-unsent) captures an envelope choice, not a written message, so it
+// gets its own label rather than ANAMNESIS's "Your last message".
+registerAll('v2', 'cs', {
+  [ledgerLastMessageKey(PACK_ID)]: 'Obálka, kterou jste zvolili',
 });
 
 // ---------- First-heart-loss / remembered-room fallback barks ----------

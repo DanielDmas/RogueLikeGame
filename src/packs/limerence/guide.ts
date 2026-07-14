@@ -94,7 +94,7 @@ export function limerenceActIntroText(act: number): string | undefined {
     1: 'Ahead: a school hallway at night, lockers standing in for doors, each leaking the particular light of being fifteen and certain it’s forever. A caution, traveler: some of these doors are only feelings — and a few of them cost a measure of Trust anyway.',
     2: 'The corridor cools into something like a city apartment building — thin walls, someone else’s music through the ceiling, every door left slightly ajar on purpose. The room service worth exploring up here comes with a real reservation, and it can cost a measure of Trust.',
     3: 'The carpet thickens. These are the rooms guests keep for years without quite meaning to — a whole life furnished around one unopened question. Some of what waits behind these doors has a price you will feel, {name}, not merely read about.',
-    4: 'The fog thins toward something almost like morning. Three doors remain on this floor, and then the desk. What happens here counts twice over, whatever the Porter tells you about the Interval keeping no ledger. Even this close to checkout, a careless door can still cost a measure of Trust.',
+    4: 'The fog thins toward something almost like morning. What remains of this floor, and then the desk. What happens here counts twice over, whatever the Porter tells you about the Interval keeping no ledger. Even this close to checkout, a careless door can still cost a measure of Trust.',
   };
   const text = fallback[act];
   if (!text) return undefined;

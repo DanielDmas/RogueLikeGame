@@ -41,6 +41,13 @@ export const usherBarkKey = (id: string, packId?: string) => scoped(`usher.bark.
 
 export const uiKey = (id: string) => `ui.${id}`;
 
+/** P5: the Ledger's last-message row label is pack-specific text (each
+ * pack's own `hooks.lastMessageLabel`) sharing the chrome-UI key namespace —
+ * scoped the same way act names/intros/barks are, so a second pack's own
+ * translation doesn't collide with (or get silently overridden by)
+ * ANAMNESIS's registered one. */
+export const ledgerLastMessageKey = (packId?: string) => scoped(uiKey('ledgerLastMessage'), packId);
+
 export const keepsakeKey = (id: string, field: 'name' | 'origin') => `keepsake.${id}.${field}`;
 
 /** Spec 05 — The Examined Path. `tradition` is one of Reflection's four
