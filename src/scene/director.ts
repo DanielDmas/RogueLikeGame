@@ -56,6 +56,16 @@ export function nextAmbientDelay(rand: () => number = Math.random): number {
   return 60 + rand() * 60;
 }
 
+/** T7 continuation — the guide passing through the background while idle:
+ * a rarer, bigger event than the door flicker (90-180s vs 60-120s), since a
+ * full walk across the corridor draws more attention than one door
+ * dimming. Independent timer, not competing with the flicker's own — the
+ * two can coincide or not, same as any other pair of ambient events would.
+ * Pure, unit-tested; `rand` defaults to `Math.random`. */
+export function nextGuidePassDelay(rand: () => number = Math.random): number {
+  return 90 + rand() * 90;
+}
+
 /** 1.3 idle downshift: while a text/choice panel is up and nothing is
  * actively tweening (camera dolly, light-spill fade, Usher walk), the scene
  * is visually static — no reason to keep rendering at the profile's full
@@ -87,6 +97,9 @@ const USHER_WALK_SECONDS = 2.5;
 const CAMERA_DOLLY_SECONDS = 2.0;
 /** Amplitude of the Usher's walking bob, in scene units. */
 const USHER_BOB_AMPLITUDE = 0.03;
+/** T7 continuation — how far the guide's ambient background pass moves in
+ * from its home spot (toward the door row's center), before walking back. */
+const USHER_PASS_DISTANCE = 3.2;
 
 export type RenderScale = 'performance' | 'standard' | 'sharp';
 
@@ -121,7 +134,16 @@ export class SceneDirector {
   /** Doorway light-spill (spec 07 §Q2) — spawned in `walkThrough`, killed in `hideDoors`. */
   private spillLight: THREE.PointLight | null = null;
   private spillTween: { startT: number; duration: number; target: number } | null = null;
-  private usherWalk: { from: THREE.Vector3; to: THREE.Vector3; startT: number; duration: number } | null = null;
+  private usherWalk: {
+    from: THREE.Vector3;
+    to: THREE.Vector3;
+    startT: number;
+    duration: number;
+    /** T7 continuation — the ambient guide-pass's walk-back leg is scheduled
+     * from here once the walk-out completes, rather than needing a second
+     * piece of state to track "is this an ambient pass, and which leg." */
+    onComplete?: () => void;
+  } | null = null;
   private tooltip: HTMLDivElement;
   private events: DirectorEvents;
   private reducedMotion = false;
@@ -144,6 +166,9 @@ export class SceneDirector {
    * than firing immediately from a timer that had been running since the
    * last room. */
   private nextAmbientEventAt = Infinity;
+  /** T7 continuation — the guide's own ambient background pass; independent
+   * timer from the door flicker's (see `nextGuidePassDelay`). */
+  private nextGuidePassAt = Infinity;
   /** Title-screen-only fog parallax (spec 07 §Q3.2) — off everywhere else. */
   private parallaxEnabled = false;
   private parallaxCurrent = { x: 0, y: 0 };
@@ -401,6 +426,7 @@ export class SceneDirector {
     this.scene.add(this.doors.group);
     this.doorSpecs = new Map(specs.map((s) => [s.id, s]));
     this.nextAmbientEventAt = this.clock.elapsedTime + nextAmbientDelay();
+    this.nextGuidePassAt = this.clock.elapsedTime + nextGuidePassDelay();
     // Always frame from a consistent, correctly-centered position — not
     // wherever the previous room's walk-through dolly happened to leave the
     // camera — and pull back if the aspect ratio needs more room to fit
@@ -504,6 +530,31 @@ export class SceneDirector {
     });
   }
 
+  /** T7 continuation — the guide passing through the background while the
+   * player is idle reading a door row: walks a short distance in from its
+   * usual spot and back, unrelated to any door (no lantern retarget, no
+   * presence boost) — a background life event, not a prompt to act. Reuses
+   * the exact same walk/bob rig `walkThrough` already drives. */
+  private triggerAmbientPass(t: number) {
+    const home = this.usherHome.clone();
+    const passTo = new THREE.Vector3(home.x - USHER_PASS_DISTANCE, home.y, home.z);
+    const duration = USHER_WALK_SECONDS * this.speedMultiplier;
+    this.usherWalk = {
+      from: home,
+      to: passTo,
+      startT: t,
+      duration,
+      onComplete: () => {
+        this.usherWalk = {
+          from: passTo,
+          to: home,
+          startT: this.clock.elapsedTime,
+          duration,
+        };
+      },
+    };
+  }
+
   private setTooltip(id: string | null) {
     if (!id || !this.doors) {
       this.tooltip.classList.remove('on');
@@ -578,6 +629,16 @@ export class SceneDirector {
       this.nextAmbientEventAt = t + nextAmbientDelay();
     }
 
+    // T7 continuation — the guide passing through the background: a rarer,
+    // bigger ambient event than the door flicker. Independent timer;
+    // `!this.usherWalk` keeps it from ever interrupting a real door-walk
+    // (a player choosing a door mid-pass simply overwrites usherWalk with
+    // the real one, same as it always could).
+    if (this.doors && idleEligible && !this.reducedMotion && !this.usherWalk && t >= this.nextGuidePassAt) {
+      this.triggerAmbientPass(t);
+      this.nextGuidePassAt = t + nextGuidePassDelay();
+    }
+
     this.theme?.tick(t);
     this.usher.tick(t);
     this.doors?.tick(t, this.reducedMotion);
@@ -598,7 +659,11 @@ export class SceneDirector {
       // a small walking bob while actually in motion, so the approach reads
       // as a walk rather than a smoothly sliding prop
       if (p < 1) this.usher.group.position.y += Math.abs(Math.sin(elapsed * 6)) * USHER_BOB_AMPLITUDE;
-      if (elapsed >= this.usherWalk.duration) this.usherWalk = null;
+      if (elapsed >= this.usherWalk.duration) {
+        const onComplete = this.usherWalk.onComplete;
+        this.usherWalk = null;
+        onComplete?.();
+      }
     }
     this.usherPresence += (this.usherPresenceTarget - this.usherPresence) * Math.min(1, dt * 2.5);
     this.usher.setPresence(this.usherPresence);

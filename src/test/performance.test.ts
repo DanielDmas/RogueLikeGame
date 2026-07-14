@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { effectiveFps, nextAmbientDelay, pixelRatioFor, shouldRenderFrame } from '../scene/director';
+import { effectiveFps, nextAmbientDelay, nextGuidePassDelay, pixelRatioFor, shouldRenderFrame } from '../scene/director';
 import { isElectron } from '../ui/fullscreen';
 
 describe('shouldRenderFrame — the 60 FPS frame limiter (Phase A1)', () => {
@@ -68,6 +68,27 @@ describe('nextAmbientDelay — T7 ambient corridor life\'s jittered 60-120s time
   it('rand=0 gives the floor, rand near 1 gives near the ceiling', () => {
     expect(nextAmbientDelay(() => 0)).toBe(60);
     expect(nextAmbientDelay(() => 0.999999)).toBeCloseTo(120, 1);
+  });
+});
+
+describe('nextGuidePassDelay — T7 continuation, the guide\'s own jittered 90-180s timer', () => {
+  it('is always within [90, 180) seconds', () => {
+    for (let seed = 0; seed <= 1; seed += 0.05) {
+      const v = nextGuidePassDelay(() => seed);
+      expect(v).toBeGreaterThanOrEqual(90);
+      expect(v).toBeLessThan(180);
+    }
+  });
+
+  it('rand=0 gives the floor, rand near 1 gives near the ceiling', () => {
+    expect(nextGuidePassDelay(() => 0)).toBe(90);
+    expect(nextGuidePassDelay(() => 0.999999)).toBeCloseTo(180, 1);
+  });
+
+  it('is always rarer than the door flicker at every seed (a bigger event should not fire more often)', () => {
+    for (let seed = 0; seed <= 1; seed += 0.1) {
+      expect(nextGuidePassDelay(() => seed)).toBeGreaterThan(nextAmbientDelay(() => seed));
+    }
   });
 });
 
