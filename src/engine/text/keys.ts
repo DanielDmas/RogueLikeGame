@@ -37,6 +37,16 @@ const scoped = (base: string, packId?: string) => (packId && packId !== 'anamnes
 export const actNameKey = (act: number, packId?: string) => scoped(`act.name.${act}`, packId);
 export const actIntroKey = (act: number, packId?: string) => scoped(`act.intro.${act}`, packId);
 
+/** The Hotel Register's Understory-floor label — same engine-default/
+ * pack-override pattern as actNameKey (a graph section's own display
+ * name, not generic UI chrome): ANAMNESIS's own findings apparatus calls
+ * this "The Understory"; LIMERENCE's in-fiction name for the identical
+ * structural section (graph.understorySequence) is "The Records Office"
+ * (see packs/limerence/rooms/understory.ts's own header). Found as a
+ * real bug (2026-07-15) — the Register overlay had this hardcoded to
+ * ANAMNESIS's name for both packs. */
+export const understoryNameKey = (packId?: string) => scoped('graph.understoryName', packId);
+
 export const usherBarkKey = (id: string, packId?: string) => scoped(`usher.bark.${id}`, packId);
 
 export const uiKey = (id: string) => `ui.${id}`;
@@ -53,6 +63,20 @@ export const ledgerLastMessageKey = (packId?: string) => scoped(uiKey('ledgerLas
  * in both games), but each still needs its own registered translation, so
  * this is scoped the same way ledgerLastMessageKey is. */
 export const oneDoorButtonKey = (packId?: string) => scoped(uiKey('oneDoorButton'), packId);
+
+/** Found as a real bug alongside the item-21 UI-chrome audit (2026-07-15):
+ * these three HUD/persona strings each have per-pack English fallback text
+ * (`pack.skin.heartsTooltip`, and the persona-editor copy) that names the
+ * pack's own guide — "the Usher" for ANAMNESIS, "the Porter" for LIMERENCE —
+ * but were registered under a single unscoped `uiKey(...)`, so a second
+ * pack's translation would silently collide with (or lose to) ANAMNESIS's
+ * own registered one wherever both packs' modules are loaded together, and
+ * copying ANAMNESIS's translated text as-is would leak "Usher" vocabulary
+ * into a LIMERENCE build. Scoped the same way ledgerLastMessageKey/
+ * oneDoorButtonKey are. */
+export const heartsTooltipKey = (packId?: string) => scoped(uiKey('heartsTooltip'), packId);
+export const personaAboutLabelKey = (packId?: string) => scoped(uiKey('personaAboutLabel'), packId);
+export const personaSubKey = (packId?: string) => scoped(uiKey('personaSub'), packId);
 
 export const keepsakeKey = (id: string, field: 'name' | 'origin') => `keepsake.${id}.${field}`;
 

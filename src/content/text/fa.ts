@@ -4,7 +4,7 @@
 // translated and gracefully falls back to English v2 (see resolver.ts).
 // RTL layout and the Vazirmatn webfont are applied in ui/locale.ts.
 import { registerAll } from '../../engine/text/resolver';
-import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey, keepsakeKey, stampKey } from '../../engine/text/keys';
+import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey, keepsakeKey, stampKey, understoryNameKey } from '../../engine/text/keys';
 
 registerAll('v2', 'fa', {
   [uiKey('abandonToTitle')]: 'رها کردن و بازگشت به صفحه‌ی عنوان',
@@ -78,7 +78,7 @@ registerAll('v2', 'fa', {
   [uiKey('ledger')]: 'دفترِ مسافر',
   [uiKey('hotelRegister')]: 'دفتر ثبت',
   [uiKey('registerSub')]: 'شکل این مکان، چه در آن قدم زده باشید و چه نه',
-  [uiKey('registerUnderstoryFloor')]: 'طبقه‌ی زیرین',
+  [understoryNameKey()]: 'طبقه‌ی زیرین',
   [uiKey('registerDoorsWalked')]: 'دری که پیموده‌اید',
   [uiKey('epiphaniesTitle')]: 'بصیرت‌ها',
   [uiKey('guestStampsTitle')]: 'مهرهای مهمان',

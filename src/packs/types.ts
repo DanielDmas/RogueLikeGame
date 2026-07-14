@@ -47,6 +47,11 @@ export interface ContentPack {
     understorySequence: string[];
     optionalPerAct: Record<1 | 2 | 3, number>;
     actNamesEn: Record<ActId, string>;
+    /** The Hotel Register's display name for the Understory floor —
+     * ANAMNESIS's own findings apparatus calls it "The Understory";
+     * translated via engine/text/keys.ts's understoryNameKey (spec 08 §3
+     * engine-default/pack-override pattern, same as actNamesEn). */
+    understoryNameEn: string;
   };
 
   endingRules: {

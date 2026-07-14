@@ -23,6 +23,9 @@ import {
   actNameKey,
   stampKey,
   oneDoorButtonKey,
+  understoryNameKey,
+  personaAboutLabelKey,
+  personaSubKey,
 } from '../engine/text/keys';
 import { LANGUAGE_LABELS } from './locale';
 import { nextLang } from '../engine/text/resolver';
@@ -550,18 +553,19 @@ const ABOUT_BLURB_FALLBACK: Record<string, string> = {
 };
 
 /** Cosmetic-only persona picker: a preset name/blurb, or a custom one. No mechanical effect. */
-export function showPersona(ui: HTMLElement, persona: Persona): Promise<Persona> {
+export function showPersona(ui: HTMLElement, persona: Persona, packId?: string): Promise<Persona> {
   return new Promise((resolve) => {
     const o = overlay(ui);
     const panel = el('div', 'codex-panel persona-panel');
     panel.append(el('h2', undefined, t(uiKey('personaTitle'), 'Who are you, tonight?')));
+    const guideWord = packId === 'limerence' ? 'Porter' : 'Usher';
     panel.append(
       el(
         'div',
         'sub',
         t(
-          uiKey('personaSub'),
-          'Purely for the Usher’s benefit — this changes nothing about the rooms, only how they speak to you.',
+          personaSubKey(packId),
+          `Purely for the ${guideWord}’s benefit — this changes nothing about the rooms, only how they speak to you.`,
         ),
       ),
     );
@@ -594,7 +598,7 @@ export function showPersona(ui: HTMLElement, persona: Persona): Promise<Persona>
 
     const aboutWrap = el('div', 'persona-about');
     aboutWrap.append(
-      el('div', 'lbl', t(uiKey('personaAboutLabel'), 'About you (optional — shown to no one, felt by the Usher)')),
+      el('div', 'lbl', t(personaAboutLabelKey(packId), `About you (optional — shown to no one, felt by the ${guideWord})`)),
     );
     const aboutTexts = ABOUT_BLURB_KEYS.map((k) => t(uiKey(k), ABOUT_BLURB_FALLBACK[k]));
     let selectedBlurb = persona.blurb || '';
@@ -958,7 +962,9 @@ export function showHotelRegister(ui: HTMLElement, profile: Profile, pack: Conte
     // §5): the register shouldn't be the place a player first learns it exists.
     if (pack.graph.understorySequence.some((id) => visitedIds.has(id))) {
       const understoryRooms = pack.rooms.filter((r) => understoryIds.has(r.id));
-      if (understoryRooms.length > 0) floors.push({ label: t(uiKey('registerUnderstoryFloor'), 'The Understory'), rooms: understoryRooms });
+      if (understoryRooms.length > 0) {
+        floors.push({ label: t(understoryNameKey(pack.meta.id), pack.graph.understoryNameEn), rooms: understoryRooms });
+      }
     }
 
     let totalVisible = 0;

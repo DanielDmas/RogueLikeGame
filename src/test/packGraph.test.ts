@@ -100,6 +100,7 @@ describe('storyEngine graph parameter — actually respects a non-default graph'
     understorySequence: ['custom-under-a'],
     optionalPerAct: { 1: 0, 2: 0, 3: 0 },
     actNamesEn: { 0: 'Custom 0', 1: 'Custom 1', 2: 'Custom 2', 3: 'Custom 3', 4: 'Custom 4' },
+    understoryNameEn: 'Custom Understory',
   };
   const customRegistry = makeRegistry([
     { id: 'custom-prologue', act: 0, title: 'p', type: 'DILEMMA', doorHint: '', teaser: '', stages: [] },

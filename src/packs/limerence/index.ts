@@ -142,6 +142,7 @@ export const limerencePack: ContentPack = {
     understorySequence: ['the-registry', 'the-doors-not-opened', 'the-other-side'],
     optionalPerAct: { 1: 3, 2: 3, 3: 2 },
     actNamesEn: ACT_NAMES_EN,
+    understoryNameEn: 'The Records Office',
   },
 
   endingRules: {

@@ -71,6 +71,7 @@ export const anamnesisPack: ContentPack = {
     understorySequence: UNDERSTORY_SEQUENCE,
     optionalPerAct: OPTIONAL_PER_ACT,
     actNamesEn: ACT_NAMES_EN,
+    understoryNameEn: 'The Understory',
   },
 
   endingRules: {

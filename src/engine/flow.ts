@@ -162,6 +162,7 @@ export class Game {
         void this.persist();
       },
       pack.skin,
+      pack.meta.id,
     );
     this.text = new TextPanel(stageBottom, ui);
     this.text.setSpeakerPrefixes(pack.guide.speakerPrefixes);
@@ -408,7 +409,7 @@ export class Game {
     if (action === 'ledger') await showLedger(this.ui, this.profile, this.registry, this.pack.graph.understorySequence, this.pack.epiphanies, this.pack.endingRules.endingsTotal, this.pack.keepsakes.length, this.lastMessageLabel());
     if (action === 'register') await showHotelRegister(this.ui, this.profile, this.pack);
     if (action === 'persona') {
-      this.profile.persona = await showPersona(this.ui, this.profile.persona);
+      this.profile.persona = await showPersona(this.ui, this.profile.persona, this.pack.meta.id);
       await this.persist();
     }
     if (action === 'about') await showAbout(this.ui, this.pack);
@@ -469,7 +470,7 @@ export class Game {
       } else if (action === 'oneDoor') {
         return this.playOneDoor();
       } else if (action === 'persona') {
-        this.profile.persona = await showPersona(this.ui, this.profile.persona);
+        this.profile.persona = await showPersona(this.ui, this.profile.persona, this.pack.meta.id);
         await this.persist();
       } else if (action === 'about') {
         await showAbout(this.ui, this.pack);
@@ -496,7 +497,7 @@ export class Game {
           await this.persist();
         }
         if (action === 'new' && !this.profile.persona.name) {
-          this.profile.persona = await showPersona(this.ui, this.profile.persona);
+          this.profile.persona = await showPersona(this.ui, this.profile.persona, this.pack.meta.id);
           await this.persist();
         }
         if (action === 'continue' && this.profile.run) {

@@ -1,7 +1,7 @@
 import { el } from './dom';
 import { MAX_HEARTS } from '../engine/gameState';
 import { nextLang, t } from '../engine/text/resolver';
-import { uiKey } from '../engine/text/keys';
+import { uiKey, heartsTooltipKey } from '../engine/text/keys';
 import type { Lang } from '../engine/text/resolver';
 
 /** ANAMNESIS's own wording — the engine-default half of the spec 08 §3
@@ -23,6 +23,7 @@ export class Hud {
   private langBtn: HTMLButtonElement;
   private menuBtn!: HTMLButtonElement;
   private skin: { heartsSvg: string; heartsAriaLabel?: string; heartsTooltip?: string; lucidityTooltip?: string };
+  private packId?: string;
 
   /**
    * `onLanguageChange` fires immediately on click — no pause menu required.
@@ -37,14 +38,16 @@ export class Hud {
     initialLang: Lang,
     onLanguageChange: (lang: Lang) => void,
     skin: { heartsSvg: string; heartsAriaLabel?: string; heartsTooltip?: string; lucidityTooltip?: string },
+    packId?: string,
   ) {
     this.skin = skin;
+    this.packId = packId;
     this.root = el('div', 'hud');
     const hearts = el('div', 'hearts');
     this.heartsEl = hearts;
     hearts.setAttribute('role', 'status');
     hearts.setAttribute('aria-label', t(uiKey('heartsAriaLabel'), skin.heartsAriaLabel ?? DEFAULT_HEARTS_ARIA_LABEL));
-    hearts.title = t(uiKey('heartsTooltip'), skin.heartsTooltip ?? DEFAULT_HEARTS_TOOLTIP);
+    hearts.title = t(heartsTooltipKey(packId), skin.heartsTooltip ?? DEFAULT_HEARTS_TOOLTIP);
     for (let i = 0; i < MAX_HEARTS; i++) {
       const h = el('div', 'heart');
       h.innerHTML = skin.heartsSvg;
@@ -89,7 +92,7 @@ export class Hud {
   setLanguage(lang: Lang) {
     this.langBtn.textContent = LANG_SHORT[lang];
     this.heartsEl.setAttribute('aria-label', t(uiKey('heartsAriaLabel'), this.skin.heartsAriaLabel ?? DEFAULT_HEARTS_ARIA_LABEL));
-    this.heartsEl.title = t(uiKey('heartsTooltip'), this.skin.heartsTooltip ?? DEFAULT_HEARTS_TOOLTIP);
+    this.heartsEl.title = t(heartsTooltipKey(this.packId), this.skin.heartsTooltip ?? DEFAULT_HEARTS_TOOLTIP);
     this.lucidityEl.title = t(uiKey('lucidityTooltip'), this.skin.lucidityTooltip ?? DEFAULT_LUCIDITY_TOOLTIP);
     this.langBtn.title = t(uiKey('hudLanguageTooltip'), 'Change language (applies from the next beat onward)');
     this.menuBtn.textContent = t(uiKey('menu'), 'Menu');

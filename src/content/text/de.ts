@@ -6,7 +6,7 @@
 // the infrastructure + UI/structural layer, translated from the English v2
 // source directly (never via Czech), matching cs.ts's key inventory.
 import { registerAll } from '../../engine/text/resolver';
-import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey, keepsakeKey, stampKey } from '../../engine/text/keys';
+import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey, keepsakeKey, stampKey, understoryNameKey } from '../../engine/text/keys';
 
 registerAll('v2', 'de', {
   [uiKey('abandonToTitle')]: 'Aufgeben und zum Titelbildschirm zurückkehren',
@@ -80,7 +80,7 @@ registerAll('v2', 'de', {
   [uiKey('ledger')]: 'Reisetagebuch',
   [uiKey('hotelRegister')]: 'Das Register',
   [uiKey('registerSub')]: 'die Gestalt dieses Ortes — ob Sie ihn schon durchschritten haben oder nicht',
-  [uiKey('registerUnderstoryFloor')]: 'Das Untergeschoss',
+  [understoryNameKey()]: 'Das Untergeschoss',
   [uiKey('registerDoorsWalked')]: 'durchschrittene Türen',
   [uiKey('epiphaniesTitle')]: 'Erkenntnisse',
   [uiKey('guestStampsTitle')]: 'Gäste-Stempel',

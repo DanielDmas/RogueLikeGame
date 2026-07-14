@@ -28,6 +28,7 @@ const DEFAULT_GRAPH: Graph = {
   understorySequence: ANAMNESIS_UNDERSTORY_SEQUENCE,
   optionalPerAct: ANAMNESIS_OPTIONAL_PER_ACT,
   actNamesEn: {} as Graph['actNamesEn'], // unused by this module
+  understoryNameEn: 'The Understory', // unused by this module
 };
 
 export function makeRegistry(rooms: Room[]): RoomRegistry {

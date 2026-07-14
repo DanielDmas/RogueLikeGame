@@ -3,7 +3,7 @@
 // long-form room prose (beats, choice outcomes, field notes) is not yet
 // translated and gracefully falls back to English v2 (see resolver.ts).
 import { registerAll } from '../../engine/text/resolver';
-import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey, keepsakeKey, stampKey } from '../../engine/text/keys';
+import { uiKey, actNameKey, actIntroKey, usherBarkKey, roomTitleKey, roomDoorHintKey, roomTeaserKey, endingTitleKey, endingEpitaphKey, keepsakeKey, stampKey, understoryNameKey } from '../../engine/text/keys';
 
 registerAll('v2', 'cs', {
   [uiKey('abandonToTitle')]: 'Opustit a vrátit se na titulní obrazovku',
@@ -77,7 +77,7 @@ registerAll('v2', 'cs', {
   [uiKey('ledger')]: 'Cestovatelský deník',
   [uiKey('hotelRegister')]: 'Rejstřík',
   [uiKey('registerSub')]: 'podoba tohoto místa, ať už jste jím prošli, nebo ne',
-  [uiKey('registerUnderstoryFloor')]: 'Podzemí',
+  [understoryNameKey()]: 'Podzemí',
   [uiKey('registerDoorsWalked')]: 'projitých dveří',
   [uiKey('epiphaniesTitle')]: 'Poznání',
   [uiKey('guestStampsTitle')]: 'Razítka hosta',
