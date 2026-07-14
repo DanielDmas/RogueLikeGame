@@ -3,14 +3,29 @@
   --sans: 'Inter', system-ui, sans-serif;
   --ink: #e8e4da;
   --ink-dim: #a89f8f;
-  --ink-faint: #6b6357;
+  /* I9 readability audit (2026-07-14): #6b6357 measured 3.18:1 against
+     --bg — below WCAG AA's 4.5:1 floor for normal text, and this variable
+     is used almost exclusively for real (if small) reading text: room-type
+     labels, settings descriptions, teasers, meta rows. Lightened just
+     enough to clear 4.5:1; kept as close to the original hue as possible
+     so it still reads as visually "quieter" than --ink-dim. */
+  --ink-faint: #837c72;
   --gold: #d4b36a;
+  /* Text-safe alias for --gold: identical here (--gold already clears
+     9.37:1 against --bg) — exists so genuine reading text (Usher lines,
+     door choice text, field-note emphasis, etc.) can reference one token
+     that LIMERENCE's light theme overrides separately from the many
+     purely decorative --gold uses (borders, glows, icon fills, hover
+     highlights) that don't need the same fix. */
+  --gold-text: var(--gold);
   --gold-dim: rgba(212, 179, 106, 0.35);
   --bg: #14110d;
   --panel: rgba(20, 17, 13, 0.82);
   --panel-hover: rgba(32, 27, 21, 0.9);
   --panel-edge: rgba(212, 179, 106, 0.18);
-  --danger: #b3543f;
+  /* I9: #b3543f measured 3.82:1 against --bg — below AA. Same lightening
+     treatment as --ink-faint above. */
+  --danger: #bb6552;
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
   --field-note-grad: linear-gradient(180deg, #171410 0%, #100e0b 100%);
   --overlay-grad: radial-gradient(ellipse at 50% 40%, rgba(16, 15, 18, 0.88) 0%, rgba(5, 5, 7, 0.97) 100%);
@@ -25,14 +40,17 @@
 body.pack-limerence {
   --ink: #ede7dd;
   --ink-dim: #b8ab9a;
-  --ink-faint: #7a6f60;
+  /* I9: #7a6f60 measured 3.85:1 against this palette's --bg — below AA;
+     see :root's --ink-faint comment for the same fix rationale. */
+  --ink-faint: #857b6d;
   --gold: #e0995a;
+  --gold-text: var(--gold);
   --gold-dim: rgba(224, 153, 106, 0.35);
   --bg: #0d1116;
   --panel: rgba(13, 17, 22, 0.84);
   --panel-hover: rgba(22, 29, 34, 0.92);
   --panel-edge: rgba(90, 168, 168, 0.2);
-  --danger: #b3543f;
+  --danger: #bb6552;
   --field-note-grad: linear-gradient(180deg, #171d20 0%, #0e1215 100%);
   --overlay-grad: radial-gradient(ellipse at 50% 40%, rgba(15, 19, 24, 0.9) 0%, rgba(6, 8, 10, 0.97) 100%);
 }
@@ -46,8 +64,19 @@ body.pack-limerence {
 body.pack-limerence.theme-light {
   --ink: #2b2620;
   --ink-dim: #5c5346;
-  --ink-faint: #8a8071;
+  /* I9: #8a8071 measured 3.30:1 against this palette's --bg — below AA. */
+  --ink-faint: #71695d;
   --gold: #b8763a;
+  /* I9: --gold itself measured only 3.14:1 against this theme's cream
+     --bg — the one palette where "clay-amber" is genuinely close to its
+     own background. That's fine for --gold's many decorative uses
+     (borders, glows, icon fills — WCAG's non-text 3:1 floor), but --gold
+     is also used, unmodified until this fix, for real reading text: every
+     Porter/Usher-voiced line, door choice text, field-note emphasis,
+     persona/ending titles, run-stats and Ledger values. This darker,
+     more clay-forward value clears 4.5:1 while staying in the same
+     family the design brief asked for ("a muted clay-amber accent"). */
+  --gold-text: #935e2e;
   --gold-dim: rgba(184, 118, 58, 0.28);
   --bg: #f2ece0;
   --panel: rgba(255, 251, 244, 0.9);
@@ -183,7 +212,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 
 .room-title {
   font-family: var(--sans); font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
-  color: var(--gold); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: baseline;
+  color: var(--gold-text); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: baseline;
 }
 .room-title .room-type { color: var(--ink-faint); letter-spacing: 0.2em; }
 .room-title .room-remembered-tag {
@@ -214,7 +243,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
   font-family: var(--serif); font-size: 17.5px; line-height: 1.62; color: var(--ink);
   max-width: 84ch;
 }
-.beat.usher { color: var(--gold); font-style: italic; }
+.beat.usher { color: var(--gold-text); font-style: italic; }
 .beat.usher::before { content: ''; }
 .high-contrast .beat { color: #fff; }
 .high-contrast .beat.usher { color: #ffd98a; }
@@ -266,7 +295,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 }
 .reflection-header {
   font-family: var(--sans); font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
-  color: var(--gold); margin-bottom: 18px;
+  color: var(--gold-text); margin-bottom: 18px;
 }
 .reflection-rows { display: flex; flex-direction: column; gap: 16px; }
 .reflection-row { display: flex; gap: 18px; align-items: baseline; }
@@ -349,7 +378,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 .choice-card .hint { font-size: 12px; color: var(--ink-dim); font-style: italic; font-family: var(--serif); }
 
 /* door cards (choosing the next room) */
-.choice-card.door .txt { color: var(--gold); }
+.choice-card.door .txt { color: var(--gold-text); }
 .choice-card.door.secret { border-color: rgba(150, 120, 220, 0.4); }
 .choice-card.door.secret .txt { color: #b9a7e8; }
 .choice-card.door .door-text-col { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
@@ -359,7 +388,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 .choice-card.door .door-unseen-badge {
   flex-shrink: 0; align-self: flex-start;
   font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--gold); border: 1px solid var(--gold-dim); border-radius: 20px;
+  color: var(--gold-text); border: 1px solid var(--gold-dim); border-radius: 20px;
   padding: 2px 8px; opacity: 0.85;
 }
 
@@ -383,7 +412,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
   display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex: none;
 }
 .field-note .fn-label {
-  font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold);
+  font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold-text);
   margin-bottom: 10px;
 }
 .field-note .fn-icon {
@@ -400,10 +429,10 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 @media (min-width: 900px) {
   .field-note p { columns: 2; column-gap: 42px; max-width: none; }
 }
-.field-note strong { color: var(--gold); font-weight: 600; }
+.field-note strong { color: var(--gold-text); font-weight: 600; }
 .field-note .fn-close {
   margin-top: 18px; width: 100%; text-align: center; flex: none;
-  font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold);
+  font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold-text);
   padding: 12px; border: 1px solid var(--gold-dim); border-radius: 8px;
   transition: background 0.3s;
 }
@@ -412,7 +441,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 /* ---------- door hint tooltip (in-scene) ---------- */
 .door-tip {
   position: absolute; z-index: 18; transform: translate(-50%, -100%);
-  font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--gold);
+  font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--gold-text);
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9); pointer-events: none;
   opacity: 0; transition: opacity 0.3s var(--ease);
   text-align: center; max-width: 46ch;
@@ -426,7 +455,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 .save-toast {
   position: absolute; top: 22px; left: 50%; transform: translate(-50%, -14px);
   z-index: 25; pointer-events: none;
-  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold);
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-text);
   background: var(--panel); border: 1px solid var(--gold-dim); border-radius: 20px;
   padding: 8px 18px; opacity: 0;
   transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
@@ -453,7 +482,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 .title-age-advisory {
   margin-top: 10px; display: inline-block; align-self: center;
   font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--gold); border: 1px solid var(--gold-dim); border-radius: 20px;
+  color: var(--gold-text); border: 1px solid var(--gold-dim); border-radius: 20px;
   padding: 3px 12px; opacity: 0.85;
 }
 .how-to-play {
@@ -462,7 +491,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 .how-to-play span {
   font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--ink-dim);
 }
-.how-to-play b { color: var(--gold); font-style: normal; }
+.how-to-play b { color: var(--gold-text); font-style: normal; }
 .title-version {
   position: absolute; right: 18px; bottom: 14px; font-family: var(--mono, monospace);
   font-size: 10px; letter-spacing: 0.05em; color: var(--ink-faint); opacity: 0.6;
@@ -498,7 +527,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 .codex-card .cx-act { font-size: 9.5px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-faint); }
 .codex-card .cx-title { font-family: var(--serif); font-size: 16.5px; color: var(--ink); }
 .codex-card .cx-thinkers { font-family: var(--serif); font-style: italic; font-size: 12px; color: var(--ink-dim); }
-.codex-card.ending-card .cx-title { color: var(--gold); }
+.codex-card.ending-card .cx-title { color: var(--gold-text); }
 
 /* T2: The Hotel Register — a facility map, grouped by floor. Unvisited
    doors stay dark but still carry their own teaser text (unlike the
@@ -562,7 +591,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
   border: 1px solid var(--panel-edge); border-radius: 6px; padding: 7px 16px; min-width: 74px;
   transition: color 0.25s, border-color 0.25s;
 }
-.toggle.on { color: var(--gold); border-color: var(--gold-dim); }
+.toggle.on { color: var(--gold-text); border-color: var(--gold-dim); }
 .toggle.cycle { min-width: 190px; }
 .toggle.danger { color: var(--danger); border-color: rgba(179, 84, 63, 0.35); min-width: 160px; }
 .toggle.danger.armed { color: #fff; background: rgba(179, 84, 63, 0.25); border-color: var(--danger); }
@@ -594,7 +623,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 }
 .persona-card:hover { border-color: var(--gold-dim); }
 .persona-card.selected { border-color: var(--gold); background: rgba(212, 179, 106, 0.08); }
-.persona-card-name { font-family: var(--serif); font-size: 16px; color: var(--gold); }
+.persona-card-name { font-family: var(--serif); font-size: 16px; color: var(--gold-text); }
 .persona-card-blurb { font-family: var(--serif); font-style: italic; font-size: 12.5px; color: var(--ink-dim); }
 .persona-name-row {
   margin-top: 18px; display: flex; align-items: center; gap: 14px; justify-content: center;
@@ -612,7 +641,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
   border: 1px solid var(--panel-edge); border-radius: 8px; padding: 10px 14px; transition: border-color 0.2s, color 0.2s;
 }
 .persona-blurb-btn:hover { border-color: var(--gold-dim); }
-.persona-blurb-btn.selected { border-color: var(--gold); color: var(--gold); }
+.persona-blurb-btn.selected { border-color: var(--gold); color: var(--gold-text); }
 .persona-free-text { resize: vertical; min-height: 44px; width: 100%; }
 
 .import-textarea {
@@ -625,7 +654,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 .about-panel { width: min(760px, 100%); max-height: 84vh; overflow-y: auto; }
 .about-body { margin-top: 22px; display: flex; flex-direction: column; gap: 16px; text-align: left; }
 .about-body p { font-family: var(--serif); font-size: 14.5px; line-height: 1.65; color: var(--ink-dim); }
-.about-body b { color: var(--gold); font-weight: 500; }
+.about-body b { color: var(--gold-text); font-weight: 500; }
 .about-heart-glyph {
   display: inline-block; width: 14px; height: 14px; margin-right: 6px; vertical-align: -1px;
 }
@@ -657,14 +686,14 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
   display: flex; gap: 16px; padding: 9px 4px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   font-family: var(--serif); font-size: 14px; line-height: 1.5;
 }
-.recap-item .r-title { color: var(--gold); white-space: nowrap; min-width: 180px; }
+.recap-item .r-title { color: var(--gold-text); white-space: nowrap; min-width: 180px; }
 .recap-item .r-thesis { color: var(--ink-dim); font-style: italic; }
 
 .run-stats {
   margin-top: 26px; display: flex; gap: 34px; justify-content: center;
   font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-dim);
 }
-.run-stats b { color: var(--gold); font-weight: 500; }
+.run-stats b { color: var(--gold-text); font-weight: 500; }
 
 /* ---------- the traveler's ledger (spec 06) ---------- */
 .ledger-stats { margin-top: 8px; width: min(680px, 92vw); }
@@ -673,7 +702,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
   border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-family: var(--serif); font-size: 14px;
 }
 .ledger-label { color: var(--ink-dim); }
-.ledger-value { color: var(--gold); text-align: right; }
+.ledger-value { color: var(--gold-text); text-align: right; }
 .ledger-epiphanies-title {
   margin-top: 32px; font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-faint);
   text-align: center;
