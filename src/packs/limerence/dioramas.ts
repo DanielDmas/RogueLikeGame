@@ -513,6 +513,175 @@ function theMorningDeskDiorama(quality: Quality): Diorama {
   };
 }
 
+// ---------- the-screenshot: a phone under a fan of arriving screenshots ----------
+function theScreenshotDiorama(quality: Quality): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0.85, DIORAMA_Z);
+  const phoneMat = mat(0x0a0a0c, 0xd4b36a, 0.4);
+  const phone = box(0.36, 0.66, 0.03, phoneMat);
+  const panelCount = quality === 'high' ? 3 : 2;
+  const panels: { mesh: THREE.Mesh; mat: THREE.MeshStandardMaterial; phase: number; dx: number }[] = [];
+  for (let i = 0; i < panelCount; i++) {
+    const m = mat(0xe8dcc4, 0xb84a3c, 0.35);
+    const panel = box(0.24, 0.4, 0.01, m);
+    const dx = (i - (panelCount - 1) / 2) * 0.32;
+    panel.position.set(dx, 0.55, 0.08 + i * 0.02);
+    panel.rotation.z = (i - (panelCount - 1) / 2) * 0.08;
+    panels.push({ mesh: panel, mat: m, phase: i * 1.1, dx });
+    group.add(panel);
+  }
+  const light = new THREE.PointLight(0xb84a3c, 0.5, 4, quality === 'high' ? 2 : 1.4);
+  light.position.set(0, 0.4, 0.5);
+  group.add(phone, light);
+  return {
+    group,
+    tick(t) {
+      // Screenshots arrive on a loop, mid-air/airdropped, never quite landing.
+      for (const p of panels) {
+        const cycle = (t * 0.5 + p.phase) % 4;
+        p.mesh.position.y = 0.9 - Math.min(1, cycle / 2) * 0.35;
+        p.mat.emissiveIntensity = cycle < 2 ? 0.5 - cycle * 0.15 : 0;
+      }
+    },
+    dispose: trackDispose(group),
+  };
+}
+
+// ---------- the-scoreboard: a lobby rearranged into a hearing — chairs in rows, a lamp held as a gavel ----------
+function theScoreboardDiorama(quality: Quality): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0, DIORAMA_Z);
+  const bench = box(1.3, 0.4, 0.4, mat(0x1c1611));
+  bench.position.set(0, 0.2, -0.3);
+  const chairMat = mat(0x241d14);
+  const rowCount = quality === 'high' ? 4 : 3;
+  for (let i = 0; i < rowCount; i++) {
+    const chair = box(0.24, 0.32, 0.24, chairMat);
+    chair.position.set((i - (rowCount - 1) / 2) * 0.36, 0.16, 0.35);
+    group.add(chair);
+  }
+  const lampMat = mat(0x2a2114, 0xd89055, 0.6, { metalness: 0.5, roughness: 0.4 });
+  const lampBase = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.05, 0.32, 8), lampMat);
+  lampBase.position.set(0, 0.55, -0.3);
+  lampBase.rotation.z = 0.5;
+  const lampHead = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.12, 10), lampMat);
+  lampHead.position.set(0.13, 0.68, -0.3);
+  lampHead.rotation.z = 0.5;
+  const light = new THREE.PointLight(0xd89055, 0.6, 3.5, quality === 'high' ? 2 : 1.4);
+  light.position.set(0.15, 0.7, -0.1);
+  group.add(bench, lampBase, lampHead, light);
+  let strikePhase = 0;
+  return {
+    group,
+    tick(t) {
+      // A slow, rhythmic tilt — the gavel that was never actually a gavel, striking anyway.
+      strikePhase = (t * 0.7) % (Math.PI * 2);
+      const strike = Math.max(0, Math.sin(strikePhase)) ** 6;
+      lampBase.rotation.z = 0.5 - strike * 0.35;
+      lampHead.rotation.z = 0.5 - strike * 0.35;
+      light.intensity = 0.5 + strike * 0.6;
+    },
+    dispose: trackDispose(group),
+  };
+}
+
+// ---------- the-veto: a drawer of emergency keys, one singled out ----------
+function theVetoDiorama(quality: Quality): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0, DIORAMA_Z);
+  const desk = box(1.4, 0.5, 0.7, mat(0x1e1710));
+  desk.position.set(0, 0.25, 0);
+  const drawerMat = mat(0x14100c);
+  const drawer = box(0.9, 0.18, 0.55, drawerMat);
+  drawer.position.set(0, 0.44, 0.32);
+  const keyMat = mat(0x3a3020, 0x000000, 0, { metalness: 0.75, roughness: 0.3 });
+  const vetoKeyMat = mat(0x8a6a2a, 0xb84a3c, 0.5, { metalness: 0.75, roughness: 0.3 });
+  const keyCount = quality === 'high' ? 5 : 3;
+  let vetoKey: THREE.Mesh | null = null;
+  for (let i = 0; i < keyCount; i++) {
+    const isVeto = i === Math.floor(keyCount / 2);
+    const key = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.14, 6), isVeto ? vetoKeyMat : keyMat);
+    key.rotation.z = Math.PI / 2;
+    key.position.set((i - (keyCount - 1) / 2) * 0.16, 0.5, 0.55);
+    if (isVeto) vetoKey = key;
+    group.add(key);
+  }
+  const light = new THREE.PointLight(0xb84a3c, 0.5, 3.5, quality === 'high' ? 2 : 1.4);
+  light.position.set(0, 0.7, 0.5);
+  group.add(desk, drawer, light);
+  return {
+    group,
+    tick(t) {
+      // The invoked key catches the light; the others stay dull — "an emergency to somebody, given time."
+      if (vetoKey && vetoKey.material instanceof THREE.MeshStandardMaterial) {
+        vetoKey.material.emissiveIntensity = 0.4 + Math.sin(t * 1.5) * 0.25;
+      }
+    },
+    dispose: trackDispose(group),
+  };
+}
+
+// ---------- the-drift: two mugs on a low table, comfortable and still ----------
+function theDriftDiorama(quality: Quality): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0, DIORAMA_Z);
+  const table = box(1.2, 0.05, 0.7, mat(0x1e1710));
+  table.position.set(0, 0.42, 0);
+  const mugMatA = mat(0x241d14, 0xd4b36a, 0.18);
+  const mugMatB = mat(0x1a1a1c, 0xd4b36a, 0.18);
+  const mugA = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.06, 0.12, 10), mugMatA);
+  mugA.position.set(-0.28, 0.51, 0.1);
+  const mugB = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.06, 0.12, 10), mugMatB);
+  mugB.position.set(0.28, 0.51, -0.1);
+  const light = new THREE.PointLight(0xd4b36a, 0.3, 4, quality === 'high' ? 2 : 1.4);
+  light.position.set(0, 0.9, 0.3);
+  group.add(table, mugA, mugB, light);
+  return {
+    group,
+    // Deliberately near-static: "nothing is wrong" is the whole point — the
+    // faintest possible warmth, not a pulse, so this room never reads as
+    // tense the way most of the wing's dioramas do.
+    tick(t) {
+      const still = 0.16 + Math.sin(t * 0.15) * 0.02;
+      mugMatA.emissiveIntensity = still;
+      mugMatB.emissiveIntensity = still;
+    },
+    dispose: trackDispose(group),
+  };
+}
+
+// ---------- the-registry: shelves of identical grey files, one glowing ----------
+function theRegistryDiorama(quality: Quality): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0, DIORAMA_Z);
+  const shelfMat = mat(0x18140f);
+  const fileMat = mat(0x5a564c, 0x000000, 0);
+  const ownFileMat = mat(0xe8dcc4, 0xd4b36a, 0.5);
+  const rows = quality === 'high' ? 3 : 2;
+  const cols = 6;
+  for (let r = 0; r < rows; r++) {
+    const shelf = box(2.0, 0.03, 0.35, shelfMat);
+    shelf.position.set(0, 0.3 + r * 0.4, -0.2 - r * 0.15);
+    group.add(shelf);
+    for (let c = 0; c < cols; c++) {
+      const isOwn = r === rows - 1 && c === cols - 1;
+      const file = box(0.14, 0.22, 0.28, isOwn ? ownFileMat : fileMat);
+      file.position.set((c - (cols - 1) / 2) * 0.3, 0.42 + r * 0.4, -0.2 - r * 0.15);
+      group.add(file);
+    }
+  }
+  const light = new THREE.PointLight(0xd4b36a, 0.4, 4, quality === 'high' ? 2 : 1.4);
+  light.position.set(0.75, 0.9, 0.4);
+  group.add(light);
+  return {
+    group,
+    tick(t) {
+      ownFileMat.emissiveIntensity = 0.35 + Math.sin(t * 0.8) * 0.15;
+    },
+    dispose: trackDispose(group),
+  };
+}
+
 type DioramaBuilder = (quality: Quality) => Diorama;
 
 const REGISTRY: Record<string, DioramaBuilder> = {
@@ -534,6 +703,11 @@ const REGISTRY: Record<string, DioramaBuilder> = {
   'the-wedding-eve': theWeddingEveDiorama,
   'the-unsent': theUnsentDiorama,
   'the-morning-desk': theMorningDeskDiorama,
+  'the-screenshot': theScreenshotDiorama,
+  'the-scoreboard': theScoreboardDiorama,
+  'the-veto': theVetoDiorama,
+  'the-drift': theDriftDiorama,
+  'the-registry': theRegistryDiorama,
 };
 
 export function limerenceDioramaFor(roomId: string, quality: Quality): Diorama | null {

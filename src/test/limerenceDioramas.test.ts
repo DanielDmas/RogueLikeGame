@@ -36,6 +36,12 @@ const DIORAMA_ROOM_IDS = [
   'the-wedding-eve',
   'the-unsent',
   'the-morning-desk',
+  // Eighth session: 5 more, closing part of the gap toward ANAMNESIS's ~22.
+  'the-screenshot',
+  'the-scoreboard',
+  'the-veto',
+  'the-drift',
+  'the-registry',
 ];
 
 describe('LIMERENCE bespoke room dioramas (F5) — registry, budget, disposal', () => {
