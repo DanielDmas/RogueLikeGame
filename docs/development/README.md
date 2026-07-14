@@ -1,5 +1,11 @@
 # Milestone 5 Developer Specifications
 
+> **Historical design docs.** Milestone 5 and everything after it (LIMERENCE's
+> full release, the final-release review, and the post-implementation audit)
+> have since shipped — see the repository root `README.md` and `CHANGELOG.md`
+> for current status. This directory is preserved as-written for historical
+> record; it is not kept up to date.
+
 This directory contains the complete developer notes for Milestone 5 — **The
 Deeper Facility** (target release: `v0.2.0-beta`). Each document specifies one
 upgrade area to the depth needed for a developer agent with **no prior session

@@ -1,5 +1,11 @@
 # LIMERENCE — Design Specifications (second title on the ANAMNESIS engine)
 
+> **Historical design docs.** LIMERENCE has since shipped as a complete,
+> content-complete title (all rooms, 7 endings, 4 languages) — see the
+> repository root `README.md` for current status. This document is preserved
+> as-written, from before implementation began, for historical record; it is
+> not kept up to date.
+
 **Status: design only. No implementation has started.** Implementation begins
 only on an explicit owner command, milestone by milestone (see
 `09-milestones-testing.md`).
