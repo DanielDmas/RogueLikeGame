@@ -1,10 +1,13 @@
 # Milestone 5 Developer Specifications
 
-> **Historical design docs.** Milestone 5 and everything after it (LIMERENCE's
-> full release, the final-release review, and the post-implementation audit)
-> have since shipped — see the repository root `README.md` and `CHANGELOG.md`
-> for current status. This directory is preserved as-written for historical
-> record; it is not kept up to date.
+> **Historical design docs (01–11).** Milestone 5 and everything after it
+> (LIMERENCE's full release, the final-release review, and the
+> post-implementation audit) have since shipped — see the repository root
+> `README.md` and `CHANGELOG.md` for current status. Documents 01–11 are
+> preserved as-written for historical record and are not kept up to date.
+> **`13-master-development-plan.md` is the live exception** — it is the
+> current, de-duplicated list of what's still open, decided against, or
+> binding going forward, and is kept up to date as work lands.
 
 This directory contains the complete developer notes for Milestone 5 — **The
 Deeper Facility** (target release: `v0.2.0-beta`). Each document specifies one
@@ -37,6 +40,8 @@ audit findings and the hardening items it added to the plan (R8–R11, S6–S7).
 | `09-testing-and-release.md` | S | The `?uat=1` test mode, feature→test traceability matrix, verification debt, release procedure |
 | `10-experience-charter.md` | all | **Binding UX/beauty rules** every spec is implemented under, plus the owner's pre-release feel-pass checklist |
 | `11-production-review.md` | all | **Production review (2026-07-06):** spec-completeness & release-readiness audit — findings, explicit assumptions, risks by severity, the added hardening items (R8–R11, S6–S7), release gates, and binding process rules (Definition of Done, architecture rules) |
+| `12-final-release-review.md` | all | **Final-release review (2026-07-12):** pre-1.0 code/architecture review, docs-standardization inventory, nine owner-requested feature designs, and an entertainment-features plan. Historical — largely implemented since. |
+| `13-master-development-plan.md` | all | **Live master plan (kept current).** The single de-duplicated list of what's still open, decided against (with reasons), and binding going forward. Start here for "what's next." |
 
 ## Implementation order and dependencies
 
