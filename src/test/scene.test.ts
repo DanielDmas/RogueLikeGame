@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
 import { buildTheme, silhouette, usherFigure } from '../scene/themes';
-import { createDoors, DOOR_Z, flickerEnvelope, hoverPulseIntensity, SELECT_SNAP_BOOST } from '../scene/doors';
+import { createDoors, DOOR_Z, flickerEnvelope, hoverLightSpill, hoverPulseIntensity, SELECT_SNAP_BOOST } from '../scene/doors';
 import { GradeShader } from '../scene/post';
 
 function ambientIntensity(group: THREE.Group): number {
@@ -219,6 +219,39 @@ describe('doors — real interactive doors read as unmistakably alive', () => {
     });
     expect(lights.length).toBeGreaterThanOrEqual(2);
     expect(lights.some((l) => l.position.y < 0.5)).toBe(true);
+    set.dispose();
+  });
+
+  it('hoverLightSpill stays within [base, base*(1+boost)] and holds at the peak under reduced motion', () => {
+    for (let t = 0; t < 10; t += 0.37) {
+      const v = hoverLightSpill(1.5, t, false);
+      expect(v).toBeGreaterThanOrEqual(1.5);
+      expect(v).toBeLessThanOrEqual(1.5 * 1.4 + 1e-9);
+    }
+    expect(hoverLightSpill(1.5, 0, true)).toBeCloseTo(1.5 * 1.4, 6);
+    expect(hoverLightSpill(1.5, 5, true)).toBeCloseTo(1.5 * 1.4, 6);
+  });
+
+  it('item 7: a hovered door\'s point light and floor pool breathe brighter, and reset once unhovered', () => {
+    const set = createDoors([{ id: 'a', hint: 'a' }]);
+    const lightsOf = (id: string) => {
+      const found: THREE.PointLight[] = [];
+      const meshEntry = set.meshes.find((m) => m.userData.doorId === id);
+      const door = meshEntry?.parent;
+      door?.traverse((o) => {
+        if (o instanceof THREE.PointLight) found.push(o);
+      });
+      return found;
+    };
+    const baseIntensities = lightsOf('a').map((l) => l.intensity);
+    set.setHover('a');
+    set.tick(0, false);
+    const hoveredIntensities = lightsOf('a').map((l) => l.intensity);
+    hoveredIntensities.forEach((v, i) => expect(v).toBeGreaterThanOrEqual(baseIntensities[i]));
+    set.setHover(null);
+    set.tick(0.5, false);
+    const resetIntensities = lightsOf('a').map((l) => l.intensity);
+    expect(resetIntensities).toEqual(baseIntensities);
     set.dispose();
   });
 });

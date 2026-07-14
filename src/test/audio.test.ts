@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { ACT_MOTE_SCALES, ACT_PROGRESSIONS, hoverPitch, jitterSeconds, makeImpulseSamples, pickMote, SoundEngine } from '../audio/soundEngine';
+import {
+  ACT_MOTE_SCALES,
+  ACT_PROGRESSIONS,
+  doorCreakFrequency,
+  hoverPitch,
+  jitterSeconds,
+  makeImpulseSamples,
+  pickMote,
+  SoundEngine,
+} from '../audio/soundEngine';
 
 describe('audio — dynamic ambient music data (no AudioContext required)', () => {
   it('every act has at least one chord, and every chord has three voices', () => {
@@ -108,6 +117,31 @@ describe('audio — door hover pitch table (spec 07 §Q5.3, no AudioContext requ
 
   it('the same index always resolves to the same pitch — every hover source must agree', () => {
     expect(hoverPitch(3)).toBe(hoverPitch(3));
+  });
+});
+
+describe('audio — door-creak filter frequency (item 7, no AudioContext required)', () => {
+  it('defaults to 220 Hz with no index (or a negative one)', () => {
+    expect(doorCreakFrequency()).toBe(220);
+    expect(doorCreakFrequency(-1)).toBe(220);
+  });
+
+  it('every door index resolves to a pentatonic offset above 220 Hz, spread over 2 octaves', () => {
+    const expected = [0, 2, 4, 7, 9].map((semi) => 220 * Math.pow(2, semi / 24));
+    for (let i = 0; i < 5; i++) {
+      expect(doorCreakFrequency(i)).toBeCloseTo(expected[i], 6);
+    }
+  });
+
+  it('cycles for door indices beyond the table length, same as hoverPitch', () => {
+    expect(doorCreakFrequency(5)).toBeCloseTo(doorCreakFrequency(0), 6);
+    expect(doorCreakFrequency(6)).toBeCloseTo(doorCreakFrequency(1), 6);
+  });
+
+  it('stays in a distinctly lower register than hoverPitch at every index — the two layers never collide', () => {
+    for (let i = 0; i < 5; i++) {
+      expect(doorCreakFrequency(i)).toBeLessThan(hoverPitch(i));
+    }
   });
 });
 

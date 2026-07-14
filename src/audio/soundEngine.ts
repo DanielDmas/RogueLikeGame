@@ -68,6 +68,18 @@ export function hoverPitch(index?: number): number {
   return 880 * Math.pow(2, semi / 12);
 }
 
+/** Door hover feedback (item 7): the filtered-noise "creak" layered under
+ * the hover tone's glassy pitch. Deliberately in a low, "wood" register and
+ * spread across a gentler interval (2 octaves instead of 1) than
+ * `hoverPitch`'s own arpeggio, so the two layers never beat against each
+ * other. Pure, unit-tested without an AudioContext — same shape as
+ * `hoverPitch` itself. */
+export function doorCreakFrequency(index?: number): number {
+  if (index === undefined || index < 0) return 220;
+  const semi = HOVER_PENTATONIC_SEMITONES[index % HOVER_PENTATONIC_SEMITONES.length];
+  return 220 * Math.pow(2, semi / 24);
+}
+
 /** Raw impulse-response samples (mono) for the convolution reverb bus (spec
  * 07 §Q5.1) — exponentially-decaying white noise. Pure — no AudioContext/
  * AudioBuffer needed, so it's unit-testable in the node test environment;
@@ -537,6 +549,35 @@ export class SoundEngine {
    * resolve the same index for a door so hovering it always sounds the same. */
   hover(index?: number) {
     this.blip(hoverPitch(index), 0.18, 'sine', 0.05);
+    this.doorCreak(index);
+  }
+
+  /** Item 7 — door hover feedback: a very short, quiet filtered-noise creak
+   * under the hover tone, giving the door a physical quality beyond the
+   * pitch tick alone. Reuses the same impulse-noise technique as the ambient
+   * room accent's `playCreak`, but far shorter and quieter — a per-hover
+   * accent, not a looping ambient event. */
+  private doorCreak(index?: number) {
+    if (!this.sfxEnabled) return;
+    const ctx = this.ensureCtx();
+    const t = ctx.currentTime;
+    const duration = 0.12;
+    const bufferSize = Math.max(1, Math.floor(ctx.sampleRate * duration));
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    buffer.copyToChannel(makeImpulseSamples(ctx.sampleRate, duration, 4.5), 0);
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = doorCreakFrequency(index);
+    filter.Q.value = 4;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(0.012, t + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0006, t + duration);
+    noise.connect(filter).connect(gain).connect(this.sfxGain!);
+    noise.start(t);
+    noise.stop(t + duration + 0.03);
   }
 
   /** Committing a choice: a warmer, lower thud. */

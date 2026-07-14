@@ -34,6 +34,12 @@ export const DOOR_Z = -5.6;
 
 const BASE_INTENSITY = 0.42;
 const PULSE_AMPLITUDE = 0.08;
+/** Base intensities for a door's point light and floor pool — item 7's
+ * hover light-spill breathes these up by a fraction (`hoverLightSpill`),
+ * so a hovered door's whole light rig (slab + point light + floor pool)
+ * pulses together instead of only the slab brightening. */
+const BASE_GLOW_LIGHT = 1.5;
+const BASE_POOL_LIGHT = 0.8;
 /** How far a door snaps up on selection, before the doorway light-spill (spec 07 §Q2) takes over. */
 export const SELECT_SNAP_BOOST = 0.35;
 
@@ -42,6 +48,18 @@ export const SELECT_SNAP_BOOST = 0.35;
 export function hoverPulseIntensity(t: number, base: number, reducedMotion: boolean): number {
   if (reducedMotion) return base + 0.15;
   return base + 0.15 * ((Math.sin(t * 2.2) + 1) / 2);
+}
+
+/** Item 7 — door hover feedback: a hovered door's point-light and floor-pool
+ * spill breathing in lockstep with its slab glow (same `t * 2.2` envelope as
+ * `hoverPulseIntensity`, just scaled to each light's own base intensity so
+ * the whole doorway — slab, light, and floor pool — reads as one coherent
+ * pulse instead of only the slab brightening). Bounded to
+ * `[base, base * (1 + boost)]`; holds at the peak under reduced motion, same
+ * guarantee `hoverPulseIntensity` gives. */
+export function hoverLightSpill(base: number, t: number, reducedMotion: boolean, boost = 0.4): number {
+  const envelope = reducedMotion ? 1 : (Math.sin(t * 2.2) + 1) / 2;
+  return base * (1 + boost * envelope);
 }
 
 /** T7 — pure envelope for the ambient-flicker dip: 1 outside `[0, duration]`,
@@ -94,6 +112,8 @@ export function createDoors(specs: DoorSpec[], style: DoorStyle = {}): DoorSet {
   const group = new THREE.Group();
   const meshes: THREE.Mesh[] = [];
   const slabs = new Map<string, THREE.MeshStandardMaterial>();
+  const glows = new Map<string, THREE.PointLight>();
+  const pools = new Map<string, THREE.PointLight>();
   const lintels = new Map<string, THREE.Vector3>();
   const phases = new Map<string, number>();
   let hoveredId: string | null = null;
@@ -132,12 +152,14 @@ export function createDoors(specs: DoorSpec[], style: DoorStyle = {}): DoorSet {
     phases.set(spec.id, i * 1.7);
     meshes.push(slab);
 
-    const glow = new THREE.PointLight(doorGlow, 1.5, 6, 1.9);
+    const glow = new THREE.PointLight(doorGlow, BASE_GLOW_LIGHT, 6, 1.9);
     glow.position.set(0, 1.6, 0.7);
 
     // a soft pool of light on the floor beneath the door — unmistakably an interactive threshold
-    const pool = new THREE.PointLight(doorGlow, 0.8, 4.5, 2.1);
+    const pool = new THREE.PointLight(doorGlow, BASE_POOL_LIGHT, 4.5, 2.1);
     pool.position.set(0, 0.05, 0.9);
+    glows.set(spec.id, glow);
+    pools.set(spec.id, pool);
 
     door.add(jambL, jambR, lintel, slab, glow, pool);
     group.add(door);
@@ -179,7 +201,15 @@ export function createDoors(specs: DoorSpec[], style: DoorStyle = {}): DoorSet {
       for (const [doorId, mat] of slabs) {
         if (doorId === hoveredId) {
           mat.emissiveIntensity = hoverPulseIntensity(t, BASE_INTENSITY, reducedMotion);
+          const glow = glows.get(doorId);
+          if (glow) glow.intensity = hoverLightSpill(BASE_GLOW_LIGHT, t, reducedMotion);
+          const pool = pools.get(doorId);
+          if (pool) pool.intensity = hoverLightSpill(BASE_POOL_LIGHT, t, reducedMotion);
         } else {
+          const glow = glows.get(doorId);
+          if (glow) glow.intensity = BASE_GLOW_LIGHT;
+          const pool = pools.get(doorId);
+          if (pool) pool.intensity = BASE_POOL_LIGHT;
           const phase = phases.get(doorId) ?? 0;
           let intensity = BASE_INTENSITY + Math.sin(t * 1.4 + phase) * PULSE_AMPLITUDE;
           // A second, slower, odd-frequency wave layered on top — a small,
