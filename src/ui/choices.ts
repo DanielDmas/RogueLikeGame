@@ -4,6 +4,21 @@ import { t } from '../engine/text/resolver';
 import { roomChoiceTextKey, roomChoiceHintKey, uiKey, keepsakeKey } from '../engine/text/keys';
 import { KEEPSAKES, type KeepsakeDef } from '../content/keepsakes';
 
+/**
+ * 9.5.3 — pure boundary logic for ↑/↓ navigation between door/choice cards.
+ * `currentIndex` is -1 when nothing in the group is currently focused (the
+ * caller should then land on the first card). Wraps at both ends, mirroring
+ * how the existing digit-key picker already treats the group as a single
+ * cyclic list. Enter/Space need no special handling: a focused native
+ * `<button>` already activates on either key.
+ */
+export function arrowNavIndex(count: number, currentIndex: number, direction: 'up' | 'down'): number {
+  if (count === 0) return -1;
+  if (currentIndex === -1) return direction === 'down' ? 0 : count - 1;
+  if (direction === 'down') return (currentIndex + 1) % count;
+  return (currentIndex - 1 + count) % count;
+}
+
 export interface DoorOption {
   id: string;
   hint: string;
@@ -157,6 +172,15 @@ export class ChoicePanel {
       // don't silently pick a choice hidden underneath it. Same guard while
       // a "reread the scene" replay owns the number keys (F4).
       if (document.querySelector('.overlay, .field-note') || this.rereading) return;
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        const cards = Array.from(wrap.querySelectorAll<HTMLButtonElement>('button.choice-card'));
+        if (cards.length === 0) return;
+        const current = cards.indexOf(document.activeElement as HTMLButtonElement);
+        const next = arrowNavIndex(cards.length, current, e.key === 'ArrowDown' ? 'down' : 'up');
+        cards[next]?.focus();
+        return;
+      }
       const n = parseInt(e.key, 10);
       if (n >= 1 && n <= count) onNum(n - 1);
     };
