@@ -609,15 +609,27 @@ function theVetoDiorama(quality: Quality): Diorama {
   const light = new THREE.PointLight(0xb84a3c, 0.5, 3.5, quality === 'high' ? 2 : 1.4);
   light.position.set(0, 0.7, 0.5);
   group.add(desk, drawer, light);
+  let accentOn = false;
   return {
     group,
     tick(t) {
       // The invoked key catches the light; the others stay dull — "an emergency to somebody, given time."
-      if (vetoKey && vetoKey.material instanceof THREE.MeshStandardMaterial) {
+      if (vetoKey && vetoKey.material instanceof THREE.MeshStandardMaterial && !accentOn) {
         vetoKey.material.emissiveIntensity = 0.4 + Math.sin(t * 1.5) * 0.25;
       }
     },
     dispose: trackDispose(group),
+    // F5 Tier 2: counter-veto — the disagreement turns into open warfare
+    // over the rule itself, and the key flares hard rather than merely
+    // catching the light.
+    setAccent(on: boolean) {
+      if (on === accentOn) return;
+      accentOn = on;
+      if (vetoKey && vetoKey.material instanceof THREE.MeshStandardMaterial) {
+        vetoKey.material.emissiveIntensity = on ? 1.0 : 0.4;
+      }
+      light.intensity = on ? 0.9 : 0.5;
+    },
   };
 }
 
@@ -762,14 +774,27 @@ function theHallPassDiorama(quality: Quality): Diorama {
   const light = new THREE.PointLight(0xb84a3c, 0.4, 3.5, quality === 'high' ? 2 : 1.4);
   light.position.set(0, 0.2, 0.4);
   group.add(gift, seam, ribbonV, ribbonH, bow, light);
+  let accentOn = false;
   return {
     group,
     tick(t) {
       // Presented generously; the seam still glows uneasy underneath.
-      seamMat.emissiveIntensity = 0.25 + Math.sin(t * 1.1) * 0.15;
-      light.intensity = 0.4 + Math.sin(t * 1.1) * 0.15;
+      if (!accentOn) {
+        seamMat.emissiveIntensity = 0.25 + Math.sin(t * 1.1) * 0.15;
+        light.intensity = 0.4 + Math.sin(t * 1.1) * 0.15;
+      }
     },
     dispose: trackDispose(group),
+    // F5 Tier 2: the pass taken — the bow falls loose, the box now open
+    // for real rather than merely offered.
+    setAccent(on: boolean) {
+      if (on === accentOn) return;
+      accentOn = on;
+      bow.rotation.z = on ? 0.6 : 0;
+      ribbonV.position.y = on ? 0.25 : 0;
+      seamMat.emissiveIntensity = on ? 0.6 : 0.25;
+      light.intensity = on ? 0.65 : 0.4;
+    },
   };
 }
 
@@ -793,13 +818,23 @@ function theReboundDiorama(quality: Quality): Diorama {
   const light = new THREE.PointLight(0xd4b36a, 0.35, 3.5, quality === 'high' ? 2 : 1.4);
   light.position.set(-0.2, 1.0, 0.3);
   group.add(counter, cup, brushA, brushB, light);
+  let accentOn = false;
   return {
     group,
     tick(t) {
       // The outline flickers in and out — a shape where a feeling should be, never quite committing.
-      outlineMat.opacity = 0.2 + Math.abs(Math.sin(t * 0.5)) * 0.25;
+      if (!accentOn) outlineMat.opacity = 0.2 + Math.abs(Math.sin(t * 0.5)) * 0.25;
     },
     dispose: trackDispose(group),
+    // F5 Tier 2: "let her believe" — kept-the-anesthesia — the outline
+    // solidifies into a real, solid brush: a commitment made physical,
+    // and false.
+    setAccent(on: boolean) {
+      if (on === accentOn) return;
+      accentOn = on;
+      outlineMat.opacity = on ? 1 : 0.3;
+      outlineMat.emissiveIntensity = on ? 0.35 : 0;
+    },
   };
 }
 
@@ -874,12 +909,22 @@ function theMetamourDiorama(quality: Quality): Diorama {
   const light = new THREE.PointLight(0xb84a3c, 0.4, 3.5, quality === 'high' ? 2 : 1.4);
   light.position.set(0, 0.75, 0.3);
   group.add(counter, page, light);
+  let accentOn = false;
   return {
     group,
     tick(t) {
-      if (dominant) dominant.emissiveIntensity = 0.4 + Math.sin(t * 1.3) * 0.2;
+      if (dominant && !accentOn) dominant.emissiveIntensity = 0.4 + Math.sin(t * 1.3) * 0.2;
     },
     dispose: trackDispose(group),
+    // F5 Tier 2: naming the hierarchy aloud — the color that was already
+    // dominant stops pulsing and simply holds, fully lit: acknowledged now,
+    // not just felt.
+    setAccent(on: boolean) {
+      if (on === accentOn) return;
+      accentOn = on;
+      if (dominant) dominant.emissiveIntensity = on ? 0.9 : 0.4;
+      light.intensity = on ? 0.7 : 0.4;
+    },
   };
 }
 

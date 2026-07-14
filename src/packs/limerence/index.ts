@@ -289,6 +289,14 @@ export const limerencePack: ContentPack = {
       { roomId: 'the-unsent', choiceId: 'to-your-16-year-old-self' },
       { roomId: 'the-unsent', choiceId: 'to-your-own-kids-someday' },
       { roomId: 'the-unsent', choiceId: 'blank-page' },
+      // Ninth session: extended to 4 more rooms among the newly-completed
+      // Tier 3 dioramas, once each had a factual object-changing accent to
+      // hook — same "one specific choice, one visual consequence" pattern.
+      { roomId: 'the-hall-pass', choiceId: 'agree-to-keep-peace' },
+      { roomId: 'the-hall-pass', choiceId: 'take-it-angrily' },
+      { roomId: 'the-rebound', choiceId: 'let-her-believe' },
+      { roomId: 'the-veto', choiceId: 'counter-veto' },
+      { roomId: 'the-metamour', choiceId: 'name-the-hierarchy' },
     ],
     supportsLightTheme: true,
     // A sleeker, cooler modern-hotel door — thin steel-dark frame instead of
