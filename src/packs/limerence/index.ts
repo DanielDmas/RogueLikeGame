@@ -272,7 +272,23 @@ export const limerencePack: ContentPack = {
     moodTints: LIMERENCE_MOOD_TINTS,
     fogColorByTheme: LIMERENCE_FOG_COLOR_BY_THEME,
     dioramaFor: limerenceDioramaFor,
-    dioramaAccentHooks: [],
+    // F5 Tier 2 (mirrors ANAMNESIS's marys-room/open-drawer pattern): each
+    // pair is a factual action the room's own beats already describe —
+    // handing over a password, deleting an account, looking at a lit
+    // phone, speaking a confession, sending a letter — made visible in the
+    // room's diorama the instant that specific choice is taken.
+    dioramaAccentHooks: [
+      { roomId: 'the-password', choiceId: 'give-it' },
+      { roomId: 'the-second-account', choiceId: 'delete-it' },
+      { roomId: 'the-discovery', choiceId: 'confront-now' },
+      { roomId: 'the-confession', choiceId: 'confess' },
+      { roomId: 'the-unsent', choiceId: 'to-the-one-you-hurt' },
+      { roomId: 'the-unsent', choiceId: 'to-the-one-who-hurt-you' },
+      { roomId: 'the-unsent', choiceId: 'to-the-one-that-got-away' },
+      { roomId: 'the-unsent', choiceId: 'to-your-16-year-old-self' },
+      { roomId: 'the-unsent', choiceId: 'to-your-own-kids-someday' },
+      { roomId: 'the-unsent', choiceId: 'blank-page' },
+    ],
     supportsLightTheme: true,
     // A sleeker, cooler modern-hotel door — thin steel-dark frame instead of
     // carved wood, amber/teal glow instead of gold/violet, and two small

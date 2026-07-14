@@ -72,3 +72,52 @@ describe('LIMERENCE bespoke room dioramas (F5) — registry, budget, disposal', 
     expect(() => d?.dispose()).not.toThrow();
   });
 });
+
+describe('F5 Tier 2 — LIMERENCE dioramaAccentHooks (marys-room/open-drawer pattern)', () => {
+  it('every hook names a real room id and a real choice id on that room\'s first stage', () => {
+    const rooms = new Map(limerencePack.rooms.map((r) => [r.id, r]));
+    for (const hook of limerencePack.visuals.dioramaAccentHooks) {
+      const room = rooms.get(hook.roomId);
+      expect(room, `dioramaAccentHooks names unknown room "${hook.roomId}"`).toBeDefined();
+      const choiceIds = room!.stages[0].choices.map((c) => c.id);
+      expect(choiceIds, `${hook.roomId} has no choice "${hook.choiceId}"`).toContain(hook.choiceId);
+    }
+  });
+
+  it('every hooked room actually has a bespoke diorama (an accent with nothing to accent is a no-op bug)', () => {
+    for (const hook of limerencePack.visuals.dioramaAccentHooks) {
+      expect(DIORAMA_ROOM_IDS, `${hook.roomId} is hooked for an accent but has no bespoke diorama`).toContain(hook.roomId);
+    }
+  });
+
+  it('every hooked room\'s diorama actually implements setAccent (not just inheriting the interface\'s optional shape)', () => {
+    const hookedRoomIds = new Set(limerencePack.visuals.dioramaAccentHooks.map((h) => h.roomId));
+    for (const roomId of hookedRoomIds) {
+      const d = limerenceDioramaFor(roomId, 'high');
+      expect(d?.setAccent, `${roomId} is hooked but its diorama has no setAccent`).toBeTypeOf('function');
+    }
+  });
+
+  it('setAccent(true) then setAccent(false) then dispose() never throws, for every hooked diorama', () => {
+    const hookedRoomIds = new Set(limerencePack.visuals.dioramaAccentHooks.map((h) => h.roomId));
+    for (const roomId of hookedRoomIds) {
+      const d = limerenceDioramaFor(roomId, 'high');
+      expect(() => d?.setAccent?.(true)).not.toThrow();
+      expect(() => d?.tick(1.4)).not.toThrow();
+      expect(() => d?.setAccent?.(false)).not.toThrow();
+      expect(() => d?.dispose()).not.toThrow();
+    }
+  });
+
+  it('covers at least 5 distinct rooms (the review asked for "~6")', () => {
+    const distinctRooms = new Set(limerencePack.visuals.dioramaAccentHooks.map((h) => h.roomId));
+    expect(distinctRooms.size).toBeGreaterThanOrEqual(5);
+  });
+
+  it('the-unsent is hooked on every one of its real letter choices (every choice in that room sends something)', () => {
+    const unsent = limerencePack.rooms.find((r) => r.id === 'the-unsent')!;
+    const realChoiceIds = unsent.stages[0].choices.map((c) => c.id);
+    const hookedIds = limerencePack.visuals.dioramaAccentHooks.filter((h) => h.roomId === 'the-unsent').map((h) => h.choiceId);
+    expect(hookedIds.sort()).toEqual(realChoiceIds.sort());
+  });
+});

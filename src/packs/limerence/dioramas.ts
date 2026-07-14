@@ -127,12 +127,22 @@ function theSecondAccountDiorama(quality: Quality): Diorama {
   const light = new THREE.PointLight(0x5aa8a8, 0.7, 4, quality === 'high' ? 2 : 1.4);
   light.position.set(0.1, 0, 0.6);
   group.add(phoneA, phoneB, light);
+  let accentOn = false;
   return {
     group,
     tick(t) {
-      matB.emissiveIntensity = 0.35 + Math.sin(t * 1.8) * 0.2;
+      if (!accentOn) matB.emissiveIntensity = 0.35 + Math.sin(t * 1.8) * 0.2;
     },
     dispose: trackDispose(group),
+    // F5 Tier 2: the second account, deleted — its phone goes dark and
+    // stops pulsing, matching the diorama's own idle phoneA (the one
+    // account left).
+    setAccent(on: boolean) {
+      if (on === accentOn) return;
+      accentOn = on;
+      matB.emissiveIntensity = on ? 0 : 0.35;
+      matB.emissive.setHex(on ? 0x000000 : 0x5aa8a8);
+    },
   };
 }
 
@@ -206,13 +216,25 @@ function thePasswordDiorama(quality: Quality): Diorama {
   };
   const light = new THREE.PointLight(0xd4b36a, 0.7, 4, quality === 'high' ? 2 : 1.4);
   light.position.set(0, 0, 0.5);
-  group.add(phone, lock(-0.42), lock(0.42), light);
+  const lockLeft = lock(-0.42);
+  group.add(phone, lockLeft, lock(0.42), light);
+  const lockMatOpen = mat(0x8a6a2a, 0xd4b36a, 0.7, { metalness: 0.7, roughness: 0.35 });
+  let accentOn = false;
   return {
     group,
     tick(t) {
       phoneMat.emissiveIntensity = 0.4 + Math.sin(t * 1.6) * 0.2;
     },
     dispose: trackDispose(group),
+    // F5 Tier 2: the password given away — one lock (the one held out toward
+    // the viewer) turns from dull iron to lit brass, unlocked.
+    setAccent(on: boolean) {
+      if (on === accentOn) return;
+      accentOn = on;
+      lockLeft.children.forEach((child) => {
+        if (child instanceof THREE.Mesh) child.material = on ? lockMatOpen : lockMat;
+      });
+    },
   };
 }
 
@@ -362,12 +384,21 @@ function theConfessionDiorama(quality: Quality): Diorama {
   const light = new THREE.PointLight(0xd89055, 0.5, 4, quality === 'high' ? 2 : 1.4);
   light.position.set(0, 1.1, -0.1);
   group.add(board, suitcase, handle, light);
+  let accentOn = false;
   return {
     group,
     tick(t) {
       boardMat.emissiveIntensity = 0.25 + Math.abs(Math.sin(t * 2.4)) * 0.25;
     },
     dispose: trackDispose(group),
+    // F5 Tier 2: the whole confession made — the stone set down, rendered
+    // as the suitcase catching a warm glow, no longer just dead-black.
+    setAccent(on: boolean) {
+      if (on === accentOn) return;
+      accentOn = on;
+      caseMat.emissive.setHex(on ? 0xd89055 : 0x000000);
+      caseMat.emissiveIntensity = on ? 0.35 : 0;
+    },
   };
 }
 
@@ -384,6 +415,7 @@ function theDiscoveryDiorama(quality: Quality): Diorama {
   spot.position.set(0, 1.6, 0);
   spot.target.position.set(0, 0.5, 0);
   group.add(table, phone, spot, spot.target);
+  let accentOn = false;
   return {
     group,
     tick(t) {
@@ -391,6 +423,14 @@ function theDiscoveryDiorama(quality: Quality): Diorama {
       spot.intensity = (quality === 'high' ? 1.4 : 1.0) + Math.sin(t * 0.4) * 0.08;
     },
     dispose: trackDispose(group),
+    // F5 Tier 2: confronted now, in the kitchen — the phone lights up, no
+    // longer just a dark silhouette under the spot.
+    setAccent(on: boolean) {
+      if (on === accentOn) return;
+      accentOn = on;
+      phoneMat.emissive.setHex(on ? 0xd4b36a : 0x000000);
+      phoneMat.emissiveIntensity = on ? 0.8 : 0;
+    },
   };
 }
 
@@ -430,12 +470,22 @@ function theUnsentDiorama(quality: Quality): Diorama {
   const light = new THREE.PointLight(0xd4b36a, 0.5, 4, quality === 'high' ? 2 : 1.4);
   light.position.set(0, 1.0, 0.3);
   group.add(desk, paper, base, arm, pan, light);
+  let accentOn = false;
+  const restRotation = 0.03; // matches tick()'s idle sway amplitude below
   return {
     group,
     tick(t) {
-      arm.rotation.z = Math.sin(t * 0.6) * 0.03;
+      if (!accentOn) arm.rotation.z = Math.sin(t * 0.6) * restRotation;
     },
     dispose: trackDispose(group),
+    // F5 Tier 2: whichever letter is actually chosen, the scale tips —
+    // "the desk guarantees delivery." Every choice in this room sends
+    // something (even the blank page), so all of them share this hook.
+    setAccent(on: boolean) {
+      if (on === accentOn) return;
+      accentOn = on;
+      arm.rotation.z = on ? -0.12 : restRotation;
+    },
   };
 }
 
