@@ -50,14 +50,14 @@ const LONG_STAY_WING: [number, CorridorPalette] = [
 /** Floor 4 — The Top Floor: fog thinning toward morning, no custom shader
  * (kept simple/low-risk) — warm directional light standing in for a
  * sunrise, amber dust settling. */
-function topFloorTheme(): ThemeConfig {
+function topFloorTheme(quality: 'low' | 'high' = 'high'): ThemeConfig {
   const group = new THREE.Group();
   group.add(floor(0x201a14, 0.85));
   group.add(new THREE.AmbientLight(0x4a3626, 1.8));
   const sun = new THREE.DirectionalLight(0xe8a862, 2.4);
   sun.position.set(0, 7, -20);
   group.add(sun);
-  const motes = particles(260, 0xe8b878, 30, 0.04);
+  const motes = particles(quality === 'high' ? 260 : 140, 0xe8b878, 30, 0.04);
   group.add(motes);
   return {
     group, fogColor: 0x281c14, fogDensity: 0.03, background: 0x281c14,
@@ -68,14 +68,14 @@ function topFloorTheme(): ThemeConfig {
 /** Floor 5 — the ending space: the morning after, literally — soft cream
  * light through a hotel curtain, warmer and softer than ANAMNESIS's
  * near-white ending. */
-function morningAfterTheme(): ThemeConfig {
+function morningAfterTheme(quality: 'low' | 'high' = 'high'): ThemeConfig {
   const group = new THREE.Group();
   group.add(floor(0x3e372c, 0.9));
   group.add(new THREE.AmbientLight(0xfff0d8, 2.2));
   const sun = new THREE.DirectionalLight(0xffdca8, 2.6);
   sun.position.set(2, 9, 4);
   group.add(sun);
-  const motes = particles(180, 0xfff2dc, 28, 0.045);
+  const motes = particles(quality === 'high' ? 180 : 100, 0xfff2dc, 28, 0.045);
   group.add(motes);
   return {
     group, fogColor: 0xe4d2ae, fogDensity: 0.045, background: 0xe4d2ae,
@@ -83,14 +83,14 @@ function morningAfterTheme(): ThemeConfig {
   };
 }
 
-export function limerenceBuildTheme(id: ThemeId): ThemeConfig {
+export function limerenceBuildTheme(id: ThemeId, quality: 'low' | 'high' = 'high'): ThemeConfig {
   switch (id) {
-    case 0: return corridorTheme(...FRONT_DESK);
-    case 1: return corridorTheme(...GROUND_FLOOR);
-    case 2: return corridorTheme(...SECOND_FLOOR);
-    case 3: return corridorTheme(...LONG_STAY_WING);
-    case 4: return topFloorTheme();
-    case 5: return morningAfterTheme();
+    case 0: return corridorTheme(...FRONT_DESK, quality);
+    case 1: return corridorTheme(...GROUND_FLOOR, quality);
+    case 2: return corridorTheme(...SECOND_FLOOR, quality);
+    case 3: return corridorTheme(...LONG_STAY_WING, quality);
+    case 4: return topFloorTheme(quality);
+    case 5: return morningAfterTheme(quality);
   }
 }
 

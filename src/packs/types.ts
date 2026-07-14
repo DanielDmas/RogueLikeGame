@@ -142,7 +142,7 @@ export interface ContentPack {
   visuals: {
     iconFor(roomId: string): string | undefined;
     endingIcons: Record<string, string>;
-    buildTheme(id: ThemeId): ThemeConfig;
+    buildTheme(id: ThemeId, quality: Quality): ThemeConfig;
     moodTints: Record<MoodType, MoodTint>;
     /** Each act theme's base fog/background color, without constructing the
      * (expensive) 3D group — used by the doorway light-spill. Keep in sync

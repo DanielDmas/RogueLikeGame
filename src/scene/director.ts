@@ -355,7 +355,7 @@ export class SceneDirector {
         }
       });
     }
-    this.theme = this.visuals.buildTheme(id);
+    this.theme = this.visuals.buildTheme(id, this.quality);
     this.mood = null;
     this.scene.add(this.theme.group);
     this.applyFogAndBackground();

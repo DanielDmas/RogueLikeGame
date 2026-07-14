@@ -117,7 +117,7 @@ describe.each([
 ])('pack.visuals — structural consistency ($name)', ({ pack }) => {
   it('buildTheme(id).fogColor matches fogColorByTheme[id] for every theme id', () => {
     for (const id of ALL_THEME_IDS) {
-      const theme = pack.visuals.buildTheme(id);
+      const theme = pack.visuals.buildTheme(id, 'high');
       expect(pack.visuals.fogColorByTheme[id]).toBe(theme.fogColor);
       disposeGroup(theme.group);
     }

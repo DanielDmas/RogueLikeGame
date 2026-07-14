@@ -190,7 +190,7 @@ export interface CorridorPalette {
  * parameterized). A pack that's also a corridor of doors — LIMERENCE's
  * hotel floors are exactly that — can recolor the whole thing via `palette`
  * without duplicating the geometry. */
-export function corridorTheme(warmth: number, palette: CorridorPalette = {}): ThemeConfig {
+export function corridorTheme(warmth: number, palette: CorridorPalette = {}, quality: 'low' | 'high' = 'high'): ThemeConfig {
   const floorColor = palette.floorColor ?? 0x201c16;
   const wallColor = palette.wallColor ?? 0x2b2620;
   const doorBase = palette.doorBase ?? 0x241f18;
@@ -212,11 +212,16 @@ export function corridorTheme(warmth: number, palette: CorridorPalette = {}): Th
   // (DOOR_Z) so background scenery never renders larger/closer than an
   // actual choice — that misread is what made the corridor confusing.
   const DECOR_NEAR_Z = DOOR_Z - 3;
+  // 1.3 item 5: the per-side decorative slabs each carry their own
+  // real-time PointLight — 18 of them at 'high', the single most expensive
+  // piece of a corridor theme's own geometry (independent of the
+  // composer/bloom cost post.ts already gates on quality). Halved on 'low'.
+  const decorCount = quality === 'high' ? 9 : 5;
   for (const side of [-1, 1]) {
     const wall = new THREE.Mesh(new THREE.BoxGeometry(0.4, 7, 90), wallMat);
     wall.position.set(side * 7.5, 3.5, -30);
     group.add(wall);
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < decorCount; i++) {
       const slab = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 2.6), doorGlowMat);
       slab.position.set(side * 7.28, 1.5, DECOR_NEAR_Z - i * 9);
       slab.rotation.y = side * -Math.PI / 2;
@@ -234,7 +239,7 @@ export function corridorTheme(warmth: number, palette: CorridorPalette = {}): Th
   const key = new THREE.PointLight(keyLight, 9, 26, 1.5);
   key.position.set(0, 4.4, -2);
   group.add(key);
-  const dust = particles(240, dustColor, 24, 0.035);
+  const dust = particles(quality === 'high' ? 240 : 130, dustColor, 24, 0.035);
   group.add(dust);
   return {
     group, fogColor: fog, fogDensity: 0.036, background: fog,
@@ -243,7 +248,7 @@ export function corridorTheme(warmth: number, palette: CorridorPalette = {}): Th
 }
 
 /** Act II: dark celestial factory — gears in fog, conveyor belts of small indifferent stars. */
-function machineryTheme(): ThemeConfig {
+function machineryTheme(quality: 'low' | 'high' = 'high'): ThemeConfig {
   const group = new THREE.Group();
   group.add(floor(0x161a24, 0.6, 0.35));
   const brass = new THREE.MeshStandardMaterial({ color: 0x8a7442, roughness: 0.35, metalness: 0.9 });
@@ -259,7 +264,7 @@ function machineryTheme(): ThemeConfig {
     gears.push(gear);
     group.add(gear);
   }
-  const stars = particles(500, 0x9db4e8, 46, 0.06);
+  const stars = particles(quality === 'high' ? 500 : 260, 0x9db4e8, 46, 0.06);
   group.add(stars);
   group.add(new THREE.AmbientLight(0x33405c, 2.4));
   const beam = new THREE.SpotLight(0xd4b36a, 110, 50, 0.55, 0.7, 1.3);
@@ -279,7 +284,7 @@ function machineryTheme(): ThemeConfig {
 }
 
 /** Act III: black-mirror floor, floating dioramas of blurred memories, cold moonlight. */
-function mirrorTheme(): ThemeConfig {
+function mirrorTheme(quality: 'low' | 'high' = 'high'): ThemeConfig {
   const group = new THREE.Group();
   group.add(floor(0x11141c, 0.12, 0.85));
   const dioramas: THREE.Mesh[] = [];
@@ -302,7 +307,7 @@ function mirrorTheme(): ThemeConfig {
   const glow = new THREE.PointLight(0x6a7fc4, 6, 28, 1.6);
   glow.position.set(0, 3, -8);
   group.add(glow);
-  const mist = particles(160, 0x9db4e8, 30, 0.03);
+  const mist = particles(quality === 'high' ? 160 : 90, 0x9db4e8, 30, 0.03);
   group.add(mist);
   return {
     group, fogColor: 0x1c2036, fogDensity: 0.038, background: 0x1c2036,
@@ -313,7 +318,7 @@ function mirrorTheme(): ThemeConfig {
 }
 
 /** Act IV: fog burning off into a dawn gradient. */
-function thresholdTheme(): ThemeConfig {
+function thresholdTheme(quality: 'low' | 'high' = 'high'): ThemeConfig {
   const group = new THREE.Group();
   group.add(floor(0x1a1610, 0.85));
   // dawn backdrop
@@ -341,7 +346,7 @@ function thresholdTheme(): ThemeConfig {
   const sun = new THREE.DirectionalLight(0xe8a05a, 2.2);
   sun.position.set(0, 6, -30);
   group.add(sun);
-  const motes = particles(300, 0xe8b06a, 34, 0.04);
+  const motes = particles(quality === 'high' ? 300 : 160, 0xe8b06a, 34, 0.04);
   group.add(motes);
   return {
     group, fogColor: 0x2a1d14, fogDensity: 0.032, background: 0x2a1d14,
@@ -353,14 +358,14 @@ function thresholdTheme(): ThemeConfig {
 }
 
 /** Ending space: near-white light, almost nothing. */
-function endingTheme(): ThemeConfig {
+function endingTheme(quality: 'low' | 'high' = 'high'): ThemeConfig {
   const group = new THREE.Group();
   group.add(floor(0x3a362e, 0.9));
   group.add(new THREE.AmbientLight(0xfff2dc, 2.4));
   const sun = new THREE.DirectionalLight(0xffe8c4, 3);
   sun.position.set(2, 10, 4);
   group.add(sun);
-  const motes = particles(200, 0xffffff, 30, 0.05);
+  const motes = particles(quality === 'high' ? 200 : 110, 0xffffff, 30, 0.05);
   group.add(motes);
   return {
     group, fogColor: 0xcfc4ae, fogDensity: 0.05, background: 0xcfc4ae,
@@ -396,14 +401,14 @@ export function spillColorFor(
   return tint !== 0 ? tint : fogColors[nextActTheme];
 }
 
-export function buildTheme(id: ThemeId): ThemeConfig {
+export function buildTheme(id: ThemeId, quality: 'low' | 'high' = 'high'): ThemeConfig {
   switch (id) {
-    case 0: return corridorTheme(0x8a6a3a);
-    case 1: return corridorTheme(0xb3762f);
-    case 2: return machineryTheme();
-    case 3: return mirrorTheme();
-    case 4: return thresholdTheme();
-    case 5: return endingTheme();
+    case 0: return corridorTheme(0x8a6a3a, {}, quality);
+    case 1: return corridorTheme(0xb3762f, {}, quality);
+    case 2: return machineryTheme(quality);
+    case 3: return mirrorTheme(quality);
+    case 4: return thresholdTheme(quality);
+    case 5: return endingTheme(quality);
   }
 }
 
