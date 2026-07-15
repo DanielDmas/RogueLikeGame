@@ -15,6 +15,8 @@ import {
   roomNoteBodyKey,
   roomNoteThinkersKey,
   roomNoteTitleKey,
+  roomArticleTitleKey,
+  roomArticleBodyKey,
   endingBeatKey,
   endingEpitaphKey,
   endingNoteBodyKey,
@@ -52,6 +54,10 @@ function validContentKeysFor(pack: ContentPack): Set<string> {
     keys.add(roomNoteTitleKey(room.id));
     keys.add(roomNoteThinkersKey(room.id));
     keys.add(roomNoteBodyKey(room.id));
+    if (pack.articles[room.id]) {
+      keys.add(roomArticleTitleKey(room.id));
+      keys.add(roomArticleBodyKey(room.id));
+    }
     room.stages.forEach((stage, si) => {
       stage.beats.forEach((_beat, bi) => keys.add(roomBeatKey(room.id, si, bi)));
       keys.add(roomExplanationKey(room.id, si));

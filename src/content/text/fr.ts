@@ -80,6 +80,8 @@ registerAll('v2', 'fr', {
   [uiKey('ledger')]: 'Le carnet du voyageur',
   [uiKey('hotelRegister')]: 'Le registre',
   [uiKey('registerSub')]: 'la forme de ce lieu, que vous l’ayez déjà parcouru ou non',
+  [uiKey('readMore')]: 'Lire la suite →',
+  [uiKey('articleKicker')]: 'Pour aller plus loin',
   [understoryNameKey()]: 'Le sous-sol',
   [uiKey('registerDoorsWalked')]: 'portes franchies',
   [uiKey('epiphaniesTitle')]: 'Révélations',

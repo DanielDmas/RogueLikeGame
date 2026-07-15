@@ -150,6 +150,21 @@ export interface ContentPack {
   keepsakeTriggers: Record<string, string>;
   keepsakeIcons: Record<string, string>;
 
+  /** Expanded field-note articles (owner request, 2026-07-15): a much
+   * longer, further-researched piece for a room whose field note cites a
+   * real psychological/philosophical source worth reading deeper into —
+   * more real-world examples, more citations, written for a player who
+   * wants to actually follow the citation rather than just see it named.
+   * Keyed by room id; a room absent from this map simply has no "Read
+   * more" affordance on its field note. English fallback text lives here
+   * (same pattern as `keepsakeTriggers`); the translated body is resolved
+   * via `roomArticleKey(id)`. Starting deliberately small (2 rooms per
+   * pack, the richest citation trails) rather than attempting every room
+   * at once — CLAUDE.md's context-first translation rule means each
+   * language version needs real care, not a mechanical pass across dozens
+   * of rooms in one sitting. */
+  articles: Record<string, { title: string; body: string }>;
+
   epiphanies: EpiphanyDef[];
 
   visuals: {

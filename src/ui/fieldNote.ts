@@ -11,8 +11,17 @@ export function renderEmphasis(raw: string): string {
   return escaped.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 }
 
-/** Slides the philosophy reveal card up from the bottom; resolves on dismiss. */
-export function showFieldNote(ui: HTMLElement, note: FieldNote, label = 'Field Note', icon?: string): Promise<void> {
+/** Slides the philosophy reveal card up from the bottom; resolves on dismiss.
+ * `onReadMore`, when provided, renders a "Read more" button that opens the
+ * room's expanded article overlay on top of this card without dismissing
+ * it — the field note is still here, unaffected, when the article closes. */
+export function showFieldNote(
+  ui: HTMLElement,
+  note: FieldNote,
+  label = 'Field Note',
+  icon?: string,
+  onReadMore?: () => void,
+): Promise<void> {
   return new Promise((resolve) => {
     const card = el('div', 'field-note');
     card.setAttribute('role', 'dialog');
@@ -34,6 +43,12 @@ export function showFieldNote(ui: HTMLElement, note: FieldNote, label = 'Field N
     const p = el('p');
     p.innerHTML = renderEmphasis(note.body);
     scroll.append(p);
+    let readMore: HTMLElement | undefined;
+    if (onReadMore) {
+      readMore = el('button', 'fn-read-more', t(uiKey('readMore'), 'Read more →'));
+      readMore.addEventListener('click', onReadMore);
+      scroll.append(readMore);
+    }
     card.append(scroll);
     const close = el('button', 'fn-close', t(uiKey('continue'), 'Continue'));
     card.append(close);
@@ -52,7 +67,19 @@ export function showFieldNote(ui: HTMLElement, note: FieldNote, label = 'Field N
       }, 720);
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === 'Escape' || e.key === ' ') {
+      // Found while wiring the "Read more" button: this listener used to
+      // intercept every Enter/Space unconditionally, so a keyboard user
+      // tabbed onto the read-more button and pressing Enter/Space would
+      // dismiss the whole field note instead of activating the button
+      // (this preventDefault also suppresses the browser's own
+      // button-activation synthesis). Escape still always dismisses,
+      // regardless of focus, matching every other overlay in this app.
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        dismiss();
+        return;
+      }
+      if ((e.key === 'Enter' || e.key === ' ') && document.activeElement !== readMore) {
         e.preventDefault();
         dismiss();
       }

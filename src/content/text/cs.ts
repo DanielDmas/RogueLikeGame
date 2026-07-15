@@ -77,6 +77,8 @@ registerAll('v2', 'cs', {
   [uiKey('ledger')]: 'Cestovatelský deník',
   [uiKey('hotelRegister')]: 'Rejstřík',
   [uiKey('registerSub')]: 'podoba tohoto místa, ať už jste jím prošli, nebo ne',
+  [uiKey('readMore')]: 'Číst dál →',
+  [uiKey('articleKicker')]: 'Další čtení',
   [understoryNameKey()]: 'Podzemí',
   [uiKey('registerDoorsWalked')]: 'projitých dveří',
   [uiKey('epiphaniesTitle')]: 'Poznání',

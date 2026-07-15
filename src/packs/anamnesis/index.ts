@@ -33,6 +33,7 @@ import { usherFigure } from '../../scene/themes';
 import { SPEAKER_PREFIXES } from '../../ui/textPanel';
 import { HEART_SVG } from '../../ui/dom';
 import { KEEPSAKES, KEEPSAKE_TRIGGERS, keepsakeIcons } from '../../content/keepsakes';
+import { ARTICLES } from '../../content/articles';
 import { anamnesisEpiphanies } from './epiphanies';
 import { iconFor, endingIcons } from '../../content/icons';
 import { buildTheme, MOOD_TINTS, FOG_COLOR_BY_THEME } from '../../scene/themes';
@@ -105,6 +106,8 @@ export const anamnesisPack: ContentPack = {
   keepsakes: KEEPSAKES,
   keepsakeTriggers: KEEPSAKE_TRIGGERS,
   keepsakeIcons,
+
+  articles: ARTICLES,
 
   epiphanies: anamnesisEpiphanies,
 

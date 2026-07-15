@@ -476,6 +476,10 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
   backdrop-filter: blur(6px);
   padding: 30px; overflow-y: auto;
 }
+/* The room-article overlay opens from a button inside an already-open
+   field note (z-index 55). Without this it painted underneath the field
+   note, which still visually and pointer-event-wise sat on top. */
+.overlay.above-field-note { z-index: 56; }
 
 .title-word {
   font-family: var(--serif); font-weight: 500; letter-spacing: 0.42em; text-indent: 0.42em;

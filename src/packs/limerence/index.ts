@@ -22,6 +22,7 @@ import { HEART_SVG } from '../../ui/dom';
 import { choseIn } from '../../engine/gameState';
 import { mirrorUnlocked, patternAvailable, computePatternEligible, PATTERN_CLARITY } from './endingLogic';
 import { limerenceEpiphanies } from './epiphanies';
+import { LIMERENCE_ARTICLES } from './articles';
 import {
   limerenceDoorBark,
   limerenceActIntroText,
@@ -264,6 +265,8 @@ export const limerencePack: ContentPack = {
       <path d="M22 24 H38 M22 32 H38 M22 40 H32"/>
     </svg>`,
   },
+
+  articles: LIMERENCE_ARTICLES,
 
   epiphanies: limerenceEpiphanies,
 

@@ -15,6 +15,12 @@ export const roomNoteTitleKey = (id: string) => `room.${id}.note.title`;
 export const roomNoteThinkersKey = (id: string) => `room.${id}.note.thinkers`;
 export const roomNoteBodyKey = (id: string) => `room.${id}.note.body`;
 
+/** Expanded field-note articles (2026-07-15) — the "Read more" long-form
+ * piece for a room whose field note cites a real source. Only rooms
+ * present in `ContentPack.articles` register text under this key. */
+export const roomArticleTitleKey = (id: string) => `room.${id}.article.title`;
+export const roomArticleBodyKey = (id: string) => `room.${id}.article.body`;
+
 export const endingTitleKey = (id: string) => `ending.${id}.title`;
 export const endingEpitaphKey = (id: string) => `ending.${id}.epitaph`;
 export const endingBeatKey = (id: string, beat: number) => `ending.${id}.beat${beat}`;

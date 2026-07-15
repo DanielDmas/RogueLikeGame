@@ -26,6 +26,7 @@ import {
   showLedger,
   showPauseMenu,
   showPersona,
+  showRoomArticle,
   showSettings,
   showTitle,
   type SettingsActions,
@@ -45,6 +46,8 @@ import {
   roomNoteTitleKey,
   roomNoteThinkersKey,
   roomNoteBodyKey,
+  roomArticleTitleKey,
+  roomArticleBodyKey,
   endingTitleKey,
   endingEpitaphKey,
   endingBeatKey,
@@ -786,15 +789,28 @@ export class Game {
     }
 
     if (room.fieldNote) {
+      const noteTitle = t(roomNoteTitleKey(room.id), room.fieldNote.title);
+      const noteThinkers = t(roomNoteThinkersKey(room.id), room.fieldNote.thinkers);
+      const article = this.pack.articles[room.id];
       await showFieldNote(
         this.ui,
         {
-          title: t(roomNoteTitleKey(room.id), room.fieldNote.title),
-          thinkers: t(roomNoteThinkersKey(room.id), room.fieldNote.thinkers),
+          title: noteTitle,
+          thinkers: noteThinkers,
           body: t(roomNoteBodyKey(room.id), room.fieldNote.body),
         },
         `${t(uiKey('fieldNoteHeader'), 'Field Note')} · ${room.type}`,
         icon,
+        article
+          ? () =>
+              showRoomArticle(
+                this.ui,
+                noteTitle,
+                noteThinkers,
+                t(roomArticleTitleKey(room.id), article.title),
+                t(roomArticleBodyKey(room.id), article.body),
+              )
+          : undefined,
       );
     }
     if (!this.profile.codexUnlocked.includes(room.id)) {

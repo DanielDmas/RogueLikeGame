@@ -78,6 +78,8 @@ registerAll('v2', 'fa', {
   [uiKey('ledger')]: 'دفترِ مسافر',
   [uiKey('hotelRegister')]: 'دفتر ثبت',
   [uiKey('registerSub')]: 'شکل این مکان، چه در آن قدم زده باشید و چه نه',
+  [uiKey('readMore')]: 'بیشتر بخوانید ←',
+  [uiKey('articleKicker')]: 'مطالعه بیشتر',
   [understoryNameKey()]: 'طبقه‌ی زیرین',
   [uiKey('registerDoorsWalked')]: 'دری که پیموده‌اید',
   [uiKey('epiphaniesTitle')]: 'بصیرت‌ها',

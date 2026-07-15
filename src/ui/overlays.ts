@@ -5,7 +5,7 @@ import { earnedGuestStamps, epiphanyLine, epiphanyLines, isHiddenFromCodex, ledg
 import type { RoomRegistry } from '../engine/storyEngine';
 import { clear, el } from './dom';
 import { installFocusTrap } from './focusTrap';
-import { showFieldNote } from './fieldNote';
+import { showFieldNote, renderEmphasis } from './fieldNote';
 import { t } from '../engine/text/resolver';
 import {
   uiKey,
@@ -14,6 +14,8 @@ import {
   roomNoteTitleKey,
   roomNoteThinkersKey,
   roomNoteBodyKey,
+  roomArticleTitleKey,
+  roomArticleBodyKey,
   endingTitleKey,
   endingEpitaphKey,
   endingNoteTitleKey,
@@ -761,6 +763,46 @@ export function showCredits(ui: HTMLElement, pack: ContentPack): Promise<void> {
 }
 
 /**
+ * The "Read more" long-form article for a room's field note (owner
+ * request, 2026-07-15) — opened from a button inside `showFieldNote`
+ * without dismissing it, so returning here lands the player back on the
+ * field note they came from. Same `.codex-panel` scroll/Back pattern as
+ * `showCredits`; `renderEmphasis` gives the body the same `**bold**`
+ * markup field notes already use.
+ */
+export function showRoomArticle(ui: HTMLElement, roomTitle: string, thinkers: string, title: string, body: string): Promise<void> {
+  return new Promise((resolve) => {
+    const o = overlay(ui);
+    // Opened from a button inside an already-open field note (z-index 55,
+    // deliberately above the base .overlay z-index 50 — see styles.css).
+    // Without this, the article overlay painted *underneath* the still-open
+    // field note: readable, but its Back button was unclickable because the
+    // field note's own scroll area sat on top and intercepted the pointer
+    // event. Found live via UAT 35.
+    o.classList.add('above-field-note');
+    const panel = el('div', 'codex-panel article-panel');
+    panel.append(el('div', 'sub', `${t(uiKey('articleKicker'), 'Further reading')} — ${roomTitle}`));
+    panel.append(el('h2', undefined, title));
+    panel.append(el('div', 'fn-thinkers', thinkers));
+    const bodyEl = el('div', 'about-body article-body');
+    bodyEl.innerHTML = body
+      .split('\n\n')
+      .map((para) => `<p>${renderEmphasis(para)}</p>`)
+      .join('');
+    panel.append(bodyEl);
+    const back = el('button', 'title-btn', t(uiKey('back'), 'Back'));
+    back.style.marginTop = '26px';
+    back.addEventListener('click', () => {
+      o.remove();
+      resolve();
+    });
+    panel.append(back);
+    o.appendChild(panel);
+    back.focus();
+  });
+}
+
+/**
  * The Examined Path's opt-in panel (spec 05) — shown once, only on a fresh
  * `'new'` run (never `'continue'`, never mid-run: the mode is immutable once
  * a run starts). Two equal-weight buttons, neither preselected or marked
@@ -854,7 +896,25 @@ export function showCodex(ui: HTMLElement, profile: Profile, pack: ContentPack):
       if (unlocked && note) {
         const icon = isEnding ? pack.visuals.endingIcons[id.replace(/^ending:/, '')] : pack.visuals.iconFor(id);
         const translated = translateFieldNoteForCodex(id, note, isEnding, pack.hooks.lastMessageId);
-        card.addEventListener('click', () => showFieldNote(ui, translated, isEnding ? endingLabel : fieldNoteLabel, icon));
+        const article = !isEnding ? pack.articles[id] : undefined;
+        card.addEventListener('click', () =>
+          showFieldNote(
+            ui,
+            translated,
+            isEnding ? endingLabel : fieldNoteLabel,
+            icon,
+            article
+              ? () =>
+                  showRoomArticle(
+                    ui,
+                    translated.title,
+                    translated.thinkers,
+                    t(roomArticleTitleKey(id), article.title),
+                    t(roomArticleBodyKey(id), article.body),
+                  )
+              : undefined,
+          ),
+        );
       }
       grid.appendChild(card);
     };
@@ -997,7 +1057,25 @@ export function showHotelRegister(ui: HTMLElement, profile: Profile, pack: Conte
           card.append(icon, el('span', 'register-door-title', t(roomTitleKey(room.id), room.title)));
           if (room.fieldNote) {
             const note = translateFieldNoteForCodex(room.id, room.fieldNote, false, pack.hooks.lastMessageId);
-            card.addEventListener('click', () => showFieldNote(ui, note, t(uiKey('fieldNoteHeader'), 'Field Note'), pack.visuals.iconFor(room.id)));
+            const article = pack.articles[room.id];
+            card.addEventListener('click', () =>
+              showFieldNote(
+                ui,
+                note,
+                t(uiKey('fieldNoteHeader'), 'Field Note'),
+                pack.visuals.iconFor(room.id),
+                article
+                  ? () =>
+                      showRoomArticle(
+                        ui,
+                        note.title,
+                        note.thinkers,
+                        t(roomArticleTitleKey(room.id), article.title),
+                        t(roomArticleBodyKey(room.id), article.body),
+                      )
+                  : undefined,
+              ),
+            );
           }
         } else {
           card.append(el('span', 'register-door-teaser', t(roomTeaserKey(room.id), room.teaser)));

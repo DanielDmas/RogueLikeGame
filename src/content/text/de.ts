@@ -80,6 +80,8 @@ registerAll('v2', 'de', {
   [uiKey('ledger')]: 'Reisetagebuch',
   [uiKey('hotelRegister')]: 'Das Register',
   [uiKey('registerSub')]: 'die Gestalt dieses Ortes — ob Sie ihn schon durchschritten haben oder nicht',
+  [uiKey('readMore')]: 'Weiterlesen →',
+  [uiKey('articleKicker')]: 'Weiterführende Lektüre',
   [understoryNameKey()]: 'Das Untergeschoss',
   [uiKey('registerDoorsWalked')]: 'durchschrittene Türen',
   [uiKey('epiphaniesTitle')]: 'Erkenntnisse',
