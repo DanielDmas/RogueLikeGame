@@ -26,9 +26,10 @@
 // fa-rooms.ts/fa-reflections-*.ts's many "اعتماد" usages). "Clarity" =
 // "وضوح", matching the same files' established use of "وضوح"/"وضوحِ..." for
 // the concept of clear-sightedness (this is LIMERENCE's own re-skin of the
-// "lucidity" stat and is registered only under this pack's scoped bark
-// keys here, not under the shared, already-Farsi-registered
-// uiKey('lucidityTooltip')). "The Interval" — the hotel's own in-fiction
+// "lucidity" stat; the HUD tooltip itself is registered separately under
+// lucidityTooltipKey('limerence') in fa-ui.ts — code review 2026-07-15
+// found it had been left on the shared, unscoped uiKey('lucidityTooltip'),
+// silently showing ANAMNESIS's own Farsi text). "The Interval" — the hotel's own in-fiction
 // term for suspended time, not yet translated anywhere else in this pack —
 // is transliterated as "اینتروال", the same way this pack's other bespoke
 // proper nouns are handled phonetically.

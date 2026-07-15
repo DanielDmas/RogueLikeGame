@@ -32,9 +32,11 @@
 // aboutHearts/heartsTooltip registrations for ANAMNESIS's parallel usage,
 // and fr-rooms.ts through fr-rooms-understory.ts for LIMERENCE's own
 // established use of "cœur"). "Clarity" = "lucidité", matching this pack's
-// own re-skin of the "lucidity" stat as used in fr-rooms*.ts (registered
-// only under this pack's scoped bark keys here, not under the shared,
-// already-French-registered uiKey('lucidityTooltip')). "The Interval" —
+// own re-skin of the "lucidity" stat as used in fr-rooms*.ts (the HUD
+// tooltip itself is registered separately under
+// lucidityTooltipKey('limerence') in fr-ui.ts — code review 2026-07-15
+// found it had been left on the shared, unscoped uiKey('lucidityTooltip'),
+// silently showing ANAMNESIS's own French text). "The Interval" —
 // the hotel's own in-fiction term for suspended time — is rendered as
 // "l'Intervalle" (native French spelling), matching the term already
 // established in the room-content French files.

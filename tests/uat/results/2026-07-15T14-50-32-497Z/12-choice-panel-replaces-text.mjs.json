@@ -1,0 +1,9 @@
+{
+  "script": "12-choice-panel-replaces-text.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 73192,
+  "stdout": "UAT 12 (choice panel replaces beat text): PASS",
+  "stderr": ""
+}

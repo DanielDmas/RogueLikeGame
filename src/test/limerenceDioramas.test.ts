@@ -144,3 +144,37 @@ describe('F5 Tier 2 — LIMERENCE dioramaAccentHooks (marys-room/open-drawer pat
     expect(hookedIds.sort()).toEqual(realChoiceIds.sort());
   });
 });
+
+// Bug found in code review (2026-07-15): the-metamour's dominant-cell
+// boundary check (`i < dominantCount + 1 && i >= dominantCount - 1`) only
+// ever matched 2 of the ~10-15 calendar cells regardless of grid size,
+// so the room never actually read as "one color dominating" per its own
+// name and comment. Fixed to `i < dominantCount`; this pins that roughly
+// half the grid (not exactly 2 cells) now gets the dominant color.
+describe('the-metamour — dominant-cell coverage actually reads as "dominating"', () => {
+  const DOMINANT_COLOR = 0xb84a3c;
+
+  function countDominantCells(quality: 'low' | 'high'): { dominant: number; total: number } {
+    const d = limerenceDioramaFor('the-metamour', quality)!;
+    let dominant = 0;
+    let total = 0;
+    d.group.traverse((o) => {
+      if (o instanceof THREE.Mesh && o.geometry.parameters?.width === 0.1) {
+        total++;
+        const m = o.material as THREE.MeshStandardMaterial;
+        if (m.emissive.getHex() === DOMINANT_COLOR) dominant++;
+      }
+    });
+    return { dominant, total };
+  }
+
+  it('roughly half the grid is dominant, not exactly 2 cells, at both quality tiers', () => {
+    for (const quality of ['low', 'high'] as const) {
+      const { dominant, total } = countDominantCells(quality);
+      expect(total, `quality=${quality}`).toBeGreaterThan(2);
+      expect(dominant, `quality=${quality}: should be roughly half of ${total}, not the old bug's fixed 2`).toBe(
+        Math.floor(total / 2),
+      );
+    }
+  });
+});

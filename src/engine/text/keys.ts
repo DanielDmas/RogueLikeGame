@@ -78,6 +78,15 @@ export const heartsTooltipKey = (packId?: string) => scoped(uiKey('heartsTooltip
 export const personaAboutLabelKey = (packId?: string) => scoped(uiKey('personaAboutLabel'), packId);
 export const personaSubKey = (packId?: string) => scoped(uiKey('personaSub'), packId);
 
+/** Found as a real bug in code review (2026-07-15): these two were left
+ * unscoped when their siblings above were fixed, so LIMERENCE's translated
+ * builds (cs/de/fa/fr) fell through to ANAMNESIS's registered "grip on
+ * reality"/lucidity text instead of a translation of LIMERENCE's own
+ * "Trust"/"Clarity" English fallback (`pack.skin.heartsAriaLabel`/
+ * `pack.skin.lucidityTooltip`). Scoped the same way. */
+export const heartsAriaLabelKey = (packId?: string) => scoped(uiKey('heartsAriaLabel'), packId);
+export const lucidityTooltipKey = (packId?: string) => scoped(uiKey('lucidityTooltip'), packId);
+
 export const keepsakeKey = (id: string, field: 'name' | 'origin') => `keepsake.${id}.${field}`;
 
 /** Spec 05 — The Examined Path. `tradition` is one of Reflection's four

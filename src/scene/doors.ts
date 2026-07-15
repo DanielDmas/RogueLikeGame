@@ -154,10 +154,12 @@ export function createDoors(specs: DoorSpec[], style: DoorStyle = {}): DoorSet {
 
     const glow = new THREE.PointLight(doorGlow, BASE_GLOW_LIGHT, 6, 1.9);
     glow.position.set(0, 1.6, 0.7);
+    glow.userData.doorId = spec.id;
 
     // a soft pool of light on the floor beneath the door — unmistakably an interactive threshold
     const pool = new THREE.PointLight(doorGlow, BASE_POOL_LIGHT, 4.5, 2.1);
     pool.position.set(0, 0.05, 0.9);
+    pool.userData.doorId = spec.id;
     glows.set(spec.id, glow);
     pools.set(spec.id, pool);
 
@@ -206,10 +208,18 @@ export function createDoors(specs: DoorSpec[], style: DoorStyle = {}): DoorSet {
           const pool = pools.get(doorId);
           if (pool) pool.intensity = hoverLightSpill(BASE_POOL_LIGHT, t, reducedMotion);
         } else {
+          // T7 ambient flicker: found in code review (2026-07-15) that this
+          // factor only ever multiplied the slab's own emissive intensity
+          // (below) — the door's point-light and floor-pool stayed pinned
+          // to their base intensity every frame, so the light spill never
+          // dimmed in sync with the visibly flickering door. Computed once
+          // here and applied to all three so they read as one effect.
+          const flickerFactor =
+            flicker && flicker.doorId === doorId ? flickerEnvelope(t - flicker.startT, FLICKER_DURATION) : 1;
           const glow = glows.get(doorId);
-          if (glow) glow.intensity = BASE_GLOW_LIGHT;
+          if (glow) glow.intensity = BASE_GLOW_LIGHT * flickerFactor;
           const pool = pools.get(doorId);
-          if (pool) pool.intensity = BASE_POOL_LIGHT;
+          if (pool) pool.intensity = BASE_POOL_LIGHT * flickerFactor;
           const phase = phases.get(doorId) ?? 0;
           let intensity = BASE_INTENSITY + Math.sin(t * 1.4 + phase) * PULSE_AMPLITUDE;
           // A second, slower, odd-frequency wave layered on top — a small,
@@ -218,10 +228,7 @@ export function createDoors(specs: DoorSpec[], style: DoorStyle = {}): DoorSet {
           if (unsteadyPulse && !reducedMotion) {
             intensity += Math.sin(t * 0.37 + phase * 2.3) * unsteadyPulse;
           }
-          if (flicker && flicker.doorId === doorId) {
-            intensity *= flickerEnvelope(t - flicker.startT, FLICKER_DURATION);
-          }
-          mat.emissiveIntensity = intensity;
+          mat.emissiveIntensity = intensity * flickerFactor;
         }
       }
     },

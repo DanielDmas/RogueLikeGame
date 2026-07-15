@@ -1,0 +1,9 @@
+{
+  "script": "03-examined-path.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 112673,
+  "stdout": "UAT 03 (Examined Path reflection card): PASS",
+  "stderr": ""
+}

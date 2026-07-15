@@ -87,6 +87,7 @@ export const anamnesisPack: ContentPack = {
   },
 
   guide: {
+    name: 'Usher',
     speakerPrefixes: SPEAKER_PREFIXES,
     doorBark: usherDoorBark,
     actIntroText,

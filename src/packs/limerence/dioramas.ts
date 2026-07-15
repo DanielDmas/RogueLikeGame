@@ -896,7 +896,13 @@ function theMetamourDiorama(quality: Quality): Diorama {
   let i = 0;
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
-      const isDominant = i < dominantCount + 1 && i >= dominantCount - 1;
+      // Bug found in code review (2026-07-15): the old bounds
+      // (`i < dominantCount + 1 && i >= dominantCount - 1`) only ever
+      // matched the 2 cells at {dominantCount-1, dominantCount} regardless
+      // of grid size, so the calendar never actually read as "one color
+      // dominating" — fixed to the first `dominantCount` cells, giving the
+      // intended roughly-half-the-grid dominance.
+      const isDominant = i < dominantCount;
       const color = isDominant ? 0xb84a3c : cellColors[i % 2];
       const m = mat(0x0a0a0c, color, isDominant ? 0.55 : 0.2);
       const cell = box(0.1, 0.005, 0.07, m);

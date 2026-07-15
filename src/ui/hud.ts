@@ -1,7 +1,7 @@
 import { el } from './dom';
 import { MAX_HEARTS } from '../engine/gameState';
 import { nextLang, t } from '../engine/text/resolver';
-import { uiKey, heartsTooltipKey } from '../engine/text/keys';
+import { uiKey, heartsTooltipKey, heartsAriaLabelKey, lucidityTooltipKey } from '../engine/text/keys';
 import type { Lang } from '../engine/text/resolver';
 
 /** ANAMNESIS's own wording — the engine-default half of the spec 08 §3
@@ -46,7 +46,7 @@ export class Hud {
     const hearts = el('div', 'hearts');
     this.heartsEl = hearts;
     hearts.setAttribute('role', 'status');
-    hearts.setAttribute('aria-label', t(uiKey('heartsAriaLabel'), skin.heartsAriaLabel ?? DEFAULT_HEARTS_ARIA_LABEL));
+    hearts.setAttribute('aria-label', t(heartsAriaLabelKey(packId), skin.heartsAriaLabel ?? DEFAULT_HEARTS_ARIA_LABEL));
     hearts.title = t(heartsTooltipKey(packId), skin.heartsTooltip ?? DEFAULT_HEARTS_TOOLTIP);
     for (let i = 0; i < MAX_HEARTS; i++) {
       const h = el('div', 'heart');
@@ -56,7 +56,7 @@ export class Hud {
     }
     const right = el('div', 'hud-right');
     this.lucidityEl = el('div', 'lucidity');
-    this.lucidityEl.title = t(uiKey('lucidityTooltip'), skin.lucidityTooltip ?? DEFAULT_LUCIDITY_TOOLTIP);
+    this.lucidityEl.title = t(lucidityTooltipKey(packId), skin.lucidityTooltip ?? DEFAULT_LUCIDITY_TOOLTIP);
     let currentLang = initialLang;
     this.langBtn = el('button', 'menu-btn lang-btn', LANG_SHORT[currentLang]);
     this.langBtn.title = t(uiKey('hudLanguageTooltip'), 'Change language (applies from the next beat onward)');
@@ -91,9 +91,9 @@ export class Hud {
    * language changes, whether from the HUD's own button or from Settings. */
   setLanguage(lang: Lang) {
     this.langBtn.textContent = LANG_SHORT[lang];
-    this.heartsEl.setAttribute('aria-label', t(uiKey('heartsAriaLabel'), this.skin.heartsAriaLabel ?? DEFAULT_HEARTS_ARIA_LABEL));
+    this.heartsEl.setAttribute('aria-label', t(heartsAriaLabelKey(this.packId), this.skin.heartsAriaLabel ?? DEFAULT_HEARTS_ARIA_LABEL));
     this.heartsEl.title = t(heartsTooltipKey(this.packId), this.skin.heartsTooltip ?? DEFAULT_HEARTS_TOOLTIP);
-    this.lucidityEl.title = t(uiKey('lucidityTooltip'), this.skin.lucidityTooltip ?? DEFAULT_LUCIDITY_TOOLTIP);
+    this.lucidityEl.title = t(lucidityTooltipKey(this.packId), this.skin.lucidityTooltip ?? DEFAULT_LUCIDITY_TOOLTIP);
     this.langBtn.title = t(uiKey('hudLanguageTooltip'), 'Change language (applies from the next beat onward)');
     this.menuBtn.textContent = t(uiKey('menu'), 'Menu');
   }

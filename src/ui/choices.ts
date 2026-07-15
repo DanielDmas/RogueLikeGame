@@ -172,7 +172,18 @@ export class ChoicePanel {
     // theme toggle's --panel change reliably repaints it instead of risking
     // a stale composited layer.
     for (const card of wrap.querySelectorAll<HTMLElement>('.choice-card')) {
-      card.addEventListener('animationend', () => card.classList.add('settled'), { once: true });
+      // Scoped to the card's own entrance animation by name — found in code
+      // review (2026-07-15) that an unscoped `{ once: true }` listener also
+      // caught LIMERENCE's separate `limerence-scan` hover/focus animation
+      // (its `::after` pseudo-element's animationend bubbles to this same
+      // element), so hovering/focusing a card mid-entrance could consume
+      // the listener early and snap the rise animation short.
+      const onAnimationEnd = (e: AnimationEvent) => {
+        if (e.animationName !== 'rise') return;
+        card.classList.add('settled');
+        card.removeEventListener('animationend', onAnimationEnd);
+      };
+      card.addEventListener('animationend', onAnimationEnd);
     }
     this.keyHandler = (e: KeyboardEvent) => {
       // A pause menu / codex / settings / field note is open on top —

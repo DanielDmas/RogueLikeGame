@@ -31,8 +31,10 @@
 // files (e.g. de-rooms.ts, de-rooms-act4.ts's many "Vertrauen" usages).
 // "Clarity" = "Klarheit", matching the same files' established use for the
 // concept of clear-sightedness (LIMERENCE's own re-skin of the "lucidity"
-// stat; registered only under this pack's scoped bark keys here, not under
-// the shared, already-German-registered uiKey('lucidityTooltip')). "The
+// stat; the HUD tooltip itself is registered separately under
+// lucidityTooltipKey('limerence') in de-ui.ts — code review 2026-07-15
+// found it had been left on the shared, unscoped uiKey('lucidityTooltip'),
+// silently showing ANAMNESIS's own German text). "The
 // Interval" — the hotel's own in-fiction term for suspended time — is
 // rendered as "das Intervall" (native German spelling, double l), matching
 // the bare noun already used at de-rooms-act3.ts:573 ("im Interval gewesen",

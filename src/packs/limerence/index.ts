@@ -179,6 +179,7 @@ export const limerencePack: ContentPack = {
   },
 
   guide: {
+    name: 'Porter',
     speakerPrefixes: ['Porter:', 'THE ROOM:'],
     doorBark: limerenceDoorBark,
     actIntroText: limerenceActIntroText,

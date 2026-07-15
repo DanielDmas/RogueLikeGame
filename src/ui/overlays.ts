@@ -563,12 +563,11 @@ const ABOUT_BLURB_FALLBACK: Record<string, string> = {
 };
 
 /** Cosmetic-only persona picker: a preset name/blurb, or a custom one. No mechanical effect. */
-export function showPersona(ui: HTMLElement, persona: Persona, packId?: string): Promise<Persona> {
+export function showPersona(ui: HTMLElement, persona: Persona, packId?: string, guideWord = 'Usher'): Promise<Persona> {
   return new Promise((resolve) => {
     const o = overlay(ui);
     const panel = el('div', 'codex-panel persona-panel');
     panel.append(el('h2', undefined, t(uiKey('personaTitle'), 'Who are you, tonight?')));
-    const guideWord = packId === 'limerence' ? 'Porter' : 'Usher';
     panel.append(
       el(
         'div',

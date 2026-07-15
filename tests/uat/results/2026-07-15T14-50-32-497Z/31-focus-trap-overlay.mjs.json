@@ -1,0 +1,9 @@
+{
+  "script": "31-focus-trap-overlay.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 5910,
+  "stdout": "UAT 31 (focus trap, Settings overlay): PASS — 40 Tab presses stayed contained, trap released on close",
+  "stderr": ""
+}

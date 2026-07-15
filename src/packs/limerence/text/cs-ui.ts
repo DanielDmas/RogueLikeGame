@@ -1,35 +1,28 @@
-// LIMERENCE's shared UI-chrome translations. New category, deliberately
-// started small: the pack's existing text/ files are organized by content
-// type (rooms/endings/keepsakes/epiphanies/reflections/guide), and none of
-// them is a natural home for a title-menu button label. Registers under
-// oneDoorButtonKey('limerence') — the plain, unscoped uiKey('oneDoorButton')
-// is ANAMNESIS's own registration; without scoping, whichever pack's module
-// happened to import last would silently overwrite the other's translation
-// wherever both packs are loaded together (as in this test suite).
+// LIMERENCE's shared UI-chrome translations: the 7 genuinely pack-scoped
+// strings whose English fallback names the pack's own guide or differs from
+// ANAMNESIS's wording (oneDoorButton, understoryName, heartsTooltip,
+// heartsAriaLabel, lucidityTooltip, personaAboutLabel, personaSub — see
+// keys.ts's header comment on heartsTooltipKey for why each is scoped).
 //
-// Item 21 backfill (2026-07-15): the bulk of the entries below reuse
-// ANAMNESIS's already-reviewed Czech translations for genuinely pack-neutral
-// UI chrome (same English source text, no narrative voice, reachable
-// unconditionally in both packs) — a coverage-completion pass, not a
-// translation-quality pass. Three keys were deliberately excluded from that
-// reuse (aboutWhy/aboutHearts/aboutDoors — Usher-only, gated behind
-// `if (!pack.advisory)` in overlays.ts, unreachable for LIMERENCE, and their
-// ANAMNESIS translations name the Usher by his own guide-word). Four more
-// keys needed LIMERENCE's own fresh translation rather than reuse, because
-// their English fallback text differs per pack and/or names the pack's own
-// guide: heartsTooltip and understoryName (each pack's own Trust/Clarity
-// wording and each pack's own in-fiction section name), and
-// personaAboutLabel/personaSub (name "the Porter", never "the Usher" —
-// see keys.ts's header comment on heartsTooltipKey for why these three are
-// scoped the same way).
+// Everything else in the ~161-key UI-chrome surface (item 21's original
+// backfill, 2026-07-15) is deliberately *not* re-registered here: those
+// keys are genuinely pack-neutral (same English source, no narrative voice)
+// and `uiKey(...)` is unscoped by design, so ANAMNESIS's own registration
+// already serves LIMERENCE for them. The original backfill duplicated all
+// ~155 of them anyway (byte-for-byte identical values) — code review
+// (2026-07-15) found this was actively how the heartsAriaLabel/
+// lucidityTooltip leaks below went unnoticed (a wrong copy read as "already
+// translated") and removed the dead duplication; nothing behavioral
+// changed; only the 7 keys below that must differ per pack are registered.
 import { registerAll } from '../../../engine/text/resolver';
 import {
   oneDoorButtonKey,
   understoryNameKey,
   heartsTooltipKey,
+  heartsAriaLabelKey,
+  lucidityTooltipKey,
   personaAboutLabelKey,
   personaSubKey,
-  uiKey,
 } from '../../../engine/text/keys';
 
 registerAll('v2', 'cs', {
@@ -37,175 +30,9 @@ registerAll('v2', 'cs', {
   [understoryNameKey('limerence')]: 'Archiv',
   [heartsTooltipKey('limerence')]:
     'Vaše Důvěra — vaše schopnost ji ještě někomu dát. Několik obzvlášť nákladných voleb ji stojí přímo jednu, stejně jako když vaše Jasnost zcela dojde. Ztráta všech tří není obrazovka prohry — je to konec.',
+  [heartsAriaLabelKey('limerence')]: 'Důvěra',
+  [lucidityTooltipKey('limerence')]: 'Jasnost — upřímnost, s jakou se díváte sami na sebe.',
   [personaAboutLabelKey('limerence')]: 'O vás (nepovinné — nikomu se to neukáže, jen to procítí Vrátný)',
   [personaSubKey('limerence')]:
     'Čistě pro potřeby Vrátného — nic to nemění na pokojích, jen na tom, jak k vám promlouvají.',
-  [uiKey('aboutTitle')]: 'Než začnete',
-  [uiKey('advanceHintClick')]: 'klikněte · mezerník',
-  [uiKey('advanceHintContinue')]: 'pokračujte',
-  [uiKey('annexHeader')]: 'Přístavek zaznamenává:',
-  [uiKey('archiveBlurbFallback')]: 've spisu není žádný další popis',
-  [uiKey('back')]: 'Zpět',
-  [uiKey('begin')]: 'Začít',
-  [uiKey('beginAgain')]: 'Začít znovu',
-  [uiKey('codexSub')]: 'čím jste prošli — zůstává to prošlé',
-  [uiKey('collected')]: 'sebráno',
-  [uiKey('confirmAgain')]: 'Klikněte znovu pro potvrzení',
-  [uiKey('continue')]: 'Pokračovat',
-  [uiKey('continueJourney')]: 'Pokračovat v cestě',
-  [uiKey('creditsEngine')]: '<b>Vykreslování a zvuk.</b> Každý vizuál je generovaná geometrie (Three.js) a každý zvuk je generován za běhu — žádné zakoupené ani stažené výtvarné či zvukové materiály.',
-  [uiKey('creditsFonts')]: '<b>Písma.</b> Inter, Spectral a Vazirmatn, přes Fontsource — každé licencováno pod SIL Open Font License 1.1.',
-  [uiKey('creditsIntro')]: 'Napsáno, navrženo a vytvořeno nezávisle.',
-  [uiKey('creditsNotices')]: 'Úplné texty licencí třetích stran jsou v souboru THIRD_PARTY_NOTICES.md, distribuovaném společně s touto verzí.',
-  [uiKey('creditsTelemetry')]: 'Nic z toho, jak hrajete, se nesleduje, nikam neodesílá ani nespojuje s účtem — vaše uložená hra existuje pouze v tomto prohlížeči nebo této instalaci.',
-  [uiKey('creditsTitle')]: 'Titulky',
-  [uiKey('creditsTooling')]: '<b>Postaveno na.</b> Three.js (licence MIT) · TypeScript · Vite · Electron (desktopová verze) · Vitest a Playwright (testování).',
-  [uiKey('done')]: 'Hotovo',
-  [uiKey('doorHelp')]: 'vyberte cestu — klikněte na dveře, nebo stiskněte jejich číslo',
-  [uiKey('doorHelpSingle')]: 'toto je jediná cesta vpřed — klikněte na dveře, nebo stiskněte 1',
-  [uiKey('doorUnseenBadge')]: 'nové',
-  [uiKey('doorUnseenBadgeTooltip')]: 'Těmito dveřmi jste ještě nikdy neprošli',
-  [uiKey('doorsNeverOpenedHeader')]: 'dveře, které jste nikdy neotevřeli',
-  [uiKey('ending')]: 'Konec',
-  [uiKey('endingFieldNoteHeader')]: 'Konec · Poznámka',
-  [uiKey('endingsWitnessed')]: 'zažité konce',
-  [uiKey('epiphaniesTitle')]: 'Poznání',
-  [uiKey('epiphanyEarned')]: 'zaznamenáno dnes večer',
-  [uiKey('examinedOfferBody')]: 'Volitelné razítko ve vašem spisu: po každé významné volbě vám tichý úředník ukáže, jak by ji mohlo číst několik pojmenovaných etických tradic — vedle sebe, záměrně se neshodujících. Nic tady se nehodnotí ani neboduje a žádné čtení není to „správné“. Místnosti, srdce i konce, kterých můžete dosáhnout, zůstávají naprosto stejné. Každou kartu zavřete jediným kliknutím. Výchozí volbu pro příště můžete kdykoli změnit v Nastavení.',
-  [uiKey('examinedOfferIntro')]: 'Přístavek zakládá komentáře. Nemá jeden názor — má čtyři.',
-  [uiKey('examinedOfferTitle')]: 'Přístavek pro průzkum',
-  [uiKey('exitGame')]: 'Ukončit hru',
-  [uiKey('explainButton')]: 'Vysvětlit jednoduše',
-  [uiKey('explainLabel')]: 'Jednoduše řečeno',
-  [uiKey('exportProfile')]: 'Exportovat profil',
-  [uiKey('exportProfileButton')]: 'Stáhnout',
-  [uiKey('exportProfileDesc')]: 'Stáhne celý váš profil jako soubor — osobní záloha, nebo něco, co můžete poslat, pokud budete potřebovat pomoc.',
-  [uiKey('fieldNoteHeader')]: 'Poznámka',
-  [uiKey('fieldNotes')]: 'Poznámky',
-  [uiKey('fpsCap30')]: 'Snímková frekvence: 30 fps (plynulejší na slabších grafických kartách)',
-  [uiKey('fpsCap60')]: 'Snímková frekvence: 60 fps',
-  [uiKey('guestStampsTitle')]: 'Razítka hosta',
-  [uiKey('heartsAriaLabel')]: 'úchop reality',
-  [uiKey('hotelRegister')]: 'Rejstřík',
-  [uiKey('howToAdvance')]: '<b>Klikněte</b> na text, nebo stiskněte <b>mezerník</b>, pro pokračování',
-  [uiKey('howToClick')]: '<b>Klikněte</b> na dveře, nebo stiskněte <b>1–3</b>, pro volbu cesty',
-  [uiKey('howToPause')]: '<b>Esc</b> pro pauzu · najetím na dveře zobrazíte nápovědu',
-  [uiKey('hudLanguageTooltip')]: 'Změnit jazyk (projeví se od dalšího momentu)',
-  [uiKey('importProfile')]: 'Importovat profil',
-  [uiKey('importProfileButton')]: 'Importovat',
-  [uiKey('importProfileDesc')]: 'Nahradí celý váš profil vloženým souborem. Váš aktuální postup se přepíše — pokud si ho chcete ponechat, nejdřív ho exportujte.',
-  [uiKey('importProfileError')]: 'Tohle nevypadá jako platný soubor profilu — nic se nezměnilo.',
-  [uiKey('importProfilePlaceholder')]: 'Sem vložte obsah exportovaného souboru profilu',
-  [uiKey('importProfileSuccess')]: 'Importováno — načítám znovu…',
-  [uiKey('keepsakeChoiceTooltip')]: 'Upomínka, tiše vydaná',
-  [uiKey('lastMessageBody')]: 'Měli jste jednu větu, a toto byla ona:',
-  [uiKey('ledger')]: 'Cestovatelský deník',
-  [uiKey('ledgerDescents')]: 'Sestupy dolů',
-  [uiKey('ledgerEndings')]: 'Spatřené konce',
-  [uiKey('ledgerExamined')]: 'Prozkoumané cesty',
-  [uiKey('ledgerHearts')]: 'Ztracená srdce, celkem',
-  [uiKey('ledgerKeepsakes')]: 'Památky na poličce',
-  [uiKey('ledgerMostWalked')]: 'Nejchozenější dveře',
-  [uiKey('ledgerRooms')]: 'Spatřené místnosti',
-  [uiKey('ledgerRuns')]: 'Dokončené cesty',
-  [uiKey('menu')]: 'Menu',
-  [uiKey('notYetWalked')]: 'ještě neprošlé',
-  [uiKey('of')]: 'z',
-  [uiKey('off')]: 'vypnuto',
-  [uiKey('on')]: 'zapnuto',
-  [uiKey('paused')]: 'Pauza',
-  [uiKey('pausedSub')]: 'místnosti počkají — čas je zde jen ozdoba',
-  [uiKey('persona.about1')]: 'Opatrní k druhým. Méně opatrní k sobě.',
-  [uiKey('persona.about2')]: 'Rychle se zasmějete, pomalu řeknete, co se skutečně stalo.',
-  [uiKey('persona.about3')]: 'Pořád tu jste. To je většina odpovědi, ve většině dní.',
-  [uiKey('persona.daniel')]: 'Měříte dvakrát. Přesto se občas řízne špatně.',
-  [uiKey('persona.mira')]: 'Všímala jste si věcí dřív, než vás o to kdokoli požádal.',
-  [uiKey('persona.sara')]: 'Zůstáváte do konce věcí. Vždycky jste to tak měla.',
-  [uiKey('persona.tomas')]: 'Odpouštíte pomalu, ale úplně, jakmile to uděláte.',
-  [uiKey('personaFreeTextPlaceholder')]: 'Nebo napište vlastní, stručně…',
-  [uiKey('personaNameLabel')]: 'Jméno',
-  [uiKey('personaNamePlaceholder')]: 'Vaše jméno (nebo jak vás tu mají oslovovat)',
-  [uiKey('personaSkip')]: 'Přeskočit — říkejte mi poutník',
-  [uiKey('personaTitle')]: 'Kdo jste dnes večer?',
-  [uiKey('pivotalChoicesHeader')]: 'co jste si zvolili',
-  [uiKey('recapHeader')]: 'Čím jste prošli',
-  [uiKey('recoveryBody')]: 'Něco v soukolí ztratilo rovnováhu. Váš soubor je v bezpečí — nic z toho, co jste tu udělali, se neztratilo.',
-  [uiKey('recoveryReturn')]: 'Zpět na titulní obrazovku',
-  [uiKey('recoveryTitle')]: 'Zařízení zablikalo',
-  [uiKey('registerDoorsWalked')]: 'projitých dveří',
-  [uiKey('registerSub')]: 'podoba tohoto místa, ať už jste jím prošli, nebo ne',
-  [uiKey('rememberedTag')]: 'vzpomínka',
-  [uiKey('renderScalePerformance')]: 'Rozlišení vykreslování: Výkon',
-  [uiKey('renderScaleSharp')]: 'Rozlišení vykreslování: Ostré',
-  [uiKey('renderScaleStandard')]: 'Rozlišení vykreslování: Standardní',
-  [uiKey('rereadBack')]: 'Zpět — znovu si přečíst předchozí část',
-  [uiKey('rereadJumpTo')]: 'Znovu si přečíst část {n}',
-  [uiKey('rereadScene')]: '⟲ znovu si přečíst scénu',
-  [uiKey('resetProgress')]: 'Resetovat veškerý postup',
-  [uiKey('resetProgressDesc')]: 'Vymaže úplně vše — poznámky, konce, nastavení, vaši rozehranou hru — zpět na úplný začátek.',
-  [uiKey('resetRun')]: 'Resetovat aktuální hru',
-  [uiKey('resetRunDesc')]: 'Opustí vaši rozehranou cestu. Poznámky, konce a nastavení zůstanou zachovány.',
-  [uiKey('resetRunDone')]: 'Hra resetována',
-  [uiKey('restoredFromBackup')]: 'Vaše poslední uložení se nepodařilo načíst — obnoveno z předchozí zálohy. Nic by nemělo chybět.',
-  [uiKey('resume')]: 'Pokračovat',
-  [uiKey('saveAndExit')]: 'Uložit a vrátit se na titulní obrazovku',
-  [uiKey('saveFailed')]: 'Váš postup se nepodařilo uložit — úložiště je možná plné.',
-  [uiKey('savedToast')]: 'Uloženo',
-  [uiKey('senderYou')]: 'odesílatel: vy',
-  [uiKey('settingDynamicScenery')]: 'Dynamické prostředí (experimentální)',
-  [uiKey('settingDynamicSceneryDesc')]: 'Místnosti jemně zabarvují světlo a mlhu podle své nálady.',
-  [uiKey('settingExaminedPath')]: 'Prozkoumaná cesta — nabídnuta na začátku každé nové hry',
-  [uiKey('settingExaminedPathDesc')]: 'Mění pouze to, co je předvybrané při zahájení nové hry — vždy budete dotázáni znovu a volba pro tuto hru zůstává nedotčena.',
-  [uiKey('settingFpsCap')]: 'Omezení snímkové frekvence',
-  [uiKey('settingFpsCapDesc')]: 'Nižší hodnota citelně šetří grafický výkon — tohle je hra o mlze a textu, ne akční titul.',
-  [uiKey('settingFullscreen')]: 'Celá obrazovka',
-  [uiKey('settingFullscreenDesc')]: 'Vyplní celou obrazovku — přepíná se i klávesou F.',
-  [uiKey('settingHighContrast')]: 'Vysoký kontrast textu',
-  [uiKey('settingHighContrastDesc')]: 'Světlejší barva textu pro snazší čtení.',
-  [uiKey('settingLanguage')]: 'Jazyk',
-  [uiKey('settingLanguageDesc')]: 'Projeví se okamžitě, všude ve hře.',
-  [uiKey('settingLightMode')]: 'Světlý režim',
-  [uiKey('settingLightModeDesc')]: 'Stejný hotel, ranní světlo — tytéž pokoje, jemnější tón.',
-  [uiKey('settingMusic')]: 'Hudba na pozadí',
-  [uiKey('settingMusicDesc')]: 'Tichá, proměnlivá atmosféra, která se mění s každým dějstvím.',
-  [uiKey('settingMusicVolume')]: 'Hlasitost hudby',
-  [uiKey('settingNarration')]: 'Namluvení',
-  [uiKey('settingNarrationDesc')]: 'Namluvené repliky, tam kde jsou nahrány.',
-  [uiKey('settingNarrationVolume')]: 'Hlasitost namluvení',
-  [uiKey('settingQuality')]: 'Vysoká grafická kvalita',
-  [uiKey('settingQualityDesc')]: 'Efekty záře a vyhlazování; vyžaduje výkonnější grafickou kartu. Projeví se při dalším spuštění.',
-  [uiKey('settingReducedMotion')]: 'Omezený pohyb',
-  [uiKey('settingReducedMotionDesc')]: 'Zkrátí pohyb kamery a plynulé přechody téměř na okamžité — šetrnější k citlivosti na pohyb.',
-  [uiKey('settingRenderScale')]: 'Rozlišení vykreslování',
-  [uiKey('settingRenderScaleDesc')]: 'Nižší = plynulejší na slabších grafických kartách, mírně měkčí obraz. Ostré využívá plné rozlišení obrazovky.',
-  [uiKey('settingSfx')]: 'Zvukové efekty',
-  [uiKey('settingSfxDesc')]: 'Zvuky dveří, otáčení stránek a drobné zvuky volby.',
-  [uiKey('settingSfxVolume')]: 'Hlasitost efektů',
-  [uiKey('settingTextVersion')]: 'Verze textu',
-  [uiKey('settingTextVersionDesc')]: 'v1 je původní hlas, uchovaný jako volitelná záloha; v2 je aktuální přepis.',
-  [uiKey('settingTypewriter')]: 'Postupné psaní textu',
-  [uiKey('settingTypewriterDesc')]: 'Text se objevuje písmeno po písmenu, jako by vám ho někdo vyprávěl.',
-  [uiKey('settingUiZoom')]: 'Velikost rozhraní',
-  [uiKey('settingUiZoomDesc')]: 'Zvětší nebo zmenší nabídky a text podle vaší chuti — 3D scéna zůstává ostrá.',
-  [uiKey('settings')]: 'Nastavení',
-  [uiKey('settingsFooter')]: 'změna kvality se projeví při dalším spuštění · jazyk a verze textu platí ihned',
-  [uiKey('settingsSectionAudio')]: 'Zvuk',
-  [uiKey('settingsSectionData')]: 'Data',
-  [uiKey('settingsSectionDisplay')]: 'Zobrazení',
-  [uiKey('settingsSectionText')]: 'Text a jazyk',
-  [uiKey('shelfTitle')]: 'Polička',
-  [uiKey('statHearts')]: 'zachovaná srdce',
-  [uiKey('statLucidity')]: 'lucidita',
-  [uiKey('statNewNotes')]: 'nové poznámky',
-  [uiKey('takeExaminedPath')]: 'Zvolit prozkoumanou cestu',
-  [uiKey('title')]: 'Titulní obrazovka',
-  [uiKey('titleTagline')]: 'cesta všemi místnostmi · každé dveře jsou otázkou · cesta zpět vede skrz',
-  [uiKey('travelerLabel')]: 'Poutník',
-  [uiKey('travellerFallback')]: 'poutníku',
-  [uiKey('versionV1')]: 'Hlas: v1 (původní)',
-  [uiKey('versionV2')]: 'Hlas: v2 (nový)',
-  [uiKey('vestibuleButton')]: 'The Vestibule — vyberte hru',
-  [uiKey('walkAgain')]: 'Projít znovu — místnosti se nepřeskládají pro nikoho, ale vy jste se změnili',
-  [uiKey('walkPlainly')]: 'Jít prostou cestou',
-  [uiKey('whoAreYou')]: 'Kdo jste?',
 });

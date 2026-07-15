@@ -18,6 +18,29 @@ import { describe, expect, it } from 'vitest';
 
 const flowSrc = readFileSync(resolve(__dirname, '../engine/flow.ts'), 'utf-8');
 
+/**
+ * Finds the nearest `if (!this.oneDoorMode) {` before `markerIdx` and
+ * returns whether `markerIdx` sits inside that block's matching closing
+ * brace — via real brace-depth counting rather than a fixed character
+ * window, so it survives comments/formatting shifting the guard further
+ * from the code it gates (a fixed-offset window broke on exactly this in
+ * code review, 2026-07-15, when consolidating 3 scattered guards into 1).
+ */
+function isInsideOneDoorGuard(markerIdx: number): boolean {
+  const guardIdx = flowSrc.lastIndexOf('if (!this.oneDoorMode) {', markerIdx);
+  if (guardIdx === -1) return false;
+  const openIdx = flowSrc.indexOf('{', guardIdx);
+  let depth = 0;
+  for (let i = openIdx; i < flowSrc.length; i++) {
+    if (flowSrc[i] === '{') depth++;
+    else if (flowSrc[i] === '}') {
+      depth--;
+      if (depth === 0) return markerIdx < i;
+    }
+  }
+  return false;
+}
+
 describe('flow.ts — "One Door" (T9) must not leak permanent profile side effects', () => {
   it('declares the oneDoorMode field and sets/clears it around the vignette', () => {
     expect(flowSrc).toContain('private oneDoorMode = false;');
@@ -28,24 +51,18 @@ describe('flow.ts — "One Door" (T9) must not leak permanent profile side effec
   it('gates the lifetime heartsLost stat behind !this.oneDoorMode', () => {
     const idx = flowSrc.indexOf('this.profile.heartsLost +=');
     expect(idx, 'heartsLost mutation not found').toBeGreaterThan(-1);
-    const before = flowSrc.slice(Math.max(0, idx - 80), idx);
-    expect(before).toContain('if (!this.oneDoorMode)');
+    expect(isInsideOneDoorGuard(idx)).toBe(true);
   });
 
   it('gates keepsake earning (both the flags loop and keepsakeChoicesTaken) behind !this.oneDoorMode', () => {
     const idx = flowSrc.indexOf('keepsakesEarnedByFlags(newFlags');
     expect(idx, 'keepsake-earning block not found').toBeGreaterThan(-1);
-    const before = flowSrc.slice(Math.max(0, idx - 200), idx);
-    expect(before).toContain('if (!this.oneDoorMode)');
+    expect(isInsideOneDoorGuard(idx)).toBe(true);
 
     const takenIdx = flowSrc.indexOf('profile.keepsakeChoicesTaken.push');
     expect(takenIdx, 'keepsakeChoicesTaken mutation not found').toBeGreaterThan(-1);
-    // Same guard block as the flags loop above — confirm it's still inside
-    // the same `if (!this.oneDoorMode) {` region, not a sibling unguarded one.
-    const guardIdx = flowSrc.lastIndexOf('if (!this.oneDoorMode) {', takenIdx);
-    const closeIdx = flowSrc.indexOf('\n      }', guardIdx);
-    expect(guardIdx).toBeGreaterThan(-1);
-    expect(takenIdx).toBeLessThan(closeIdx);
+    // Same guard block as the flags loop above, not a sibling unguarded one.
+    expect(isInsideOneDoorGuard(takenIdx)).toBe(true);
   });
 
   it('gates the first-heart-loss explainer (the one-time profile flag) behind !this.oneDoorMode', () => {

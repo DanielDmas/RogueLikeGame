@@ -130,6 +130,8 @@ describe('I9 — WCAG AA contrast for every genuine reading-text color token', (
       '.recap-item .r-title {',
       '.run-stats b {',
       '.ledger-value {',
+      '.choice-card .num {',
+      '.choice-card .keepsake-mark {',
     ];
     for (const selector of textSelectors) {
       const idx = css.indexOf(selector);

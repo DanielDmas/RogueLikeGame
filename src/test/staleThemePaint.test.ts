@@ -49,9 +49,15 @@ describe('P3 — stale theme-toggle paint on door/choice cards', () => {
     expect(choicesSrc).toContain("card.classList.add('settled')");
   });
 
-  it('the settled-class wiring uses { once: true } so it never re-fires or leaks a listener per re-mount', () => {
+  it('the settled-class wiring removes its own listener so it never re-fires or leaks a listener per re-mount', () => {
+    // Either `{ once: true }` or an explicit `removeEventListener` inside
+    // the handler satisfies "never re-fires/leaks" — code review
+    // (2026-07-15) moved this to the latter, since LIMERENCE's separate
+    // `limerence-scan` hover animation also bubbles animationend to the
+    // same element, and `{ once: true }` alone can't filter by animation
+    // name (the listener must inspect `e.animationName` first).
     const idx = choicesSrc.indexOf("classList.add('settled')");
-    const nearby = choicesSrc.slice(Math.max(0, idx - 200), idx + 50);
-    expect(nearby).toContain('{ once: true }');
+    const nearby = choicesSrc.slice(Math.max(0, idx - 200), idx + 100);
+    expect(nearby).toMatch(/\{ once: true \}|removeEventListener/);
   });
 });

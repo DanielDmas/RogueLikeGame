@@ -335,6 +335,29 @@ describe('DoorSet.triggerAmbientFlicker — T7 ambient corridor life', () => {
     expect(() => set.triggerAmbientFlicker(0)).not.toThrow();
     set.dispose();
   });
+
+  // Found in code review (2026-07-15): the flicker factor only ever
+  // multiplied the slab's own emissive intensity — the door's point-light
+  // and floor-pool light stayed pinned to base intensity every frame, so
+  // the light spill never dimmed in sync with the visibly flickering slab.
+  it('dims the door\'s glow and floor-pool lights in sync with the slab, not just the slab', () => {
+    const set = createDoors([{ id: 'a', hint: 'a' }]);
+    const lightsOf = (id: string) => {
+      const lights: THREE.PointLight[] = [];
+      set.group.traverse((o) => {
+        if (o instanceof THREE.PointLight && o.userData.doorId === id) lights.push(o);
+      });
+      return lights;
+    };
+    set.tick(10);
+    const before = lightsOf('a').map((l) => l.intensity);
+    set.triggerAmbientFlicker(10);
+    set.tick(11.1); // roughly the flicker's midpoint
+    const during = lightsOf('a').map((l) => l.intensity);
+    expect(during.length).toBeGreaterThan(0);
+    during.forEach((intensity, i) => expect(intensity).toBeLessThan(before[i]));
+    set.dispose();
+  });
 });
 
 describe('corridor decorative doors — dimmer and desaturated vs. real doors', () => {

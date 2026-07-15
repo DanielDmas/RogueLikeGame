@@ -409,7 +409,7 @@ export class Game {
     if (action === 'ledger') await showLedger(this.ui, this.profile, this.registry, this.pack.graph.understorySequence, this.pack.epiphanies, this.pack.endingRules.endingsTotal, this.pack.keepsakes.length, this.lastMessageLabel());
     if (action === 'register') await showHotelRegister(this.ui, this.profile, this.pack);
     if (action === 'persona') {
-      this.profile.persona = await showPersona(this.ui, this.profile.persona, this.pack.meta.id);
+      this.profile.persona = await showPersona(this.ui, this.profile.persona, this.pack.meta.id, this.pack.guide.name);
       await this.persist();
     }
     if (action === 'about') await showAbout(this.ui, this.pack);
@@ -470,7 +470,7 @@ export class Game {
       } else if (action === 'oneDoor') {
         return this.playOneDoor();
       } else if (action === 'persona') {
-        this.profile.persona = await showPersona(this.ui, this.profile.persona, this.pack.meta.id);
+        this.profile.persona = await showPersona(this.ui, this.profile.persona, this.pack.meta.id, this.pack.guide.name);
         await this.persist();
       } else if (action === 'about') {
         await showAbout(this.ui, this.pack);
@@ -497,7 +497,7 @@ export class Game {
           await this.persist();
         }
         if (action === 'new' && !this.profile.persona.name) {
-          this.profile.persona = await showPersona(this.ui, this.profile.persona, this.pack.meta.id);
+          this.profile.persona = await showPersona(this.ui, this.profile.persona, this.pack.meta.id, this.pack.guide.name);
           await this.persist();
         }
         if (action === 'continue' && this.profile.run) {
@@ -706,19 +706,23 @@ export class Game {
       if (this.pack.visuals.dioramaAccentHooks.some((h) => h.roomId === room.id && h.choiceId === choice.id)) {
         this.director.setDioramaAccent(true);
       }
+      const heartsLostThisChoice = this.state.hearts < heartsBefore;
+      if (heartsLostThisChoice) sound.heartLoss();
       // T9: none of this run's permanent, whole-run-scoped profile side
       // effects apply to a standalone One Door vignette — there is no real
       // run for a keepsake or a lifetime hearts-lost tick to belong to.
-      const firstHeartLoss = this.state.hearts < heartsBefore && !this.profile.hasSeenHeartLoss && !this.oneDoorMode;
-      if (this.state.hearts < heartsBefore) {
-        sound.heartLoss();
-        if (!this.oneDoorMode) this.profile.heartsLost += heartsBefore - this.state.hearts;
-      }
-      // Keepsakes (spec 04): earned silently, once per profile ever, the
-      // instant their trigger flag is first set — no toast, no interruption.
-      // Not retroactive: a flag set by a run before keepsakes shipped grants
-      // nothing, since flags reset every run.
+      // Found in code review (2026-07-15) as 3 separate scattered
+      // `!this.oneDoorMode` checks (easy for a future addition to land
+      // outside all of them by accident) — consolidated into this one gate.
+      // Every permanent profile mutation triggered by a choice's effects
+      // must live inside this block.
+      const firstHeartLoss = heartsLostThisChoice && !this.profile.hasSeenHeartLoss && !this.oneDoorMode;
       if (!this.oneDoorMode) {
+        if (heartsLostThisChoice) this.profile.heartsLost += heartsBefore - this.state.hearts;
+        // Keepsakes (spec 04): earned silently, once per profile ever, the
+        // instant their trigger flag is first set — no toast, no
+        // interruption. Not retroactive: a flag set by a run before
+        // keepsakes shipped grants nothing, since flags reset every run.
         const newFlags = this.state.flags.filter((f) => !flagsBefore.includes(f));
         for (const keepsakeId of keepsakesEarnedByFlags(newFlags, this.pack.keepsakeTriggers)) {
           if (!this.profile.keepsakes.includes(keepsakeId)) this.profile.keepsakes.push(keepsakeId);

@@ -75,6 +75,14 @@ export interface ContentPack {
   };
 
   guide: {
+    /** The guide's own display name (ANAMNESIS: "Usher", LIMERENCE:
+     * "Porter") — the single source of truth for UI strings that need to
+     * name the guide directly (e.g. the persona editor's "felt by the
+     * {name}" copy). Found in code review (2026-07-15): overlays.ts had
+     * been hardcoding this via `packId === 'limerence' ? 'Porter' :
+     * 'Usher'` instead of reading it from here, unlike every other
+     * pack-scoped string in that same session's fixes. */
+    name: string;
     speakerPrefixes: string[];
     doorBark(s: RunState, runsCompleted: number, doorCount?: number, atUnderstoryFork?: boolean): string;
     actIntroText(act: number): string | undefined;

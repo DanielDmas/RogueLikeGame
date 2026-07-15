@@ -1,0 +1,9 @@
+{
+  "script": "24-limerence-ending-flow.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 36099,
+  "stdout": "UAT 24 (LIMERENCE ending flow): PASS — hearts-death ending rendered cleanly (no ANAMNESIS \"dissolved\" crash), runsCompleted 0 -> 1, zero errors",
+  "stderr": ""
+}

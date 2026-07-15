@@ -62,4 +62,36 @@ describe('Item 21 — scoped HUD/persona strings never leak the other pack\'s gu
     expect(t(personaSubKey('limerence'), '')).toContain('Vrátné');
     setLocale('en', 'v2');
   });
+
+  // Code review (2026-07-15) found two siblings of the above that were
+  // missed: heartsAriaLabel and lucidityTooltip stayed unscoped, so
+  // LIMERENCE's cs/de/fa/fr builds fell through to ANAMNESIS's registered
+  // "grip on reality"/lucidity text instead of LIMERENCE's own
+  // "Trust"/"Clarity". Same regression shape as the test above, all 4
+  // languages this time since the bug was verified present in all 4.
+  it('heartsAriaLabelKey/lucidityTooltipKey resolve to different, pack-appropriate text in every translated language', async () => {
+    const { heartsAriaLabelKey, lucidityTooltipKey } = await import('../engine/text/keys');
+    const { t } = await import('../engine/text/resolver');
+    const cases: [string, string, string][] = [
+      ['cs', 'Důvěra', 'úchop reality'],
+      ['de', 'Vertrauen', 'Griff auf die Wirklichkeit'],
+      ['fa', 'اعتماد', 'چنگ به واقعیت'],
+      ['fr', 'Confiance', 'prise sur la réalité'],
+    ];
+    for (const [lang, limerenceAria, anamnesisAria] of cases) {
+      setLocale(lang as 'cs' | 'fa' | 'de' | 'fr', 'v2');
+      expect(t(heartsAriaLabelKey('limerence'), ''), `heartsAriaLabel ${lang}`).toBe(limerenceAria);
+      expect(t(heartsAriaLabelKey('anamnesis'), ''), `heartsAriaLabel ${lang} (anamnesis unaffected)`).toBe(
+        anamnesisAria,
+      );
+      // LIMERENCE's lucidity tooltip must resolve to *something* registered
+      // (not fall through to English) and must not be byte-identical to
+      // ANAMNESIS's own registered translation for the same locale.
+      const limerenceLucidity = t(lucidityTooltipKey('limerence'), '');
+      const anamnesisLucidity = t(lucidityTooltipKey('anamnesis'), '');
+      expect(limerenceLucidity, `lucidityTooltip ${lang} should be registered`).not.toBe('');
+      expect(limerenceLucidity, `lucidityTooltip ${lang} should differ from ANAMNESIS's`).not.toBe(anamnesisLucidity);
+    }
+    setLocale('en', 'v2');
+  });
 });

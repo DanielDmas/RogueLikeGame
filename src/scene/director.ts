@@ -192,6 +192,14 @@ export class SceneDirector {
    * (AA/bloom) — a fog-and-text game reads fine at 30fps, and halving the
    * frame rate roughly halves render-thread GPU time on the same settings. */
   private fpsCap: number = TARGET_FPS;
+  /** 1.3 idle downshift: whether a `.text-panel`/`.choices` panel is
+   * currently mounted under `#ui`. Found in code review (2026-07-15) that
+   * the original implementation re-ran `document.querySelector` on every
+   * single render-loop tick (~60Hz for the scene's whole lifetime) to
+   * answer this — replaced with a MutationObserver that updates this cached
+   * flag only when the DOM actually changes (a handful of times per room),
+   * undercutting the very "reduce render-loop cost" goal this feature has. */
+  private idlePanelPresent = false;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -225,6 +233,11 @@ export class SceneDirector {
     this.tooltip = document.createElement('div');
     this.tooltip.className = 'door-tip';
     ui.appendChild(this.tooltip);
+
+    this.idlePanelPresent = ui.querySelector('.text-panel, .choices') !== null;
+    new MutationObserver(() => {
+      this.idlePanelPresent = ui.querySelector('.text-panel, .choices') !== null;
+    }).observe(ui, { childList: true, subtree: true });
 
     addEventListener('resize', () => this.resize());
     canvas.addEventListener('pointermove', (e) => {
@@ -623,7 +636,7 @@ export class SceneDirector {
     // (dolly, light-spill, Usher walk) means the scene itself is static —
     // safe to render less often regardless of the profile's own fps cap.
     const hasActiveTween = !!(this.dollyTween || this.spillTween || this.usherWalk);
-    const idleEligible = !hasActiveTween && document.querySelector('.text-panel, .choices') !== null;
+    const idleEligible = !hasActiveTween && this.idlePanelPresent;
     const targetFps = effectiveFps(this.fpsCap, idleEligible);
     if (!shouldRenderFrame(now, this.lastFrameTime, targetFps)) return;
     this.lastFrameTime = now;
