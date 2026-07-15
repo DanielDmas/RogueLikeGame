@@ -8,17 +8,16 @@ import { withPage, gotoUat, assert } from './_helpers.mjs';
 
 const EN_TAGLINE = 'a journey through the rooms';
 
-// Selected by position, not text — after the first language switch, the
-// title screen's own button labels ("Settings", "Done") are themselves
-// translated, so a text-based selector would only work in English.
+// Selected via the button's `data-uat="settings-button"` hook (overlays.ts),
+// not position or text: the title menu's button count/order has already
+// grown twice this session (Register, One Door added), which silently broke
+// the previous nth-child(3) selector (Settings had moved to index 5) — and
+// text is translated after the first language switch, so neither position
+// nor text alone stays reliable across this script's own repeated calls.
 async function setLanguageViaSettings(page, clicks) {
-  // Title menu order (overlays.ts's showTitle): Field Notes, Ledger,
-  // Persona, Settings, About — Settings is the 4th small title button.
-  await page.locator('.title-btn.small').nth(3).click({ timeout: 12000 });
+  await page.locator('[data-uat="settings-button"]').click({ timeout: 12000 });
   await page.waitForSelector('.settings-panel', { timeout: 10000 });
-  // Two `.toggle.cycle` buttons exist: Display's render-resolution cycle
-  // (first) and Text & Language's language cycle (second, appended later).
-  const toggle = page.locator('.settings-section-body button.toggle.cycle').nth(1);
+  const toggle = page.locator('[data-uat="language-toggle"]');
   for (let i = 0; i < clicks; i++) {
     await toggle.click({ timeout: 12000 });
     await page.waitForTimeout(150);

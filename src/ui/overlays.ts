@@ -109,6 +109,12 @@ export function showTitle(ui: HTMLElement, profile: Profile, pack: ContentPack):
     );
     pe.addEventListener('click', () => done('persona'));
     const st = el('button', 'title-btn small', t(uiKey('settings'), 'Settings'));
+    // Stable, translation- and position-independent hook for automated
+    // tests: the title menu's button order/count has already grown twice
+    // this session (Register, One Door) and will again, so selecting
+    // Settings by a fixed index or by its (localized-after-first-switch)
+    // text both silently break. See tests/uat/11-i18n-matrix.mjs.
+    st.dataset.uat = 'settings-button';
     st.addEventListener('click', () => done('settings'));
     const ab = el('button', 'title-btn small', t(uiKey('aboutTitle'), 'Before you begin'));
     ab.addEventListener('click', () => done('about'));
@@ -406,6 +412,10 @@ export function showSettings(ui: HTMLElement, settings: Settings, actions: Setti
     // ---------- Text & Language ----------
     const { section: textSection, body: textBody } = sectionEl(t(uiKey('settingsSectionText'), 'Text & Language'));
     const langBtn = el('button', 'toggle cycle', LANGUAGE_LABELS[current.language]);
+    // Stable hook for automated tests: this section's toggle count/order has
+    // already grown (fpsCap, voice version) and will again — position-based
+    // selectors silently break. See tests/uat/11-i18n-matrix.mjs.
+    langBtn.dataset.uat = 'language-toggle';
     langBtn.addEventListener('click', () => {
       current.language = nextLang(current.language);
       langBtn.textContent = LANGUAGE_LABELS[current.language];
