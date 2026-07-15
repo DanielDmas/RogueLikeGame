@@ -43,6 +43,20 @@ const scoped = (base: string, packId?: string) => (packId && packId !== 'anamnes
 export const actNameKey = (act: number, packId?: string) => scoped(`act.name.${act}`, packId);
 export const actIntroKey = (act: number, packId?: string) => scoped(`act.intro.${act}`, packId);
 
+/** The end screen's axis-profile triptych (`ContentPack.endingRules.
+ * axisTriptych`) — three lines, each one of three branches (negative/mid/
+ * positive) per axis. Scoped like actNameKey/actIntroKey: the axis names
+ * are shared vocabulary, but the line text is genuinely different prose
+ * per pack (LIMERENCE's own head/heart, self/other, grip/drift voice),
+ * so a translation registered for one pack must never silently answer for
+ * the other. Found unregistered entirely in code review (2026-07-15) —
+ * every non-English end screen showed this triptych in English. */
+export const axisTriptychKey = (
+  axis: 'reasonFeeling' | 'selfOthers' | 'controlAcceptance',
+  branch: 'neg' | 'mid' | 'pos',
+  packId?: string,
+) => scoped(`ending.triptych.${axis}.${branch}`, packId);
+
 /** The Hotel Register's Understory-floor label — same engine-default/
  * pack-override pattern as actNameKey (a graph section's own display
  * name, not generic UI chrome): ANAMNESIS's own findings apparatus calls

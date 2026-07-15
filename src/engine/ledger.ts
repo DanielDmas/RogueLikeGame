@@ -88,13 +88,18 @@ export function ledgerStats(
   const rows: LedgerRow[] = [];
   rows.push({ id: 'runs', label: t(uiKey('ledgerRuns'), 'Runs completed'), value: String(profile.runsCompleted) });
 
+  // Found in code review (2026-07-15): these three "N of M" values were
+  // hardcoded English despite every other overlay building the identical
+  // shape through t(uiKey('of'), 'of') (see overlays.ts's showTitle/
+  // showHotelRegister) — a Czech player saw "3 of 24" instead of "3 z 24".
+  const ofLabel = t(uiKey('of'), 'of');
   const { seen, total } = visibleRoomCount(profile, registry, understorySequence);
-  rows.push({ id: 'rooms', label: t(uiKey('ledgerRooms'), 'Rooms witnessed'), value: `${seen} of ${total}` });
+  rows.push({ id: 'rooms', label: t(uiKey('ledgerRooms'), 'Rooms witnessed'), value: `${seen} ${ofLabel} ${total}` });
 
   rows.push({
     id: 'endings',
     label: t(uiKey('ledgerEndings'), 'Endings witnessed'),
-    value: `${profile.endingsSeen.length} of ${endingsTotalFn(profile.endingsSeen)}`,
+    value: `${profile.endingsSeen.length} ${ofLabel} ${endingsTotalFn(profile.endingsSeen)}`,
   });
 
   rows.push({ id: 'hearts', label: t(uiKey('ledgerHearts'), 'Hearts lost, lifetime'), value: String(profile.heartsLost) });
@@ -113,7 +118,7 @@ export function ledgerStats(
   rows.push({
     id: 'keepsakes',
     label: t(uiKey('ledgerKeepsakes'), 'Keepsakes on the shelf'),
-    value: `${profile.keepsakes.length} of ${keepsakeTotal}`,
+    value: `${profile.keepsakes.length} ${ofLabel} ${keepsakeTotal}`,
   });
 
   if (profile.understoryDescents >= 1) {

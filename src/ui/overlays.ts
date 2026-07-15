@@ -792,10 +792,21 @@ export function showRoomArticle(ui: HTMLElement, roomTitle: string, thinkers: st
     panel.append(bodyEl);
     const back = el('button', 'title-btn', t(uiKey('back'), 'Back'));
     back.style.marginTop = '26px';
-    back.addEventListener('click', () => {
+    const close = () => {
+      removeEventListener('keydown', onEscape);
       o.remove();
       resolve();
-    });
+    };
+    back.addEventListener('click', close);
+    // Found in code review (2026-07-15) alongside the fieldNote.ts guard
+    // this pairs with: this overlay previously had no Escape handling at
+    // all (Back-click only), inconsistent with every sibling overlay
+    // (showAbout, showCredits, ...) and relying entirely on the field
+    // note's own listener underneath silently doing the wrong thing.
+    const onEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close();
+    };
+    addEventListener('keydown', onEscape);
     panel.append(back);
     o.appendChild(panel);
     back.focus();
@@ -992,8 +1003,13 @@ export function showCodex(ui: HTMLElement, profile: Profile, pack: ContentPack):
       o.remove();
       resolve();
     };
+    // Found in code review (2026-07-15): a codex card's onClick opens a
+    // field note *on top of* this overlay (see addCard below). Without this
+    // guard, Escape closed both layers at once — the field note's own
+    // listener dismissed it, and this listener, unaware, closed the codex
+    // underneath in the same keypress, losing the player's place.
     const onEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close();
+      if (e.key === 'Escape' && !document.querySelector('.field-note')) close();
     };
     addEventListener('keydown', onEscape);
     back.addEventListener('click', close);
@@ -1095,8 +1111,10 @@ export function showHotelRegister(ui: HTMLElement, profile: Profile, pack: Conte
       o.remove();
       resolve();
     };
+    // Same field-note-on-top guard as showCodex above — the Register's
+    // room cards also open a field note on top of this overlay.
     const onEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close();
+      if (e.key === 'Escape' && !document.querySelector('.field-note')) close();
     };
     addEventListener('keydown', onEscape);
     back.addEventListener('click', close);

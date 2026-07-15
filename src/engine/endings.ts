@@ -2,7 +2,7 @@ import type { RunState } from './schema';
 import { choseIn, hasFlag } from './gameState';
 import { endings } from '../content/endings';
 import { t } from './text/resolver';
-import { endingEpitaphKey } from './text/keys';
+import { endingEpitaphKey, axisTriptychKey } from './text/keys';
 
 export type EndingId =
   | 'return'
@@ -92,22 +92,28 @@ export function epitaphLines(endingsSeen: string[]): string[] {
 
 /** Poetic triptych of the run's axis profile, shown on the end screen. */
 export function axisTriptych(s: RunState): [string, string, string] {
-  const line = (v: number, neg: string, mid: string, pos: string) =>
-    v <= -25 ? neg : v >= 25 ? pos : mid;
+  const line = (axis: 'reasonFeeling' | 'selfOthers' | 'controlAcceptance', v: number, neg: string, mid: string, pos: string) => {
+    const branch = v <= -25 ? 'neg' : v >= 25 ? 'pos' : 'mid';
+    const fallback = branch === 'neg' ? neg : branch === 'pos' ? pos : mid;
+    return t(axisTriptychKey(axis, branch), fallback);
+  };
   return [
     line(
+      'reasonFeeling',
       s.axes.reasonFeeling,
       'You weighed the world before you touched it.',
       'You thought, and you also felt — neither won.',
       'You let the heart speak first, and argued later.',
     ),
     line(
+      'selfOthers',
       s.axes.selfOthers,
       'You kept yourself whole, whatever it cost the room.',
       'You held yourself and others in the same open hand.',
       'You gave yourself away, coin by coin, gladly.',
     ),
     line(
+      'controlAcceptance',
       s.axes.controlAcceptance,
       'You fought the current in every room, even the sea.',
       'You knew when to row and when to drift.',

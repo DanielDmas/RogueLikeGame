@@ -28,6 +28,7 @@ import {
   endingNoteThinkersKey,
   endingNoteTitleKey,
   endingTitleKey,
+  axisTriptychKey,
 } from '../../../engine/text/keys';
 
 // ---------- Ending: The Morning After ----------
@@ -179,4 +180,17 @@ registerAll('v2', 'fa', {
   [endingNoteThinkersKey('the-pattern')]: 'بازشناسیِ الگو و تغییر · سازوکارِ واقعیِ منابعِ «امنیتِ به‌دست‌آمده»',
   [endingNoteBodyKey('the-pattern')]:
     'بینشِ تنها، به‌ندرت رفتار را تغییر می‌دهد — منابعِ بالینی در این مورد هم‌داستان‌اند که دانستنِ اینکه یک الگو وجود دارد، لازم است اما هیچ‌وقت کافی نیست. آنچه پژوهشِ «امنیتِ به‌دست‌آمده» واقعاً آن را سازوکارِ تغییر معرفی می‌کند، به آنچه این اتاق مستقیماً به‌صحنه می‌برد نزدیک‌تر است: نه یک واقعیتِ تازه‌آموخته، بلکه کلِ الگو که یک‌جا دیده شده، آن‌قدر طولانی و آن‌قدر واضح نگه داشته شده که دیگر نمی‌تواند نامرئی عمل کند. **اتاق‌ها هیچ‌وقت پشتِ سرِ شما نبودند. آن‌ها شکلِ خودِ شما بودند، بیدار.** این نایاب‌ترینِ درِ این هتل است، و دلیلی دارد: از شما یک انتخابِ خوبِ دیگر نمی‌خواهد، بلکه تمایل به این می‌خواهد که به کلِ پرونده یک‌جا نگاه کنید و بپذیرید که دست‌خطِ سراسرِ آن، از اول تا آخر، مالِ خودتان است.',
+});
+
+// ---------- End-screen axis triptych (2026-07-15, code review) ----------
+registerAll('v2', 'fa', {
+  [axisTriptychKey('reasonFeeling', 'neg', 'limerence')]: 'همیشه با فکر جلو رفتید.',
+  [axisTriptychKey('reasonFeeling', 'mid', 'limerence')]: 'فکر و قلب، در حال جدل با هم.',
+  [axisTriptychKey('reasonFeeling', 'pos', 'limerence')]: 'همیشه با قلب جلو رفتید.',
+  [axisTriptychKey('selfOthers', 'neg', 'limerence')]: 'آنچه را که مال خودتان بود، نگه داشتید.',
+  [axisTriptychKey('selfOthers', 'mid', 'limerence')]: 'مال خودتان و مال آن‌ها را در یک دست نگه داشتید.',
+  [axisTriptychKey('selfOthers', 'pos', 'limerence')]: 'خودتان را با میل بخشیدید.',
+  [axisTriptychKey('controlAcceptance', 'neg', 'limerence')]: 'طبقه به طبقه، محکم گرفتید.',
+  [axisTriptychKey('controlAcceptance', 'mid', 'limerence')]: 'می‌دانستید کِی نگه دارید و کِی رها کنید.',
+  [axisTriptychKey('controlAcceptance', 'pos', 'limerence')]: 'گذاشتید جریان تصمیم بگیرد.',
 });

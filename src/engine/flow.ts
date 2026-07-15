@@ -745,6 +745,16 @@ export class Game {
       if (room.id === this.pack.hooks.lastMessageId) {
         this.profile.lastMessage = choice.text.replace(/^[“"']|[”"']$/g, '');
       }
+      // Bump currentStage before any persist below (including the
+      // first-heart-loss explainer's own persist right after this) — a
+      // quit-and-resume from anywhere past this point must re-enter at the
+      // *next* stage, never replay this one and re-apply the choice's
+      // effects a second time. Found in code review (2026-07-15): the
+      // explainer used to persist while currentStage still pointed at this
+      // stage, so quitting during a first-ever heart loss — a moment every
+      // player passes through exactly once — could double-charge the heart
+      // on resume.
+      this.state = { ...this.state, currentStage: i + 1 };
       // Shown once per profile, ever — a brief, calm explanation of what just
       // happened, so the first heart loss reads as a mechanic, not a shock.
       if (firstHeartLoss) {
@@ -761,7 +771,6 @@ export class Game {
       // Persist right after the choice's effects land (not after its outcome
       // beats finish) — a quit-and-resume from here re-enters at the next
       // stage instead of re-applying this choice's effects a second time.
-      this.state = { ...this.state, currentStage: i + 1 };
       await this.persist();
       await this.text.playBeats(choice.outcome, this.state, { title, type: room.type, icon }, {
         keyOf: (bi) => roomChoiceOutcomeKey(room.id, choice.id, bi),

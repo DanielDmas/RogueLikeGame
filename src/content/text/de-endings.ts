@@ -11,6 +11,7 @@ import {
   endingNoteThinkersKey,
   endingNoteTitleKey,
   endingTitleKey,
+  axisTriptychKey,
 } from '../../engine/text/keys';
 
 // ---------- Ending: The Return ----------
@@ -118,4 +119,17 @@ registerAll('v2', 'de', {
   [endingNoteTitleKey('anamnesis')]: 'Vollständige Erinnerung',
   [endingNoteThinkersKey('anamnesis')]: 'Platon (um 385 v. Chr.) · Henri Bergson (1896)',
   [endingNoteBodyKey('anamnesis')]: 'Platons Theorie der Anamnese besagt, dass Lernen kein Erwerb ist, sondern Erinnerung: Die Seele weiß es bereits, und das Diagramm im Staub — Menons Sklavenjunge, der einen geometrischen Beweis nachzeichnet, den er nie gelehrt bekam — erinnert sie nur an das, was sie immer schon hielt. Bergson nahm dieselbe Form und wandte sie der Erinnerung selbst zu: Die Vergangenheit, argumentierte er, ist nicht wie in einem Aktenschrank gespeichert, Stück für Stück abgerufen, sondern besteht ganz und gleichzeitig fort, eine durée, in der die Gegenwart immer schwimmt, statt in sie einzutauchen. **Dieses Ende fügt keine Erinnerung hinzu. Es entfernt die Verzögerung zwischen etwas erlebt zu haben und zu wissen, dass man es tat.** Nichts hier wurde mit Gewalt erworben — kein Kampf, kein Handel, kein Hebel. Was sich ändert, wenn nichts fehlt, ist nicht der Inhalt des Selbst, sondern seine Form: eine Person, die ihre eigene Geschichte nicht mehr als eine Abfolge von Räumen erlebt, die wieder betreten werden müssen, sondern als eine einzige stehende Tatsache, die sie zufällig ist. Die Räume waren nie hinter Ihnen. Sie waren, wie sich herausstellt, immer die Form Ihres Wachseins.',
+});
+
+// ---------- End-screen axis triptych (2026-07-15, code review) ----------
+registerAll('v2', 'de', {
+  [axisTriptychKey('reasonFeeling', 'neg')]: 'Sie wogen die Welt ab, bevor Sie sie berührten.',
+  [axisTriptychKey('reasonFeeling', 'mid')]: 'Sie dachten, und Sie fühlten auch — keins von beiden gewann.',
+  [axisTriptychKey('reasonFeeling', 'pos')]: 'Sie ließen zuerst das Herz sprechen und argumentierten danach.',
+  [axisTriptychKey('selfOthers', 'neg')]: 'Sie blieben ganz, was immer es den Raum kostete.',
+  [axisTriptychKey('selfOthers', 'mid')]: 'Sie hielten sich selbst und andere in derselben offenen Hand.',
+  [axisTriptychKey('selfOthers', 'pos')]: 'Sie gaben sich hin, Münze für Münze, gern.',
+  [axisTriptychKey('controlAcceptance', 'neg')]: 'Sie kämpften in jedem Raum gegen die Strömung, selbst gegen das Meer.',
+  [axisTriptychKey('controlAcceptance', 'mid')]: 'Sie wussten, wann rudern und wann treiben lassen.',
+  [axisTriptychKey('controlAcceptance', 'pos')]: 'Sie ließen den Fluss entscheiden und nannten es Weisheit.',
 });

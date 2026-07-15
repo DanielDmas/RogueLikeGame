@@ -9,6 +9,7 @@ import {
   endingNoteThinkersKey,
   endingNoteTitleKey,
   endingTitleKey,
+  axisTriptychKey,
 } from '../../engine/text/keys';
 
 // ---------- Ending: The Return ----------
@@ -116,4 +117,17 @@ registerAll('v2', 'cs', {
   [endingNoteTitleKey('anamnesis')]: 'Úplné rozpomenutí',
   [endingNoteThinkersKey('anamnesis')]: 'Platón (c. 385 BCE) · Henri Bergson (1896)',
   [endingNoteBodyKey('anamnesis')]: 'Platónova teorie anamnésis tvrdí, že učení není získáváním, ale rozpomínáním: duše už ví, a diagram v prachu — Menónův otrok, kreslící geometrický důkaz, kterému ho nikdo neučil — jí jen připomíná, co vždycky držela. Bergson vzal stejný tvar a obrátil ho k samotné paměti: minulost, tvrdil, není uložena jako kartotéka, vyvolávaná kousek po kousku, ale trvá celá a současně, jako durée, ve kterém přítomnost vždycky plave, místo aby se do něj jen občas nořila. **Tento konec nepřidává vzpomínku. Odstraňuje prodlevu mezi tím, že jste něco prožili, a tím, že to víte.** Nic tady nebylo vydobyto silou — žádný boj, žádný obchod, žádná páka. To, co se mění, když nic nechybí, není obsah já, ale jeho tvar: člověk, který už svou vlastní historii neprožívá jako sled místností, do kterých se musí znovu vracet, ale jako jediný trvající fakt, kterým prostě je. Místnosti nikdy nebyly za vámi. Byly, jak se ukazuje, vždycky tvarem toho, že jste vzhůru.',
+});
+
+// ---------- End-screen axis triptych (2026-07-15, code review) ----------
+registerAll('v2', 'cs', {
+  [axisTriptychKey('reasonFeeling', 'neg')]: 'Svět jste zvážili, než jste se ho dotkli.',
+  [axisTriptychKey('reasonFeeling', 'mid')]: 'Přemýšleli jste, a taky jste cítili — ani jedno nezvítězilo.',
+  [axisTriptychKey('reasonFeeling', 'pos')]: 'Nechali jste nejdřív promluvit srdce a argumentovali jste až potom.',
+  [axisTriptychKey('selfOthers', 'neg')]: 'Zůstali jste vcelku, ať vás to v té místnosti stálo cokoli.',
+  [axisTriptychKey('selfOthers', 'mid')]: 'Sebe i druhé jste drželi v téže otevřené dlani.',
+  [axisTriptychKey('selfOthers', 'pos')]: 'Rozdávali jste se, minci po minci, rádi.',
+  [axisTriptychKey('controlAcceptance', 'neg')]: 'V každé místnosti jste bojovali s proudem, i s mořem.',
+  [axisTriptychKey('controlAcceptance', 'mid')]: 'Věděli jste, kdy veslovat a kdy se nechat unášet.',
+  [axisTriptychKey('controlAcceptance', 'pos')]: 'Nechali jste rozhodnout řeku a nazvali to moudrostí.',
 });

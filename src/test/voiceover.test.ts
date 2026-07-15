@@ -33,13 +33,17 @@ describe('F2/F3 — av-manifest.json query helpers (pure, no fetch/DOM needed)',
     expect(manifestPackHasAnyVoice(manifest, 'anamnesis')).toBe(false);
   });
 
-  it('voiceUrl builds the folder-convention path from the manifest filename, or null if absent', () => {
-    expect(voiceUrl(manifest, 'limerence', 'en', 'room.the-cave.stage0.beat0')).toBe('/voice/limerence/en/room.the-cave.stage0.beat0.mp3');
+  it('voiceUrl builds a document-relative folder-convention path from the manifest filename, or null if absent', () => {
+    // Document-relative (no leading slash), not root-absolute — a
+    // root-absolute path breaks under both real deploy targets (GitHub
+    // Pages subpath, Electron file://); see the code-review note on
+    // voiceUrl itself (2026-07-15).
+    expect(voiceUrl(manifest, 'limerence', 'en', 'room.the-cave.stage0.beat0')).toBe('./voice/limerence/en/room.the-cave.stage0.beat0.mp3');
     expect(voiceUrl(manifest, 'limerence', 'en', 'nope')).toBeNull();
   });
 
-  it('musicUrl builds the folder-convention path for a pack+slot, or null if the slot has no file', () => {
-    expect(musicUrl(manifest, 'anamnesis', 'act0')).toBe('/music/anamnesis/act0.mp3');
+  it('musicUrl builds a document-relative folder-convention path for a pack+slot, or null if the slot has no file', () => {
+    expect(musicUrl(manifest, 'anamnesis', 'act0')).toBe('./music/anamnesis/act0.mp3');
     expect(musicUrl(manifest, 'anamnesis', 'act1')).toBeNull();
     expect(musicUrl(manifest, 'limerence', 'act0')).toBeNull();
   });

@@ -15,6 +15,7 @@ import {
   endingNoteThinkersKey,
   endingNoteTitleKey,
   endingTitleKey,
+  axisTriptychKey,
 } from '../../../engine/text/keys';
 
 // ---------- Ending: The Morning After ----------
@@ -166,4 +167,17 @@ registerAll('v2', 'cs', {
   [endingNoteThinkersKey('the-pattern')]: 'rozpoznávání vzorců a změna · skutečný mechanismus literatury o vydobyté jistotě',
   [endingNoteBodyKey('the-pattern')]:
     'Samotný vhled jen zřídka mění chování — klinická literatura se shoduje, že vědět, že vzorec existuje, je nutné, ale nikdy ne dostatečné. To, co výzkum vydobyté jistoty ve skutečnosti určuje jako mechanismus změny, je blíž tomu, co tenhle pokoj inscenuje přímo: ne nově naučený fakt, ale celý vzorec spatřený najednou, držený dost dlouho a dost jasně na to, aby přestal fungovat neviditelně. **Místnosti nikdy nebyly za vámi. Byly tvarem vás, vzhůru.** Tohle jsou nejvzácnější dveře v celém hotelu, a má to důvod: nežádají o ještě jednu dobrou volbu navíc, ale o ochotu podívat se na celý spis najednou a poznat, že rukopis v něm je od začátku do konce váš vlastní.',
+});
+
+// ---------- End-screen axis triptych (2026-07-15, code review) ----------
+registerAll('v2', 'cs', {
+  [axisTriptychKey('reasonFeeling', 'neg', 'limerence')]: 'Pokaždé jste vedli hlavou.',
+  [axisTriptychKey('reasonFeeling', 'mid', 'limerence')]: 'Hlava a srdce, přely se spolu.',
+  [axisTriptychKey('reasonFeeling', 'pos', 'limerence')]: 'Pokaždé jste vedli srdcem.',
+  [axisTriptychKey('selfOthers', 'neg', 'limerence')]: 'Nechali jste si, co bylo vaše.',
+  [axisTriptychKey('selfOthers', 'mid', 'limerence')]: 'Své i jejich jste drželi v téže dlani.',
+  [axisTriptychKey('selfOthers', 'pos', 'limerence')]: 'Rozdávali jste se, rádi.',
+  [axisTriptychKey('controlAcceptance', 'neg', 'limerence')]: 'Svírali jste pevně, patro za patrem.',
+  [axisTriptychKey('controlAcceptance', 'mid', 'limerence')]: 'Věděli jste, kdy podržet a kdy pustit.',
+  [axisTriptychKey('controlAcceptance', 'pos', 'limerence')]: 'Nechali jste rozhodnout proud.',
 });

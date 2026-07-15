@@ -30,16 +30,23 @@ export function manifestPackHasAnyVoice(manifest: AvManifest, packId: string): b
   return Object.values(byLang).some((keys) => Object.keys(keys).length > 0);
 }
 
-/** The playable URL for a narration line, or null if none exists. Pure. */
+/** The playable URL for a narration line, or null if none exists. Pure.
+ * Document-relative (no leading slash) — found in code review (2026-07-15):
+ * a root-absolute path resolves against the domain root, which breaks under
+ * both real deploy targets (GitHub Pages serves each pack from a
+ * `/<repo>/<pack>/` subpath; Electron loads over `file://`, where a
+ * root-absolute path resolves to the filesystem root). A relative path
+ * resolves against the current document's own URL in both cases, matching
+ * the landing page's already-correct `./av-manifest.json` fetch. */
 export function voiceUrl(manifest: AvManifest, packId: string, lang: string, key: string): string | null {
   const filename = manifest.voice[packId]?.[lang]?.[key];
-  return filename ? `/voice/${packId}/${lang}/${filename}` : null;
+  return filename ? `./voice/${packId}/${lang}/${filename}` : null;
 }
 
-/** The playable URL for a pack's music slot (e.g. "act0"), or null. Pure. */
+/** The playable URL for a pack's music slot (e.g. "act0"), or null. Pure. Document-relative — see voiceUrl's note. */
 export function musicUrl(manifest: AvManifest, packId: string, slot: string): string | null {
   const filename = manifest.music[packId]?.[slot];
-  return filename ? `/music/${packId}/${filename}` : null;
+  return filename ? `./music/${packId}/${filename}` : null;
 }
 
 class Voiceover {
@@ -56,7 +63,7 @@ class Voiceover {
     this.packId = packId;
     this.lang = lang;
     try {
-      const res = await fetch('/av-manifest.json');
+      const res = await fetch('./av-manifest.json');
       if (res.ok) this.manifest = await res.json();
     } catch {
       // offline dev server, manifest not built yet, etc. — stays dormant.
@@ -102,7 +109,11 @@ class Voiceover {
     const url = voiceUrl(this.manifest, this.packId, this.lang, key);
     if (!url) return;
     const el = this.ensureElement();
-    if (el.src !== location.origin + url) el.src = url;
+    // `el.src` is always browser-resolved to an absolute URL; resolve `url`
+    // (now document-relative, see voiceUrl's note) the same way for the
+    // comparison rather than naively prepending `location.origin`, which
+    // silently produced the wrong URL once `url` stopped being root-absolute.
+    if (el.src !== new URL(url, location.href).href) el.src = url;
     el.currentTime = 0;
     void el.play().catch(() => {});
   }

@@ -211,7 +211,10 @@ export class SoundEngine {
         const src = ctx.createMediaElementSource(this.fileMusicEl);
         src.connect(this.fileMusicGain!);
       }
-      if (this.fileMusicEl.src !== location.origin + url) this.fileMusicEl.src = url;
+      // See voiceover.ts's matching note: `url` is document-relative, so
+      // resolve it the same way the browser resolves `el.src` rather than
+      // naively prepending `location.origin`.
+      if (this.fileMusicEl.src !== new URL(url, location.href).href) this.fileMusicEl.src = url;
       void this.fileMusicEl.play().catch(() => {});
       this.genDuck!.gain.setTargetAtTime(0, t, 1.5);
       this.fileMusicGain!.gain.setTargetAtTime(1, t, 1.5);

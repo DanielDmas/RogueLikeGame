@@ -29,6 +29,8 @@ import {
   LIMERENCE_FIRST_HEART_LOSS_BARK_FALLBACK,
   LIMERENCE_REMEMBERED_ROOM_BARK_FALLBACK,
 } from './guide';
+import { t } from '../../engine/text/resolver';
+import { endingEpitaphKey, axisTriptychKey } from '../../engine/text/keys';
 
 /** Minor-leaning progressions per floor (spec `docs/design-limerence/`
  * creative bible: "act progressions in minor-leaning keys"), warming toward
@@ -165,15 +167,23 @@ export const limerencePack: ContentPack = {
     clarityThreshold: PATTERN_CLARITY,
     endingsTotal: (endingsSeen: string[]) => (endingsSeen.includes('the-pattern') ? 7 : 6),
     epitaphLines: (endingsSeen: string[]) => {
+      // Found in code review (2026-07-15): this reimplemented ANAMNESIS's
+      // engine/endings.ts epitaphLines but dropped its t() call, so every
+      // non-English build showed English epitaphs on the title-screen wall
+      // even though the translations were already registered and correct.
       const known = endingsSeen.map((id) => limerenceEndings.find((e) => e.id === id)).filter((e): e is (typeof limerenceEndings)[number] => e != null);
-      return known.length < 2 ? [] : known.map((e) => e.epitaph);
+      return known.length < 2 ? [] : known.map((e) => t(endingEpitaphKey(e.id), e.epitaph));
     },
     axisTriptych: (s: RunState) => {
-      const line = (v: number, neg: string, mid: string, pos: string) => (v <= -25 ? neg : v >= 25 ? pos : mid);
+      const line = (axis: 'reasonFeeling' | 'selfOthers' | 'controlAcceptance', v: number, neg: string, mid: string, pos: string) => {
+        const branch = v <= -25 ? 'neg' : v >= 25 ? 'pos' : 'mid';
+        const fallback = branch === 'neg' ? neg : branch === 'pos' ? pos : mid;
+        return t(axisTriptychKey(axis, branch, 'limerence'), fallback);
+      };
       return [
-        line(s.axes.reasonFeeling, 'You led with your head, every time.', 'Head and heart, arguing it out.', 'You led with your heart, every time.'),
-        line(s.axes.selfOthers, 'You kept what was yours.', 'You held yours and theirs in the same hand.', 'You gave yourself away, gladly.'),
-        line(s.axes.controlAcceptance, 'You gripped tight, floor after floor.', 'You knew when to hold and when to open.', 'You let the current decide.'),
+        line('reasonFeeling', s.axes.reasonFeeling, 'You led with your head, every time.', 'Head and heart, arguing it out.', 'You led with your heart, every time.'),
+        line('selfOthers', s.axes.selfOthers, 'You kept what was yours.', 'You held yours and theirs in the same hand.', 'You gave yourself away, gladly.'),
+        line('controlAcceptance', s.axes.controlAcceptance, 'You gripped tight, floor after floor.', 'You knew when to hold and when to open.', 'You let the current decide.'),
       ];
     },
     hiddenUntilWitnessed: ['the-pattern'],

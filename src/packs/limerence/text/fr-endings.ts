@@ -52,6 +52,7 @@ import {
   endingNoteThinkersKey,
   endingNoteTitleKey,
   endingTitleKey,
+  axisTriptychKey,
 } from '../../../engine/text/keys';
 
 // ---------- Ending: The Morning After ----------
@@ -205,4 +206,17 @@ registerAll('v2', 'fr', {
   [endingNoteThinkersKey('the-pattern')]: 'la reconnaissance des schémas et le changement · le mécanisme réel de la littérature sur la sécurité acquise',
   [endingNoteBodyKey('the-pattern')]:
     'La prise de conscience seule change rarement le comportement — la littérature clinique s’accorde à dire que savoir qu’un schéma existe est nécessaire, mais jamais suffisant. Ce que la recherche sur la sécurité acquise identifie réellement comme mécanisme de changement se rapproche de ce que cette chambre met directement en scène : non pas un fait nouvellement appris, mais tout le schéma vu d’un coup, tenu assez longtemps et assez clairement pour qu’il cesse de pouvoir opérer dans l’invisible. **Les chambres n’étaient jamais derrière toi. Elles étaient ta forme, éveillée.** C’est, pour une bonne raison, la porte la plus rare de l’hôtel : elle ne demande pas un bon choix de plus, mais la volonté de regarder tout le dossier d’un coup et d’y reconnaître, du début à la fin, ta propre écriture.',
+});
+
+// ---------- End-screen axis triptych (2026-07-15, code review) ----------
+registerAll('v2', 'fr', {
+  [axisTriptychKey('reasonFeeling', 'neg', 'limerence')]: 'Tu as toujours mené avec la tête.',
+  [axisTriptychKey('reasonFeeling', 'mid', 'limerence')]: 'La tête et le cœur, en dispute constante.',
+  [axisTriptychKey('reasonFeeling', 'pos', 'limerence')]: 'Tu as toujours mené avec le cœur.',
+  [axisTriptychKey('selfOthers', 'neg', 'limerence')]: 'Tu as gardé ce qui était à toi.',
+  [axisTriptychKey('selfOthers', 'mid', 'limerence')]: 'Tu as tenu le tien et le leur dans la même main.',
+  [axisTriptychKey('selfOthers', 'pos', 'limerence')]: "Tu t'es donné, avec joie.",
+  [axisTriptychKey('controlAcceptance', 'neg', 'limerence')]: 'Tu as serré fort, étage après étage.',
+  [axisTriptychKey('controlAcceptance', 'mid', 'limerence')]: 'Tu savais quand tenir et quand lâcher.',
+  [axisTriptychKey('controlAcceptance', 'pos', 'limerence')]: 'Tu as laissé le courant décider.',
 });

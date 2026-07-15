@@ -50,6 +50,7 @@ import {
   endingNoteThinkersKey,
   endingNoteTitleKey,
   endingTitleKey,
+  axisTriptychKey,
 } from '../../../engine/text/keys';
 
 // ---------- Ending: The Morning After ----------
@@ -202,4 +203,17 @@ registerAll('v2', 'de', {
   [endingNoteThinkersKey('the-pattern')]: 'Mustererkennung und Veränderung · der tatsächliche Mechanismus der Literatur zur erarbeiteten Sicherheit',
   [endingNoteBodyKey('the-pattern')]:
     'Einsicht allein verändert selten Verhalten — die klinische Literatur ist sich einig, dass zu wissen, dass ein Muster existiert, notwendig, aber nie hinreichend ist. Was die Forschung zur erarbeiteten Sicherheit tatsächlich als Mechanismus der Veränderung identifiziert, liegt näher an dem, was dieses Zimmer direkt inszeniert: kein neu gelernter Fakt, sondern das ganze Muster auf einmal gesehen, lange genug und klar genug gehalten, dass es aufhört, unsichtbar wirken zu können. **Die Zimmer waren nie hinter dir. Sie waren die Gestalt von dir, wach.** Das ist aus gutem Grund die seltenste Tür des Hotels: Sie verlangt nicht nach einer weiteren guten Entscheidung, sondern nach der Bereitschaft, die gesamte Akte auf einmal anzusehen und die Handschrift darin durchgehend als die eigene zu erkennen.',
+});
+
+// ---------- End-screen axis triptych (2026-07-15, code review) ----------
+registerAll('v2', 'de', {
+  [axisTriptychKey('reasonFeeling', 'neg', 'limerence')]: 'Du bist immer mit dem Kopf vorangegangen.',
+  [axisTriptychKey('reasonFeeling', 'mid', 'limerence')]: 'Kopf und Herz, im Streit miteinander.',
+  [axisTriptychKey('reasonFeeling', 'pos', 'limerence')]: 'Du bist immer mit dem Herzen vorangegangen.',
+  [axisTriptychKey('selfOthers', 'neg', 'limerence')]: 'Du hast behalten, was deins war.',
+  [axisTriptychKey('selfOthers', 'mid', 'limerence')]: 'Du hast Deins und Ihres in derselben Hand gehalten.',
+  [axisTriptychKey('selfOthers', 'pos', 'limerence')]: 'Du hast dich verschenkt, gern.',
+  [axisTriptychKey('controlAcceptance', 'neg', 'limerence')]: 'Du hast festgehalten, Stockwerk für Stockwerk.',
+  [axisTriptychKey('controlAcceptance', 'mid', 'limerence')]: 'Du wusstest, wann halten und wann loslassen.',
+  [axisTriptychKey('controlAcceptance', 'pos', 'limerence')]: 'Du hast die Strömung entscheiden lassen.',
 });

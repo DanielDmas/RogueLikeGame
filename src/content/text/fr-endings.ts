@@ -11,6 +11,7 @@ import {
   endingNoteThinkersKey,
   endingNoteTitleKey,
   endingTitleKey,
+  axisTriptychKey,
 } from '../../engine/text/keys';
 
 // ---------- Ending: The Return ----------
@@ -118,4 +119,17 @@ registerAll('v2', 'fr', {
   [endingNoteTitleKey('anamnesis')]: 'Réminiscence totale',
   [endingNoteThinkersKey('anamnesis')]: 'Platon (vers 385 av. J.-C.) · Henri Bergson (1896)',
   [endingNoteBodyKey('anamnesis')]: 'La théorie de l\'anamnèse de Platon soutient que l\'apprentissage n\'est pas une acquisition mais une réminiscence : l\'âme sait déjà, et le diagramme dans la poussière — le jeune esclave de Ménon traçant une preuve géométrique qu\'on ne lui a jamais enseignée — ne fait que lui rappeler ce qu\'elle a toujours détenu. Bergson a pris la même forme et l\'a tournée vers la mémoire elle-même : le passé, argumentait-il, n\'est pas stocké comme dans un classeur, récupéré pièce par pièce, mais persiste entier et simultané, une durée dans laquelle le présent nage toujours plutôt que d\'y puiser. **Cette fin n\'ajoute pas un souvenir. Elle supprime le délai entre avoir vécu quelque chose et savoir que vous l\'avez vécu.** Rien ici n\'a été gagné par la force — pas de combat, pas de marché, pas de levier. Ce qui change, quand rien ne manque, ce n\'est pas le contenu du moi mais sa forme : une personne qui n\'expérimente plus sa propre histoire comme une séquence de pièces à réintégrer, mais comme un unique fait stable qu\'elle se trouve être. Les pièces n\'ont jamais été derrière vous. Elles étaient, s\'avère-t-il, toujours la forme de votre éveil.',
+});
+
+// ---------- End-screen axis triptych (2026-07-15, code review) ----------
+registerAll('v2', 'fr', {
+  [axisTriptychKey('reasonFeeling', 'neg')]: 'Vous avez pesé le monde avant de le toucher.',
+  [axisTriptychKey('reasonFeeling', 'mid')]: "Vous avez pensé, et vous avez aussi ressenti — ni l'un ni l'autre n'a gagné.",
+  [axisTriptychKey('reasonFeeling', 'pos')]: 'Vous avez laissé le cœur parler en premier, et argumenté ensuite.',
+  [axisTriptychKey('selfOthers', 'neg')]: "Vous êtes resté entier, quoi qu'il en coûte à la pièce.",
+  [axisTriptychKey('selfOthers', 'mid')]: 'Vous avez tenu vous-même et les autres dans la même main ouverte.',
+  [axisTriptychKey('selfOthers', 'pos')]: 'Vous vous êtes donné, pièce après pièce, avec joie.',
+  [axisTriptychKey('controlAcceptance', 'neg')]: 'Vous avez combattu le courant dans chaque pièce, même la mer.',
+  [axisTriptychKey('controlAcceptance', 'mid')]: 'Vous saviez quand ramer et quand dériver.',
+  [axisTriptychKey('controlAcceptance', 'pos')]: 'Vous avez laissé la rivière décider, et appelé cela sagesse.',
 });

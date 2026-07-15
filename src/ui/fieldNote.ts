@@ -67,11 +67,21 @@ export function showFieldNote(
       }, 720);
     };
     const onKey = (e: KeyboardEvent) => {
-      // Found while wiring the "Read more" button: this listener used to
-      // intercept every Enter/Space unconditionally, so a keyboard user
-      // tabbed onto the read-more button and pressing Enter/Space would
-      // dismiss the whole field note instead of activating the button
-      // (this preventDefault also suppresses the browser's own
+      // Found in code review (2026-07-15): this listener stays on `window`
+      // for the field note's whole lifetime, including while the "Read
+      // more" article overlay (z-index above this card, see
+      // showRoomArticle's `.above-field-note` class) is open on top of it.
+      // Without this guard, Escape or Enter-on-the-article's-own-Back-
+      // button would both fall through to here and dismiss the field note
+      // *underneath* the still-visible article — the room would complete
+      // and doors would render behind it. When that overlay is open, this
+      // listener defers entirely; the article manages its own keys.
+      if (document.querySelector('.overlay.above-field-note')) return;
+      // Found earlier while wiring the "Read more" button: this listener
+      // used to intercept every Enter/Space unconditionally, so a keyboard
+      // user tabbed onto the read-more button and pressing Enter/Space
+      // would dismiss the whole field note instead of activating the
+      // button (this preventDefault also suppresses the browser's own
       // button-activation synthesis). Escape still always dismisses,
       // regardless of focus, matching every other overlay in this app.
       if (e.key === 'Escape') {

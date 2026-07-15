@@ -24,6 +24,7 @@ import {
   endingNoteTitleKey,
   endingTitleKey,
   reflectionKey,
+  axisTriptychKey,
 } from '../engine/text/keys';
 
 /**
@@ -47,6 +48,12 @@ const packs: ContentPack[] = [anamnesisPack, limerencePack];
 
 function validContentKeysFor(pack: ContentPack): Set<string> {
   const keys = new Set<string>();
+  const packId = pack.meta.id === 'anamnesis' ? undefined : pack.meta.id;
+  for (const axis of ['reasonFeeling', 'selfOthers', 'controlAcceptance'] as const) {
+    for (const branch of ['neg', 'mid', 'pos'] as const) {
+      keys.add(axisTriptychKey(axis, branch, packId));
+    }
+  }
   for (const room of pack.rooms) {
     keys.add(roomTitleKey(room.id));
     keys.add(roomDoorHintKey(room.id));
