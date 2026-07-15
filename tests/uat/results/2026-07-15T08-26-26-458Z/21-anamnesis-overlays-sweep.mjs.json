@@ -1,0 +1,9 @@
+{
+  "script": "21-anamnesis-overlays-sweep.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 28016,
+  "stdout": "UAT 21 (ANAMNESIS overlays sweep): PASS — opened+closed 5 overlays cleanly: Field Notes, Traveler's Ledger, The Register, Before you begin, Credits",
+  "stderr": ""
+}

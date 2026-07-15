@@ -1,0 +1,9 @@
+{
+  "script": "27-one-door-mode-both-packs.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 49253,
+  "stdout": "ANAMNESIS: One Door dealt a room, resolved cleanly, run-scoped profile fields untouched\n  LIMERENCE: One Door dealt a room, resolved cleanly, run-scoped profile fields untouched\nUAT 27 (One Door mode, both packs): PASS",
+  "stderr": ""
+}

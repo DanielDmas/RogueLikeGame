@@ -1,0 +1,9 @@
+{
+  "script": "33-choice-card-visible-after-settle.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 88602,
+  "stdout": "ANAMNESIS/waiting-room: 3 settled card(s), all visible (opacity 1, 1, 1)\n  ANAMNESIS/wallet: 4 settled card(s), all visible (opacity 1, 1, 1, 1)\n  ANAMNESIS/editor: 3 settled card(s), all visible (opacity 1, 1, 1)\n  ANAMNESIS/boulder: 4 settled card(s), all visible (opacity 1, 1, 1, 1)\n  ANAMNESIS/the-archive: 3 settled card(s), all visible (opacity 1, 1, 1)\n  LIMERENCE/the-front-desk: 3 settled card(s), all visible (opacity 1, 1, 1)\n  LIMERENCE/the-read-receipt: 4 settled card(s), all visible (opacity 1, 1, 1, 1)\n  LIMERENCE/the-distance: 4 settled card(s), all visible (opacity 1, 1, 1, 1)\n  LIMERENCE/the-colleague: 4 settled card(s), all visible (opacity 1, 1, 1, 1)\n  LIMERENCE/the-kitchen-table: 4 settled card(s), all visible (opacity 1, 1, 1, 1)\nUAT 33 (choice-card visible after settle, 10 rooms across both packs): PASS",
+  "stderr": ""
+}

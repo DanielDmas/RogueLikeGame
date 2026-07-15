@@ -42,6 +42,7 @@ audit findings and the hardening items it added to the plan (R8–R11, S6–S7).
 | `11-production-review.md` | all | **Production review (2026-07-06):** spec-completeness & release-readiness audit — findings, explicit assumptions, risks by severity, the added hardening items (R8–R11, S6–S7), release gates, and binding process rules (Definition of Done, architecture rules) |
 | `12-final-release-review.md` | all | **Final-release review (2026-07-12):** pre-1.0 code/architecture review, docs-standardization inventory, nine owner-requested feature designs, and an entertainment-features plan. Historical — largely implemented since. |
 | `13-master-development-plan.md` | all | **Live master plan (kept current).** The single de-duplicated list of what's still open, decided against (with reasons), and binding going forward. Start here for "what's next." |
+| `14-codebase-map.md` | all | **For the coding assistant, not the player.** Directory-by-directory file index with one-line purpose per file, plus a fast-lookup cheatsheet — read this before a broad `Glob`/`Grep`/Explore pass so a session can go straight to the right file instead of re-discovering the architecture. Keep current when files move. |
 
 ## Implementation order and dependencies
 

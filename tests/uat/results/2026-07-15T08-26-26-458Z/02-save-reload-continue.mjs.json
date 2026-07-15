@@ -1,0 +1,9 @@
+{
+  "script": "02-save-reload-continue.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 9755,
+  "stdout": "UAT 02 (save/reload/continue): PASS",
+  "stderr": ""
+}

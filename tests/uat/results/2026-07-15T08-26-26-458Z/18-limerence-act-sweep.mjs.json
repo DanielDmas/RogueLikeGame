@@ -1,0 +1,9 @@
+{
+  "script": "18-limerence-act-sweep.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 12652,
+  "stdout": "UAT 18 (LIMERENCE act sweep): PASS — 6 rooms across acts 0-4 + Understory, zero errors: [{\"id\":\"the-front-desk\",\"act\":0,\"gotAct\":0},{\"id\":\"the-read-receipt\",\"act\":1,\"gotAct\":1},{\"id\":\"the-distance\",\"act\":2,\"gotAct\":2},{\"id\":\"the-colleague\",\"act\":3,\"gotAct\":3},{\"id\":\"the-kitchen-table\",\"act\":4,\"gotAct\":4},{\"id\":\"the-registry\",\"act\":4,\"gotAct\":4}]",
+  "stderr": ""
+}

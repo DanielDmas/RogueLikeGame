@@ -38,6 +38,16 @@ async function checkSettledCardsVisible(page, packQuery, roomId, label) {
   console.log(`  ${label}: ${cardCount} settled card(s), all visible (opacity ${opacities.map((o) => o.opacity).join(', ')})`);
 }
 
+// One room per act (0-4) plus the Understory, both packs — the same
+// per-act sample already used and validated by scripts 17/18, reused here
+// so this script needs no fresh room-id discovery. Since the underlying
+// fix is a single shared CSS rule (`.choice-card.settled`) rather than
+// per-room code, this breadth exists to give real, empirical confidence
+// (not just the structural guarantee `animationSettleLint.test.ts`
+// already locks in) without the cost of sweeping every room in the game.
+const ANAMNESIS_ROOMS = ['waiting-room', 'wallet', 'editor', 'boulder', 'the-archive'];
+const LIMERENCE_ROOMS = ['the-front-desk', 'the-read-receipt', 'the-distance', 'the-colleague', 'the-kitchen-table'];
+
 await withPage(async (page) => {
   const errors = [];
   page.on('pageerror', (err) => errors.push(String(err)));
@@ -45,9 +55,13 @@ await withPage(async (page) => {
     if (m.type() === 'error') errors.push(m.text());
   });
 
-  await checkSettledCardsVisible(page, 'uat=1', 'wallet', 'ANAMNESIS');
-  await checkSettledCardsVisible(page, 'pack=limerence&uat=1', 'the-front-desk', 'LIMERENCE');
+  for (const roomId of ANAMNESIS_ROOMS) {
+    await checkSettledCardsVisible(page, 'uat=1', roomId, `ANAMNESIS/${roomId}`);
+  }
+  for (const roomId of LIMERENCE_ROOMS) {
+    await checkSettledCardsVisible(page, 'pack=limerence&uat=1', roomId, `LIMERENCE/${roomId}`);
+  }
 
   assert(errors.length === 0, `expected zero console/page errors, got: ${JSON.stringify(errors)}`);
-  console.log('UAT 33 (choice-card visible after settle, both packs): PASS');
+  console.log(`UAT 33 (choice-card visible after settle, ${ANAMNESIS_ROOMS.length + LIMERENCE_ROOMS.length} rooms across both packs): PASS`);
 });
