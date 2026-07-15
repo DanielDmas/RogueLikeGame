@@ -1,10 +1,17 @@
-# Committed UAT suite (Milestone 5, Phase S §S7, §S2)
+# Committed UAT suite (Milestone 5, Phase S §S7, §S2; extended 2026-07-15)
 
-Fourteen stable Playwright scripts, each verifying one thing this
-milestone's ad hoc scratchpad scripts kept re-deriving from scratch every
-session. They are plain Node scripts (not a test-runner suite) — each is
-self-contained, prints one `PASS` line on success, and throws on the first
-failed assertion.
+Thirty-one stable Playwright scripts (14 from Milestone 5, 17 added
+2026-07-15 for full settings/act/overlay/ending/onboarding/accessibility
+coverage across both packs — numbered 15-32, skipping 26), each verifying
+one thing worth re-checking every session rather than re-deriving from
+scratch. They are plain Node scripts (not a test-runner suite) — each is
+self-contained, prints one `PASS` line on success, and throws on the
+first failed assertion.
+
+Use `node tests/uat/run-all.mjs` to run the whole suite (or a named
+subset) in one go — it records a machine-readable result per script under
+`tests/uat/results/<timestamp>/`, plus a `summary.md`, so consecutive
+sweeps are directly comparable over time. See "Running them" below.
 
 ## Why these fourteen
 
@@ -24,6 +31,23 @@ failed assertion.
 | `12-choice-panel-replaces-text.mjs` | The in-room choice cards fully replace the beat text panel — no stale `.text-panel` left stacked with `.choices` in `.stage-bottom` (regression for a real bug: a missing `text.hide()` before `choices.pick(...)`). |
 | `13-reflection-panel-replaces-text.mjs` | The Examined Path's reflection card fully replaces the outcome text panel — sibling regression to 12 (a missing `text.hide()` before `reflection.show(...)` let the commentary render *above* the outcome it was about). |
 | `14-limerence-visual-sweep.mjs` | The first script to load `?pack=limerence` at all — LIMERENCE's HUD hearts aria-label reads "Trust" (not ANAMNESIS's "grip on reality"), and its 6 bespoke-diorama rooms plus the Porter's own figure rig render with zero console/page errors. |
+| `15-settings-sweep-anamnesis.mjs` | Settings toggles (reducedMotion, highContrast) actually round-trip through close -> reload -> reopen, not just flip their DOM label on click. |
+| `16-settings-sweep-limerence.mjs` | Same round-trip under `?pack=limerence`, using LIMERENCE's own storage-namespaced profile key; also confirms the Light mode toggle (LIMERENCE-only) is present. |
+| `17-anamnesis-act-sweep.mjs` | One representative room per act (0-4) plus the Understory all render cleanly via `jump()` — a broad "does every floor still stand" check. |
+| `18-limerence-act-sweep.mjs` | Same sweep for LIMERENCE's acts 0-4 + Understory. |
+| `19-anamnesis-door-choice-flow.mjs` | The full real-click onboarding path (Begin -> auto-About -> persona skip -> Examined Path offer -> prologue door -> first room's own choice) — no `jump()`, no state injection, the literal path a first-time player clicks through. |
+| `20-limerence-door-choice-flow.mjs` | Same real-click path under `?pack=limerence`. |
+| `21-anamnesis-overlays-sweep.mjs` | Every title-screen overlay (Field Notes, Traveler's Ledger, The Register, Before you begin, Credits) opens with real content and closes cleanly. |
+| `22-limerence-overlays-sweep.mjs` | Same sweep under `?pack=limerence`, including LIMERENCE's own advisory-branch About panel content. |
+| `23-anamnesis-ending-flow.mjs` | A heart-costing choice taking hearts to 0 renders the actual end screen (epitaph/stats) rather than crashing — the live-browser companion to blocker 1.1's fix (`flow.ts`'s `hearts<=0` -> `pack.endingRules.evaluate`), and confirms `runsCompleted`/`endingsSeen` update. |
+| `24-limerence-ending-flow.mjs` | Same hearts-death path in LIMERENCE — confirms it resolves to LIMERENCE's own `the-ghost`, never ANAMNESIS's `dissolved`. |
+| `25-keyboard-only-navigation.mjs` | A door/choice screen is fully resolvable via Tab + ArrowDown + Enter alone — no mouse click at all (9.5.3). |
+| `27-one-door-mode-both-packs.mjs` | The title screen's "One Door" button deals a real room immediately (no onboarding) in both packs, and the run-scoped profile fields (`run`, `runsCompleted`) stay untouched afterward (T9's own guarantee). |
+| `28-vestibule-landing-page.mjs` | The rozcestník's two door links point at the right pack builds, and (F3, this session) the landing-music toggle stays correctly invisible against the real shipped empty `av-manifest.json`. |
+| `29-language-switch-live-both-packs.mjs` | The HUD's language cycle button actually changes rendered text without a reload, and cycling to Farsi flips the document to RTL — in both packs. |
+| `30-troll-test-limerence.mjs` | LIMERENCE counterpart to `10-troll.mjs` — ~20s of spammed clicks/keys/resizes/language switches at the title screen, zero uncaught page errors. |
+| `31-focus-trap-overlay.mjs` | Tab cycling stays contained inside an open Settings panel for 40 presses, and releases cleanly once the panel closes (9.5.1). |
+| `32-clicking-user-exploration.mjs` | An undirected "impatient user" pass — random overlay open/close order, double-clicks, Escape vs. close-button, rapid multi-card door mashing, across both packs. Zero console/page errors is the only bar. |
 
 `src/test/panelLifecycle.test.ts` guards the same two invariants at the
 source level (fast, no browser) — 12 and 13 are the genuine rendered
@@ -50,27 +74,34 @@ multi-viewport/multi-panel coverage the spec originally sketched.
    either environment with `UAT_CHROMIUM_PATH=/path/to/chrome`.
 2. Start the dev server in one terminal: `npm run dev` (defaults to
    `http://localhost:5173`; override with `UAT_BASE_URL`).
-3. Run any script directly in another terminal:
+3. Run the whole suite at once, or any subset:
+   ```
+   node tests/uat/run-all.mjs                          # every script in this directory
+   node tests/uat/run-all.mjs 23-anamnesis-ending-flow.mjs 24-limerence-ending-flow.mjs
+   ```
+   Or run any script directly:
    ```
    node tests/uat/01-title-onboarding.mjs
-   node tests/uat/02-save-reload-continue.mjs
-   node tests/uat/03-examined-path.mjs
-   node tests/uat/04-keepsakes-shelf.mjs
-   node tests/uat/05-anamnesis.mjs
-   node tests/uat/06-layout-sweep.mjs
-   node tests/uat/07-scenery-proof.mjs
-   node tests/uat/08-door-visibility.mjs
-   node tests/uat/09-transition-garble.mjs
-   node tests/uat/10-troll.mjs
-   node tests/uat/11-i18n-matrix.mjs
-   node tests/uat/12-choice-panel-replaces-text.mjs
-   node tests/uat/13-reflection-panel-replaces-text.mjs
-   node tests/uat/14-limerence-visual-sweep.mjs
    ```
-   Each opens its own fresh, isolated browser context (no shared
-   `localStorage` between scripts) and finishes in well under CLAUDE.md's
-   3-minute-per-script budget. Scripts 06-11 write screenshots to the
-   gitignored `tests/uat/.artifacts/` for local inspection.
+   Each script opens its own fresh, isolated browser context (no shared
+   `localStorage` between scripts) and finishes within CLAUDE.md's
+   3-minute-per-script budget — most in 10-60s, a handful of full real-click
+   onboarding-through-ending flows (19, 20, 23, 24) legitimately closer to
+   the 3-minute ceiling in this sandbox's headless Chromium (multi-second
+   click latency — see `_helpers.mjs`'s `advance()` comment). Scripts 06-09
+   write screenshots to the gitignored `tests/uat/.artifacts/` for local
+   inspection; `run-all.mjs` writes its own results (see below) to the
+   **committed** `tests/uat/results/`.
+
+## Comparing runs over time
+
+`run-all.mjs` writes `tests/uat/results/<ISO-timestamp>/` containing one
+`<script>.mjs.json` per script (pass/fail, exit code, duration, captured
+stdout/stderr) plus `summary.json` and a human-readable `summary.md`. These
+directories are committed (not gitignored, unlike `.artifacts/`) precisely
+so two runs — before and after a change, or a week apart — can be diffed
+directly: same script names, same shape, every run's pass/fail and timing
+sitting right next to the last one in git history.
 
 ## Conventions followed (see CLAUDE.md)
 
