@@ -1,0 +1,9 @@
+{
+  "script": "05-anamnesis.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 115423,
+  "stdout": "UAT 05 (anamnesis hidden option): PASS",
+  "stderr": ""
+}

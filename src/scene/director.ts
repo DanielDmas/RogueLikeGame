@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { applyMood, type GuideFigure, type MoodType, type ThemeConfig, type ThemeId } from './themes';
 import { createDoors, DOOR_Z, type DoorSet, type DoorSpec } from './doors';
 import { createPost, type Post } from './post';
-import type { Diorama } from './dioramas';
+import { DIORAMA_Z, type Diorama } from './dioramas';
 import type { ContentPack } from '../packs/types';
 
 export interface DirectorEvents {
@@ -179,6 +179,14 @@ export class SceneDirector {
    * row, keyed by room id; null for rooms without a bespoke motif. */
   private diorama: Diorama | null = null;
   private dioramaRoomId: string | null = null;
+  /** Every bespoke diorama authors its own single dim accent light tuned to
+   * one glowing detail — plenty for that detail, not enough to read the
+   * diorama's dark, unlit structural geometry (the counter, the wall, the
+   * chairs) as a recognizable shape against the corridor's own darkness.
+   * One shared, neutral front-fill light — independent of any per-diorama
+   * lighting — keeps every diorama's silhouette legible without retuning
+   * each of the 34+ individual scenes. */
+  private dioramaFillLight: THREE.PointLight | null = null;
   private quality: 'low' | 'high';
   /** 1.3.2: caps the render loop's frame rate independently of `quality`
    * (AA/bloom) — a fog-and-text game reads fine at 30fps, and halving the
@@ -356,6 +364,9 @@ export class SceneDirector {
     if (!d) return;
     this.diorama = d;
     this.scene.add(d.group);
+    this.dioramaFillLight = new THREE.PointLight(0xfff2dc, 4.5, 8, 1.6);
+    this.dioramaFillLight.position.set(0, 0.75, DIORAMA_Z + 1.1);
+    this.scene.add(this.dioramaFillLight);
   }
 
   /** Forwards to the current diorama's optional accent toggle (spec 07 §Q1 —
@@ -369,6 +380,10 @@ export class SceneDirector {
       this.scene.remove(this.diorama.group);
       this.diorama.dispose();
       this.diorama = null;
+    }
+    if (this.dioramaFillLight) {
+      this.scene.remove(this.dioramaFillLight);
+      this.dioramaFillLight = null;
     }
     this.dioramaRoomId = null;
   }

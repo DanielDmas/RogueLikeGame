@@ -25,6 +25,25 @@ describe('P3 — stale theme-toggle paint on door/choice cards', () => {
     expect(match![1]).toMatch(/animation:\s*none/);
   });
 
+  it('.choice-card.settled restates the entrance animation\'s final opacity/transform', () => {
+    // `.choice-card`'s base rule starts the rise animation from `opacity: 0;
+    // transform: translateY(10px)` (see the rule just above `.choice-card`
+    // in styles.css); the `rise` keyframes' only declared frame is `to`, so
+    // that base rule *is* the animation's 0% frame. Once `.settled` sets
+    // `animation: none` without restating the animation's own final state,
+    // the cascade falls straight back to that 0%-frame base rule instead of
+    // holding the `forwards` fill — every settled choice/door card silently
+    // reverts to invisible (opacity 0) a few hundred ms after it renders,
+    // remaining clickable throughout since opacity doesn't affect hit-testing,
+    // so no click-driven UAT script ever notices. A live player just sees a
+    // blank choice screen. (Regression: reported live on LIMERENCE's
+    // the-front-desk, 2026-07-15 — the front desk diorama's own visibility
+    // was fixed in the same pass.)
+    const match = css.match(/\.choice-card\.settled\s*\{([^}]*)\}/);
+    expect(match![1]).toMatch(/opacity:\s*1/);
+    expect(match![1]).toMatch(/transform:\s*translateY\(0\)/);
+  });
+
   it('choices.ts adds the "settled" class once each card\'s entrance animation actually ends', () => {
     expect(choicesSrc).toMatch(/addEventListener\(\s*['"]animationend['"]/);
     expect(choicesSrc).toContain("card.classList.add('settled')");

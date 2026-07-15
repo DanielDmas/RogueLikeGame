@@ -362,8 +362,14 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
    purposes, so a live theme toggle's CSS-variable change (--panel) doesn't
    always repaint it — the door cards stay dark after switching to Light.
    `choices.ts` adds this class once the entrance animation actually ends,
-   clearing `animation` so the element returns to the normal paint path. */
-.choice-card.settled { animation: none; }
+   clearing `animation` so the element returns to the normal paint path.
+   Must restate the animation's final opacity/transform here — `.choice-card`
+   itself starts at `opacity: 0; translateY(10px)` for the animation to rise
+   from, and `animation: none` alone drops back to that base state instead of
+   holding the `forwards` fill, making every settled card invisible (still
+   clickable, since opacity doesn't affect hit-testing — real players saw a
+   blank choice screen while every click-driven UAT script kept passing). */
+.choice-card.settled { animation: none; opacity: 1; transform: translateY(0); }
 
 .choice-card:hover, .choice-card.hover, .choice-card:focus-visible {
   border-color: var(--gold-dim); background: var(--panel-hover); transform: translateY(-1px);

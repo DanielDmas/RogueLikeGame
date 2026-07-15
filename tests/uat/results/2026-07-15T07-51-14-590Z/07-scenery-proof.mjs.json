@@ -1,0 +1,9 @@
+{
+  "script": "07-scenery-proof.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 6873,
+  "stdout": "UAT 07 (dynamic scenery setting persistence, E3): PASS",
+  "stderr": ""
+}

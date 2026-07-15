@@ -1,0 +1,9 @@
+{
+  "script": "11-i18n-matrix.mjs",
+  "pass": false,
+  "exitCode": 1,
+  "timedOut": false,
+  "durationMs": 13199,
+  "stdout": "",
+  "stderr": "node:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\npage.waitForSelector: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.settings-panel') to be visible\u001b[22m\n\n    at setLanguageViaSettings (/home/user/RogueLikeGame/tests/uat/11-i18n-matrix.mjs:18:14)\n    at async file:///home/user/RogueLikeGame/tests/uat/11-i18n-matrix.mjs:44:3\n    at async withPage (/home/user/RogueLikeGame/tests/uat/_helpers.mjs:30:5)\n    at async file:///home/user/RogueLikeGame/tests/uat/11-i18n-matrix.mjs:31:1 {\n  log: [ \"  - waiting for locator('.settings-panel') to be visible\" ],\n  name: 'TimeoutError'\n}\n\nNode.js v22.22.2"
+}

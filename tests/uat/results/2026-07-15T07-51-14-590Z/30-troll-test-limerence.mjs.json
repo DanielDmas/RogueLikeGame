@@ -1,0 +1,9 @@
+{
+  "script": "30-troll-test-limerence.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 23823,
+  "stdout": "troll loop (LIMERENCE): 24 actions, 0 page errors\nUAT 30 (troll test, LIMERENCE): PASS",
+  "stderr": ""
+}

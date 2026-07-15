@@ -1,0 +1,9 @@
+{
+  "script": "22-limerence-overlays-sweep.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 10315,
+  "stdout": "UAT 22 (LIMERENCE overlays sweep): PASS — opened+closed 5 overlays cleanly: Field Notes, Traveler's Ledger, The Register, Before you begin, Credits",
+  "stderr": ""
+}

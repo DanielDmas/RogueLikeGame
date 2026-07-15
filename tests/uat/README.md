@@ -1,8 +1,8 @@
 # Committed UAT suite (Milestone 5, Phase S §S7, §S2; extended 2026-07-15)
 
-Thirty-one stable Playwright scripts (14 from Milestone 5, 17 added
+Thirty-two stable Playwright scripts (14 from Milestone 5, 18 added
 2026-07-15 for full settings/act/overlay/ending/onboarding/accessibility
-coverage across both packs — numbered 15-32, skipping 26), each verifying
+coverage across both packs — numbered 15-33, skipping 26), each verifying
 one thing worth re-checking every session rather than re-deriving from
 scratch. They are plain Node scripts (not a test-runner suite) — each is
 self-contained, prints one `PASS` line on success, and throws on the
@@ -48,6 +48,7 @@ sweeps are directly comparable over time. See "Running them" below.
 | `30-troll-test-limerence.mjs` | LIMERENCE counterpart to `10-troll.mjs` — ~20s of spammed clicks/keys/resizes/language switches at the title screen, zero uncaught page errors. |
 | `31-focus-trap-overlay.mjs` | Tab cycling stays contained inside an open Settings panel for 40 presses, and releases cleanly once the panel closes (9.5.1). |
 | `32-clicking-user-exploration.mjs` | An undirected "impatient user" pass — random overlay open/close order, double-clicks, Escape vs. close-button, rapid multi-card door mashing, across both packs. Zero console/page errors is the only bar. |
+| `33-choice-card-visible-after-settle.mjs` | Reads real computed `opacity` on settled choice/door cards, both packs — regression guard for a live-reported bug where `.choice-card.settled` cleared `animation: none` without restating the animation's final opacity, so every card silently went invisible (opacity 0) a few hundred ms after rendering while staying fully clickable. No prior click-driven script caught it, since Playwright's actionability checks don't look at opacity. |
 
 `src/test/panelLifecycle.test.ts` guards the same two invariants at the
 source level (fast, no browser) — 12 and 13 are the genuine rendered
