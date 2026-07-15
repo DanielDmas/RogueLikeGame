@@ -229,7 +229,6 @@ registerAll('v2', 'fr', {
   [roomBeatKey('photograph', 0, 1)]: 'La fumée marche au plafond comme une foule qui s’en va. Deux portes restent devant vous, et la chaleur a déjà fait le choix de toutes les autres à votre place.',
   [roomBeatKey('photograph', 0, 2)]: 'Derrière la porte de gauche : une toux. Un inconnu, réel comme cette toux, bas au sol et à court de sol.',
   [roomBeatKey('photograph', 0, 3)]: 'Derrière la porte de droite, sur une petite table, se trouve la photographie. La seule. Ici, ce n’est pas un souvenir — c’est le dernier document prouvant qui vous étiez. Perdez-la, et un fragment de votre passé restera à jamais sans témoin. Même vous ne pourrez plus en jurer.',
-  [roomBeatKey('photograph', 0, 4)]: 'Le Placeur : Les deux portes sont porteuses, je le crains. Derrière l’une, une vie que vous pouvez encore sauver. Derrière l’autre, un moi que vous pouvez encore prouver. Le feu n’attendra pas que vous consultiez un cadre théorique.',
   [roomChoiceTextKey('photograph', 'save-stranger')]: 'La porte de gauche. L’inconnu. Maintenant.',
   [roomChoiceHintKey('photograph', 'save-stranger')]: 'Une vie, au prix d’un moi.',
   [roomChoiceOutcomeKey('photograph', 'save-stranger', 0)]: 'Vous allez à gauche. L’inconnu est plus lourd que la fumée et plus léger que vous ne le craigniez, et puis vous êtes tous deux hors de l’incendie, les poumons pleins de cendres et d’arithmétique.',

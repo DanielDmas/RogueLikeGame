@@ -519,7 +519,12 @@ export const courtOfUsher: Room = {
       beats: [
         'A courtroom assembled from the machinery — the judge’s bench is a decommissioned altar, the witness stand a confession booth turned inside out.',
         'The Usher occupies every position at once, with visible strain: prosecution (horns forward), defense (halo tilted sympathetically), and defendant (both, flickering).',
-        'Usher: The case is existential, and I will keep this brief. You are the judge. Yes — you, the dissolved one. You are the only party in this room without a conflict of interest, which tells you a great deal about this particular court.',
+        (s) =>
+          choseIn(s, 'omelas', 'open-door')
+            ? 'Usher: The case is existential, and I will keep this brief. You are the judge. Yes — you, the dissolved one. You are close to the only party in this room without a conflict of interest — closer than most, at least. You went down the stairs in Omelas when the door was unlocked and no one made you. That much is on the record, in your favor, before we begin.'
+            : choseIn(s, 'omelas', 'stay')
+              ? 'Usher: The case is existential, and I will keep this brief. You are the judge. Yes — you, the dissolved one. You are the only party in this room without a conflict of interest, which tells you a great deal about this particular court — though I recall a festival you once chose not to leave, bells and all. Judge anyway. Recusal is a luxury this bench does not offer.'
+              : 'Usher: The case is existential, and I will keep this brief. You are the judge. Yes — you, the dissolved one. You are the only party in this room without a conflict of interest, which tells you a great deal about this particular court.',
         'Usher: (quieter now, as the defendant) Here is the charge I bring against myself. When I call a thing good — is it good because I have commanded it? Or do I command it because it is already good? Choose carefully. A great deal rests on your answer. Possibly more than you would guess.',
         'Usher: Plainly, if it helps: either what I say goes, simply because I say it — or I only say it because it was already true before I opened my mouth. There is no third chair at this bench. Unless you can find one.',
       ],

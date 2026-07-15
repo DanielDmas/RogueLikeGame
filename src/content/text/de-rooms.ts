@@ -229,7 +229,6 @@ registerAll('v2', 'de', {
   [roomBeatKey('photograph', 0, 1)]: 'Rauch wandert an der Decke entlang wie eine sich auflösende Menschenmenge. Zwei Türen bleiben voraus, und die Hitze hat die Wahl jeder anderen Tür für Sie bereits getroffen.',
   [roomBeatKey('photograph', 0, 2)]: 'Hinter der linken Tür: Husten. Ein Fremder, echt wie das Husten, nah am Boden und dem Boden ausgehend.',
   [roomBeatKey('photograph', 0, 3)]: 'Hinter der rechten Tür, auf einem kleinen Tisch, liegt die Fotografie. Die einzige. Hier ist das kein Andenken — es ist das letzte Dokument, das beweist, wer Sie einmal waren. Verlieren Sie sie, wird ein Stück Ihrer Vergangenheit für immer unbezeugt bleiben. Selbst Sie werden es nicht mehr beschwören können.',
-  [roomBeatKey('photograph', 0, 4)]: 'Platzanweiser: Beide Türen sind tragend, fürchte ich. Hinter der einen ein Leben, das Sie noch retten können. Hinter der anderen ein Selbst, das Sie noch beweisen können. Das Feuer wird nicht warten, bis Sie einen Rahmen konsultieren.',
   [roomChoiceTextKey('photograph', 'save-stranger')]: 'Die linke Tür. Der Fremde. Jetzt.',
   [roomChoiceHintKey('photograph', 'save-stranger')]: 'Ein Leben, auf Kosten eines Selbst.',
   [roomChoiceOutcomeKey('photograph', 'save-stranger', 0)]: 'Sie gehen nach links. Der Fremde ist schwerer als Rauch und leichter, als Sie befürchtet hatten, und dann sind Sie beide draußen, dem Brand entronnen, die Lungen voller Asche und Arithmetik.',

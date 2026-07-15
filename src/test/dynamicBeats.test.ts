@@ -5,7 +5,7 @@ import { roomBeatKey, roomChoiceOutcomeKey, roomChoiceTextKey } from '../engine/
 import { newRun } from '../engine/gameState';
 import type { RunState } from '../engine/schema';
 
-const LANGS = ['cs', 'fa'] as const;
+const LANGS = ['cs', 'fa', 'de', 'fr'] as const;
 
 function withTranscript(roomId: string, choiceId: string): RunState {
   const s = newRun();
@@ -17,10 +17,34 @@ function withFlag(flag: string): RunState {
   return { ...s, flags: [flag] };
 }
 
-describe('the 9 v2 dynamic (RunState-dependent) beats resolve translated text in every branch', () => {
+describe('the 11 v2 dynamic (RunState-dependent) beats resolve translated text in every branch', () => {
   afterEach(() => setLocale('en', 'v2'));
 
   for (const lang of LANGS) {
+    it(`photograph.stage0.beat4 — wallet's keep-it/return-all/other choice-aftermath echo all translate to ${lang}`, () => {
+      setLocale(lang, 'v2');
+      const key = roomBeatKey('photograph', 0, 4);
+      const keptIt = t(key, 'fallback', withTranscript('wallet', 'keep-it'));
+      const returnedAll = t(key, 'fallback', withTranscript('wallet', 'return-all'));
+      const neither = t(key, 'fallback', newRun());
+      expect(keptIt).not.toBe('fallback');
+      expect(returnedAll).not.toBe('fallback');
+      expect(neither).not.toBe('fallback');
+      expect(new Set([keptIt, returnedAll, neither]).size).toBe(3);
+    });
+
+    it(`court-of-usher.stage0.beat2 — omelas's open-door/stay/other choice-aftermath echo all translate to ${lang}`, () => {
+      setLocale(lang, 'v2');
+      const key = roomBeatKey('court-of-usher', 0, 2);
+      const openedDoor = t(key, 'fallback', withTranscript('omelas', 'open-door'));
+      const stayed = t(key, 'fallback', withTranscript('omelas', 'stay'));
+      const neither = t(key, 'fallback', newRun());
+      expect(openedDoor).not.toBe('fallback');
+      expect(stayed).not.toBe('fallback');
+      expect(neither).not.toBe('fallback');
+      expect(new Set([openedDoor, stayed, neither]).size).toBe(3);
+    });
+
     it(`junction.stage1.beat3 — pull/no-pull/neither branches all translate to ${lang}`, () => {
       setLocale(lang, 'v2');
       const key = roomBeatKey('junction', 1, 3);

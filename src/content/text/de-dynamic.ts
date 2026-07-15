@@ -25,6 +25,28 @@ for (const index of [0, 1, 2] as const) {
   });
 }
 
+register(roomBeatKey('photograph', 0, 4), 'v2', 'de', (s: RunState) =>
+  choseIn(s, 'wallet', 'keep-it')
+    ? 'Platzanweiser: Beide Türen sind tragend, fürchte ich. Hinter der einen ein Leben, das Sie noch retten können. Hinter der anderen ein Selbst, das Sie noch beweisen können — dasselbe Selbst, das die Brieftasche eines Fremden einsteckte, als keine Kamera zusah. Das Feuer ist eine andere Art von Zeuge. Es vergisst nicht, was es sieht, und es sieht jetzt zu.'
+    : choseIn(s, 'wallet', 'return-all')
+      ? 'Platzanweiser: Beide Türen sind tragend, fürchte ich. Hinter der einen ein Leben, das Sie noch retten können. Hinter der anderen ein Selbst, das Sie noch beweisen können — dasselbe Selbst, das die Brieftasche eines Fremden vierzig Minuten quer durch die Stadt trug, ganz ohne Belohnung. Sehen wir, ob dieses Selbst auch ein Feuer übersteht, und nicht nur einen leeren Korridor.'
+      : 'Platzanweiser: Beide Türen sind tragend, fürchte ich. Hinter der einen ein Leben, das Sie noch retten können. Hinter der anderen ein Selbst, das Sie noch beweisen können. Das Feuer wird nicht warten, bis Sie einen Rahmen konsultieren.',
+);
+
+register(roomBeatKey('court-of-usher', 0, 2), 'v2', 'de', (s: RunState) =>
+  choseIn(s, 'omelas', 'open-door')
+    ? 'Platzanweiser: Der Fall ist existenziell, und ich werde es kurz halten. Sie sind der Richter. Ja — Sie, der Aufgelöste. Sie sind beinahe die einzige Partei in diesem Raum ohne Interessenkonflikt — näher dran als die meisten, zumindest. Sie sind in Omelas die Treppe zum Keller hinabgestiegen, als die Tür unverschlossen war und niemand Sie dazu zwang. Das steht, bevor wir beginnen, zu Ihren Gunsten zu Buche.'
+    : choseIn(s, 'omelas', 'stay')
+      ? 'Platzanweiser: Der Fall ist existenziell, und ich werde es kurz halten. Sie sind der Richter. Ja — Sie, der Aufgelöste. Sie sind die einzige Partei in diesem Raum ohne Interessenkonflikt, was Ihnen eine Menge über dieses besondere Gericht verrät — auch wenn ich mich an ein Fest erinnere, das Sie einst nicht verlassen haben, Glocken und alles. Urteilen Sie trotzdem. Befangenheit ist ein Luxus, den diese Richterbank nicht bietet.'
+      : 'Platzanweiser: Der Fall ist existenziell, und ich werde es kurz halten. Sie sind der Richter. Ja — Sie, der Aufgelöste. Sie sind die einzige Partei in diesem Raum ohne Interessenkonflikt, was Ihnen eine Menge über dieses besondere Gericht verrät.',
+);
+
+register(roomBeatKey('butterfly-dream', 0, 2), 'v2', 'de', (s: RunState) =>
+  s.memoryLost
+    ? 'Der Traum, den Sie hatten — Sie spüren, wie seine Ränder sich bereits auflösen — bot keinerlei Naht: kein Foto, kein Name, nichts, woran Sie sich verhaken und beweisen könnten, auf welcher Seite des Schlafs Sie eigentlich stehen. Er passte Ihnen vollkommen, so wie ein Zimmer jemandem passt, der noch nie woanders gewohnt hat.'
+    : 'Der Traum, den Sie hatten, verblasst, doch ein Detail weigert sich zu gehen: ein Gesicht von einem Foto, das Sie sicher schon einmal gesehen haben, an Rändern abgenutzt, die Sie nicht geträumt, sondern erinnert haben. Es beweist nichts. Es juckt nur, ein kleiner Haken in einem sonst nahtlosen Stoff.',
+);
+
 register(roomBeatKey('junction', 1, 3), 'v2', 'de', (s: RunState) =>
   choseIn(s, 'junction', 'pull')
     ? 'Platzanweiser: Letztes Mal zogen Sie den Hebel — einer für fünf, sagten Sie. Hier ist derselbe Handel, näher an der Haut. Mal sehen, ob die Arithmetik die Berührung übersteht.'

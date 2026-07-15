@@ -280,7 +280,6 @@ registerAll('v2', 'cs', {
   [roomBeatKey('photograph', 0, 1)]: 'Kouř kráčí po stropě jako dav, který odchází. Vpředu zůstávají dvoje dveře a horko za vás už rozhodlo o všech ostatních.',
   [roomBeatKey('photograph', 0, 2)]: 'Za levými dveřmi: kašel. Cizí člověk, skutečný jako ten kašel, nízko u země a docházející mu ta země.',
   [roomBeatKey('photograph', 0, 3)]: 'Za pravými dveřmi, na malém stolku, je ta fotografie. Jediná. Tady to není upomínka — je to poslední doklad, kým jste bývali. Ztratíte ji, a kus vaší minulosti navždy zůstane bez svědka. Ani vy sami to už nedokážete odpřísáhnout.',
-  [roomBeatKey('photograph', 0, 4)]: 'Uvaděč: Obávám se, že obojí dveře jsou nosné. Za jedněmi život, který ještě můžete zachránit. Za druhými já, které ještě můžete dokázat. Oheň nepočká, až se poradíte s nějakým rámcem.',
   [roomChoiceTextKey('photograph', 'save-stranger')]: 'Levé dveře. Ten cizí člověk. Teď.',
   [roomChoiceHintKey('photograph', 'save-stranger')]: 'Život, za cenu sebe sama.',
   [roomChoiceOutcomeKey('photograph', 'save-stranger', 0)]: 'Jdete doleva. Ten cizí je těžší než kouř a lehčí, než jste se báli, a pak jste oba venku z toho hoření, plíce plné popela a aritmetiky.',

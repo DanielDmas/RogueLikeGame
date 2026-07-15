@@ -1,4 +1,5 @@
 import type { Reflection, Room } from '../../engine/schema';
+import { choseIn } from '../../engine/gameState';
 
 /** Examined Path (spec 05) shorthand — a Reflection tuple in the fixed
  * consequence/duty/virtue/care order (shuffled per-display by the UI). */
@@ -497,7 +498,12 @@ export const photograph: Room = {
         'Smoke walks the ceiling like a crowd leaving. Two doors remain ahead, and the heat has made the choice of every other door for you.',
         'Behind the left door: coughing. A stranger, real as coughing, low to the ground and running out of ground.',
         'Behind the right door, on a small table, is the photograph. The only one. Here, that is not a keepsake — it is the last document proving who you used to be. Lose it, and a piece of your past goes unwitnessed forever. Even you will not be able to swear to it.',
-        'Usher: Both doors are load-bearing, I’m afraid. Behind one, a life you can still save. Behind the other, a self you can still prove. The fire will not wait for you to consult a framework.',
+        (s) =>
+          choseIn(s, 'wallet', 'keep-it')
+            ? 'Usher: Both doors are load-bearing, I’m afraid. Behind one, a life you can still save. Behind the other, a self you can still prove — the same self that pocketed a stranger’s wallet when no camera was watching. The fire is a different kind of witness. It does not forget what it sees, and it is watching now.'
+            : choseIn(s, 'wallet', 'return-all')
+              ? 'Usher: Both doors are load-bearing, I’m afraid. Behind one, a life you can still save. Behind the other, a self you can still prove — the same self that walked a stranger’s wallet forty minutes across the city for no reward at all. Let us see whether that self survives a fire, and not only an empty corridor.'
+              : 'Usher: Both doors are load-bearing, I’m afraid. Behind one, a life you can still save. Behind the other, a self you can still prove. The fire will not wait for you to consult a framework.',
       ],
       choices: [
         {

@@ -254,7 +254,6 @@ registerAll('v2', 'cs', {
 registerAll('v2', 'cs', {
   [roomBeatKey('court-of-usher', 0, 0)]: 'Soudní síň sestavená ze soukolí — soudcovská lavice je vyřazený oltář, místo pro svědky je zpovědnice obrácená naruby.',
   [roomBeatKey('court-of-usher', 0, 1)]: 'Uvaděč zastává všechny pozice najednou, s viditelným napětím: obžalobu (rohy vpřed), obhajobu (svatozář soucitně nakloněná) a obžalovaného (obojí, blikající).',
-  [roomBeatKey('court-of-usher', 0, 2)]: 'Uvaděč: Ten případ je existenciální, a budu stručný. Vy jste soudce. Ano — vy, ten rozpuštěný. Jste jediná strana v této místnosti bez konfliktu zájmů, což vám hodně napovídá o tomhle konkrétním soudu.',
   [roomBeatKey('court-of-usher', 0, 3)]: 'Uvaděč: (teď tišeji, jako obžalovaný) Tady je obvinění, které vznáším sám proti sobě. Když nazvu něco dobrým — je to dobré proto, že jsem to přikázal? Nebo to přikazuji proto, že je to už dobré? Volte pečlivě. Na vaší odpovědi hodně závisí. Možná víc, než byste tušili.',
   [roomBeatKey('court-of-usher', 0, 4)]: 'Uvaděč: Prostě řečeno, kdyby to pomohlo: buď platí, co říkám, jen proto, že to říkám já — nebo to říkám jen proto, že to bylo pravda dřív, než jsem otevřel ústa. U téhle lavice není třetí židle. Pokud nějakou nenajdete.',
   [roomChoiceTextKey('court-of-usher', 'command-makes-good')]: '„Dobré proto, že to přikazujete. Autorita je základ všeho.“',

@@ -172,7 +172,6 @@ registerAll('v2', 'de', {
 registerAll('v2', 'de', {
   [roomBeatKey('court-of-usher', 0, 0)]: 'Ein aus der Maschinerie zusammengesetzter Gerichtssaal — die Richterbank ist ein ausgemusterter Altar, der Zeugenstand ein umgestülpter Beichtstuhl.',
   [roomBeatKey('court-of-usher', 0, 1)]: 'Der Platzanweiser besetzt alle Positionen gleichzeitig, mit sichtbarer Anstrengung: Anklage (Hörner nach vorn), Verteidigung (Aureole mitfühlend geneigt), und Angeklagter (beides, flackernd).',
-  [roomBeatKey('court-of-usher', 0, 2)]: 'Platzanweiser: Der Fall ist existenziell, und ich werde es kurz halten. Sie sind der Richter. Ja — Sie, der Aufgelöste. Sie sind die einzige Partei in diesem Raum ohne Interessenkonflikt, was Ihnen eine Menge über dieses besondere Gericht verrät.',
   [roomBeatKey('court-of-usher', 0, 3)]: 'Platzanweiser: (jetzt leiser, als Angeklagter) Hier ist die Anklage, die ich gegen mich selbst erhebe. Wenn ich etwas gut nenne — ist es gut, weil ich es befohlen habe? Oder befehle ich es, weil es schon gut ist? Wählen Sie sorgfältig. Sehr viel hängt von Ihrer Antwort ab. Möglicherweise mehr, als Sie ahnen würden.',
   [roomBeatKey('court-of-usher', 0, 4)]: 'Platzanweiser: Einfach gesagt, falls es hilft: Entweder gilt, was ich sage, einfach weil ich es sage — oder ich sage es nur, weil es schon wahr war, bevor ich den Mund öffnete. Es gibt keinen dritten Stuhl an dieser Richterbank. Es sei denn, Sie finden einen.',
   [roomChoiceTextKey('court-of-usher', 'command-makes-good')]: '„Gut, weil Sie es befehlen. Autorität ist das Fundament.“',

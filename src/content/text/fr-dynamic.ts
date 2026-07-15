@@ -25,6 +25,28 @@ for (const index of [0, 1, 2] as const) {
   });
 }
 
+register(roomBeatKey('photograph', 0, 4), 'v2', 'fr', (s: RunState) =>
+  choseIn(s, 'wallet', 'keep-it')
+    ? 'Le Placeur : Les deux portes sont porteuses, je le crains. Derrière l\'une, une vie que vous pouvez encore sauver. Derrière l\'autre, un moi que vous pouvez encore prouver — le même moi qui a glissé le portefeuille d\'un inconnu dans sa poche quand aucune caméra ne regardait. Le feu est un témoin d\'une autre espèce. Il n\'oublie rien de ce qu\'il voit, et il regarde, maintenant.'
+    : choseIn(s, 'wallet', 'return-all')
+      ? 'Le Placeur : Les deux portes sont porteuses, je le crains. Derrière l\'une, une vie que vous pouvez encore sauver. Derrière l\'autre, un moi que vous pouvez encore prouver — le même moi qui a porté le portefeuille d\'un inconnu quarante minutes à travers la ville, sans la moindre récompense. Voyons si ce moi survit à un incendie, et pas seulement à un couloir vide.'
+      : 'Le Placeur : Les deux portes sont porteuses, je le crains. Derrière l\'une, une vie que vous pouvez encore sauver. Derrière l\'autre, un moi que vous pouvez encore prouver. Le feu n\'attendra pas que vous consultiez un cadre théorique.',
+);
+
+register(roomBeatKey('court-of-usher', 0, 2), 'v2', 'fr', (s: RunState) =>
+  choseIn(s, 'omelas', 'open-door')
+    ? 'Le Placeur : L\'affaire est existentielle, et je serai bref. Vous êtes le juge. Oui — vous, le dissous. Vous êtes presque la seule partie dans cette salle sans conflit d\'intérêts — plus proche de l\'être que la plupart, en tout cas. À Omelas, vous êtes descendu par l\'escalier de la cave quand la porte était ouverte et que personne ne vous y forçait. Cela figure, avant même que nous commencions, à votre crédit.'
+    : choseIn(s, 'omelas', 'stay')
+      ? 'Le Placeur : L\'affaire est existentielle, et je serai bref. Vous êtes le juge. Oui — vous, le dissous. Vous êtes la seule partie dans cette salle sans conflit d\'intérêts, ce qui vous en dit long sur ce tribunal particulier — même si je me souviens d\'une fête que vous avez, une fois, choisi de ne pas quitter, cloches comprises. Jugez tout de même. La récusation est un luxe que ce tribunal n\'offre pas.'
+      : 'Le Placeur : L\'affaire est existentielle, et je serai bref. Vous êtes le juge. Oui — vous, le dissous. Vous êtes la seule partie dans cette salle sans conflit d\'intérêts, ce qui vous en dit long sur ce tribunal particulier.',
+);
+
+register(roomBeatKey('butterfly-dream', 0, 2), 'v2', 'fr', (s: RunState) =>
+  s.memoryLost
+    ? 'Le rêve que vous faisiez — vous sentez déjà ses bords se dissoudre — n\'offrait aucune couture : aucune photo, aucun nom, rien à quoi s\'accrocher pour prouver de quel côté du sommeil vous vous trouvez en réalité. Il vous allait parfaitement, comme une pièce qui va à quelqu\'un qui n\'a jamais vécu ailleurs.'
+    : 'Le rêve que vous faisiez s\'estompe, mais un détail refuse de partir : un visage tiré d\'une photo que vous êtes certain d\'avoir déjà vue, usée sur des bords que vous n\'avez pas rêvés mais dont vous vous souvenez. Cela ne prouve rien. Ça démange seulement, une petite accroche dans un tissu par ailleurs sans couture.',
+);
+
 register(roomBeatKey('junction', 1, 3), 'v2', 'fr', (s: RunState) =>
   choseIn(s, 'junction', 'pull')
     ? 'Le Placeur : La dernière fois, vous avez tiré le levier — un pour cinq, avez-vous dit. Voici le même marché, plus près de la peau. Voyons si l\'arithmétique survit au contact.'

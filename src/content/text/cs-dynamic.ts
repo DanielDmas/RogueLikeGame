@@ -25,6 +25,22 @@ for (const index of [0, 1, 2] as const) {
   });
 }
 
+register(roomBeatKey('photograph', 0, 4), 'v2', 'cs', (s: RunState) =>
+  choseIn(s, 'wallet', 'keep-it')
+    ? 'Uvaděč: Obávám se, že obojí dveře jsou nosné. Za jedněmi život, který ještě můžete zachránit. Za druhými já, které ještě můžete dokázat — totéž já, které si strčilo do kapsy cizí peněženku, když se nedívala žádná kamera. Oheň je jiný druh svědka. Nezapomíná, co vidí, a teď se dívá.'
+    : choseIn(s, 'wallet', 'return-all')
+      ? 'Uvaděč: Obávám se, že obojí dveře jsou nosné. Za jedněmi život, který ještě můžete zachránit. Za druhými já, které ještě můžete dokázat — totéž já, které kdysi neslo cizí peněženku čtyřicet minut přes celé město, bez jakékoli odměny. Uvidíme, jestli to já přežije i oheň, a ne jen prázdnou chodbu.'
+      : 'Uvaděč: Obávám se, že obojí dveře jsou nosné. Za jedněmi život, který ještě můžete zachránit. Za druhými já, které ještě můžete dokázat. Oheň nepočká, až se poradíte s nějakým rámcem.',
+);
+
+register(roomBeatKey('court-of-usher', 0, 2), 'v2', 'cs', (s: RunState) =>
+  choseIn(s, 'omelas', 'open-door')
+    ? 'Uvaděč: Ten případ je existenciální, a budu stručný. Vy jste soudce. Ano — vy, ten rozpuštěný. Jste skoro jediná strana v této místnosti bez konfliktu zájmů — blíž tomu než většina, aspoň. V Omelasu jste sešel po schodech do sklepa, když byly dveře odemčené a nikdo vás nenutil. To je, než začneme, zapsáno ve váš prospěch.'
+    : choseIn(s, 'omelas', 'stay')
+      ? 'Uvaděč: Ten případ je existenciální, a budu stručný. Vy jste soudce. Ano — vy, ten rozpuštěný. Jste jediná strana v této místnosti bez konfliktu zájmů, což vám hodně napovídá o tomhle konkrétním soudu — i když si vzpomínám na jednu slavnost, kterou jste kdysi neopustil, se zvony a se vším. Suďte přesto. Vyloučení pro podjatost je luxus, který tahle stolice nenabízí.'
+      : 'Uvaděč: Ten případ je existenciální, a budu stručný. Vy jste soudce. Ano — vy, ten rozpuštěný. Jste jediná strana v této místnosti bez konfliktu zájmů, což vám hodně napovídá o tomhle konkrétním soudu.',
+);
+
 register(roomBeatKey('junction', 1, 3), 'v2', 'cs', (s: RunState) =>
   choseIn(s, 'junction', 'pull')
     ? 'Uvaděč: Minule jste zatáhli za páku — jeden za pět, řekl jste. Tady je stejný obchod, blíž kůži. Uvidíme, jestli ta aritmetika přežije dotek.'
