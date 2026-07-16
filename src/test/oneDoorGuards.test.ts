@@ -84,7 +84,9 @@ describe('flow.ts — "One Door" (T9) must not leak permanent profile side effec
     const startIdx = flowSrc.indexOf('private async playOneDoor()');
     const endIdx = flowSrc.indexOf('\n  }', startIdx);
     const body = flowSrc.slice(startIdx, endIdx);
-    expect(body).toContain('location.reload()');
+    // reloadPage() wraps location.reload() so fullscreen survives the
+    // reload (rememberFullscreenForReload) — see fullscreen.ts.
+    expect(body).toContain('this.reloadPage()');
   });
 
   it("codexUnlocked and roomVisits stay unguarded — the vignette's room genuinely counts", () => {

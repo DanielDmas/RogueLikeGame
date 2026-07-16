@@ -19,6 +19,43 @@ export async function toggleFullscreen(): Promise<void> {
   }
 }
 
+const FULLSCREEN_RESUME_KEY = 'vestibule:wasFullscreen';
+
+/**
+ * Every `location.reload()`/`location.href` navigation in this app
+ * (returning to title, saving Settings, the Vestibule button, resetting a
+ * run, jump()'s own reload, ...) drops fullscreen unconditionally — the
+ * Fullscreen API cannot survive a page navigation, by browser design, and
+ * re-entering it needs a fresh user gesture. Found live (owner report,
+ * 2026-07-16): every one of those normal menu actions silently kicked the
+ * player out of fullscreen, which read as "the game keeps resetting my
+ * fullscreen." Call this immediately before any such navigation; pairs
+ * with `resumeFullscreenAfterReload()` below.
+ */
+export function rememberFullscreenForReload(): void {
+  if (typeof sessionStorage === 'undefined') return;
+  if (isFullscreen()) sessionStorage.setItem(FULLSCREEN_RESUME_KEY, '1');
+}
+
+/**
+ * Call once at boot. If the page was fullscreen right before the reload
+ * that just happened, silently re-enters fullscreen on the very next click
+ * anywhere on the page — a click is a valid "user gesture" for
+ * `requestFullscreen()` even though the click's own intent was something
+ * else (a title-menu button, a door, anything), so the player never sees
+ * an explicit "resume fullscreen?" prompt; the game just stays fullscreen
+ * through ordinary menu navigation the way they'd expect.
+ */
+export function resumeFullscreenAfterReload(): void {
+  if (typeof sessionStorage === 'undefined' || typeof document === 'undefined') return;
+  if (sessionStorage.getItem(FULLSCREEN_RESUME_KEY) !== '1') return;
+  sessionStorage.removeItem(FULLSCREEN_RESUME_KEY);
+  const onFirstClick = () => {
+    void document.documentElement.requestFullscreen().catch(() => {});
+  };
+  document.addEventListener('click', onFirstClick, { once: true, capture: true });
+}
+
 /**
  * Escape is the browser's own unblockable "exit fullscreen" gesture — no
  * amount of `preventDefault()` stops it, by design, so a player can always

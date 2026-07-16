@@ -2,9 +2,13 @@
 // bespoke room reads as *somewhere* rather than just "the current act theme
 // again". No textures/models: flat-color/emissive MeshStandardMaterial
 // silhouettes plus at most 2 lights, same generated-geometry look as
-// themes.ts and doors.ts. Placed behind the door row (z ≈ -10, well behind
-// DOOR_Z = -5.6) so they never intersect the door row or the Usher's walk
-// path (x ∈ [-7, 7], z ∈ [-1, 4]).
+// themes.ts and doors.ts. Placed behind the door row (z ≈ -7.5, still
+// clearly behind DOOR_Z = -5.6 with margin) so they never intersect the
+// door row or the Usher's walk path (x ∈ [-7, 7], z ∈ [-1, 4]) — moved
+// closer than the original -10 (owner: dioramas should read bigger/closer/
+// more of the screen), paired with the uniform group-scale boost in
+// director.ts's setDiorama so every existing diorama gains presence without
+// any of their individual object layouts needing to be touched.
 import * as THREE from 'three';
 
 export interface Diorama {
@@ -19,7 +23,7 @@ export interface Diorama {
   setAccent?(on: boolean): void;
 }
 
-export const DIORAMA_Z = -10;
+export const DIORAMA_Z = -7.5;
 
 export function mat(color: number, emissive = 0x000000, emissiveIntensity = 0, opts: Partial<THREE.MeshStandardMaterialParameters> = {}) {
   return new THREE.MeshStandardMaterial({ color, emissive, emissiveIntensity, roughness: 0.85, ...opts });

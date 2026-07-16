@@ -109,6 +109,106 @@
         color: var(--ink-faint);
       }
       footer a { color: var(--ink-faint); }
+      /* Settings gear: a small, quiet icon fixed top-right — reachable from
+         the very first screen, matching the in-game HUD's own Settings
+         shortcut (src/ui/hud.ts's .settings-btn) so the affordance feels
+         the same everywhere rather than novel here. Only the four display
+         fields ANAMNESIS/LIMERENCE actually share (see
+         src/engine/sharedDisplaySettings.ts) are editable here — this page
+         has no per-pack profile to hold the rest. */
+      #settings-toggle {
+        position: fixed;
+        top: 18px;
+        right: 18px;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--gold-dim);
+        color: var(--ink-faint);
+        font-size: 16px;
+        cursor: pointer;
+        opacity: 0.75;
+        transition: opacity 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+      }
+      #settings-toggle:hover, #settings-toggle:focus-visible {
+        opacity: 1;
+        border-color: var(--gold);
+        color: var(--ink);
+        outline: none;
+      }
+      #settings-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(4, 4, 5, 0.72);
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        padding: 20px;
+      }
+      #settings-overlay.open { display: flex; }
+      #settings-panel {
+        width: 100%;
+        max-width: 420px;
+        background: #0e0f11;
+        border: 1px solid var(--gold-dim);
+        border-radius: 6px;
+        padding: 28px;
+        text-align: left;
+      }
+      #settings-panel h2 {
+        margin: 0 0 6px;
+        font-size: 17px;
+        font-weight: 400;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--gold);
+      }
+      #settings-panel .settings-note {
+        margin: 0 0 22px;
+        font-size: 12px;
+        color: var(--ink-faint);
+        line-height: 1.5;
+      }
+      .setting-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 12px 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .setting-row:first-of-type { border-top: none; }
+      .setting-row .lbl { font-size: 13px; color: var(--ink); }
+      .setting-row button.toggle {
+        background: none;
+        border: 1px solid var(--gold-dim);
+        border-radius: 3px;
+        color: var(--ink-faint);
+        font-family: inherit;
+        font-size: 11px;
+        letter-spacing: 0.04em;
+        padding: 6px 12px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .setting-row button.toggle:hover { border-color: var(--gold); color: var(--ink); }
+      .setting-row input[type='range'] { width: 120px; }
+      #settings-panel .settings-done {
+        margin-top: 22px;
+        width: 100%;
+        background: none;
+        border: 1px solid var(--gold-dim);
+        border-radius: 3px;
+        color: var(--ink);
+        font-family: inherit;
+        font-size: 13px;
+        letter-spacing: 0.04em;
+        padding: 10px;
+        cursor: pointer;
+      }
+      #settings-panel .settings-done:hover { border-color: var(--gold); }
       /* F3: the landing music toggle — invisible by default (see the script
          below), shown only once public/music/landing/ actually has a file.
          Quiet, unobtrusive chrome, matching the Experience Charter's "no
@@ -136,6 +236,34 @@
     </style>
   </head>
   <body>
+    <button id="settings-toggle" type="button" aria-label="Settings" title="Settings">⚙</button>
+    <div id="settings-overlay">
+      <div id="settings-panel" role="dialog" aria-label="Display settings">
+        <h2>Display</h2>
+        <p class="settings-note">Applies to whichever door you open next — ANAMNESIS and LIMERENCE share these four.</p>
+        <div class="setting-row">
+          <span class="lbl">Fullscreen</span>
+          <button class="toggle" id="set-fullscreen" type="button">off</button>
+        </div>
+        <div class="setting-row">
+          <span class="lbl">High visual quality</span>
+          <button class="toggle" id="set-quality" type="button">off</button>
+        </div>
+        <div class="setting-row">
+          <span class="lbl">Render resolution</span>
+          <button class="toggle" id="set-scale" type="button">Performance</button>
+        </div>
+        <div class="setting-row">
+          <span class="lbl">Frame rate cap</span>
+          <button class="toggle" id="set-fps" type="button">30fps</button>
+        </div>
+        <div class="setting-row">
+          <span class="lbl">Interface size</span>
+          <input type="range" id="set-zoom" min="80" max="130" step="5" value="100" />
+        </div>
+        <button class="settings-done" id="settings-done" type="button">Done</button>
+      </div>
+    </div>
     <h1>The Vestibule</h1>
     <p class="tagline">Two 2.5D roguelikes about the rooms behind hard doors, sharing one engine. Choose a door.</p>
     <div class="doors">
@@ -155,6 +283,128 @@
       Both titles are free, no accounts, nothing tracked. <a href="https://github.com/DanielDmas/RogueLikeGame">Source</a>
     </footer>
     <script>
+      // Fullscreen survives navigation between the Vestibule and a game only
+      // if we carry the intent across in sessionStorage (the Fullscreen API
+      // itself cannot survive a page load) — same key/contract as
+      // src/ui/fullscreen.ts's rememberFullscreenForReload/
+      // resumeFullscreenAfterReload, so a player who's fullscreen here and
+      // clicks a door stays fullscreen once the game boots, and the reverse
+      // (leaving a game fullscreen via its own Vestibule button) already
+      // remembers on that side; this half just needs to resume here too.
+      (function () {
+        var KEY = 'vestibule:wasFullscreen';
+        if (sessionStorage.getItem(KEY) === '1') {
+          sessionStorage.removeItem(KEY);
+          document.addEventListener(
+            'click',
+            function () {
+              if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(function () {});
+              }
+            },
+            { once: true, capture: true },
+          );
+        }
+        document.querySelectorAll('a.door').forEach(function (a) {
+          a.addEventListener('click', function () {
+            if (document.fullscreenElement) sessionStorage.setItem(KEY, '1');
+          });
+        });
+      })();
+
+      // Settings gear: edits the same shared-display-settings record
+      // src/engine/sharedDisplaySettings.ts reads at boot in each game, so
+      // "set it once here" applies the moment either door is opened — see
+      // that module's header comment for the full contract. Kept to the
+      // same four fields (quality/renderScale/uiZoom/fpsCap) for the same
+      // reason: they're pack-agnostic, everything else in Settings isn't.
+      (function () {
+        var KEY = 'vestibule:sharedDisplaySettings';
+        var DEFAULTS = { quality: 'low', renderScale: 'performance', uiZoom: 1, fpsCap: 30 };
+        var SCALE_ORDER = ['performance', 'standard', 'sharp'];
+        var SCALE_LABEL = { performance: 'Performance', standard: 'Standard', sharp: 'Sharp' };
+
+        function readShared() {
+          try {
+            var raw = localStorage.getItem(KEY);
+            if (!raw) return Object.assign({}, DEFAULTS);
+            var parsed = JSON.parse(raw);
+            return Object.assign({}, DEFAULTS, parsed);
+          } catch (e) {
+            return Object.assign({}, DEFAULTS);
+          }
+        }
+
+        function writeShared(v) {
+          localStorage.setItem(KEY, JSON.stringify(v));
+        }
+
+        var toggleBtn = document.getElementById('settings-toggle');
+        var overlay = document.getElementById('settings-overlay');
+        var doneBtn = document.getElementById('settings-done');
+        var fsBtn = document.getElementById('set-fullscreen');
+        var qualityBtn = document.getElementById('set-quality');
+        var scaleBtn = document.getElementById('set-scale');
+        var fpsBtn = document.getElementById('set-fps');
+        var zoomSlider = document.getElementById('set-zoom');
+
+        var current = readShared();
+
+        function paint() {
+          fsBtn.textContent = document.fullscreenElement ? 'on' : 'off';
+          fsBtn.classList.toggle('on', Boolean(document.fullscreenElement));
+          qualityBtn.textContent = current.quality === 'high' ? 'on' : 'off';
+          scaleBtn.textContent = SCALE_LABEL[current.renderScale];
+          fpsBtn.textContent = current.fpsCap + 'fps';
+          zoomSlider.value = String(Math.round(current.uiZoom * 100));
+        }
+
+        toggleBtn.addEventListener('click', function () {
+          current = readShared();
+          paint();
+          overlay.classList.add('open');
+        });
+        doneBtn.addEventListener('click', function () {
+          overlay.classList.remove('open');
+        });
+        overlay.addEventListener('click', function (e) {
+          if (e.target === overlay) overlay.classList.remove('open');
+        });
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && overlay.classList.contains('open')) overlay.classList.remove('open');
+        });
+
+        fsBtn.addEventListener('click', function () {
+          if (document.fullscreenElement) {
+            document.exitFullscreen().catch(function () {});
+          } else if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen().catch(function () {});
+          }
+        });
+        document.addEventListener('fullscreenchange', paint);
+
+        qualityBtn.addEventListener('click', function () {
+          current.quality = current.quality === 'high' ? 'low' : 'high';
+          writeShared(current);
+          paint();
+        });
+        scaleBtn.addEventListener('click', function () {
+          var i = SCALE_ORDER.indexOf(current.renderScale);
+          current.renderScale = SCALE_ORDER[(i + 1) % SCALE_ORDER.length];
+          writeShared(current);
+          paint();
+        });
+        fpsBtn.addEventListener('click', function () {
+          current.fpsCap = current.fpsCap === 30 ? 60 : 30;
+          writeShared(current);
+          paint();
+        });
+        zoomSlider.addEventListener('input', function () {
+          current.uiZoom = Number(zoomSlider.value) / 100;
+          writeShared(current);
+        });
+      })();
+
       // F3: file-based landing music (public/music/landing/*, manifest-driven
       // like every other audio slot in this project — see public/music/
       // README.md). Stays entirely invisible until a real file exists; when

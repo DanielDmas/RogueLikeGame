@@ -15,6 +15,8 @@ import { limerencePack } from './packs/limerence';
 import { applyLocaleToDocument } from './ui/locale';
 import { installRecoveryHandlers } from './ui/recovery';
 import { showRestoredFromBackupToast } from './ui/toast';
+import { resumeFullscreenAfterReload } from './ui/fullscreen';
+import { withSharedDisplaySettings } from './engine/sharedDisplaySettings';
 
 // __PACK__ is a build-time define (vite.config.ts, from VITE_PACK) selecting
 // which ContentPack this build boots; a dev-only `?pack=` override is also
@@ -23,12 +25,17 @@ const requestedPack = import.meta.env.DEV ? (new URLSearchParams(location.search
 const pack = requestedPack === 'limerence' ? limerencePack : anamnesisPack;
 
 async function boot() {
+  resumeFullscreenAfterReload();
   pack.registerText();
   const canvas = document.getElementById('scene') as HTMLCanvasElement;
   const ui = document.getElementById('ui') as HTMLElement;
   installRecoveryHandlers(ui, canvas);
   const store = new LocalSaveStore(pack.meta.id);
   const profile = await store.load('traveler');
+  // Whichever pack (or the landing page's own display panel) the player
+  // last touched Settings/resolution/zoom/quality/fps in wins here — see
+  // sharedDisplaySettings.ts for why this is safe to overlay unconditionally.
+  profile.settings = withSharedDisplaySettings(profile.settings);
   setLocale(profile.settings.language, profile.settings.textVersion);
   applyLocaleToDocument(profile.settings.language);
   if (store.wasRestoredFromBackup()) showRestoredFromBackupToast(ui, profile.settings.reducedMotion);

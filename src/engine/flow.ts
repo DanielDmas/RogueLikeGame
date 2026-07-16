@@ -60,7 +60,8 @@ import {
   ledgerLastMessageKey,
 } from './text/keys';
 import { applyLocaleToDocument } from '../ui/locale';
-import { isFullscreen, shouldOpenPauseOnEscape, toggleFullscreen } from '../ui/fullscreen';
+import { isFullscreen, rememberFullscreenForReload, shouldOpenPauseOnEscape, toggleFullscreen } from '../ui/fullscreen';
+import { writeSharedDisplaySettings } from './sharedDisplaySettings';
 import { applyUiZoom } from '../ui/zoom';
 import { installUatHandle, isJumpableRoom, speedMultiplierFor, type UatHandle } from './uatMode';
 
@@ -158,6 +159,7 @@ export class Game {
     this.hud = new Hud(
       ui,
       () => this.openPause(),
+      () => void this.openSettingsDirect(),
       profile.settings.language,
       (lang) => {
         this.profile.settings = { ...this.profile.settings, language: lang };
@@ -230,7 +232,7 @@ export class Game {
     this.profile.run = next;
     void this.store.save(PROFILE_ID, this.profile).then(() => {
       sessionStorage.setItem(this.uatAutocontinueKey, '1');
-      location.reload();
+      this.reloadPage();
     });
   }
 
@@ -334,6 +336,23 @@ export class Game {
     }
   }
 
+  /** Every full-page reload this app does (returning to title, saving
+   * Settings, resetting a run, jump()'s own reload, ...) would otherwise
+   * silently drop fullscreen — see fullscreen.ts's
+   * rememberFullscreenForReload for why. Route every `location.reload()`
+   * through here instead of calling it directly. */
+  private reloadPage(): void {
+    rememberFullscreenForReload();
+    location.reload();
+  }
+
+  /** Same fullscreen-preserving concern as reloadPage, for the one
+   * cross-document navigation this app makes (the Vestibule button). */
+  private navigateToVestibule(): void {
+    rememberFullscreenForReload();
+    location.href = '../index.html';
+  }
+
   private fade(on: boolean): Promise<void> {
     this.veil.classList.toggle('on', on);
     const ms = (this.profile.settings.reducedMotion ? 280 : 720) * this.speedMultiplier;
@@ -346,13 +365,13 @@ export class Game {
   private async resetRun() {
     this.profile.run = null;
     await this.chainSave(this.profile);
-    location.reload();
+    this.reloadPage();
   }
 
   /** Wipes the whole profile back to defaults and starts over from a clean title screen. */
   private async resetProgress() {
     await this.chainSave(defaultProfile());
-    location.reload();
+    this.reloadPage();
   }
 
   /** R9: the profile as a downloadable JSON string — a personal backup, a
@@ -375,7 +394,7 @@ export class Game {
     }
     if (typeof parsed !== 'object' || parsed === null) return false;
     const hydrated = hydrateProfile(parsed as Partial<Profile>);
-    void this.chainSave(hydrated).then(() => location.reload());
+    void this.chainSave(hydrated).then(() => this.reloadPage());
     return true;
   }
 
@@ -420,11 +439,12 @@ export class Game {
     if (action === 'settings') {
       this.profile.settings = await showSettings(this.ui, this.profile.settings, this.settingsActions());
       this.applySettings();
+      writeSharedDisplaySettings(this.profile.settings);
       await this.persist(true);
     }
     if (action === 'title') {
       await this.persist();
-      location.reload();
+      this.reloadPage();
       return;
     }
     if (action === 'exit') {
@@ -434,9 +454,28 @@ export class Game {
     }
     if (action === 'vestibule') {
       await this.persist();
-      location.href = '../index.html';
+      this.navigateToVestibule();
       return;
     }
+    this.stageBottom.classList.remove('overlay-hidden');
+    this.director.setPaused(false);
+  }
+
+  /** The HUD's own persistent Settings shortcut — the same pause/show/apply/
+   * persist/unpause sequence as `openPause`'s 'settings' branch, minus the
+   * pause-menu screen in between, so a mid-run player reaches Settings in
+   * one click instead of two (owner request: settings reachable "from any
+   * place," not buried a menu-click deep). Never called from the title
+   * screen — the title's own button list already offers Settings directly,
+   * and the HUD (and this shortcut) only exist once `this.hud.show()` has
+   * run for a live run. */
+  private async openSettingsDirect() {
+    this.director.setPaused(true);
+    this.stageBottom.classList.add('overlay-hidden');
+    this.profile.settings = await showSettings(this.ui, this.profile.settings, this.settingsActions());
+    this.applySettings();
+    writeSharedDisplaySettings(this.profile.settings);
+    await this.persist(true);
     this.stageBottom.classList.remove('overlay-hidden');
     this.director.setPaused(false);
   }
@@ -482,12 +521,13 @@ export class Game {
       } else if (action === 'settings') {
         this.profile.settings = await showSettings(this.ui, this.profile.settings, this.settingsActions());
         this.applySettings();
+        writeSharedDisplaySettings(this.profile.settings);
         await this.persist();
       } else if (action === 'exit') {
         window.close();
       } else if (action === 'vestibule') {
         await this.persist();
-        location.href = '../index.html';
+        this.navigateToVestibule();
       } else {
         // Non-negotiable: a player's very first playthrough, ever, sees the
         // "Before you begin" explainer automatically — no one starts not
@@ -864,7 +904,7 @@ export class Game {
     await this.enterRoom(room);
 
     this.oneDoorMode = false;
-    location.reload();
+    this.reloadPage();
   }
 
   private getEnding(endingId: string) {
@@ -997,7 +1037,7 @@ export class Game {
         this.hud.show();
         return this.runLoop();
       }
-      location.reload();
+      this.reloadPage();
       return;
     }
   }

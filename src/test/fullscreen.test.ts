@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { shouldOpenPauseOnEscape } from '../ui/fullscreen';
+import { rememberFullscreenForReload, resumeFullscreenAfterReload, shouldOpenPauseOnEscape } from '../ui/fullscreen';
 
 describe('shouldOpenPauseOnEscape — Escape vs. the browser\'s unblockable fullscreen-exit gesture', () => {
   it('opens the pause menu on a normal Escape press (in-game, no overlay, not fullscreen)', () => {
@@ -40,5 +40,25 @@ describe('shouldOpenPauseOnEscape — Escape vs. the browser\'s unblockable full
         expected,
       );
     }
+  });
+});
+
+describe('rememberFullscreenForReload / resumeFullscreenAfterReload — fullscreen survives a reload/navigation', () => {
+  // This suite runs in vitest's node environment (no jsdom, project convention —
+  // see registerOverlay.test.ts's note on the same choice), so `sessionStorage`
+  // and `document` are both undefined here. Both functions guard on that and
+  // return immediately; the real DOM behavior (sessionStorage round-trip,
+  // requestFullscreen-on-next-click) is exercised live via Playwright per
+  // CLAUDE.md's UAT rule, not unit-testable without a browser. What's worth
+  // locking in at this layer is that neither function throws when the globals
+  // it depends on are absent — the exact situation a non-browser test runner
+  // (or a browser lacking sessionStorage, e.g. some locked-down privacy modes)
+  // puts them in.
+  it('rememberFullscreenForReload is a no-op without sessionStorage', () => {
+    expect(() => rememberFullscreenForReload()).not.toThrow();
+  });
+
+  it('resumeFullscreenAfterReload is a no-op without sessionStorage/document', () => {
+    expect(() => resumeFullscreenAfterReload()).not.toThrow();
   });
 });

@@ -16,6 +16,13 @@ const CAM_VFOV_DEG = 58;
 const CAM_HOME = new THREE.Vector3(0, 1.6, 7.6);
 const TARGET_FPS = 60;
 
+/** Uniform scale applied to every room diorama (dioramas.ts's DIORAMA_Z
+ * moving closer handles the "closer" half of the owner's request; this
+ * handles "bigger" — a single tunable multiplier rather than rescaling
+ * dozens of individual object-position constants across two packs' diorama
+ * builder files). */
+const DIORAMA_SCALE = 1.6;
+
 /**
  * How far back the camera needs to sit so every door (with a safety margin)
  * stays inside the horizontal field of view, given the door count and the
@@ -376,8 +383,15 @@ export class SceneDirector {
     const d = this.visuals.dioramaFor(roomId, this.quality);
     if (!d) return;
     this.diorama = d;
+    // Owner: dioramas should read bigger, closer, covering more of the
+    // display, while staying "illustratively beautiful" — a uniform scale
+    // around each diorama's own local origin (every builder in dioramas.ts
+    // positions its objects relative to (0,0,DIORAMA_Z)) grows every existing
+    // vignette in proportion without touching each one's individual layout,
+    // paired with DIORAMA_Z itself moving closer to camera (dioramas.ts).
+    d.group.scale.setScalar(DIORAMA_SCALE);
     this.scene.add(d.group);
-    this.dioramaFillLight = new THREE.PointLight(0xfff2dc, 4.5, 8, 1.6);
+    this.dioramaFillLight = new THREE.PointLight(0xfff2dc, 4.5, 9, 1.6);
     this.dioramaFillLight.position.set(0, 0.75, DIORAMA_Z + 1.1);
     this.scene.add(this.dioramaFillLight);
   }

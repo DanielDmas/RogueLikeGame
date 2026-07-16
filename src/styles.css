@@ -175,6 +175,11 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 }
 .menu-btn:hover { color: var(--ink); border-color: var(--panel-edge); }
 .lang-btn { min-width: 34px; text-align: center; letter-spacing: 0.12em; }
+/* Quiet, icon-only Settings shortcut beside Menu — deliberately smaller and
+   lower-contrast than the text buttons so it reads as "always there if you
+   want it" rather than competing for attention (owner: not obnoxious). */
+.settings-btn { font-size: 15px; padding: 6px 10px; opacity: 0.75; }
+.settings-btn:hover { opacity: 1; }
 
 .act-label {
   position: absolute; top: 26px; left: 50%; transform: translateX(-50%);

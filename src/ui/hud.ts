@@ -22,6 +22,7 @@ export class Hud {
   private actEl: HTMLElement;
   private langBtn: HTMLButtonElement;
   private menuBtn!: HTMLButtonElement;
+  private settingsBtn!: HTMLButtonElement;
   private skin: { heartsSvg: string; heartsAriaLabel?: string; heartsTooltip?: string; lucidityTooltip?: string };
   private packId?: string;
 
@@ -35,6 +36,7 @@ export class Hud {
   constructor(
     ui: HTMLElement,
     onMenu: () => void,
+    onSettings: () => void,
     initialLang: Lang,
     onLanguageChange: (lang: Lang) => void,
     skin: { heartsSvg: string; heartsAriaLabel?: string; heartsTooltip?: string; lucidityTooltip?: string },
@@ -65,9 +67,20 @@ export class Hud {
       this.langBtn.textContent = LANG_SHORT[currentLang];
       onLanguageChange(currentLang);
     });
+    // Owner request: Settings reachable "from any place" without the
+    // pause-menu detour — a small, quiet gear icon beside Menu, one click
+    // straight to Settings (openSettingsDirect in flow.ts mirrors the pause
+    // menu's own 'settings' branch exactly, so behavior never diverges).
+    // Reuses the already-translated `settings` string rather than adding a
+    // new one — same label the pause/title menus already use for it.
+    this.settingsBtn = el('button', 'menu-btn settings-btn', '⚙');
+    const settingsLabel = t(uiKey('settings'), 'Settings');
+    this.settingsBtn.title = settingsLabel;
+    this.settingsBtn.setAttribute('aria-label', settingsLabel);
+    this.settingsBtn.addEventListener('click', onSettings);
     this.menuBtn = el('button', 'menu-btn', t(uiKey('menu'), 'Menu'));
     this.menuBtn.addEventListener('click', onMenu);
-    right.append(this.lucidityEl, this.langBtn, this.menuBtn);
+    right.append(this.lucidityEl, this.langBtn, this.settingsBtn, this.menuBtn);
     this.root.append(hearts, right);
 
     this.actEl = el('div', 'act-label');
@@ -96,6 +109,9 @@ export class Hud {
     this.lucidityEl.title = t(lucidityTooltipKey(this.packId), this.skin.lucidityTooltip ?? DEFAULT_LUCIDITY_TOOLTIP);
     this.langBtn.title = t(uiKey('hudLanguageTooltip'), 'Change language (applies from the next beat onward)');
     this.menuBtn.textContent = t(uiKey('menu'), 'Menu');
+    const settingsLabel = t(uiKey('settings'), 'Settings');
+    this.settingsBtn.title = settingsLabel;
+    this.settingsBtn.setAttribute('aria-label', settingsLabel);
   }
 
   show() {
