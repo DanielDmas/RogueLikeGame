@@ -498,6 +498,355 @@ function understoryDiorama(accentColor: number, quality: 'low' | 'high'): Dioram
   };
 }
 
+// ---------- waiting-room (prologue): a bench, a handless clock, a recursive window ----------
+function waitingRoomDiorama(quality: 'low' | 'high'): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0.4, DIORAMA_Z);
+  const benchMat = mat(0x22262b);
+  const seat = box(1.3, 0.07, 0.35, benchMat);
+  seat.position.set(-0.4, 0, 0);
+  const back = box(1.3, 0.42, 0.05, benchMat);
+  back.position.set(-0.4, 0.24, -0.16);
+  group.add(seat, back);
+  const clockMat = mat(0x1c1f24, 0xd8dde3, 0.35);
+  const clock = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.17, 0.03, quality === 'high' ? 20 : 12), clockMat);
+  clock.position.set(0.7, 0.7, -0.25);
+  clock.rotation.x = Math.PI / 2;
+  group.add(clock);
+  // A window behind which is more window — two overlapping pale panes at
+  // different depths, the second slightly smaller (the recursion never
+  // quite resolves, the way the room's own prose describes it).
+  const windowMat = mat(0x2a2e33, 0xc7d6e8, 0.35);
+  const paneA = box(0.5, 0.7, 0.02, windowMat);
+  paneA.position.set(0.75, 0.55, -0.5);
+  const paneB = box(0.38, 0.55, 0.02, mat(0x2a2e33, 0xc7d6e8, 0.5));
+  paneB.position.set(0.75, 0.55, -0.65);
+  group.add(paneA, paneB);
+  const light = new THREE.PointLight(0xc7d6e8, 0.55, 4, quality === 'high' ? 2 : 1.4);
+  light.position.set(0.7, 0.8, 0);
+  group.add(light);
+  return { group, tick() {}, dispose: trackDispose(group) };
+}
+
+// ---------- wallet: an open wallet on a floor mat, warm light spilling under a door ----------
+function walletDiorama(quality: 'low' | 'high'): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0.02, DIORAMA_Z);
+  const mat_ = box(0.9, 0.01, 0.5, mat(0x14110c));
+  group.add(mat_);
+  const leatherMat = mat(0x3a2c1e);
+  const leafA = box(0.24, 0.015, 0.17, leatherMat);
+  leafA.position.set(-0.06, 0.01, 0);
+  leafA.rotation.z = -0.12;
+  const leafB = box(0.24, 0.015, 0.17, leatherMat);
+  leafB.position.set(0.1, 0.01, 0.02);
+  leafB.rotation.z = 0.18;
+  group.add(leafA, leafB);
+  const cashMat = mat(0x2e2a1c, 0xd4c69a, 0.35);
+  for (let i = 0; i < 3; i++) {
+    const bill = box(0.16, 0.005, 0.08, cashMat);
+    bill.position.set(0.08 + i * 0.01, 0.02 + i * 0.008, 0.03 - i * 0.01);
+    bill.rotation.y = i * 0.15;
+    group.add(bill);
+  }
+  // Warm light spilling from under a door at the back of the corridor.
+  const doorGlow = box(0.7, 0.015, 0.04, mat(0x2e2416, 0xf0c060, 0.9));
+  doorGlow.position.set(0, 0.005, -0.4);
+  group.add(doorGlow);
+  const light = new THREE.PointLight(0xd4b36a, 0.55, 4, quality === 'high' ? 2 : 1.4);
+  light.position.set(0, 0.4, -0.3);
+  group.add(light);
+  return { group, tick() {}, dispose: trackDispose(group) };
+}
+
+// ---------- promotion: a desk, a screen glowing aquarium-blue with an error ----------
+function promotionDiorama(quality: 'low' | 'high'): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0, DIORAMA_Z);
+  const desk = box(1.1, 0.06, 0.55, mat(0x201a12));
+  desk.position.set(0, 0.5, 0);
+  group.add(desk);
+  const screenMat = mat(0x0c0e10, 0x9db4e8, 0.85);
+  const screen = box(0.48, 0.32, 0.03, screenMat);
+  screen.position.set(0, 0.78, -0.15);
+  const stand = box(0.05, 0.14, 0.05, mat(0x14110c));
+  stand.position.set(0, 0.6, -0.15);
+  group.add(screen, stand);
+  // A single highlighted line on the screen — the decimal's worth of catastrophe.
+  const errorLine = box(0.3, 0.02, 0.005, mat(0x0c0e10, 0xd4603a, 1.1));
+  errorLine.position.set(0, 0.72, -0.13);
+  group.add(errorLine);
+  const light = new THREE.PointLight(0x9db4e8, 0.65, 4, quality === 'high' ? 2 : 1.4);
+  light.position.set(0, 0.9, 0.2);
+  group.add(light);
+  return {
+    group,
+    tick(t) {
+      screenMat.emissiveIntensity = 0.8 + Math.sin(t * 1.7) * 0.08;
+    },
+    dispose: trackDispose(group),
+  };
+}
+
+// ---------- beggars-math: a rain-shelter, a folded figure, a phone's cool glow ----------
+function beggarsMathDiorama(quality: 'low' | 'high'): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0, DIORAMA_Z);
+  const shelterMat = mat(0x14171c, 0x1c232c, 0.15);
+  const roof = box(1.1, 0.04, 0.6, shelterMat);
+  roof.position.set(0, 1.1, 0);
+  const backWall = box(1.1, 1.1, 0.03, shelterMat);
+  backWall.position.set(0, 0.55, -0.28);
+  const sidePanel = box(0.03, 1.1, 0.6, shelterMat);
+  sidePanel.position.set(-0.53, 0.55, 0);
+  group.add(roof, backWall, sidePanel);
+  const figureMat = mat(0x0e0f11);
+  const figure = new THREE.Mesh(new THREE.SphereGeometry(0.22, quality === 'high' ? 12 : 7, quality === 'high' ? 8 : 5), figureMat);
+  figure.position.set(-0.25, 0.24, 0.1);
+  figure.scale.set(1, 0.85, 1);
+  group.add(figure);
+  const phoneMat = mat(0x1c1f24, 0x9db4e8, 1.0);
+  const phone = box(0.05, 0.09, 0.005, phoneMat);
+  phone.position.set(-0.1, 0.32, 0.22);
+  phone.rotation.y = -0.4;
+  group.add(phone);
+  const light = new THREE.PointLight(0x9db4e8, 0.4, 3, quality === 'high' ? 2 : 1.4);
+  light.position.set(-0.1, 0.35, 0.3);
+  group.add(light);
+  return { group, tick() {}, dispose: trackDispose(group) };
+}
+
+// ---------- quiet-alarm: a wall, a hand on a doorknob, sound rippling through ----------
+function quietAlarmDiorama(quality: 'low' | 'high'): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0.4, DIORAMA_Z);
+  const doorMat = mat(0x1c1712);
+  const door = box(0.5, 1.3, 0.05, doorMat);
+  door.position.set(0, 0.2, 0);
+  group.add(door);
+  const knobMat = mat(0x3a3226, 0xd4b36a, 0.3);
+  const knob = new THREE.Mesh(new THREE.SphereGeometry(0.035, quality === 'high' ? 10 : 6, quality === 'high' ? 8 : 5), knobMat);
+  knob.position.set(0.18, 0.2, 0.06);
+  group.add(knob);
+  const ringSegments = quality === 'high' ? 20 : 12;
+  const rings = [0.32, 0.5].map((r) => {
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(r, 0.008, 4, ringSegments), mat(0x2a2e33, 0x9db4e8, 0.4));
+    ring.position.set(0, 0.2, -0.4);
+    group.add(ring);
+    return ring;
+  });
+  const light = new THREE.PointLight(0x9db4e8, 0.4, 3, quality === 'high' ? 2 : 1.4);
+  light.position.set(0, 0.5, 0.3);
+  group.add(light);
+  return {
+    group,
+    tick(t) {
+      rings.forEach((r, i) => {
+        const s = 1 + ((t * 0.4 + i * 0.5) % 1) * 0.4;
+        r.scale.set(s, s, 1);
+        (r.material as THREE.MeshStandardMaterial).opacity = Math.max(0, 1 - ((t * 0.4 + i * 0.5) % 1));
+      });
+    },
+    dispose: trackDispose(group),
+  };
+}
+
+// ---------- dinner-table: a small table, two cups of tea gone cold ----------
+function dinnerTableDiorama(quality: 'low' | 'high'): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0, DIORAMA_Z);
+  const tableMat = mat(0x241d14);
+  const top = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.04, quality === 'high' ? 20 : 12), tableMat);
+  top.position.set(0, 0.5, 0);
+  const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.5, quality === 'high' ? 10 : 6), tableMat);
+  leg.position.set(0, 0.25, 0);
+  group.add(top, leg);
+  const cupMat = mat(0x2c261c, 0xe8d9b8, 0.15);
+  const cupA = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.04, 0.06, quality === 'high' ? 12 : 7), cupMat);
+  cupA.position.set(-0.15, 0.55, 0.1);
+  const cupB = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.04, 0.06, quality === 'high' ? 12 : 7), cupMat);
+  cupB.position.set(0.16, 0.55, -0.08);
+  group.add(cupA, cupB);
+  const chairMat = mat(0x1c1710);
+  const seat = box(0.32, 0.04, 0.32, chairMat);
+  seat.position.set(0, 0.32, 0.55);
+  const back = box(0.32, 0.36, 0.04, chairMat);
+  back.position.set(0, 0.52, 0.7);
+  group.add(seat, back);
+  const light = new THREE.PointLight(0xe8b06a, 0.65, 4, quality === 'high' ? 2 : 1.4);
+  light.position.set(0, 0.9, 0.2);
+  group.add(light);
+  return { group, tick() {}, dispose: trackDispose(group) };
+}
+
+// ---------- photograph: two doors in fire, one framing a single small photo ----------
+function photographDiorama(quality: 'low' | 'high'): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0.55, DIORAMA_Z);
+  const doorMat = mat(0x1c1310);
+  const doorL = box(0.42, 1.1, 0.05, doorMat);
+  doorL.position.set(-0.55, 0, 0);
+  const doorR = box(0.42, 1.1, 0.05, doorMat);
+  doorR.position.set(0.55, 0, 0);
+  group.add(doorL, doorR);
+  const tableMat = mat(0x241d14);
+  const table = box(0.2, 0.02, 0.14, tableMat);
+  table.position.set(0.55, -0.35, 0.1);
+  const photoMat = mat(0x2c2618, 0xf0ead6, 0.5);
+  const photo = box(0.1, 0.005, 0.08, photoMat);
+  photo.position.set(0.55, -0.33, 0.1);
+  group.add(table, photo);
+  const fire = new THREE.PointLight(0xe8752e, 1.1, 5, quality === 'high' ? 2 : 1.4);
+  fire.position.set(-0.55, 0.1, 0.4);
+  group.add(fire);
+  const glowMat = mat(0x140a06, 0xd4603a, 0.7);
+  const smokeGlow = box(1.3, 0.06, 0.02, glowMat);
+  smokeGlow.position.set(0, 0.6, -0.1);
+  group.add(smokeGlow);
+  return {
+    group,
+    tick(t) {
+      fire.intensity = 0.95 + Math.sin(t * 5) * 0.2 + (Math.random() > 0.92 ? 0.25 : 0);
+    },
+    dispose: trackDispose(group),
+  };
+}
+
+// ---------- court-of-usher: an altar-bench, a confessional witness stand ----------
+function courtOfUsherDiorama(quality: 'low' | 'high'): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0.1, DIORAMA_Z);
+  const benchMat = mat(0x201a12);
+  const bench = box(0.9, 0.6, 0.4, benchMat);
+  bench.position.set(-0.35, 0.3, 0);
+  const trim = box(0.9, 0.03, 0.41, mat(0x2e2416, 0xd4b36a, 0.5));
+  trim.position.set(-0.35, 0.6, 0);
+  group.add(bench, trim);
+  const boothMat = mat(0x1c1710);
+  const booth = box(0.35, 0.9, 0.35, boothMat);
+  booth.position.set(0.55, 0.45, 0);
+  const grille = box(0.18, 0.1, 0.02, mat(0x2e2416, 0xd4b36a, 0.6));
+  grille.position.set(0.55, 0.55, 0.19);
+  group.add(booth, grille);
+  const light = new THREE.PointLight(0xd4b36a, 0.7, 4, quality === 'high' ? 2 : 1.4);
+  light.position.set(0.1, 0.8, 0.4);
+  group.add(light);
+  return { group, tick() {}, dispose: trackDispose(group) };
+}
+
+// ---------- introduction (secret): the room's own emptiness — one exact, glowing threshold ----------
+function introductionDiorama(quality: 'low' | 'high'): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0.5, DIORAMA_Z);
+  // Deliberately almost nothing — the room's own prose insists on "no
+  // furniture, no mirror-floor, no machinery," just exact proportions. A
+  // thin frame outline, floating alone, is the whole diorama.
+  const frameMat = mat(0x1c1712, 0xf0ead6, 0.55);
+  const top = box(0.6, 0.02, 0.02, frameMat);
+  top.position.set(0, 0.4, 0);
+  const bottom = box(0.6, 0.02, 0.02, frameMat);
+  bottom.position.set(0, -0.4, 0);
+  const left = box(0.02, 0.8, 0.02, frameMat);
+  left.position.set(-0.3, 0, 0);
+  const right = box(0.02, 0.8, 0.02, frameMat);
+  right.position.set(0.3, 0, 0);
+  group.add(top, bottom, left, right);
+  const light = new THREE.PointLight(0xf0ead6, 0.35, 3, quality === 'high' ? 2 : 1.4);
+  light.position.set(0, 0, 0.5);
+  group.add(light);
+  return {
+    group,
+    tick(t) {
+      light.intensity = 0.3 + Math.sin(t * 0.6) * 0.06;
+    },
+    dispose: trackDispose(group),
+  };
+}
+
+// ---------- free-will: a wall panel of large buttons that saw you coming ----------
+function freeWillDiorama(quality: 'low' | 'high'): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0.4, DIORAMA_Z);
+  const panel = box(1.3, 0.5, 0.06, mat(0x201a12));
+  group.add(panel);
+  const colors: [number, number][] = [
+    [0x9db4e8, 0.6],
+    [0xd4603a, 0.6],
+    [0x7ec98a, 0.6],
+    [0x3a3a3a, 0.15],
+  ];
+  const buttonSegments = quality === 'high' ? 16 : 10;
+  colors.forEach(([color, intensity], i) => {
+    const button = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.09, 0.09, 0.04, buttonSegments),
+      mat(0x14110c, color, intensity),
+    );
+    button.position.set((i - 1.5) * 0.28, 0, 0.06);
+    button.rotation.x = Math.PI / 2;
+    group.add(button);
+  });
+  const light = new THREE.PointLight(0xd4d4d4, 0.5, 4, quality === 'high' ? 2 : 1.4);
+  light.position.set(0, 0.4, 0.5);
+  group.add(light);
+  return { group, tick() {}, dispose: trackDispose(group) };
+}
+
+// ---------- last-message: a small post-office counter, a warm pen, dawn light ----------
+function lastMessageDiorama(quality: 'low' | 'high'): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0, DIORAMA_Z);
+  const counter = box(1.0, 0.5, 0.4, mat(0x241d14));
+  counter.position.set(0, 0.5, 0);
+  group.add(counter);
+  const penMat = mat(0x2e2416, 0xd4b36a, 0.7);
+  const pen = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.22, quality === 'high' ? 10 : 6), penMat);
+  pen.position.set(0.1, 0.78, 0);
+  pen.rotation.z = Math.PI / 2.3;
+  group.add(pen);
+  const slotMat = mat(0x1c1712, 0xf0c9a0, 0.5);
+  const slot = box(0.3, 0.03, 0.02, slotMat);
+  slot.position.set(-0.15, 0.9, -0.19);
+  group.add(slot);
+  const light = new THREE.PointLight(0xf0c9a0, 0.7, 4, quality === 'high' ? 2 : 1.4);
+  light.position.set(0, 1.1, 0.3);
+  group.add(light);
+  return {
+    group,
+    tick(t) {
+      (penMat as THREE.MeshStandardMaterial).emissiveIntensity = 0.6 + Math.sin(t * 1.1) * 0.1;
+    },
+    dispose: trackDispose(group),
+  };
+}
+
+// ---------- door-that-asks: the last door, a brass grille reading your file ----------
+function doorThatAsksDiorama(quality: 'low' | 'high'): Diorama {
+  const group = new THREE.Group();
+  group.position.set(0, 0.5, DIORAMA_Z);
+  const doorMat = mat(0x1c1712);
+  const door = box(0.75, 1.5, 0.07, doorMat);
+  group.add(door);
+  const grilleMat = mat(0x2e2416, 0xd4b36a, 0.7);
+  const grilleBars = quality === 'high' ? 5 : 3;
+  const bars: THREE.Mesh[] = [];
+  for (let i = 0; i < grilleBars; i++) {
+    const bar = box(0.24, 0.012, 0.02, grilleMat);
+    bar.position.set(0, 0.15 + (i - (grilleBars - 1) / 2) * 0.03, 0.045);
+    bars.push(bar);
+    group.add(bar);
+  }
+  const light = new THREE.PointLight(0xd4b36a, 0.65, 4, quality === 'high' ? 2 : 1.4);
+  light.position.set(0, 0.15, 0.35);
+  group.add(light);
+  return {
+    group,
+    tick(t) {
+      light.intensity = 0.55 + Math.sin(t * 0.8) * 0.15;
+    },
+    dispose: trackDispose(group),
+  };
+}
+
 type DioramaBuilder = (quality: 'low' | 'high') => Diorama;
 
 const REGISTRY: Record<string, DioramaBuilder> = {
@@ -522,6 +871,18 @@ const REGISTRY: Record<string, DioramaBuilder> = {
   'the-archive': (q) => understoryDiorama(0xd4b36a, q),
   'the-unchosen': (q) => understoryDiorama(0x9db4e8, q),
   'the-echo': (q) => understoryDiorama(0x8a6fd4, q),
+  'waiting-room': waitingRoomDiorama,
+  wallet: walletDiorama,
+  promotion: promotionDiorama,
+  'beggars-math': beggarsMathDiorama,
+  'quiet-alarm': quietAlarmDiorama,
+  'dinner-table': dinnerTableDiorama,
+  photograph: photographDiorama,
+  'court-of-usher': courtOfUsherDiorama,
+  introduction: introductionDiorama,
+  'free-will': freeWillDiorama,
+  'last-message': lastMessageDiorama,
+  'door-that-asks': doorThatAsksDiorama,
 };
 
 /** Every room id with a bespoke diorama — exported for registry-completeness tests. */

@@ -26,8 +26,11 @@ describe('room dioramas (spec 07 §Q1) — registry, budget, disposal', () => {
 
   it('a room with no bespoke diorama falls back to null (act theme alone)', () => {
     expect(dioramaFor('not-a-real-room-id', 'high')).toBeNull();
-    // a real room known to have no bespoke motif (per spec 07 §Q1's motif table)
-    expect(dioramaFor('quiet-alarm', 'high')).toBeNull();
+  });
+
+  it('full diorama parity — every ANAMNESIS room has a bespoke diorama (matches LIMERENCE\'s 34/34)', () => {
+    const roomIds = allRooms.map((r) => r.id);
+    expect(new Set(DIORAMA_ROOM_IDS)).toEqual(new Set(roomIds));
   });
 
   for (const quality of ['low', 'high'] as const) {
