@@ -1,0 +1,9 @@
+{
+  "script": "23-anamnesis-ending-flow.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 40958,
+  "stdout": "UAT 23 (ANAMNESIS ending flow): PASS — hearts-death ending rendered cleanly, runsCompleted 0 -> 1, zero errors",
+  "stderr": ""
+}

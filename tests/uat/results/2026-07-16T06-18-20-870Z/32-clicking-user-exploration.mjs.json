@@ -1,0 +1,9 @@
+{
+  "script": "32-clicking-user-exploration.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 61280,
+  "stdout": "ANAMNESIS: 10 rounds of open/close-random-overlay poking, no throw\n  LIMERENCE: 10 rounds of open/close-random-overlay poking, no throw\nUAT 32 (clicking-user exploration, both packs): PASS",
+  "stderr": ""
+}

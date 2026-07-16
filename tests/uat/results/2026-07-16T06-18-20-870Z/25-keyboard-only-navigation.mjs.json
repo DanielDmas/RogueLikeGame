@@ -1,0 +1,9 @@
+{
+  "script": "25-keyboard-only-navigation.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 9559,
+  "stdout": "UAT 25 (keyboard-only navigation): PASS — Tab + ArrowDown + Enter resolved a real choice, zero errors",
+  "stderr": ""
+}

@@ -1,0 +1,9 @@
+{
+  "script": "38-code-review-fixes-h2-h4.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 70950,
+  "stdout": "H2: Escape on the article overlay closed only the article, field note stayed open underneath.\n  H4: end-screen triptych rendered translated German text, no English \"You ...\" lines present.\nUAT 38 (code review fixes H2 + H4): PASS",
+  "stderr": ""
+}

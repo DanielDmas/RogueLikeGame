@@ -1,0 +1,9 @@
+{
+  "script": "14-limerence-visual-sweep.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 11557,
+  "stdout": "UAT 14 (LIMERENCE visual sweep): PASS — 6 diorama rooms + HUD Trust label, zero errors",
+  "stderr": ""
+}

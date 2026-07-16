@@ -1,0 +1,9 @@
+{
+  "script": "29-language-switch-live-both-packs.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 16438,
+  "stdout": "ANAMNESIS: language switched EN -> CS -> FA (RTL confirmed), menu label \"Menu\" still present: true\n  LIMERENCE: language switched EN -> CS -> FA (RTL confirmed), menu label \"Menu\" still present: true\nUAT 29 (live language switch, both packs): PASS",
+  "stderr": ""
+}

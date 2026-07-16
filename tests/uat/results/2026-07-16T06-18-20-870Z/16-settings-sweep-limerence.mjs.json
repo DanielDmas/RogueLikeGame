@@ -1,0 +1,9 @@
+{
+  "script": "16-settings-sweep-limerence.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 7060,
+  "stdout": "UAT 16 (settings sweep, LIMERENCE): PASS — reducedMotion round-trip through reload + Light mode toggle present, zero errors",
+  "stderr": ""
+}

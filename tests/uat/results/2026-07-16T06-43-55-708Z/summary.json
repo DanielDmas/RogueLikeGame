@@ -1,0 +1,39 @@
+{
+  "timestamp": "2026-07-16T06-43-55-708Z",
+  "total": 5,
+  "passed": 5,
+  "failed": 0,
+  "totalDurationMs": 105257,
+  "results": [
+    {
+      "script": "38-code-review-fixes-h2-h4.mjs",
+      "pass": true,
+      "durationMs": 70950,
+      "timedOut": false
+    },
+    {
+      "script": "39-fullscreen-resume-across-reload.mjs",
+      "pass": true,
+      "durationMs": 9336,
+      "timedOut": false
+    },
+    {
+      "script": "40-hud-settings-shortcut-and-shared-sync.mjs",
+      "pass": true,
+      "durationMs": 5783,
+      "timedOut": false
+    },
+    {
+      "script": "41-shared-display-settings-applied-on-boot.mjs",
+      "pass": true,
+      "durationMs": 11411,
+      "timedOut": false
+    },
+    {
+      "script": "43-diorama-size-screenshot.mjs",
+      "pass": true,
+      "durationMs": 7777,
+      "timedOut": false
+    }
+  ]
+}

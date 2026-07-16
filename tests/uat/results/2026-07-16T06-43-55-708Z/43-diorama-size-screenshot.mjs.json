@@ -1,0 +1,9 @@
+{
+  "script": "43-diorama-size-screenshot.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 7777,
+  "stdout": "UAT 43 (diorama size screenshot): PASS — screenshot saved to scratchpad",
+  "stderr": ""
+}

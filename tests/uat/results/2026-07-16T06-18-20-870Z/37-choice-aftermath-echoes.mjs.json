@@ -1,0 +1,9 @@
+{
+  "script": "37-choice-aftermath-echoes.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 44715,
+  "stdout": "wallet(keep-it) -> photograph: echo line rendered.\n  omelas(open-door) -> court-of-usher: echo line rendered.\n  DE: wallet(keep-it) -> photograph echo rendered translated (Brieftasche/Kamera present).\nUAT 37 (choice-aftermath echoes): PASS",
+  "stderr": ""
+}

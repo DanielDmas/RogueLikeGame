@@ -1,0 +1,9 @@
+{
+  "script": "39-fullscreen-resume-across-reload.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 9336,
+  "stdout": "UAT 39 (fullscreen resume across reload): PASS",
+  "stderr": ""
+}
