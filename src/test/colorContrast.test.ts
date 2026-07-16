@@ -139,6 +139,25 @@ describe('I9 — WCAG AA contrast for every genuine reading-text color token', (
     });
   });
 
+  describe('LIMERENCE dark — per-floor accent overrides (Phase V3, 2026-07-16)', () => {
+    const bg = PALETTES['LIMERENCE dark'].bg;
+    // act1 deliberately has no --gold override (it already equals the
+    // Ground Floor's own keyLight) — only act2/act3 override --gold here.
+    for (const act of [2, 3]) {
+      it(`data-act="${act}"'s --gold clears AA-normal against the (unchanged) dark --bg (dark mode's --gold-text is \`var(--gold)\`, so this IS the real-text color)`, () => {
+        const block = extractBlock(`body.pack-limerence[data-act="${act}"]:not(.theme-light)`);
+        expect(contrastRatio(extractVar(block, 'gold'), bg)).toBeGreaterThanOrEqual(AA_NORMAL_TEXT);
+      });
+    }
+
+    it('act2 and act3 use genuinely different hues from the base dark palette and from each other', () => {
+      const base = extractVar(limerenceDarkBlock, 'gold');
+      const act2 = extractVar(extractBlock('body.pack-limerence[data-act="2"]:not(.theme-light)'), 'gold');
+      const act3 = extractVar(extractBlock('body.pack-limerence[data-act="3"]:not(.theme-light)'), 'gold');
+      expect(new Set([base, act2, act3]).size).toBe(3);
+    });
+  });
+
   it('every genuinely text-bearing selector that used to read --gold now reads --gold-text', () => {
     // Regression guard for the exact bug this audit fixed: a future edit
     // reintroducing `color: var(--gold)` on one of these selectors would

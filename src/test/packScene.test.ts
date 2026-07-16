@@ -219,6 +219,94 @@ describe('LIMERENCE theme — distinct from ANAMNESIS, internally consistent', (
   });
 });
 
+describe('LIMERENCE floors 0-3 — Phase V1 fixture kit actually configured (not just available)', () => {
+  function countMeshes(group: THREE.Group): number {
+    let n = 0;
+    group.traverse((o) => {
+      if (o instanceof THREE.Mesh) n++;
+    });
+    return n;
+  }
+
+  it('every corridor floor (0-3) has more meshes than the bare shared shape — real fixtures configured, not just the accent/window carried over from the previous pass', () => {
+    const bare = corridorTheme(0x8a6a3a, {}, 'high');
+    const bareCount = countMeshes(bare.group);
+    disposeGroup(bare.group);
+    for (const id of [0, 1, 2, 3] as const) {
+      const themed = limerenceBuildTheme(id, 'high');
+      expect(countMeshes(themed.group), `floor ${id}`).toBeGreaterThan(bareCount);
+      disposeGroup(themed.group);
+    }
+  });
+
+  it('the Front Desk (0) and Ground Floor (1) each got a second fixture beyond the migrating window (infoPanel / bandedWalls), not just the window alone', () => {
+    const windowOnly = corridorTheme(0x9a6a38, { fixtures: [{ kind: 'endWindow', color: 0x4a5a72 }] }, 'high');
+    const windowOnlyCount = countMeshes(windowOnly.group);
+    disposeGroup(windowOnly.group);
+    const frontDesk = limerenceBuildTheme(0, 'high');
+    expect(countMeshes(frontDesk.group)).toBeGreaterThan(windowOnlyCount);
+    disposeGroup(frontDesk.group);
+
+    const windowOnly2 = corridorTheme(0xb3762f, { fixtures: [{ kind: 'endWindow', color: 0x3a6a6a }] }, 'high');
+    const windowOnly2Count = countMeshes(windowOnly2.group);
+    disposeGroup(windowOnly2.group);
+    const groundFloor = limerenceBuildTheme(1, 'high');
+    expect(countMeshes(groundFloor.group)).toBeGreaterThan(windowOnly2Count);
+    disposeGroup(groundFloor.group);
+  });
+});
+
+describe('LIMERENCE Top Floor (4) — Phase V1: reuses the shared dawn-gradient shader', () => {
+  it('has a low skyline silhouette in addition to the dawn backdrop, and ticks without throwing', () => {
+    const theme = limerenceBuildTheme(4, 'high');
+    let skylineBoxes = 0;
+    theme.group.traverse((o) => {
+      if (o instanceof THREE.Mesh && o.geometry instanceof THREE.BoxGeometry) skylineBoxes++;
+    });
+    expect(skylineBoxes).toBeGreaterThan(0);
+    expect(() => theme.tick(12.3)).not.toThrow();
+    disposeGroup(theme.group);
+  });
+
+  it('fogColor/fogDensity/background are unchanged from before the shader refactor', () => {
+    const theme = limerenceBuildTheme(4, 'high');
+    expect(theme.fogColor).toBe(0x281c14);
+    expect(theme.fogDensity).toBe(0.03);
+    expect(theme.background).toBe(0x281c14);
+    disposeGroup(theme.group);
+  });
+});
+
+describe('Phase V2 — limerenceBuildTheme accepts a light-mode arg and lifts corridor floors only', () => {
+  it('floors 0-3 differ in fogColor between dark (default) and light mode', () => {
+    for (const id of [0, 1, 2, 3] as const) {
+      const dark = limerenceBuildTheme(id, 'high', 'dark');
+      const light = limerenceBuildTheme(id, 'high', 'light');
+      expect(light.fogColor, `floor ${id}`).not.toBe(dark.fogColor);
+      disposeGroup(dark.group);
+      disposeGroup(light.group);
+    }
+  });
+
+  it('floors 4-5 (bespoke builders, not corridorTheme) ignore the mode param — no crash, same output', () => {
+    for (const id of [4, 5] as const) {
+      const dark = limerenceBuildTheme(id, 'high', 'dark');
+      const light = limerenceBuildTheme(id, 'high', 'light');
+      expect(light.fogColor, `floor ${id}`).toBe(dark.fogColor);
+      disposeGroup(dark.group);
+      disposeGroup(light.group);
+    }
+  });
+
+  it('omitting mode entirely still defaults to dark (backward compatible with every pre-Phase-V2 call site)', () => {
+    const noMode = limerenceBuildTheme(1, 'high');
+    const explicitDark = limerenceBuildTheme(1, 'high', 'dark');
+    expect(noMode.fogColor).toBe(explicitDark.fogColor);
+    disposeGroup(noMode.group);
+    disposeGroup(explicitDark.group);
+  });
+});
+
 describe.each([
   { name: 'anamnesis', pack: anamnesisPack as ContentPack },
   { name: 'limerence', pack: limerencePack as ContentPack },

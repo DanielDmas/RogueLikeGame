@@ -177,7 +177,15 @@ export interface ContentPack {
   visuals: {
     iconFor(roomId: string): string | undefined;
     endingIcons: Record<string, string>;
-    buildTheme(id: ThemeId, quality: Quality): ThemeConfig;
+    /** Phase V2 — "the morning read": `mode` lets a pack with
+     * `supportsLightTheme: true` lift a corridor floor's colors toward the
+     * shared dawn reference under the light-mode toggle (`scene/themes.ts`'s
+     * `DAWN_LIFT`/`liftColorForLightMode`). Optional and defaults to
+     * `'dark'` so every pre-Phase-V builder (ANAMNESIS's own `buildTheme`,
+     * which never received a 3rd parameter) still satisfies this type
+     * unchanged — TypeScript allows a 2-arg function where a 3-arg-with-
+     * optional-last type is expected. */
+    buildTheme(id: ThemeId, quality: Quality, mode?: 'dark' | 'light'): ThemeConfig;
     moodTints: Record<MoodType, MoodTint>;
     /** Each act theme's base fog/background color, without constructing the
      * (expensive) 3D group — used by the doorway light-spill. Keep in sync

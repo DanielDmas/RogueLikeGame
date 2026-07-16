@@ -72,6 +72,7 @@ const themeForAct = (act: number): 0 | 1 | 2 | 3 | 4 => (act <= 1 ? (act as 0 | 
 export class Game {
   private ui: HTMLElement;
   private veil: HTMLElement;
+  private interlude: HTMLElement;
   private stageBottom: HTMLElement;
   private director: SceneDirector;
   private hud: Hud;
@@ -135,6 +136,13 @@ export class Game {
 
     this.veil = el('div', 'veil');
     ui.appendChild(this.veil);
+    // Phase V4a — the end-of-act interlude: a floor-name title card that
+    // shows *while the veil is already opaque* for a real act transition,
+    // so it costs no extra wait beyond the fade's own existing duration and
+    // changes no test-observable timing. A child of the veil, so it fades
+    // with it automatically via the veil's own opacity transition.
+    this.interlude = el('div', 'interlude');
+    this.veil.appendChild(this.interlude);
 
     const stageBottom = el('div', 'stage-bottom');
     ui.appendChild(stageBottom);
@@ -256,14 +264,27 @@ export class Game {
 
   private applySettings() {
     const s = this.profile.settings;
+    const wantLightTheme = this.pack.visuals.supportsLightTheme && s.theme === 'light';
     document.body.classList.toggle('reduced-motion', s.reducedMotion);
     document.body.classList.toggle('high-contrast', s.highContrast);
-    document.body.classList.toggle('theme-light', this.pack.visuals.supportsLightTheme && s.theme === 'light');
+    document.body.classList.toggle('theme-light', wantLightTheme);
     this.text.setTypewriter(this.effectiveTypewriter());
     this.director.setReducedMotion(s.reducedMotion);
     this.director.setDynamicScenery(s.dynamicScenery);
     this.director.setRenderScale(s.renderScale);
     this.director.setFpsCap(s.fpsCap);
+    // Phase V2 — "the morning read": the 3D scene mode. `setThemeMode` is
+    // already a no-op when the mode isn't actually changing, and rebuilds
+    // the currently-shown theme when it is (a no-op itself if no theme has
+    // been built yet, e.g. this very first call in the constructor, before
+    // `start()` ever calls `setSceneTheme`). Restore the current room's
+    // diorama afterward — the rebuild clears it, same as any other
+    // `setTheme` call, and nothing else re-triggers it mid-run the way the
+    // title loop's own re-entry already restores the epitaph wall.
+    this.director.setThemeMode(wantLightTheme);
+    if (this.inGame && this.state.currentRoom) {
+      this.director.setDiorama(this.state.currentRoom);
+    }
     applyUiZoom(s.uiZoom);
     sound.setMusicEnabled(s.music);
     sound.setSfxEnabled(s.sfx);
@@ -357,6 +378,22 @@ export class Game {
     this.veil.classList.toggle('on', on);
     const ms = (this.profile.settings.reducedMotion ? 280 : 720) * this.speedMultiplier;
     return new Promise((r) => setTimeout(r, ms));
+  }
+
+  /** Phase V4a — the end-of-act interlude: a large, centered floor-name
+   * title card shown while the veil is already opaque (see the call site in
+   * `syncTheme`). Pure decoration on top of the existing fade — costs no
+   * extra wait, changes no other pack's behavior (every pack calls this the
+   * same way; it just renders one line of text already-translated via
+   * `actNameFor`, so there is no new translation surface). */
+  private setInterlude(title: string) {
+    this.interlude.textContent = title;
+    this.interlude.classList.add('show');
+  }
+
+  private clearInterlude() {
+    this.interlude.classList.remove('show');
+    this.interlude.textContent = '';
   }
 
   /** Abandons the in-progress run only — field notes, endings, settings, and persona survive.
@@ -597,9 +634,22 @@ export class Game {
     const theme = themeForAct(this.state.act);
     if (theme !== this.currentTheme) {
       await this.fade(true);
+      // Phase V4a: only for a genuine mid-run floor change (act > 0) — the
+      // very first floor of a fresh run has nowhere to "arrive" from yet.
+      const showingInterlude = this.state.act > 0;
+      if (showingInterlude) this.setInterlude(this.actNameFor(this.state.act));
       this.setSceneTheme(theme);
       this.currentTheme = theme;
       this.setActMusic(theme);
+      // Found live (2026-07-16): setInterlude()/clearInterlude() with no
+      // await between them never gives the browser a chance to paint — the
+      // interlude was set and cleared inside one synchronous stretch,
+      // invisible to a real player too, not just to automated timing. A
+      // real, awaited pause (scaled by speedMultiplier, same as every other
+      // deliberate-pacing wait in this file) is required for it to actually
+      // read as a beat rather than nothing.
+      if (showingInterlude) await new Promise((r) => setTimeout(r, 260 * this.speedMultiplier));
+      this.clearInterlude();
       await this.fade(false);
       const intro = this.pack.guide.actIntroText(this.state.act);
       if (intro && this.state.act > 0) {

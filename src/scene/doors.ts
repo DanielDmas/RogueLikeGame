@@ -93,8 +93,10 @@ export interface DoorStyle {
 }
 
 /** Deterministic pseudo-random in [-1, 1] from an integer seed — no Math.random
- * so a door's skew is stable across re-renders of the same door row. */
-function seededSigned(seed: number): number {
+ * so a door's skew is stable across re-renders of the same door row. Exported
+ * for reuse by `themes.ts`'s fixture kit (Phase V1), which needs the same
+ * "stable-but-varied per instance" property for its lit/dark panel patterns. */
+export function seededSigned(seed: number): number {
   const x = Math.sin(seed * 12.9898) * 43758.5453;
   return (x - Math.floor(x)) * 2 - 1;
 }

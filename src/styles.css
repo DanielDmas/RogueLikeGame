@@ -132,16 +132,43 @@ body.pack-limerence.theme-light[data-act="1"] {
   --gold: #ac6a2e;
   --gold-text: #935a24;
   --gold-dim: rgba(172, 106, 46, 0.3);
+  --panel-edge: rgba(172, 106, 46, 0.3);
 }
 body.pack-limerence.theme-light[data-act="2"] {
   --gold: #4a8a8a;
   --gold-text: #2e6b6b;
   --gold-dim: rgba(74, 138, 138, 0.3);
+  --panel-edge: rgba(74, 138, 138, 0.3);
 }
 body.pack-limerence.theme-light[data-act="3"] {
   --gold: #8a5a7a;
   --gold-text: #6b3a5c;
   --gold-dim: rgba(138, 90, 122, 0.3);
+  --panel-edge: rgba(138, 90, 122, 0.3);
+}
+
+/* Phase V3 (2026-07-16) — the same per-floor accent idea, for LIMERENCE's
+   *dark* mode (the primary, most-played register). Dark mode's colors
+   match each floor's own 3D key-light hue directly (not re-derived the way
+   light mode's were, since dark IS the hotel's authored palette already —
+   act1's dark --gold already equals the Ground Floor's own keyLight,
+   #e0995a, so it needs no override). Only --gold changes: --gold-text is
+   `var(--gold)` in this palette (see the block above), so it follows
+   automatically; no separate declaration needed. `:not(.theme-light)`
+   keeps these from ever competing with the light-mode block above on
+   specificity grounds (harmless either way — the light block has one more
+   class and always wins — but explicit beats implicit here). */
+body.pack-limerence[data-act="1"]:not(.theme-light) {
+  --panel-edge: rgba(224, 153, 90, 0.2);
+}
+body.pack-limerence[data-act="2"]:not(.theme-light) {
+  --gold: #5aa8a8;
+  --gold-dim: rgba(90, 168, 168, 0.35);
+}
+body.pack-limerence[data-act="3"]:not(.theme-light) {
+  --gold: #a8708a;
+  --gold-dim: rgba(168, 112, 138, 0.35);
+  --panel-edge: rgba(168, 112, 138, 0.2);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -171,6 +198,19 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 }
 .veil.on { opacity: 1; }
 .reduced-motion .veil { transition-duration: 250ms; }
+
+/* Phase V4a (2026-07-16) — the end-of-act interlude title card: a child of
+   .veil, so it fades in lockstep with the veil's own opacity transition
+   above (no separate animation needed). Empty/no `.show` class = invisible,
+   the exact original .veil appearance for every fade that isn't a floor
+   change (endings, resets, the very first floor of a run). */
+.interlude {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-family: var(--serif); font-size: 15px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--gold-text); opacity: 0; transition: opacity 300ms var(--ease);
+  text-align: center; padding: 0 40px;
+}
+.interlude.show { opacity: 0.85; }
 
 /* ---------- HUD ---------- */
 .hud {

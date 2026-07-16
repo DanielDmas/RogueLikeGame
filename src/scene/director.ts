@@ -207,6 +207,16 @@ export class SceneDirector {
    * flag only when the DOM actually changes (a handful of times per room),
    * undercutting the very "reduce render-loop cost" goal this feature has. */
   private idlePanelPresent = false;
+  /** Phase V2 — "the morning read": the active light/dark 3D scene mode,
+   * independent of `quality`. `setTheme(id)` reads this when building the
+   * theme; `setThemeMode` updates it and, if a theme is already showing,
+   * rebuilds just that theme (see `setThemeMode`'s own doc for why a full
+   * rebuild is safe here). */
+  private themeMode: 'dark' | 'light' = 'dark';
+  /** The most recently built theme id, so `setThemeMode` can rebuild the
+   * current floor in the new mode without the caller needing to remember
+   * and re-pass the id itself. */
+  private currentThemeId: ThemeId | null = null;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -415,6 +425,24 @@ export class SceneDirector {
     this.dioramaRoomId = null;
   }
 
+  /** Phase V2 — "the morning read": applies a new light/dark 3D scene mode.
+   * A no-op if the mode isn't actually changing. When it does change and a
+   * theme is currently showing, rebuilds that theme via the normal
+   * `setTheme(id)` path — deliberately the *full* rebuild (it also clears
+   * any diorama/epitaph wall), because both of those are already restored
+   * by their own existing call sites: the title loop rebuilds the epitaph
+   * wall fresh on every re-entry (including right after Settings closes),
+   * and `flow.ts`'s `applySettings` re-calls `setDiorama` for the current
+   * room when this fires mid-run. This keeps the mode switch a single,
+   * well-tested code path instead of a second bespoke "rebuild but keep
+   * everything" variant. */
+  setThemeMode(light: boolean) {
+    const mode: 'dark' | 'light' = light ? 'light' : 'dark';
+    if (mode === this.themeMode) return;
+    this.themeMode = mode;
+    if (this.currentThemeId !== null) this.setTheme(this.currentThemeId);
+  }
+
   /** Toggles the optional "dynamic scenery" mood system; off = pure static act theme (the original, default behavior). */
   setDynamicScenery(v: boolean) {
     this.dynamicScenery = v;
@@ -447,7 +475,8 @@ export class SceneDirector {
         }
       });
     }
-    this.theme = this.visuals.buildTheme(id, this.quality);
+    this.currentThemeId = id;
+    this.theme = this.visuals.buildTheme(id, this.quality, this.themeMode);
     this.mood = null;
     this.scene.add(this.theme.group);
     this.applyFogAndBackground();
