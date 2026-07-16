@@ -291,19 +291,29 @@
       // clicks a door stays fullscreen once the game boots, and the reverse
       // (leaving a game fullscreen via its own Vestibule button) already
       // remembers on that side; this half just needs to resume here too.
+      // Listens on click/keydown/pointerdown, not just click (see
+      // fullscreen.ts's resumeFullscreenAfterReload doc comment) — a
+      // keyboard-first interaction on the landing page (Tab to a door link,
+      // Enter) still synthesizes a click, but this is defense in depth for
+      // any interaction shape that doesn't.
       (function () {
         var KEY = 'vestibule:wasFullscreen';
         if (sessionStorage.getItem(KEY) === '1') {
           sessionStorage.removeItem(KEY);
-          document.addEventListener(
-            'click',
-            function () {
-              if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen().catch(function () {});
-              }
-            },
-            { once: true, capture: true },
-          );
+          var armed = true;
+          var resume = function () {
+            if (!armed) return;
+            armed = false;
+            document.removeEventListener('click', resume, true);
+            document.removeEventListener('keydown', resume, true);
+            document.removeEventListener('pointerdown', resume, true);
+            if (document.documentElement.requestFullscreen) {
+              document.documentElement.requestFullscreen().catch(function () {});
+            }
+          };
+          document.addEventListener('click', resume, true);
+          document.addEventListener('keydown', resume, true);
+          document.addEventListener('pointerdown', resume, true);
         }
         document.querySelectorAll('a.door').forEach(function (a) {
           a.addEventListener('click', function () {

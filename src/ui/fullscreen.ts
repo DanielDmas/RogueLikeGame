@@ -39,21 +39,45 @@ export function rememberFullscreenForReload(): void {
 
 /**
  * Call once at boot. If the page was fullscreen right before the reload
- * that just happened, silently re-enters fullscreen on the very next click
- * anywhere on the page — a click is a valid "user gesture" for
- * `requestFullscreen()` even though the click's own intent was something
- * else (a title-menu button, a door, anything), so the player never sees
- * an explicit "resume fullscreen?" prompt; the game just stays fullscreen
- * through ordinary menu navigation the way they'd expect.
+ * that just happened, silently re-enters fullscreen on the very next
+ * interaction anywhere on the page — a click, a keypress, or a pointerdown
+ * are all valid "user gestures" for `requestFullscreen()` even though the
+ * interaction's own intent was something else (a title-menu button, a
+ * door, pressing Space to advance), so the player never sees an explicit
+ * "resume fullscreen?" prompt; the game just stays fullscreen through
+ * ordinary menu navigation the way they'd expect.
+ *
+ * Listens on three event types, not just `click` (found live, 2026-07-16 —
+ * owner report of fullscreen "resetting" navigating from the Vestibule into
+ * a game): a `<button>` activated via Enter/Space synthesizes a `click`
+ * automatically, but plenty of real first interactions never go through
+ * that path — pressing Space to advance a beat is handled by a raw
+ * `keydown` listener with no synthesized click, and a `pointerdown` that
+ * doesn't complete as a full click (e.g. a press-drag) fires neither. All
+ * three share one `armed` guard so only the first one to fire actually
+ * calls `requestFullscreen()` — this cannot make the resume happen "more,"
+ * only close the window in which it doesn't happen at all. The browser's
+ * own mandatory fullscreen-exit-on-navigation is still visible for a beat
+ * regardless (a hard platform constraint, not something any of this can
+ * remove) — this only shortens how long the player is out of fullscreen
+ * before the very first thing they do brings it back.
  */
 export function resumeFullscreenAfterReload(): void {
   if (typeof sessionStorage === 'undefined' || typeof document === 'undefined') return;
   if (sessionStorage.getItem(FULLSCREEN_RESUME_KEY) !== '1') return;
   sessionStorage.removeItem(FULLSCREEN_RESUME_KEY);
-  const onFirstClick = () => {
+  let armed = true;
+  const resume = () => {
+    if (!armed) return;
+    armed = false;
+    document.removeEventListener('click', resume, true);
+    document.removeEventListener('keydown', resume, true);
+    document.removeEventListener('pointerdown', resume, true);
     void document.documentElement.requestFullscreen().catch(() => {});
   };
-  document.addEventListener('click', onFirstClick, { once: true, capture: true });
+  document.addEventListener('click', resume, { capture: true });
+  document.addEventListener('keydown', resume, { capture: true });
+  document.addEventListener('pointerdown', resume, { capture: true });
 }
 
 /**
