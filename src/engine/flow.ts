@@ -486,7 +486,7 @@ export class Game {
     // directly instead of making a scripted test click through the title.
     if (this.uat && sessionStorage.getItem(this.uatAutocontinueKey) && this.profile.run) {
       sessionStorage.removeItem(this.uatAutocontinueKey);
-      this.director.setTheme(0);
+      this.setSceneTheme(0);
       this.state = this.profile.run;
       this.director.setPaused(false);
       this.inGame = true;
@@ -494,7 +494,7 @@ export class Game {
       this.hud.show();
       return this.runLoop();
     }
-    this.director.setTheme(0);
+    this.setSceneTheme(0);
     this.setActMusic(0);
     this.director.setPaused(true);
     this.director.setParallax(true);
@@ -580,11 +580,24 @@ export class Game {
     return this.currentDoorSpecs.findIndex((s) => s.id === id);
   }
 
+  /** Mirrors the active act theme onto `<body data-act>` — a CSS hook so
+   * LIMERENCE's light mode can vary its accent per floor (creative bible
+   * §8: "act floors get warmer→colder→domestic-dawn progressions"),
+   * without touching the 3D scene itself (which stays the hotel's authored
+   * dark palette in both themes, by deliberate design — see
+   * packs/limerence/theme.ts's header). Harmless for every other
+   * combination: ANAMNESIS and LIMERENCE-dark have no `[data-act]`
+   * selector at all in styles.css, so this is a pure no-op for them. */
+  private setSceneTheme(id: 0 | 1 | 2 | 3 | 4 | 5) {
+    this.director.setTheme(id);
+    document.body.dataset.act = String(id);
+  }
+
   private async syncTheme() {
     const theme = themeForAct(this.state.act);
     if (theme !== this.currentTheme) {
       await this.fade(true);
-      this.director.setTheme(theme);
+      this.setSceneTheme(theme);
       this.currentTheme = theme;
       this.setActMusic(theme);
       await this.fade(false);
@@ -899,7 +912,7 @@ export class Game {
     this.oneDoorMode = true;
     await this.fade(true);
     const theme = themeForAct(room.act);
-    this.director.setTheme(theme);
+    this.setSceneTheme(theme);
     this.currentTheme = theme;
     this.setActMusic(theme);
     this.director.setPaused(false);
@@ -938,7 +951,7 @@ export class Game {
     this.choices.clear();
     this.text.hide();
     await this.fade(true);
-    this.director.setTheme(5);
+    this.setSceneTheme(5);
     this.currentTheme = 5;
     this.setActMusic(5);
     this.hud.hide();

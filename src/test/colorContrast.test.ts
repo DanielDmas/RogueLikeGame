@@ -58,7 +58,10 @@ function extractVar(block: string, name: string): string {
 }
 
 function extractBlock(selector: string): string {
-  const escaped = selector.replace(/[.#]/g, '\\$&');
+  // Escapes every regex metacharacter, not just `.`/`#` — needed once
+  // attribute selectors like `[data-act="1"]` (graphics overhaul,
+  // 2026-07-16) joined the plain class selectors this originally covered.
+  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   // Handles multi-selector blocks (":root {") by matching from the selector
   // to its first closing brace, non-greedy.
   const match = css.match(new RegExp(`${escaped}\\s*\\{([^}]*)\\}`));
@@ -112,6 +115,28 @@ describe('I9 — WCAG AA contrast for every genuine reading-text color token', (
     // it still backs real UI components (focus outlines, borders) that WCAG
     // 1.4.11 holds to a 3:1 floor, and .ending-title's large (30-52px) text.
     expect(contrastRatio(extractVar(limerenceLightBlock, 'gold'), extractVar(limerenceLightBlock, 'bg'))).toBeGreaterThanOrEqual(3);
+  });
+
+  describe('LIMERENCE light — per-floor accent overrides (graphics overhaul, 2026-07-16)', () => {
+    const bg = PALETTES['LIMERENCE light'].bg;
+    for (const act of [1, 2, 3]) {
+      it(`data-act="${act}"'s --gold-text clears AA-normal against the (unchanged) --bg`, () => {
+        const block = extractBlock(`body.pack-limerence.theme-light[data-act="${act}"]`);
+        expect(contrastRatio(extractVar(block, 'gold-text'), bg)).toBeGreaterThanOrEqual(AA_NORMAL_TEXT);
+      });
+
+      it(`data-act="${act}"'s plain --gold clears the 3:1 non-text/large-text floor`, () => {
+        const block = extractBlock(`body.pack-limerence.theme-light[data-act="${act}"]`);
+        expect(contrastRatio(extractVar(block, 'gold'), bg)).toBeGreaterThanOrEqual(3);
+      });
+    }
+
+    it('each act override uses a genuinely different hue from the base light palette and from each other (the point of the feature)', () => {
+      const base = extractVar(limerenceLightBlock, 'gold-text');
+      const perAct = [1, 2, 3].map((act) => extractVar(extractBlock(`body.pack-limerence.theme-light[data-act="${act}"]`), 'gold-text'));
+      const all = [base, ...perAct];
+      expect(new Set(all).size).toBe(all.length);
+    });
   });
 
   it('every genuinely text-bearing selector that used to read --gold now reads --gold-text', () => {

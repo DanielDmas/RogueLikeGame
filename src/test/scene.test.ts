@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
 import { buildTheme, silhouette, usherFigure } from '../scene/themes';
-import { createDoors, DOOR_Z, flickerEnvelope, hoverLightSpill, hoverPulseIntensity, SELECT_SNAP_BOOST } from '../scene/doors';
+import { createDoors, DOOR_Z, flickerEnvelope, frameHoverGlow, hoverLightSpill, hoverPulseIntensity, SELECT_SNAP_BOOST } from '../scene/doors';
 import { GradeShader } from '../scene/post';
 
 function ambientIntensity(group: THREE.Group): number {
@@ -252,6 +252,62 @@ describe('doors — real interactive doors read as unmistakably alive', () => {
     set.tick(0.5, false);
     const resetIntensities = lightsOf('a').map((l) => l.intensity);
     expect(resetIntensities).toEqual(baseIntensities);
+    set.dispose();
+  });
+});
+
+describe('doors — item 17: the frame itself catches a glow on hover (graphics overhaul, 2026-07-16)', () => {
+  function frameMatsOf(set: ReturnType<typeof createDoors>, id: string): THREE.MeshStandardMaterial[] {
+    const meshEntry = set.meshes.find((m) => m.userData.doorId === id);
+    const door = meshEntry?.parent;
+    const mats: THREE.MeshStandardMaterial[] = [];
+    door?.traverse((o) => {
+      if (o instanceof THREE.Mesh && o.geometry instanceof THREE.BoxGeometry) {
+        mats.push(o.material as THREE.MeshStandardMaterial);
+      }
+    });
+    return mats;
+  }
+
+  it('frameHoverGlow is 0 unhovered, a positive fixed peak hovered, and honors a custom peak', () => {
+    expect(frameHoverGlow(false)).toBe(0);
+    expect(frameHoverGlow(true)).toBeGreaterThan(0);
+    expect(frameHoverGlow(true, 0.5)).toBe(0.5);
+    expect(frameHoverGlow(false, 0.5)).toBe(0);
+  });
+
+  it('the hovered door\'s frame (both jambs + lintel) glows; every other door\'s frame stays dark', () => {
+    const set = createDoors([{ id: 'a', hint: 'a' }, { id: 'b', hint: 'b' }, { id: 'c', hint: 'c' }]);
+    set.setHover('b');
+    set.tick(1.0, false);
+    expect(frameMatsOf(set, 'b').every((m) => m.emissiveIntensity > 0)).toBe(true);
+    expect(frameMatsOf(set, 'a').every((m) => m.emissiveIntensity === 0)).toBe(true);
+    expect(frameMatsOf(set, 'c').every((m) => m.emissiveIntensity === 0)).toBe(true);
+    set.dispose();
+  });
+
+  it('unhovering resets the frame glow back to exactly 0', () => {
+    const set = createDoors([{ id: 'a', hint: 'a' }]);
+    set.setHover('a');
+    set.tick(0, false);
+    expect(frameMatsOf(set, 'a').every((m) => m.emissiveIntensity > 0)).toBe(true);
+    set.setHover(null);
+    set.tick(0.5, false);
+    expect(frameMatsOf(set, 'a').every((m) => m.emissiveIntensity === 0)).toBe(true);
+    set.dispose();
+  });
+
+  it('each door owns its own frame material — not one shared across the whole row (a shared material would light every frame on any hover)', () => {
+    const set = createDoors([{ id: 'a', hint: 'a' }, { id: 'b', hint: 'b' }]);
+    expect(frameMatsOf(set, 'a')[0]).not.toBe(frameMatsOf(set, 'b')[0]);
+    set.dispose();
+  });
+
+  it('idle (no hover at all) leaves every frame at 0, same as before this feature existed', () => {
+    const set = createDoors([{ id: 'a', hint: 'a' }, { id: 'b', hint: 'b' }]);
+    set.tick(3.7, false);
+    expect(frameMatsOf(set, 'a').every((m) => m.emissiveIntensity === 0)).toBe(true);
+    expect(frameMatsOf(set, 'b').every((m) => m.emissiveIntensity === 0)).toBe(true);
     set.dispose();
   });
 });

@@ -181,6 +181,13 @@ export interface CorridorPalette {
   ambient?: number;
   keyLight?: number;
   dustColor?: number;
+  /** Graphics-overhaul addition (2026-07-16): an optional second tone for
+   * every third decorative door plus a faint unlit ceiling-seam strip —
+   * "neon bleed through curtains" (LIMERENCE's creative bible §8), giving a
+   * corridor genuine color variety rather than one hue applied uniformly.
+   * undefined (ANAMNESIS's own callers never set it) keeps every existing
+   * caller byte-identical — this only activates for a pack that opts in. */
+  accentColor?: number;
 }
 
 /** A corridor of decorative background doors + one warm key light + drifting
@@ -198,6 +205,7 @@ export function corridorTheme(warmth: number, palette: CorridorPalette = {}, qua
   const ambient = palette.ambient ?? 0x4a3c28;
   const keyLight = palette.keyLight ?? 0xc9a06a;
   const dustColor = palette.dustColor ?? 0xc9a06a;
+  const accentColor = palette.accentColor;
 
   const group = new THREE.Group();
   group.add(floor(floorColor, 0.9));
@@ -208,6 +216,13 @@ export function corridorTheme(warmth: number, palette: CorridorPalette = {}, qua
   const doorGlowMat = new THREE.MeshStandardMaterial({
     color: doorBase, emissive: decorativeWarmth, emissiveIntensity: 0.32, roughness: 0.8,
   });
+  // A second, cooler/contrasting tone for every third decorative door — "not
+  // every door behind the same light" (see CorridorPalette.accentColor).
+  // No-op (never constructed) when a pack doesn't opt in.
+  const decorativeAccent = accentColor !== undefined ? desaturate(accentColor, 0.4) : null;
+  const doorGlowMatAccent = decorativeAccent !== null
+    ? new THREE.MeshStandardMaterial({ color: doorBase, emissive: decorativeAccent, emissiveIntensity: 0.34, roughness: 0.8 })
+    : null;
   // The nearest decorative slab must sit clearly behind the real doors
   // (DOOR_Z) so background scenery never renders larger/closer than an
   // actual choice — that misread is what made the corridor confusing.
@@ -222,11 +237,12 @@ export function corridorTheme(warmth: number, palette: CorridorPalette = {}, qua
     wall.position.set(side * 7.5, 3.5, -30);
     group.add(wall);
     for (let i = 0; i < decorCount; i++) {
-      const slab = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 2.6), doorGlowMat);
+      const isAccent = doorGlowMatAccent !== null && i % 3 === 2;
+      const slab = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 2.6), isAccent ? doorGlowMatAccent : doorGlowMat);
       slab.position.set(side * 7.28, 1.5, DECOR_NEAR_Z - i * 9);
       slab.rotation.y = side * -Math.PI / 2;
       group.add(slab);
-      const light = new THREE.PointLight(decorativeWarmth, 0.85, 7, 2.0);
+      const light = new THREE.PointLight(isAccent ? decorativeAccent! : decorativeWarmth, 0.85, 7, 2.0);
       light.position.set(side * 6.6, 1.6, DECOR_NEAR_Z - i * 9);
       group.add(light);
     }
@@ -241,6 +257,19 @@ export function corridorTheme(warmth: number, palette: CorridorPalette = {}, qua
   group.add(key);
   const dust = particles(quality === 'high' ? 240 : 130, dustColor, 24, 0.035);
   group.add(dust);
+  // "Neon bleed through curtains" (creative bible §8): a faint, unlit
+  // ceiling-seam strip in the accent tone along each wall — no PointLight
+  // (self-lit MeshBasicMaterial), so it costs nothing beyond one extra mesh
+  // per side regardless of quality tier.
+  if (accentColor !== undefined) {
+    const seamMat = new THREE.MeshBasicMaterial({ color: accentColor, transparent: true, opacity: 0.09, depthWrite: false });
+    for (const side of [-1, 1]) {
+      const seam = new THREE.Mesh(new THREE.PlaneGeometry(0.12, 88), seamMat);
+      seam.position.set(side * 7.3, 6.35, -30);
+      seam.rotation.x = Math.PI / 2;
+      group.add(seam);
+    }
+  }
   return {
     group, fogColor: fog, fogDensity: 0.036, background: fog,
     tick(t) { dust.rotation.y = t * 0.008; },

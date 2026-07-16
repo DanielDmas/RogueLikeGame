@@ -60,6 +60,114 @@ describe('corridorTheme — parameterization is behavior-neutral for its existin
   });
 });
 
+describe('corridorTheme — accentColor (graphics overhaul, 2026-07-16): opt-in decorative variety, no-op by default', () => {
+  it('omitting accentColor adds no unlit seam mesh — every existing ANAMNESIS caller is untouched', () => {
+    const theme = corridorTheme(0x8a6a3a, {}, 'high');
+    let seamCount = 0;
+    theme.group.traverse((o) => {
+      if (o instanceof THREE.Mesh && o.material instanceof THREE.MeshBasicMaterial) seamCount++;
+    });
+    expect(seamCount).toBe(0);
+    disposeGroup(theme.group);
+  });
+
+  it('setting accentColor adds exactly one unlit ceiling-seam mesh per side, without changing fog/background', () => {
+    const theme = corridorTheme(0x8a6a3a, { accentColor: 0x336699 }, 'high');
+    let seamCount = 0;
+    theme.group.traverse((o) => {
+      if (o instanceof THREE.Mesh && o.material instanceof THREE.MeshBasicMaterial) seamCount++;
+    });
+    expect(seamCount).toBe(2);
+    expect(theme.fogColor).toBe(0x322a1d);
+    expect(theme.background).toBe(0x322a1d);
+    disposeGroup(theme.group);
+  });
+
+  it('every third decorative door slab uses a distinct accent material from the rest — real color variety, not one hue applied uniformly', () => {
+    const theme = corridorTheme(0x8a6a3a, { accentColor: 0x336699 }, 'high');
+    const slabMats = new Set<THREE.Material>();
+    theme.group.traverse((o) => {
+      if (
+        o instanceof THREE.Mesh &&
+        o.geometry instanceof THREE.PlaneGeometry &&
+        (o.geometry as THREE.PlaneGeometry).parameters.width === 1.2
+      ) {
+        slabMats.add(o.material as THREE.Material);
+      }
+    });
+    // one base decorative material + one accent decorative material, shared across the whole row
+    expect(slabMats.size).toBe(2);
+    disposeGroup(theme.group);
+  });
+
+  it('a partial palette with only accentColor still keeps every other default (no accidental coupling)', () => {
+    const theme = corridorTheme(0x8a6a3a, { accentColor: 0x336699 }, 'high');
+    expect(theme.fogColor).toBe(0x322a1d);
+    disposeGroup(theme.group);
+  });
+});
+
+describe('LIMERENCE corridor floors — structural distinctiveness, not a recolored ANAMNESIS corridor (graphics overhaul, 2026-07-16)', () => {
+  function countMeshes(group: THREE.Group): number {
+    let n = 0;
+    group.traverse((o) => {
+      if (o instanceof THREE.Mesh) n++;
+    });
+    return n;
+  }
+
+  it('every corridor floor (0-3) has real added geometry beyond the shared corridorTheme shape — the migrating window fixture', () => {
+    const bare = corridorTheme(0x8a6a3a, {}, 'high');
+    const bareCount = countMeshes(bare.group);
+    disposeGroup(bare.group);
+    for (const id of [0, 1, 2, 3] as const) {
+      const themed = limerenceBuildTheme(id, 'high');
+      expect(countMeshes(themed.group), `floor ${id} should have more meshes than the bare corridor shape`).toBeGreaterThan(bareCount);
+      disposeGroup(themed.group);
+    }
+  });
+
+  it('the migrating window pane genuinely drifts over time (an animated fixture, not a static prop)', () => {
+    const theme = limerenceBuildTheme(0, 'high');
+    const findPane = (): THREE.Object3D[] => {
+      const found: THREE.Object3D[] = [];
+      theme.group.traverse((o) => {
+        if (
+          o instanceof THREE.Mesh &&
+          o.geometry instanceof THREE.PlaneGeometry &&
+          (o.geometry as THREE.PlaneGeometry).parameters.width === 2.6 &&
+          (o.geometry as THREE.PlaneGeometry).parameters.height === 3.6
+        ) {
+          found.push(o);
+        }
+      });
+      return found;
+    };
+    const panes = findPane();
+    expect(panes, 'migrating window pane not found').toHaveLength(1);
+    const pane = panes[0];
+    const positions = new Set<number>();
+    for (let t = 0; t < 40; t += 4) {
+      theme.tick(t);
+      positions.add(Number(pane.position.x.toFixed(4)));
+    }
+    expect(positions.size).toBeGreaterThan(1);
+    disposeGroup(theme.group);
+  });
+
+  it('floors 4-5 (Top Floor, the morning after — bespoke builders, not corridorTheme) are unaffected by the accent/window feature', () => {
+    for (const id of [4, 5] as const) {
+      const theme = limerenceBuildTheme(id, 'high');
+      let seamCount = 0;
+      theme.group.traverse((o) => {
+        if (o instanceof THREE.Mesh && o.material instanceof THREE.MeshBasicMaterial) seamCount++;
+      });
+      expect(seamCount).toBe(0);
+      disposeGroup(theme.group);
+    }
+  });
+});
+
 describe('spillColorFor — pack-parameterized, defaults to ANAMNESIS', () => {
   it('a DILEMMA room (no tint of its own) falls back to the next act’s fog color, using ANAMNESIS defaults when no args given', () => {
     expect(spillColorFor('DILEMMA', 1)).toBe(FOG_COLOR_BY_THEME[1]);

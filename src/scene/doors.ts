@@ -99,6 +99,16 @@ function seededSigned(seed: number): number {
   return (x - Math.floor(x)) * 2 - 1;
 }
 
+/** Item 17 — richer door hover feedback: the frame's own emissive lift on
+ * hover, bounded to `[0, peak]`; 0 (unhovered) leaves the frame exactly as
+ * dark/inert as it always was. Separate from `hoverPulseIntensity` (the
+ * slab) because a real, tested peak that never varies over time reads as
+ * "lit," not "breathing" — the frame should feel like it caught the slab's
+ * own light, not like a second independent pulse competing for attention. */
+export function frameHoverGlow(hovered: boolean, peak = 0.22): number {
+  return hovered ? peak : 0;
+}
+
 export function createDoors(specs: DoorSpec[], style: DoorStyle = {}): DoorSet {
   const frameColor = style.frameColor ?? 0x241d14;
   const frameWidth = style.frameWidth ?? 0.18;
@@ -108,7 +118,6 @@ export function createDoors(specs: DoorSpec[], style: DoorStyle = {}): DoorSet {
   const glowColorSecret = style.glowColorSecret ?? 0x8a6fd4;
   const skewJitter = style.skewJitter ?? 0;
   const unsteadyPulse = style.unsteadyPulse ?? 0;
-  const FRAME_MAT = new THREE.MeshStandardMaterial({ color: frameColor, roughness: 0.75 });
   const group = new THREE.Group();
   const meshes: THREE.Mesh[] = [];
   const slabs = new Map<string, THREE.MeshStandardMaterial>();
@@ -116,6 +125,10 @@ export function createDoors(specs: DoorSpec[], style: DoorStyle = {}): DoorSet {
   const pools = new Map<string, THREE.PointLight>();
   const lintels = new Map<string, THREE.Vector3>();
   const phases = new Map<string, number>();
+  // Item 17: each door gets its own frame material (previously one FRAME_MAT
+  // shared by every door in the row) so only the hovered door's frame can
+  // catch a glow — a shared material would light every frame at once.
+  const frameMats = new Map<string, THREE.MeshStandardMaterial>();
   let hoveredId: string | null = null;
   let flicker: { doorId: string; startT: number } | null = null;
   const FLICKER_DURATION = 2.2;
@@ -131,14 +144,18 @@ export function createDoors(specs: DoorSpec[], style: DoorStyle = {}): DoorSet {
     door.lookAt(CAMERA_HOME);
     if (skewJitter) door.rotation.z += seededSigned(i * 7.31) * skewJitter;
 
-    const jambL = new THREE.Mesh(new THREE.BoxGeometry(frameWidth, 3.1, 0.3), FRAME_MAT);
+    const doorGlow = spec.secret ? glowColorSecret : glowColor;
+    const frameMat = new THREE.MeshStandardMaterial({
+      color: frameColor, roughness: 0.75, emissive: doorGlow, emissiveIntensity: 0,
+    });
+    frameMats.set(spec.id, frameMat);
+    const jambL = new THREE.Mesh(new THREE.BoxGeometry(frameWidth, 3.1, 0.3), frameMat);
     jambL.position.set(-0.85, 1.55, 0);
     const jambR = jambL.clone();
     jambR.position.x = 0.85;
-    const lintel = new THREE.Mesh(new THREE.BoxGeometry(1.9, frameWidth, 0.3), FRAME_MAT);
+    const lintel = new THREE.Mesh(new THREE.BoxGeometry(1.9, frameWidth, 0.3), frameMat);
     lintel.position.set(0, 3.15, 0);
 
-    const doorGlow = spec.secret ? glowColorSecret : glowColor;
     const slabMat = new THREE.MeshStandardMaterial({
       color: spec.secret ? slabColorSecret : slabColor,
       emissive: doorGlow,
@@ -200,6 +217,9 @@ export function createDoors(specs: DoorSpec[], style: DoorStyle = {}): DoorSet {
     },
     tick(t, reducedMotion = false) {
       if (flicker && t - flicker.startT >= FLICKER_DURATION) flicker = null;
+      for (const [doorId, frameMat] of frameMats) {
+        frameMat.emissiveIntensity = frameHoverGlow(doorId === hoveredId);
+      }
       for (const [doorId, mat] of slabs) {
         if (doorId === hoveredId) {
           mat.emissiveIntensity = hoverPulseIntensity(t, BASE_INTENSITY, reducedMotion);

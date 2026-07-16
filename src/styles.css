@@ -115,6 +115,35 @@ body.pack-limerence.theme-light .act-label {
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
 }
 
+/* Graphics overhaul (2026-07-16) — per-floor light-mode accent variation
+   (creative bible §8: "act floors get warmer→colder→domestic-dawn
+   progressions"). Only --gold/--gold-text/--gold-dim shift per floor;
+   --bg/--panel/--ink stay exactly as above so every panel's own
+   already-WCAG-verified text-on-background pairing is untouched — this
+   only recolors the accent (borders, glows, emphasis text, choice-card
+   numerals) to match the floor's own hue. `[data-act]` is set by
+   `Game.setSceneTheme` in engine/flow.ts and mirrors the 3D scene's own
+   act theme id; harmless everywhere else, since no other selector in this
+   file reads it. Acts 0 (Front Desk), 4 (Top Floor) and 5 (the morning
+   after) keep the base sodium/dawn amber above unchanged — they're the
+   same warm register already. Every value re-verified against
+   colorContrast.test.ts's own WCAG math (see that file's per-act block). */
+body.pack-limerence.theme-light[data-act="1"] {
+  --gold: #ac6a2e;
+  --gold-text: #935a24;
+  --gold-dim: rgba(172, 106, 46, 0.3);
+}
+body.pack-limerence.theme-light[data-act="2"] {
+  --gold: #4a8a8a;
+  --gold-text: #2e6b6b;
+  --gold-dim: rgba(74, 138, 138, 0.3);
+}
+body.pack-limerence.theme-light[data-act="3"] {
+  --gold: #8a5a7a;
+  --gold-text: #6b3a5c;
+  --gold-dim: rgba(138, 90, 122, 0.3);
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 html, body { height: 100%; background: var(--bg); overflow: hidden; }
