@@ -21,18 +21,23 @@ export class LocalSaveStore implements SaveStore {
     if (!raw) return defaultProfile();
     try {
       const parsed = JSON.parse(raw);
-      // Successful parse: this payload becomes the new restore point, so a
-      // corruption introduced by a *later* write still has something good to
-      // fall back to.
+      const hydrated = hydrateProfile(parsed);
+      // Only commit the new restore point once hydrate has actually
+      // succeeded (Fable review, M1) — a payload that parses as valid JSON
+      // but throws inside hydrateProfile must not clobber the last
+      // known-good backup on its way to falling back to it below; writing
+      // `raw` here unconditionally, before hydrate even ran, used to do
+      // exactly that.
       localStorage.setItem(backupKey, raw);
-      return hydrateProfile(parsed);
+      return hydrated;
     } catch {
       const backupRaw = localStorage.getItem(backupKey);
       if (backupRaw) {
         try {
           const parsedBackup = JSON.parse(backupRaw);
+          const hydratedBackup = hydrateProfile(parsedBackup);
           this.restoredFromBackup = true;
-          return hydrateProfile(parsedBackup);
+          return hydratedBackup;
         } catch {
           // The backup is corrupt too — nothing left to recover from.
         }

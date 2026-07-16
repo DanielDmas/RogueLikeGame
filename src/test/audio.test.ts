@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
 import {
   ACT_MOTE_SCALES,
   ACT_PROGRESSIONS,
@@ -189,5 +190,26 @@ describe('audio — hover with sfx disabled (SoundEngine method, no AudioContext
     engine.setSfxEnabled(false);
     expect(() => engine.hover(2)).not.toThrow();
     expect(() => engine.hover()).not.toThrow();
+  });
+});
+
+describe('audio — chord-voice LFO leak fix (Fable review M3, no AudioContext required)', () => {
+  // crossfadeToChord() itself needs a real AudioContext (see the file-level
+  // note above), so this is a source-level check — same convention as the
+  // other Fable-review source-order regression tests this session
+  // (resumableRun.test.ts) — that the fix's actual shape is present: each
+  // voice's detune LFO is tracked in a parallel array and stopped at the
+  // same instant its voice stops, not left running forever after its target
+  // oscillator dies.
+  it('crossfadeToChord tracks LFOs in a parallel array and stops the old ones alongside the old oscillators', () => {
+    const src = readFileSync(new URL('../audio/soundEngine.ts', import.meta.url), 'utf8');
+    const startIdx = src.indexOf('private crossfadeToChord(');
+    const endIdx = src.indexOf('\n  }', startIdx);
+    const body = src.slice(startIdx, endIdx);
+    expect(body, 'crossfadeToChord not found').not.toBe('');
+    expect(body).toMatch(/for \(const o of oldOscs\) o\.stop\(/);
+    expect(body).toMatch(/for \(const lfo of oldLfos\) lfo\.stop\(/);
+    expect(body).toContain('newLfos.push(lfo)');
+    expect(body).toContain('this.chordLfos = newLfos');
   });
 });

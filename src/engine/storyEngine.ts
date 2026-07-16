@@ -11,6 +11,7 @@ import type { ContentPack } from '../packs/types';
 
 export interface RoomRegistry {
   get(id: string): Room;
+  has(id: string): boolean;
   all(): Room[];
 }
 
@@ -39,6 +40,7 @@ export function makeRegistry(rooms: Room[]): RoomRegistry {
       if (!r) throw new Error(`Unknown room: ${id}`);
       return r;
     },
+    has: (id) => map.has(id),
     all: () => [...map.values()],
   };
 }
@@ -133,6 +135,25 @@ export function backfillVisitedForJump(visited: string[], roomId: string, graph:
     for (let i = 0; i < understoryIndex; i++) merged.add(graph.understorySequence[i]);
   }
   return [...merged];
+}
+
+/**
+ * A persisted `RunState` is only safe to resume ("Continue") if every room
+ * id it references actually exists in the *active* pack's registry. Found
+ * live (Fable review, M1): a cross-pack profile import — nothing pack-stamps
+ * an export or rejects a mismatched one on paste — or any future room-id
+ * rename can leave `run.currentRoom`/`visited` pointing at an id the current
+ * registry doesn't recognize. Unguarded, `registry.get(pending)` inside
+ * `runLoop()` throws straight into the recovery overlay, whose only action
+ * is reload → title → the same crash on the very next Continue click — a
+ * player stuck in a loop with no way out. Pure and DOM-free so it's directly
+ * testable; the caller (flow.ts) discards the whole run rather than trying
+ * to repair it (simpler, and never silently teleports a player to a room
+ * they never chose).
+ */
+export function isResumableRun(run: RunState, registry: RoomRegistry): boolean {
+  if (run.currentRoom != null && !registry.has(run.currentRoom)) return false;
+  return run.visited.every((id) => registry.has(id));
 }
 
 /** Marks a room complete and advances act structure. Pure. */

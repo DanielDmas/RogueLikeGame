@@ -4,7 +4,7 @@ import { keepsakesEarnedByFlags } from '../content/keepsakes';
 import { applyEffects, newRun } from './gameState';
 import { shouldShowReflections, shouldShowSocraticAside } from './reflections';
 import { evaluateEpiphanies, isHiddenFromCodex } from './ledger';
-import { backfillVisitedForJump, completeRoom, makeRegistry, offeredDoors, type RoomRegistry } from './storyEngine';
+import { backfillVisitedForJump, completeRoom, isResumableRun, makeRegistry, offeredDoors, type RoomRegistry } from './storyEngine';
 import { oneDoorPool, pickOneDoorRoom } from './oneDoor';
 import { defaultProfile, hydrateProfile, type Profile, type SaveStore } from './saveStore';
 import { SceneDirector } from '../scene/director';
@@ -543,9 +543,18 @@ export class Game {
           this.profile.persona = await showPersona(this.ui, this.profile.persona, this.pack.meta.id, this.pack.guide.name);
           await this.persist();
         }
-        if (action === 'continue' && this.profile.run) {
+        if (action === 'continue' && this.profile.run && isResumableRun(this.profile.run, this.registry)) {
           this.state = this.profile.run;
         } else {
+          if (action === 'continue' && this.profile.run) {
+            // A saved run whose currentRoom/visited no longer resolve in this
+            // pack's registry (cross-pack import, or a future room-id rename)
+            // — see isResumableRun's doc comment. Discard rather than crash
+            // on the next registry.get() inside runLoop(); the player simply
+            // begins a fresh run, same as if Continue had never been offered.
+            this.profile.run = null;
+            await this.persist();
+          }
           // Examined Path (spec 05): offered only on a genuinely fresh run,
           // never on 'continue' — the mode is immutable once a run starts.
           const examined = await showExaminedPathOffer(this.ui, this.profile.settings.examinedPathDefault);

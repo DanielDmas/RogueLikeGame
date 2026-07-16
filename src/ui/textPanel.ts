@@ -165,6 +165,13 @@ export class TextPanel {
       beatEl.textContent = text;
       return;
     }
+    // Fable review, M5: `aria-live="polite"` on this element meant every
+    // ~11ms partial-text mutation below queued its own screen-reader
+    // announcement — dozens of interruptions per beat instead of one.
+    // Removing the attribute for the duration of typing suppresses all of
+    // those; restoring it right as the final full text is set announces
+    // the beat exactly once, when it's actually finished.
+    beatEl.removeAttribute('aria-live');
     beatEl.textContent = '';
     let skipped = false;
     this.skipTyping = () => {
@@ -176,6 +183,7 @@ export class TextPanel {
       await new Promise((r) => setTimeout(r, 11));
     }
     beatEl.textContent = text;
+    beatEl.setAttribute('aria-live', 'polite');
     this.skipTyping = null;
   }
 

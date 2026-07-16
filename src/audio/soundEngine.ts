@@ -110,6 +110,11 @@ export class SoundEngine {
   /** Stable bus all chord-crossfade gain nodes connect through, so the tremolo LFO always applies. */
   private chordBus: GainNode | null = null;
   private chordOscs: OscillatorNode[] = [];
+  /** Each chord voice's detune-drift LFO, parallel to `chordOscs` — must be
+   * stopped alongside its voice in `crossfadeToChord` (see the fix below) or
+   * it keeps running indefinitely, feeding a now-silent oscillator's detune,
+   * a slow node leak over a long session (Fable review, M3). */
+  private chordLfos: OscillatorNode[] = [];
   private musicEnabled = true;
   private sfxEnabled = true;
   private musicVolume = 0.7;
@@ -484,6 +489,7 @@ export class SoundEngine {
     const ctx = this.ensureCtx();
     const t = ctx.currentTime;
     const oldOscs = this.chordOscs;
+    const oldLfos = this.chordLfos;
     const oldGain = this.chordGain!;
     oldGain.gain.cancelScheduledValues(t);
     // 1.2.2: ramp all the way to near-zero before stopping the oscillators —
@@ -494,6 +500,11 @@ export class SoundEngine {
     oldGain.gain.setValueAtTime(oldGain.gain.value, t);
     oldGain.gain.linearRampToValueAtTime(0.0001, t + 5);
     for (const o of oldOscs) o.stop(t + 5.05);
+    // M3: each voice's detune LFO was previously only stopped implicitly
+    // (its target oscillator dying) — the LFO itself kept running forever,
+    // one extra live node per voice per chord cycle. Stop it at the same
+    // instant its voice stops.
+    for (const lfo of oldLfos) lfo.stop(t + 5.05);
 
     const newGain = ctx.createGain();
     newGain.gain.value = 0;
@@ -502,6 +513,7 @@ export class SoundEngine {
     this.chordGain = newGain;
 
     const newOscs: OscillatorNode[] = [];
+    const newLfos: OscillatorNode[] = [];
     chord.forEach((freq, i) => {
       const osc = ctx.createOscillator();
       osc.type = i === 0 ? 'sine' : 'triangle';
@@ -518,8 +530,10 @@ export class SoundEngine {
       osc.connect(voiceGain).connect(newGain);
       osc.start(t);
       newOscs.push(osc);
+      newLfos.push(lfo);
     });
     this.chordOscs = newOscs;
+    this.chordLfos = newLfos;
   }
 
   private blip(freq: number, duration: number, type: OscillatorType, gainPeak: number, delay = 0) {

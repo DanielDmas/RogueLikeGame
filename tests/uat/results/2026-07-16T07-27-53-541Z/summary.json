@@ -1,0 +1,39 @@
+{
+  "timestamp": "2026-07-16T07-27-53-541Z",
+  "total": 5,
+  "passed": 5,
+  "failed": 0,
+  "totalDurationMs": 70605,
+  "results": [
+    {
+      "script": "02-save-reload-continue.mjs",
+      "pass": true,
+      "durationMs": 8888,
+      "timedOut": false
+    },
+    {
+      "script": "10-troll.mjs",
+      "pass": true,
+      "durationMs": 23887,
+      "timedOut": false
+    },
+    {
+      "script": "11-i18n-matrix.mjs",
+      "pass": true,
+      "durationMs": 7843,
+      "timedOut": false
+    },
+    {
+      "script": "15-settings-sweep-anamnesis.mjs",
+      "pass": true,
+      "durationMs": 12604,
+      "timedOut": false
+    },
+    {
+      "script": "29-language-switch-live-both-packs.mjs",
+      "pass": true,
+      "durationMs": 17383,
+      "timedOut": false
+    }
+  ]
+}
