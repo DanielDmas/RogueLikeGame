@@ -1,0 +1,45 @@
+{
+  "timestamp": "2026-07-16T07-51-11-216Z",
+  "total": 6,
+  "passed": 6,
+  "failed": 0,
+  "totalDurationMs": 65011,
+  "results": [
+    {
+      "script": "01-title-onboarding.mjs",
+      "pass": true,
+      "durationMs": 9626,
+      "timedOut": false
+    },
+    {
+      "script": "10-troll.mjs",
+      "pass": true,
+      "durationMs": 23626,
+      "timedOut": false
+    },
+    {
+      "script": "17-anamnesis-act-sweep.mjs",
+      "pass": true,
+      "durationMs": 10044,
+      "timedOut": false
+    },
+    {
+      "script": "18-limerence-act-sweep.mjs",
+      "pass": true,
+      "durationMs": 13284,
+      "timedOut": false
+    },
+    {
+      "script": "02-save-reload-continue.mjs",
+      "pass": true,
+      "durationMs": 6677,
+      "timedOut": false
+    },
+    {
+      "script": "28-vestibule-landing-page.mjs",
+      "pass": true,
+      "durationMs": 1754,
+      "timedOut": false
+    }
+  ]
+}

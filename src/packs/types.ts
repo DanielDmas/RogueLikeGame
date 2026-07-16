@@ -2,9 +2,16 @@
 // One content-agnostic engine, N content packs. A pack is pure data plus a
 // small number of pure functions; the engine (flow/scene/ui/audio) never
 // hardcodes a room id, ending id, or piece of copy — every such reference
-// goes through the active pack. Exactly one pack loads per build
-// (`__PACK__`), so there is never a key-collision or cross-pack leak to
-// guard against at runtime.
+// goes through the active pack. Exactly one pack loads per production build
+// (`main.ts`'s `loadPack()` dynamically imports the pack selected by the
+// build-time `__PACK__` constant, so Rollup tree-shakes the other pack's
+// entire module graph out — verified by grepping a built bundle for the
+// other pack's own strings). That guarantee holds for what ships to a
+// player; it is NOT a claim about the dev server (which serves both packs'
+// modules unbundled, switchable via `?pack=`) or about this codebase's own
+// engine code, which must still never hardcode either pack's ids/vocabulary
+// — unscoped defaults and shared UI-chrome keys are still a real leak class
+// (see `engine/text/keys.ts`'s scoped-key pattern) independent of bundling.
 import type { ActId, Ending, Room, RunState, Axis, Reflection } from '../engine/schema';
 import type { Diorama } from '../scene/dioramas';
 import type { ThemeConfig, ThemeId, MoodType, MoodTint, GuideFigure } from '../scene/themes';

@@ -10,22 +10,42 @@ import { LocalSaveStore } from './engine/localSave';
 import { Game } from './engine/flow';
 import { parseUatFlag } from './engine/uatMode';
 import { setLocale } from './engine/text/resolver';
-import { anamnesisPack } from './packs/anamnesis';
-import { limerencePack } from './packs/limerence';
+import type { ContentPack } from './packs/types';
 import { applyLocaleToDocument } from './ui/locale';
 import { installRecoveryHandlers } from './ui/recovery';
 import { showRestoredFromBackupToast } from './ui/toast';
 import { resumeFullscreenAfterReload } from './ui/fullscreen';
 import { withSharedDisplaySettings } from './engine/sharedDisplaySettings';
 
-// __PACK__ is a build-time define (vite.config.ts, from VITE_PACK) selecting
-// which ContentPack this build boots; a dev-only `?pack=` override is also
-// honored so both packs can be exercised from one `npm run dev` server.
-const requestedPack = import.meta.env.DEV ? (new URLSearchParams(location.search).get('pack') ?? __PACK__) : __PACK__;
-const pack = requestedPack === 'limerence' ? limerencePack : anamnesisPack;
+/** __PACK__ is a build-time define (vite.config.ts, from VITE_PACK) — a
+ * string *literal* substituted before Rollup's tree-shaking pass runs, so
+ * `__PACK__ === 'limerence'` below is a compile-time-constant comparison in
+ * a production build. Dynamic `import()` behind that constant, rather than
+ * both packs' static imports, is what actually makes "exactly one pack
+ * loads per build" true: Rollup dead-code-eliminates the branch (and its
+ * import) that's provably never taken, instead of both packs' full module
+ * graphs (rooms, endings, every language's translations, dioramas, guide
+ * barks — all registered as import-time side effects, which alone would
+ * defeat ordinary tree-shaking) shipping in every build regardless of
+ * which pack the player actually chose. Verified live (Fable review, M4,
+ * then again confirming the fix): before this, grepping a built ANAMNESIS
+ * bundle found LIMERENCE's own Czech guide-word and room ids inside it.
+ * The dev-only `?pack=` override stays a genuine runtime branch — Vite's
+ * dev server serves modules unbundled/on-demand, so there's no tree-shaking
+ * concern there, and both packs need to stay reachable for `npm run dev`
+ * to exercise either one. */
+async function loadPack(): Promise<ContentPack> {
+  if (import.meta.env.DEV) {
+    const override = new URLSearchParams(location.search).get('pack');
+    if (override === 'limerence') return (await import('./packs/limerence')).limerencePack;
+    if (override === 'anamnesis') return (await import('./packs/anamnesis')).anamnesisPack;
+  }
+  return __PACK__ === 'limerence' ? (await import('./packs/limerence')).limerencePack : (await import('./packs/anamnesis')).anamnesisPack;
+}
 
 async function boot() {
   resumeFullscreenAfterReload();
+  const pack = await loadPack();
   pack.registerText();
   const canvas = document.getElementById('scene') as HTMLCanvasElement;
   const ui = document.getElementById('ui') as HTMLElement;

@@ -1,0 +1,9 @@
+{
+  "script": "01-title-onboarding.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 9626,
+  "stdout": "UAT 01 (title + onboarding + auto-About): PASS",
+  "stderr": ""
+}
