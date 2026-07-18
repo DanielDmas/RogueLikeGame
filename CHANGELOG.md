@@ -1,8 +1,34 @@
 # Changelog
 
 One line of history per released version. Full detail for every change
-lives in `UPGRADE_PLAN.md` and git history; this file is the short public
-summary.
+lives in `docs/development/13-master-development-plan.md` (the living dev
+log since 2026-07-13; `UPGRADE_PLAN.md` holds the earlier history) and
+git history; this file is the short public summary.
+
+## Unreleased (accumulated since rc.1; not yet deployed or version-tagged)
+
+- **Full diorama parity:** every room in both games now has its own bespoke
+  diorama (ANAMNESIS 33/33, closing a 12-room gap; LIMERENCE was already
+  34/34), plus dioramas render bigger and closer across both games.
+- **LIMERENCE visual rework (Phase V):** a standardized, reusable
+  environmental fixture kit in the shared engine — the migrating end
+  window, a departures board, locker-band walls, wall sconces, a city
+  skyline — configured per hotel floor as data, so future game packs get
+  the same toolkit; the Top Floor now shares ANAMNESIS's proven dawn
+  gradient shader; light mode lifts the whole 3D scene toward a "morning
+  read" of the same hotel; per-floor accent colors in both UI themes
+  (WCAG-verified); an end-of-act floor-name interlude card; a rare
+  "phone lighting in the distance" ambient pulse; door frames now catch
+  a glow on hover in both games.
+- **Fullscreen stability:** fullscreen now survives every navigation in
+  the app (Vestibule ↔ either game, reloads, run resets), resuming on the
+  first click, keypress, or pointer press; covered by real-browser tests
+  against the production build artifact.
+- Persistent Settings access from the landing page and the in-game HUD;
+  display settings (quality/zoom/resolution) shared between both games.
+- Engine hardening: single-bundle pack loading, save-import validation and
+  backup-write-order fix, a WebAudio LFO leak fix, `documentElement.lang`
+  and aria-live announcement fixes.
 
 ## v1.0.0-rc.1 — 2026-07-13
 

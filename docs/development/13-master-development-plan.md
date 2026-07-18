@@ -297,6 +297,50 @@ Full regression: `tsc` clean, **1002/1002 tests green** (the new `dioramas.test.
 
 ---
 
+# PROCESS & PLAN REVIEW — 2026-07-16, fourth session (notes only, nothing coded)
+
+Owner asked for an assessment of the latest developments and of the plan itself: fill gaps, name the empty spots we missed, and confirm the path forward follows good software practice. Everything below was verified directly against the repo (workflow files, CHANGELOG, package.json, UPGRADE_PLAN, test files, line counts), not recalled from memory. The only files changed this pass are markdown.
+
+## A. Assessment of the day's three coding sessions
+
+The arc was healthy and is worth naming as a pattern to keep: **(1)** a set-dressing pass that over-claimed its own scope in its title → **(2)** an honest audit, prompted by one owner question, that measured the work against the plan's own recorded bar and found it ~1/4 delivered → **(3)** a full Phase V build that met the bar *and* was course-corrected mid-plan by the owner's standardization principle (fixtures as shared, data-configured engine pieces rather than forked per-floor code). Two process wins to repeat: the audit habit of re-reading the original owner ask verbatim before claiming an item closed; and live UAT catching a real paint-timing bug (the invisible interlude) that 1049 green unit tests could not see — the DoD's "live verification, screenshots read" step is earning its cost. The fixture kit also quietly strengthens Tier 4 item 23 (a third content pack): the marginal cost of a new pack's visual identity just dropped substantially, which is exactly the direction the owner's "standardized design across future vestibules" principle points.
+
+## B. The empty spots — real gaps this review found, most important first
+
+**B1. Release, deploy, and changelog governance — the biggest gap, and it is not a code gap.** Verified (with one self-correction during this very review: a first, truncated read of the workflow file suggested the deploy was manual-only — the full trigger block shows `workflow_dispatch` **and** `release: published`, matching README line 131, so deploy-per-release is a deliberate design, not an accident): (a) the design is fine, but **no release has been published since `v1.0.0-rc.1` (2026-07-13)** — so the live GH Pages site predates the diorama-parity passes, both graphics passes, and all of Phase V; the owner may well be looking at a build with none of this week's visual work in it. (b) `CHANGELOG.md`'s newest entry is that same rc.1; roughly ten sessions of user-visible work since have no changelog presence. (c) `package.json` still says `1.0.0-rc.1` — by normal rc discipline an rc stabilizes toward release; this one has instead absorbed multiple feature passes, which quietly voids what "rc" means. The root cause: none of the standing DoD steps says "publish," so verified work piles up unreleased indefinitely. **Recommendation (first next session, no gameplay code):** a release-hygiene pass — finalize the CHANGELOG (an Unreleased section is added in this same pass), decide `1.0.0` vs `rc.2`, bump + tag, gate on one full UAT batch + a fresh dist-web smoke test (B3), then publish the release, which deploys Pages automatically by the existing design. Optionally add a "publish or consciously defer" line to the DoD so this gap can't silently reopen.
+
+**B2. Docs-governance drift.** The repo's own charter (Part 2, above) assigns roles: README = player-facing truth, CHANGELOG = history, UPGRADE_PLAN = append-only dev log. Verified: UPGRADE_PLAN's log effectively stops at 2026-07-13; since then the dev log has de facto lived here in doc 13. That migration was reasonable (this doc is the living plan), but it happened silently, which is how stale-doc bugs start. **Fixed the cheap way this pass:** a redirect note appended to UPGRADE_PLAN pointing future readers here — no history rewritten, no backfill attempted. The charter should be read as amended: doc 13 is now the canonical dev log.
+
+**B3. Specific verification debt (each small, none blocking, all real):**
+- The Phase V plan itself said: *"re-run the P3 stale-paint UAT (theme toggle mid-door-row) since this makes the toggle heavier."* Phase V shipped without doing it. The unit-level `staleThemePaint.test.ts` still passes, but the live re-check with the now-heavier toggle (full scene rebuild) was the stated requirement and remains open.
+- The **full UAT batch** (`run-all.mjs`, auto-discovers all 52 scripts) has not been executed end-to-end since script ~43; scripts 44-52 each passed individually at creation. Batch interactions (shared profile state, port reuse) are unverified. Fold into the B1 release gate.
+- The **production-build smoke test** (script 47 against a fresh `dist-web/`) predates Phase V — the fixture kit/mode param has never been exercised in a real minified build. Same release gate.
+- **R7 persona-whisper test gap** (recorded in the seventeenth-session entry, still open): 3 of 4 ANAMNESIS touches tested, en/cs/fa only, not pack-parameterized; LIMERENCE's 4 touches have zero automated token-survival coverage. Already fully specced above; a ~1-hour item.
+- Item 19's long-deferred verification set (full playthrough sweep, EN/CS/FA Playwright matrix) remains deferred — unchanged status, restated so it isn't mistaken for closed.
+
+**B4. Content gaps confirmed still open (no change in status, consolidated here so the list is one place):** LIMERENCE `audio.roomAccents` is `{}` against the L5 spec's two named accents (engine plumbing exists; this is a small authoring pass, audio not graphics). Tier 1 item 2 (cs/fa translation-quality re-review) remains the largest genuinely open engineering-side item and still must be its own dedicated multi-dispatch pass. T5 (Porter/Usher pattern-barks) remains open writerly work. T1 (real audio files) remains owner-blocked.
+
+**B5. One "gap" that needs a check before being called a gap:** T6 choice-aftermath echoes shipped for ANAMNESIS only (two pairs). LIMERENCE was designed from the start around constellation continuity — its rooms already cross-reference choices via `choseIn` dynamic beats (6 live sites verified in its room files). So LIMERENCE may already have the *effect* T6 was invented to add. The right next step is a short content review of whether those existing cross-references land as "consequence made felt" in play — not reflexively authoring two more pairs. Confirm, don't assume, in either direction.
+
+**B6. Architecture watch-item, not yet actionable:** `flow.ts` is now 1,116 lines (the "acceptable for two packs, split if a third lands" note was written at ~900). Still coherent, still fine — but the fixture kit just made a third pack cheaper, so the split trigger is closer than it was. No pre-emptive refactor recommended; just keep the number in view.
+
+**B7. Minor polish backlog (each optional, none scheduled):** sconce legibility (B-noted in Phase V); the interlude shipped as its minimal version (translated floor name only — the original I3 sketch also imagined a Porter line and a palette bleed; the delta was deliberate scope, and the richer version needs new translated content, so it inherits R1's care if ever done); V4c (per-choice door-row echo) formally dropped; ANAMNESIS deliberately received no fixtures (its bare corridor is authored — re-affirmed, not an oversight).
+
+## C. Best-practices scorecard (honest, brief)
+
+**Doing well:** test discipline (787 → 1049 green across the week, every feature landing with tests, pure-function extraction for testable randomness); accessibility as regression-tested constraint (WCAG math in CI, not a one-time audit); behavior-additive defaults with explicit opt-ins protecting the sibling pack; honest audit trail (the overclaim was caught and corrected *in writing*); one-commit-per-logical-unit with accurate messages. **Needs attention:** release cadence (B1 — the rc absorbing features is the one genuine violation of standard practice found); deploy pipeline manual-by-accident (B1); changelog stale (B1, patched this pass); the dev-log drift (B2, patched); UAT batch not re-run as a batch (B3). Notably, every weak spot is *process around the code*, not the code — the correct priority for the next session is therefore publishing, not building.
+
+## D. The path forward, in order
+
+1. **Release-hygiene session (next):** finalize CHANGELOG → decide `1.0.0` vs `rc.2` → bump + tag → full UAT batch + fresh dist-web smoke as the gate → dispatch Pages deploy → decide deploy-on-push policy. Zero gameplay code.
+2. **Small verification batch:** P3 heavy-toggle live re-run; R7 test pack-parameterization; the T6-LIMERENCE confirm (B5).
+3. **`roomAccents` authoring pass** (small, closes the last L5 spec gap).
+4. **Tier 1 item 2 — cs/fa quality re-review** as its own dedicated multi-dispatch pass (the big one; unchanged standing caution applies).
+5. **T5 pattern-barks** writing-first pass.
+6. Optional polish backlog (B7) opportunistically or never.
+
+---
+
 ## RECOMMENDED ORDER (if/when coding resumes)
 
 Every item that was open as of the 2026-07-14 notes and didn't need new authored content or a dedicated translation pass is now shipped (Tier 2's old items 6–14, the I9 audit, quality-threading, docs banners, item 21's LIMERENCE UI-chrome coverage backfill, and — as of 2026-07-15's thirteenth session — item 5's choice-aftermath echoes and the Fable review's H1/H2/M2/H3/H4/M6 fixes). What's left genuinely does need its own dedicated session, or is small enough to slot in opportunistically:

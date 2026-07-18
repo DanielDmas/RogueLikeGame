@@ -1819,3 +1819,17 @@ implemented this round (owner instruction: plan, don't build yet):**
   infra), or (b) give more rooms their own bespoke diorama entirely
   (expensive, ~1 diorama per room × up to 28 more rooms). Recommend (a)
   as the pragmatic middle ground unless told otherwise.
+
+---
+
+# Dev-log location note (2026-07-16)
+
+This file's role as the append-only development log effectively ended on
+2026-07-13, with the `v1.0.0-rc.1` final-release review. Everything since
+— the diorama-parity passes, the fullscreen-persistence work, the
+graphics/visual-rework sessions (including Phase V's standardized fixture
+kit), and each session's honest found-but-not-fixed notes — is logged in
+**`docs/development/13-master-development-plan.md`**, which is the single
+living plan-and-log document going forward. This note exists so nobody
+reads the entries above as the end of the project's history; nothing above
+this line has been altered.
