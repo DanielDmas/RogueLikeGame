@@ -3,30 +3,26 @@
 // same DIORAMA_Z/DIORAMA_SCALE mechanism but have entirely different
 // content — worth a spot check given how visually distinct LIMERENCE's
 // rooms are. Budget: well under 3 minutes.
-import { chromium } from 'playwright';
-import { existsSync } from 'node:fs';
+//
+// Originally hit its own dedicated `dev:limerence` server on a second port
+// — that architecture is gone since item 13's single-bundle-both-packs fix
+// (2026-07-16); LIMERENCE is reached via `?pack=limerence` on the same
+// shared dev server every other script uses, exactly like script 18/14.
+// Fixed 2026-07-18 to match.
+import { withPage, gotoUat, assert } from './_helpers.mjs';
 import { writeFileSync } from 'node:fs';
 
-const BASE_URL = process.env.LIMERENCE_BASE_URL ?? 'http://localhost:5174';
-const SANDBOX_CHROMIUM_PATH = '/opt/pw-browsers/chromium';
-
-function assert(condition, message) {
-  if (!condition) throw new Error(`UAT assertion failed: ${message}`);
-}
-
-const browser = await chromium.launch({
-  executablePath: existsSync(SANDBOX_CHROMIUM_PATH) ? SANDBOX_CHROMIUM_PATH : undefined,
-});
-try {
-  const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
-  page.setDefaultTimeout(15000);
+await withPage(async (page) => {
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e)));
+  page.on('console', (msg) => {
+    if (msg.type() === 'error') errors.push(msg.text());
+  });
 
-  await page.goto(`${BASE_URL}/?uat=1`);
-  await page.waitForFunction(() => window.__anamnesisUat, { timeout: 10000 });
+  await gotoUat(page, 'pack=limerence&uat=1');
   await page.evaluate(() => window.__anamnesisUat.jump('the-distance'));
-  await page.waitForTimeout(1200);
+  await page.waitForFunction(() => window.__anamnesisUat && window.__anamnesisUat.version, { timeout: 10000 });
+  await page.waitForSelector('.text-panel', { timeout: 10000 });
   await page.keyboard.press('Space');
   await page.waitForTimeout(1000);
   await page.keyboard.press('Space');
@@ -43,6 +39,4 @@ try {
   assert(errors.length === 0, `no console errors expected, got: ${errors.join(' | ')}`);
 
   console.log('UAT 44 (LIMERENCE diorama size screenshot): PASS — screenshot saved to scratchpad');
-} finally {
-  await browser.close();
-}
+});
