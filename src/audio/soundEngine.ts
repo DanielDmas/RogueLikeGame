@@ -94,7 +94,7 @@ export function makeImpulseSamples(sampleRate: number, durationSeconds: number, 
   return data;
 }
 
-export type RoomAccent = 'junction' | 'casino' | 'ship' | null;
+export type RoomAccent = 'junction' | 'casino' | 'ship' | 'colleague-hum' | 'discovery-pulse' | null;
 
 /** Picks a mote frequency from an act's scale. Pure — testable without an AudioContext. */
 export function pickMote(act: ActKey, rng: () => number = Math.random, scales: Record<ActKey, number[]> = ACT_MOTE_SCALES): number {
@@ -133,8 +133,12 @@ export class SoundEngine {
   private reverbSend: GainNode | null = null;
   /** Per-room ambient accent (spec 07 §Q5.4) — at most one active at a time, cleared by `setRoomAccent(null)`. */
   private roomAccent: RoomAccent = null;
-  private accentDrone: { osc: OscillatorNode; gain: GainNode } | null = null;
+  /** `oscs` holds one oscillator for 'junction' or two (closely detuned, for
+   * an audible beat) for LIMERENCE's 'colleague-hum' — both share the one
+   * gain node so start/stop cleanup doesn't need to know which kind it is. */
+  private accentDrone: { oscs: OscillatorNode[]; gain: GainNode } | null = null;
   private accentCreakTimer: ReturnType<typeof setTimeout> | null = null;
+  private accentPulseTimer: ReturnType<typeof setTimeout> | null = null;
   /** Guards against attaching the `visibilitychange` listener twice — `ensureCtx()` can run its setup block only once, but this is the explicit guard against future refactors. */
   private visibilityHandlerAdded = false;
   /** F2: narration bus — independent of music/sfx so a spoken line survives either being muted. */
@@ -321,6 +325,7 @@ export class SoundEngine {
             this.scheduleNextMote();
           }
           if (this.roomAccent === 'ship') this.scheduleNextCreak();
+          if (this.roomAccent === 'discovery-pulse') this.scheduleNextPulse();
         }
       });
     }
@@ -685,9 +690,30 @@ export class SoundEngine {
       gain.gain.setTargetAtTime(0.006, ctx.currentTime, 1.5);
       osc.connect(gain).connect(this.musicGain!);
       osc.start();
-      this.accentDrone = { osc, gain };
+      this.accentDrone = { oscs: [osc], gain };
+    } else if (kind === 'colleague-hum') {
+      // LIMERENCE's the-colleague (spec 09 — "corridor hum"): an
+      // office-fluorescent hum rather than a sub-bass drone. Two closely
+      // detuned tones beating at ~1.5Hz, pitched an octave-plus above
+      // 'junction' so the two packs' accents never read as the same room
+      // in different lighting.
+      const gain = ctx.createGain();
+      gain.gain.value = 0;
+      gain.gain.setTargetAtTime(0.005, ctx.currentTime, 1.5);
+      gain.connect(this.musicGain!);
+      const oscs = [118, 119.5].map((freq) => {
+        const osc = ctx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        osc.connect(gain);
+        osc.start();
+        return osc;
+      });
+      this.accentDrone = { oscs, gain };
     } else if (kind === 'ship') {
       this.scheduleNextCreak();
+    } else if (kind === 'discovery-pulse') {
+      this.scheduleNextPulse();
     }
     // 'casino' has no persistent node of its own — it biases playMote()'s
     // frequency choice (an octave up) for as long as it's the active accent.
@@ -695,15 +721,19 @@ export class SoundEngine {
 
   private clearRoomAccent() {
     if (this.accentDrone) {
-      const { osc, gain } = this.accentDrone;
+      const { oscs, gain } = this.accentDrone;
       const ctx = this.ensureCtx();
       gain.gain.setTargetAtTime(0, ctx.currentTime, 0.3);
-      osc.stop(ctx.currentTime + 1);
+      for (const osc of oscs) osc.stop(ctx.currentTime + 1);
       this.accentDrone = null;
     }
     if (this.accentCreakTimer) {
       clearTimeout(this.accentCreakTimer);
       this.accentCreakTimer = null;
+    }
+    if (this.accentPulseTimer) {
+      clearTimeout(this.accentPulseTimer);
+      this.accentPulseTimer = null;
     }
     this.roomAccent = null;
   }
@@ -735,6 +765,34 @@ export class SoundEngine {
     noise.connect(filter).connect(gain).connect(this.musicGain!);
     noise.start(t);
     noise.stop(t + 0.45);
+  }
+
+  private scheduleNextPulse() {
+    this.accentPulseTimer = setTimeout(() => {
+      this.playPulse();
+      this.scheduleNextPulse();
+    }, jitterSeconds(2.6, 3.4) * 1000);
+  }
+
+  /** LIMERENCE's the-discovery room accent (spec 09 — "heartbeat-adjacent
+   * low pulse"): a soft double-thump (lub-dub) on a low sine, quiet and slow
+   * enough to read as unease rather than a literal monitor beep. */
+  private playPulse() {
+    const ctx = this.ensureCtx();
+    const t = ctx.currentTime;
+    [0, 0.32].forEach((offset, i) => {
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = 48;
+      const gain = ctx.createGain();
+      const peak = i === 0 ? 0.02 : 0.014;
+      gain.gain.setValueAtTime(0, t + offset);
+      gain.gain.linearRampToValueAtTime(peak, t + offset + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.0006, t + offset + 0.5);
+      osc.connect(gain).connect(this.musicGain!);
+      osc.start(t + offset);
+      osc.stop(t + offset + 0.55);
+    });
   }
 }
 

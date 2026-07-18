@@ -213,3 +213,37 @@ describe('audio — chord-voice LFO leak fix (Fable review M3, no AudioContext r
     expect(body).toContain('this.chordLfos = newLfos');
   });
 });
+
+describe('audio — LIMERENCE room accents (L5, no AudioContext required)', () => {
+  // setRoomAccent()/clearRoomAccent() need a real AudioContext (unavailable
+  // in this Node vitest environment — see the file-level note above), so
+  // these are source-level checks, same convention as the LFO-leak test:
+  // confirm the two new accent kinds are actually wired into the dispatch
+  // and cleanup paths, not just declared in the RoomAccent union.
+  const src = readFileSync(new URL('../audio/soundEngine.ts', import.meta.url), 'utf8');
+
+  it("setRoomAccent handles 'colleague-hum' and 'discovery-pulse'", () => {
+    const startIdx = src.indexOf('setRoomAccent(kind: RoomAccent)');
+    const endIdx = src.indexOf('\n  }', startIdx);
+    const body = src.slice(startIdx, endIdx);
+    expect(body).toContain("kind === 'colleague-hum'");
+    expect(body).toContain("kind === 'discovery-pulse'");
+    expect(body).toContain('this.scheduleNextPulse()');
+  });
+
+  it("clearRoomAccent stops every oscillator in a multi-osc drone (colleague-hum's two beating tones) and clears the pulse timer", () => {
+    const startIdx = src.indexOf('private clearRoomAccent()');
+    const endIdx = src.indexOf('\n  }', startIdx);
+    const body = src.slice(startIdx, endIdx);
+    expect(body).toMatch(/for \(const osc of oscs\) osc\.stop\(/);
+    expect(body).toContain('this.accentPulseTimer');
+  });
+
+  it('the visibilitychange resume handler re-arms discovery-pulse the same way it re-arms the ship creak', () => {
+    const startIdx = src.indexOf("document.addEventListener('visibilitychange'");
+    const endIdx = src.indexOf('\n      });', startIdx);
+    const body = src.slice(startIdx, endIdx);
+    expect(body).toContain("this.roomAccent === 'ship'");
+    expect(body).toContain("this.roomAccent === 'discovery-pulse'");
+  });
+});

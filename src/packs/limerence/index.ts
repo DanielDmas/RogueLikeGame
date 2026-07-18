@@ -332,7 +332,14 @@ export const limerencePack: ContentPack = {
   },
 
   audio: {
-    roomAccents: {},
+    // L5 spec (docs/design-limerence/09-milestones-testing.md): the-colleague
+    // gets a fluorescent-office corridor hum, the-discovery a heartbeat-
+    // adjacent low pulse — both distinct from ANAMNESIS's junction/ship/
+    // casino accents (subtle, charter applies).
+    roomAccents: {
+      'the-colleague': 'colleague-hum',
+      'the-discovery': 'discovery-pulse',
+    },
     actProgressions: LIMERENCE_ACT_PROGRESSIONS,
     actMoteScales: LIMERENCE_ACT_MOTE_SCALES,
   },
