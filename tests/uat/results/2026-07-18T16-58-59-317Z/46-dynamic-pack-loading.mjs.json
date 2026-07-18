@@ -1,0 +1,9 @@
+{
+  "script": "46-dynamic-pack-loading.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 5954,
+  "stdout": "UAT 46 (dynamic pack loading via __PACK__/?pack=): PASS",
+  "stderr": ""
+}

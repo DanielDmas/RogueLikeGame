@@ -1,0 +1,9 @@
+{
+  "script": "09-transition-garble.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 30245,
+  "stdout": "frame averages: 20,16,12 | 26,26,29 | 24,24,28 | 23,24,28\nUAT 09 (transition garble check, H3): PASS",
+  "stderr": ""
+}

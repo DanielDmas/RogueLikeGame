@@ -1,0 +1,9 @@
+{
+  "script": "13-reflection-panel-replaces-text.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 110174,
+  "stdout": "UAT 13 (reflection panel replaces outcome text): PASS",
+  "stderr": ""
+}

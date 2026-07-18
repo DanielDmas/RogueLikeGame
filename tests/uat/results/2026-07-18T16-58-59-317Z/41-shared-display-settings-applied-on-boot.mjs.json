@@ -1,0 +1,9 @@
+{
+  "script": "41-shared-display-settings-applied-on-boot.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 6025,
+  "stdout": "UAT 41 (shared display settings applied on boot): PASS",
+  "stderr": ""
+}

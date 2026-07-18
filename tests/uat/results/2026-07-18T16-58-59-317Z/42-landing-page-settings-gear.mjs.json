@@ -1,0 +1,9 @@
+{
+  "script": "42-landing-page-settings-gear.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 1221,
+  "stdout": "UAT 42 (landing page settings gear): PASS",
+  "stderr": ""
+}

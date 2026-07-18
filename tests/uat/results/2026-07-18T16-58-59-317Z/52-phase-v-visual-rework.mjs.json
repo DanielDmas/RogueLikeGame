@@ -1,0 +1,9 @@
+{
+  "script": "52-phase-v-visual-rework.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 37905,
+  "stdout": "UAT 52 (Phase V visual rework): PASS — interlude sightings: [\"Act I — The Ground Floor\"]; screenshots saved to scratchpad",
+  "stderr": ""
+}

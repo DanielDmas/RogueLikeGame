@@ -1,0 +1,9 @@
+{
+  "script": "47-dist-web-deploy-smoke.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 5884,
+  "stdout": "UAT 47 (dist-web deploy artifact smoke test): PASS",
+  "stderr": ""
+}

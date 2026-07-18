@@ -1,0 +1,9 @@
+{
+  "script": "45-hardening-batch-verification.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 17007,
+  "stdout": "UAT 45 (hardening batch: lang, aria-live, resumable-run guard): PASS",
+  "stderr": ""
+}

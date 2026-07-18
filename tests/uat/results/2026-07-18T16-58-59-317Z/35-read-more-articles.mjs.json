@@ -1,0 +1,9 @@
+{
+  "script": "35-read-more-articles.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 80256,
+  "stdout": "EN: Read more button opened the article with real content, keyboard activation worked, Back returned to the field note.\n  DE: article title rendered translated: \"Was uns 17.000 verlorene Brieftaschen über Ehrlichkeit lehrten\"\nUAT 35 (Read more articles): PASS",
+  "stderr": ""
+}

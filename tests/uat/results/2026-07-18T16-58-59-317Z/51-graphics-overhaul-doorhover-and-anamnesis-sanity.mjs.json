@@ -1,0 +1,9 @@
+{
+  "script": "51-graphics-overhaul-doorhover-and-anamnesis-sanity.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 12256,
+  "stdout": "note: no 3D doors on screen after advancing — skipped hover screenshot (not a failure, just timing)\nUAT 51 (door hover + ANAMNESIS sanity): PASS — screenshots saved to scratchpad",
+  "stderr": ""
+}

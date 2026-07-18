@@ -1,0 +1,9 @@
+{
+  "script": "17-anamnesis-act-sweep.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 10390,
+  "stdout": "UAT 17 (ANAMNESIS act sweep): PASS — 5 rooms across acts 0-5, zero errors: [{\"id\":\"waiting-room\",\"act\":0,\"gotAct\":0},{\"id\":\"wallet\",\"act\":1,\"gotAct\":1},{\"id\":\"editor\",\"act\":3,\"gotAct\":3},{\"id\":\"boulder\",\"act\":4,\"gotAct\":4},{\"id\":\"the-archive\",\"act\":4,\"gotAct\":4}]",
+  "stderr": ""
+}

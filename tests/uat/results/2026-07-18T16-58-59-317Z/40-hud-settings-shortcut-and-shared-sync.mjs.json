@@ -1,0 +1,9 @@
+{
+  "script": "40-hud-settings-shortcut-and-shared-sync.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 4578,
+  "stdout": "UAT 40 (HUD settings shortcut + shared sync write): PASS",
+  "stderr": ""
+}

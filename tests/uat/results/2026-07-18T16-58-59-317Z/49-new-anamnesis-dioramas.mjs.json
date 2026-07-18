@@ -1,0 +1,9 @@
+{
+  "script": "49-new-anamnesis-dioramas.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 54517,
+  "stdout": "UAT 49 (12 new ANAMNESIS dioramas): PASS — screenshots saved to scratchpad",
+  "stderr": ""
+}

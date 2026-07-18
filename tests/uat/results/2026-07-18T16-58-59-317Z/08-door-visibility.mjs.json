@@ -1,0 +1,9 @@
+{
+  "script": "08-door-visibility.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 20493,
+  "stdout": "800x1280: 2 door(s), all onScreen\nUAT 08 (door visibility sweep, H2): PASS",
+  "stderr": ""
+}

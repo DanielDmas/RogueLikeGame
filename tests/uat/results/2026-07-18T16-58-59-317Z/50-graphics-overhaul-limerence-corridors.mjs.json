@@ -1,0 +1,9 @@
+{
+  "script": "50-graphics-overhaul-limerence-corridors.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 31846,
+  "stdout": "UAT 50 (graphics overhaul — LIMERENCE corridors, dark+light): PASS — screenshots saved to scratchpad",
+  "stderr": ""
+}

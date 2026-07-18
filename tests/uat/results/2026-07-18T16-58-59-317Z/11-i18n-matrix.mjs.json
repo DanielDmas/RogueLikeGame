@@ -1,0 +1,9 @@
+{
+  "script": "11-i18n-matrix.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 5920,
+  "stdout": "EN=\"a journey through the rooms · every door is a question · the way back is through\" CS=\"cesta všemi místnostmi · každé dveře jsou otázkou · cesta zpět vede skrz\" FA=\"سفری میان اتاق‌ها · هر در یک پرسش است · راه بازگشت از میان آن‌هاست\"\nUAT 11 (i18n matrix): PASS",
+  "stderr": ""
+}

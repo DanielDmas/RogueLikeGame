@@ -1,0 +1,9 @@
+{
+  "script": "36-read-more-articles-codex-and-limerence.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 55980,
+  "stdout": "Codex path: Read more opened the article on top of the field note and Back returned cleanly.\n  LIMERENCE: the-read-receipt article opened with real content and closed cleanly via Back.\nUAT 36 (Read more — Codex + LIMERENCE): PASS",
+  "stderr": ""
+}

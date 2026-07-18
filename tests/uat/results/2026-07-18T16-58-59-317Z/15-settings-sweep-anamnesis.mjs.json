@@ -1,0 +1,9 @@
+{
+  "script": "15-settings-sweep-anamnesis.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 9191,
+  "stdout": "UAT 15 (settings sweep, ANAMNESIS): PASS — reducedMotion + highContrast round-trip through reload, zero errors",
+  "stderr": ""
+}

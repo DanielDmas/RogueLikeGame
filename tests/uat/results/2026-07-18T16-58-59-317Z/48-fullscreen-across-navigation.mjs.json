@@ -1,0 +1,9 @@
+{
+  "script": "48-fullscreen-across-navigation.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 25328,
+  "stdout": "UAT 48 (fullscreen across every navigation scenario): PASS",
+  "stderr": ""
+}

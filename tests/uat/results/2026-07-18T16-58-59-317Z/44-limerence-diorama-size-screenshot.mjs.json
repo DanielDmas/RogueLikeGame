@@ -1,0 +1,9 @@
+{
+  "script": "44-limerence-diorama-size-screenshot.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 8432,
+  "stdout": "UAT 44 (LIMERENCE diorama size screenshot): PASS — screenshot saved to scratchpad",
+  "stderr": ""
+}

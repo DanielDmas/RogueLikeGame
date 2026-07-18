@@ -1,0 +1,9 @@
+{
+  "script": "06-layout-sweep.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 3363,
+  "stdout": "UAT 06 (layout sweep, C3 — Settings @ 800x1280): PASS",
+  "stderr": ""
+}

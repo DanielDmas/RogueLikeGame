@@ -1,0 +1,9 @@
+{
+  "script": "10-troll.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 22844,
+  "stdout": "troll loop: 24 actions, 0 page errors\nUAT 10 (troll test): PASS",
+  "stderr": ""
+}

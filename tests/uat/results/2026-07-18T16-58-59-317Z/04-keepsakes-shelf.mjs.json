@@ -1,0 +1,9 @@
+{
+  "script": "04-keepsakes-shelf.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 60500,
+  "stdout": "UAT 04 (keepsakes + Shelf): PASS",
+  "stderr": ""
+}

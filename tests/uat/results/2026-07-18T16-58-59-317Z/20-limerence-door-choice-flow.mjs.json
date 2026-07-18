@@ -1,0 +1,9 @@
+{
+  "script": "20-limerence-door-choice-flow.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 89584,
+  "stdout": "UAT 20 (LIMERENCE door-choice flow): PASS — prologue door \"\n    \n    \n    \n    \n  1a bell\" -> room \"the-front-desk\" -> choice \"1\"What is this place?\"Ask abou\" -> now \"the-front-desk\", zero errors: true",
+  "stderr": ""
+}

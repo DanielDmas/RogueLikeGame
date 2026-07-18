@@ -1,0 +1,315 @@
+{
+  "timestamp": "2026-07-18T16-58-59-317Z",
+  "total": 51,
+  "passed": 51,
+  "failed": 0,
+  "totalDurationMs": 1642888,
+  "results": [
+    {
+      "script": "01-title-onboarding.mjs",
+      "pass": true,
+      "durationMs": 8068,
+      "timedOut": false
+    },
+    {
+      "script": "02-save-reload-continue.mjs",
+      "pass": true,
+      "durationMs": 6183,
+      "timedOut": false
+    },
+    {
+      "script": "03-examined-path.mjs",
+      "pass": true,
+      "durationMs": 112240,
+      "timedOut": false
+    },
+    {
+      "script": "04-keepsakes-shelf.mjs",
+      "pass": true,
+      "durationMs": 60500,
+      "timedOut": false
+    },
+    {
+      "script": "05-anamnesis.mjs",
+      "pass": true,
+      "durationMs": 114832,
+      "timedOut": false
+    },
+    {
+      "script": "06-layout-sweep.mjs",
+      "pass": true,
+      "durationMs": 3363,
+      "timedOut": false
+    },
+    {
+      "script": "07-scenery-proof.mjs",
+      "pass": true,
+      "durationMs": 5813,
+      "timedOut": false
+    },
+    {
+      "script": "08-door-visibility.mjs",
+      "pass": true,
+      "durationMs": 20493,
+      "timedOut": false
+    },
+    {
+      "script": "09-transition-garble.mjs",
+      "pass": true,
+      "durationMs": 30245,
+      "timedOut": false
+    },
+    {
+      "script": "10-troll.mjs",
+      "pass": true,
+      "durationMs": 22844,
+      "timedOut": false
+    },
+    {
+      "script": "11-i18n-matrix.mjs",
+      "pass": true,
+      "durationMs": 5920,
+      "timedOut": false
+    },
+    {
+      "script": "12-choice-panel-replaces-text.mjs",
+      "pass": true,
+      "durationMs": 73404,
+      "timedOut": false
+    },
+    {
+      "script": "13-reflection-panel-replaces-text.mjs",
+      "pass": true,
+      "durationMs": 110174,
+      "timedOut": false
+    },
+    {
+      "script": "14-limerence-visual-sweep.mjs",
+      "pass": true,
+      "durationMs": 11223,
+      "timedOut": false
+    },
+    {
+      "script": "15-settings-sweep-anamnesis.mjs",
+      "pass": true,
+      "durationMs": 9191,
+      "timedOut": false
+    },
+    {
+      "script": "16-settings-sweep-limerence.mjs",
+      "pass": true,
+      "durationMs": 5530,
+      "timedOut": false
+    },
+    {
+      "script": "17-anamnesis-act-sweep.mjs",
+      "pass": true,
+      "durationMs": 10390,
+      "timedOut": false
+    },
+    {
+      "script": "18-limerence-act-sweep.mjs",
+      "pass": true,
+      "durationMs": 17828,
+      "timedOut": false
+    },
+    {
+      "script": "19-anamnesis-door-choice-flow.mjs",
+      "pass": true,
+      "durationMs": 104048,
+      "timedOut": false
+    },
+    {
+      "script": "20-limerence-door-choice-flow.mjs",
+      "pass": true,
+      "durationMs": 89584,
+      "timedOut": false
+    },
+    {
+      "script": "21-anamnesis-overlays-sweep.mjs",
+      "pass": true,
+      "durationMs": 9268,
+      "timedOut": false
+    },
+    {
+      "script": "22-limerence-overlays-sweep.mjs",
+      "pass": true,
+      "durationMs": 9292,
+      "timedOut": false
+    },
+    {
+      "script": "23-anamnesis-ending-flow.mjs",
+      "pass": true,
+      "durationMs": 39144,
+      "timedOut": false
+    },
+    {
+      "script": "24-limerence-ending-flow.mjs",
+      "pass": true,
+      "durationMs": 38377,
+      "timedOut": false
+    },
+    {
+      "script": "25-keyboard-only-navigation.mjs",
+      "pass": true,
+      "durationMs": 8597,
+      "timedOut": false
+    },
+    {
+      "script": "27-one-door-mode-both-packs.mjs",
+      "pass": true,
+      "durationMs": 43593,
+      "timedOut": false
+    },
+    {
+      "script": "28-vestibule-landing-page.mjs",
+      "pass": true,
+      "durationMs": 1508,
+      "timedOut": false
+    },
+    {
+      "script": "29-language-switch-live-both-packs.mjs",
+      "pass": true,
+      "durationMs": 14369,
+      "timedOut": false
+    },
+    {
+      "script": "30-troll-test-limerence.mjs",
+      "pass": true,
+      "durationMs": 22981,
+      "timedOut": false
+    },
+    {
+      "script": "31-focus-trap-overlay.mjs",
+      "pass": true,
+      "durationMs": 5176,
+      "timedOut": false
+    },
+    {
+      "script": "32-clicking-user-exploration.mjs",
+      "pass": true,
+      "durationMs": 50352,
+      "timedOut": false
+    },
+    {
+      "script": "33-choice-card-visible-after-settle.mjs",
+      "pass": true,
+      "durationMs": 89419,
+      "timedOut": false
+    },
+    {
+      "script": "34-code-review-fixes-verification.mjs",
+      "pass": true,
+      "durationMs": 13617,
+      "timedOut": false
+    },
+    {
+      "script": "35-read-more-articles.mjs",
+      "pass": true,
+      "durationMs": 80256,
+      "timedOut": false
+    },
+    {
+      "script": "36-read-more-articles-codex-and-limerence.mjs",
+      "pass": true,
+      "durationMs": 55980,
+      "timedOut": false
+    },
+    {
+      "script": "37-choice-aftermath-echoes.mjs",
+      "pass": true,
+      "durationMs": 46227,
+      "timedOut": false
+    },
+    {
+      "script": "38-code-review-fixes-h2-h4.mjs",
+      "pass": true,
+      "durationMs": 69101,
+      "timedOut": false
+    },
+    {
+      "script": "39-fullscreen-resume-across-reload.mjs",
+      "pass": true,
+      "durationMs": 6020,
+      "timedOut": false
+    },
+    {
+      "script": "40-hud-settings-shortcut-and-shared-sync.mjs",
+      "pass": true,
+      "durationMs": 4578,
+      "timedOut": false
+    },
+    {
+      "script": "41-shared-display-settings-applied-on-boot.mjs",
+      "pass": true,
+      "durationMs": 6025,
+      "timedOut": false
+    },
+    {
+      "script": "42-landing-page-settings-gear.mjs",
+      "pass": true,
+      "durationMs": 1221,
+      "timedOut": false
+    },
+    {
+      "script": "43-diorama-size-screenshot.mjs",
+      "pass": true,
+      "durationMs": 6785,
+      "timedOut": false
+    },
+    {
+      "script": "44-limerence-diorama-size-screenshot.mjs",
+      "pass": true,
+      "durationMs": 8432,
+      "timedOut": false
+    },
+    {
+      "script": "45-hardening-batch-verification.mjs",
+      "pass": true,
+      "durationMs": 17007,
+      "timedOut": false
+    },
+    {
+      "script": "46-dynamic-pack-loading.mjs",
+      "pass": true,
+      "durationMs": 5954,
+      "timedOut": false
+    },
+    {
+      "script": "47-dist-web-deploy-smoke.mjs",
+      "pass": true,
+      "durationMs": 5884,
+      "timedOut": false
+    },
+    {
+      "script": "48-fullscreen-across-navigation.mjs",
+      "pass": true,
+      "durationMs": 25328,
+      "timedOut": false
+    },
+    {
+      "script": "49-new-anamnesis-dioramas.mjs",
+      "pass": true,
+      "durationMs": 54517,
+      "timedOut": false
+    },
+    {
+      "script": "50-graphics-overhaul-limerence-corridors.mjs",
+      "pass": true,
+      "durationMs": 31846,
+      "timedOut": false
+    },
+    {
+      "script": "51-graphics-overhaul-doorhover-and-anamnesis-sanity.mjs",
+      "pass": true,
+      "durationMs": 12256,
+      "timedOut": false
+    },
+    {
+      "script": "52-phase-v-visual-rework.mjs",
+      "pass": true,
+      "durationMs": 37905,
+      "timedOut": false
+    }
+  ]
+}

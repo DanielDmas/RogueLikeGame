@@ -1,0 +1,9 @@
+{
+  "script": "19-anamnesis-door-choice-flow.mjs",
+  "pass": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 104048,
+  "stdout": "UAT 19 (ANAMNESIS door-choice flow): PASS — prologue door \"\n    \n    \n    \n  1The door yo\" -> room \"waiting-room\" -> choice \"1“Where am I?”Orientation firs\" -> now \"waiting-room\", zero errors: true",
+  "stderr": ""
+}
