@@ -10,13 +10,15 @@ import {
   endingEpitaphKey,
   endingTitleKey,
   epiphanyKey,
+  roomBeatKey,
   roomDoorHintKey,
   roomTeaserKey,
   roomTitleKey,
   usherBarkKey,
 } from '../engine/text/keys';
 import { anamnesisPack } from '../packs/anamnesis';
-import { actIntroText, usherDoorBark } from '../content/usher';
+import { limerencePack } from '../packs/limerence';
+import type { ContentPack } from '../packs/types';
 import { newRun } from '../engine/gameState';
 
 const EPIPHANY_IDS = anamnesisPack.epiphanies.map((e) => e.id);
@@ -103,35 +105,81 @@ describe('i18n — Czech, Farsi, German, and French coverage of navigation/struc
   }
 });
 
-describe('Milestone 5, Phase R7 — persona whisper pass ({name} token survives translation)', () => {
+// Milestone 5, Phase R7 — persona whisper pass ({name}/{blurb} token
+// survives translation). Pack-parameterized and extended to all 5
+// languages (de/fr, 2026-07-16 — the original test covered en/cs/fa only,
+// checked 3 of ANAMNESIS's 4 touches, and had zero coverage of LIMERENCE's
+// own independently-scoped 4). Re-auditing the content this pass found the
+// real touch count is 5 per pack, not 4 (each pack's *hidden* ending has
+// its own {name} final beat in addition to its visible counterpart's) —
+// tested here as found, not as originally documented.
+const R7_LANGS = ['en', 'cs', 'fa', 'de', 'fr'] as const;
+
+const R7_ENDING_TOUCHES: Record<string, { endingId: string; beatIndex: number }[]> = {
+  ANAMNESIS: [
+    { endingId: 'return', beatIndex: 5 },
+    { endingId: 'anamnesis', beatIndex: 6 }, // hidden ending
+  ],
+  LIMERENCE: [
+    { endingId: 'the-morning-after', beatIndex: 5 },
+    { endingId: 'the-pattern', beatIndex: 5 }, // hidden ending
+  ],
+};
+
+const R7_BLURB_ROOM_TOUCH: Record<string, { roomId: string; stage: number; beat: number }> = {
+  ANAMNESIS: { roomId: 'the-archive', stage: 0, beat: 4 },
+  // beat 3, not 4: `the-registry`'s stage has a dynamic (function) beat at
+  // index 2 (`registryExhibitBeat`), shifting the static {blurb} line one
+  // slot later than `the-archive`'s equivalent structure.
+  LIMERENCE: { roomId: 'the-registry', stage: 0, beat: 3 },
+};
+
+describe.each([
+  { pack: anamnesisPack as ContentPack, name: 'ANAMNESIS' },
+  { pack: limerencePack as ContentPack, name: 'LIMERENCE' },
+])('Milestone 5, Phase R7 — persona whisper pass, $name', ({ pack, name }) => {
   afterEach(() => setLocale('en', 'v2'));
 
-  const ALL_LANGS = ['en', 'cs', 'fa'] as const;
-
   it("Act III's intro addresses {name}, in every language", () => {
-    for (const lang of ALL_LANGS) {
+    for (const lang of R7_LANGS) {
       setLocale(lang, 'v2');
-      expect(actIntroText(3), `act 3 intro missing {name} in ${lang}`).toContain('{name}');
+      expect(pack.guide.actIntroText(3), `act 3 intro missing {name} in ${lang}`).toContain('{name}');
     }
   });
 
-  it("the new generic7 Usher bark addresses {name}, in every language", () => {
+  it('the generic7 guide bark addresses {name}, in every language', () => {
     // A RunState with no axis-reactive/one-heart/high-lucidity bark
     // triggered, runsCompleted 0, and visited.length % 8 === 7 selects
-    // exactly the 8th (index 7) generic bark — generic7.
+    // exactly the 8th (index 7) generic bark — generic7 — in both packs'
+    // own dispatch logic.
     const s = { ...newRun(), act: 2 as const, visited: Array(15).fill('room') };
-    for (const lang of ALL_LANGS) {
+    for (const lang of R7_LANGS) {
       setLocale(lang, 'v2');
-      expect(usherDoorBark(s, 0), `generic7 bark missing {name} in ${lang}`).toContain('{name}');
+      expect(pack.guide.doorBark(s, 0), `generic7 bark missing {name} in ${lang}`).toContain('{name}');
     }
   });
 
-  it("the return ending's final beat addresses {name}, in every language", () => {
-    const raw = endings.find((e) => e.id === 'return')!.beats[5] as string;
-    for (const lang of ALL_LANGS) {
+  for (const { endingId, beatIndex } of R7_ENDING_TOUCHES[name]) {
+    it(`the "${endingId}" ending's final beat addresses {name}, in every language`, () => {
+      const raw = pack.endings.find((e) => e.id === endingId)!.beats[beatIndex] as string;
+      for (const lang of R7_LANGS) {
+        setLocale(lang, 'v2');
+        expect(
+          t(endingBeatKey(endingId, beatIndex), raw),
+          `${endingId} beat ${beatIndex} missing {name} in ${lang}`,
+        ).toContain('{name}');
+      }
+    });
+  }
+
+  it("the hook room's {blurb} echo survives translation, in every language", () => {
+    const { roomId, stage, beat } = R7_BLURB_ROOM_TOUCH[name];
+    const room = pack.rooms.find((r) => r.id === roomId)!;
+    const raw = room.stages[stage].beats[beat] as string;
+    for (const lang of R7_LANGS) {
       setLocale(lang, 'v2');
-      expect(t(endingBeatKey('return', 5), raw), `return ending final beat missing {name} in ${lang}`).toContain(
-        '{name}',
+      expect(t(roomBeatKey(roomId, stage, beat), raw), `${roomId} blurb echo missing {blurb} in ${lang}`).toContain(
+        '{blurb}',
       );
     }
   });
