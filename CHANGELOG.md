@@ -5,7 +5,15 @@ lives in `docs/development/13-master-development-plan.md` (the living dev
 log since 2026-07-13; `UPGRADE_PLAN.md` holds the earlier history) and
 git history; this file is the short public summary.
 
-## Unreleased (accumulated since rc.1; not yet deployed or version-tagged)
+## v1.0.0-rc.2 — 2026-07-16
+
+Kept as a release candidate rather than cut straight to `1.0.0`: this
+accumulates several sessions of feature work since rc.1 without an
+intervening owner playtest of the combined result, so the honest label is
+"candidate, ready to be played," not "final." Graduates to `1.0.0` once
+that playtest confirms it. Both games remain content-complete and were
+verified via the full committed UAT suite plus a production-build smoke
+test before this tag.
 
 - **Full diorama parity:** every room in both games now has its own bespoke
   diorama (ANAMNESIS 33/33, closing a 12-room gap; LIMERENCE was already
@@ -29,6 +37,9 @@ git history; this file is the short public summary.
 - Engine hardening: single-bundle pack loading, save-import validation and
   backup-write-order fix, a WebAudio LFO leak fix, `documentElement.lang`
   and aria-live announcement fixes.
+- LIMERENCE's two remaining rooms with a designed audio accent (the-colleague's
+  corridor hum, the-discovery's heartbeat-adjacent low pulse) now have one,
+  closing the last open Milestone-L5 spec gap.
 
 ## v1.0.0-rc.1 — 2026-07-13
 
