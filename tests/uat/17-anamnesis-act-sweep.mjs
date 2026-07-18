@@ -26,7 +26,11 @@ await withPage(async (page) => {
   for (const { id, act } of ROOMS) {
     await page.evaluate((roomId) => window.__anamnesisUat.jump(roomId), id);
     await page.waitForFunction(() => window.__anamnesisUat && window.__anamnesisUat.version, { timeout: 10000 });
-    await page.waitForTimeout(700);
+    // Selector-based wait, not a fixed sleep: a post-reload scene rebuild
+    // (fresh theme/geometry per room) takes a variable amount of time under
+    // sandbox CPU contention, and a flat 700ms proved flaky (failed at a
+    // different room on each run) even with nothing else running.
+    await page.waitForSelector('.text-panel', { timeout: 10000 });
     const state = await page.evaluate(() => window.__anamnesisUat.state());
     assert(state.currentRoom === id, `jump(${id}) should land on ${id}, got ${state.currentRoom}`);
     const hasTextPanel = await page.locator('.text-panel').count();
