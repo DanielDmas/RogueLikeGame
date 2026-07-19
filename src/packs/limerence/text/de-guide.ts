@@ -55,6 +55,8 @@ const bark = (id: string) => usherBarkKey(id, PACK_ID);
 registerAll('v2', 'de', {
   [bark('understory-hint')]:
     'Portier: Hinter dem Tresen ist eine Tür, die nicht auf dem Grundriss steht. Einst war sie es. Nimm sie oder nicht — ein zweites Mal fragt sie nicht.',
+  [bark('first-door')]:
+    'Portier: Nur eine Tür heute Nacht, zum Anfang. Nichts wurde übersprungen — du hast dich gerade erst angemeldet.',
   [bark('gate-single-door')]:
     'Portier: Auf diesem Stück Flur bleibt nur noch eine Tür. Die anderen liegen jetzt hinter dir — geschlossen, oder vorbeigegangen, was seine eigene Art des Schließens ist. Das hier ist einfach die, die noch offensteht.',
   [bark('first-choice-explainer')]:

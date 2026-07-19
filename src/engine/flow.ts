@@ -69,6 +69,17 @@ const PROFILE_ID = 'traveler';
 
 const themeForAct = (act: number): 0 | 1 | 2 | 3 | 4 => (act <= 1 ? (act as 0 | 1) : (act as 2 | 3 | 4));
 
+/** Game-experience review (2026-07-19, `15-game-experience-review.md` §1):
+ * the end-of-act interlude card's own CSS fade-in is 300ms, so any hold
+ * shorter than that clears the card before it ever finishes appearing.
+ * 1500ms gives it a full, readable beat even for longer localized floor
+ * names (Czech/German run longer than English; Farsi is read RTL) — never
+ * scaled by reducedMotion (a text hold is not motion; shortening reading
+ * time under reduced motion would be backwards), only by speedMultiplier
+ * (the existing `?uat=1` fast-test-mode scaling every other deliberate
+ * pacing wait in this file already respects). */
+const INTERLUDE_HOLD_MS = 1500;
+
 export class Game {
   private ui: HTMLElement;
   private veil: HTMLElement;
@@ -648,9 +659,16 @@ export class Game {
       // real, awaited pause (scaled by speedMultiplier, same as every other
       // deliberate-pacing wait in this file) is required for it to actually
       // read as a beat rather than nothing.
-      if (showingInterlude) await new Promise((r) => setTimeout(r, 260 * this.speedMultiplier));
-      this.clearInterlude();
+      if (showingInterlude) await new Promise((r) => setTimeout(r, INTERLUDE_HOLD_MS * this.speedMultiplier));
+      // Game-experience review §1 (2026-07-19): clearInterlude() used to run
+      // *before* this fade-out, so the card never actually rode the veil's
+      // own opacity transition the way the class comment above always
+      // claimed — it just vanished on a still-black screen, then the veil
+      // faded on nothing. Clearing only after fade(false) resolves lets the
+      // (still-`.show`) card's compound opacity fade out together with the
+      // veil, as designed, then resets it for the next transition.
       await this.fade(false);
+      if (showingInterlude) this.clearInterlude();
       const intro = this.pack.guide.actIntroText(this.state.act);
       if (intro && this.state.act > 0) {
         await this.text.playBeats([intro], this.state, { title: this.actNameFor(this.state.act) }, { tokens: this.tokens() });

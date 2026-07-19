@@ -34,3 +34,11 @@ describe('field-note stacking — must render above the codex overlay that can o
     expect(fieldNoteZ).toBeGreaterThan(overlayZ);
   });
 });
+
+describe('end-screen triptych — reduced motion (game-experience review A1, 2026-07-19)', () => {
+  it('.reduced-motion .triptych .line shortens both the animation and its per-line stagger delay', () => {
+    const reduced = rule('.reduced-motion .triptych .line');
+    expect(reduced).toMatch(/animation-duration:\s*0\.2s/);
+    expect(reduced).toMatch(/animation-delay:\s*0s/);
+  });
+});

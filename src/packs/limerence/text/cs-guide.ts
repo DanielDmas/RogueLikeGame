@@ -31,6 +31,8 @@ const bark = (id: string) => usherBarkKey(id, PACK_ID);
 registerAll('v2', 'cs', {
   [bark('understory-hint')]:
     'Vrátný: Za recepcí jsou dveře, které nejsou na plánku patra. Kdysi byly. Vezměte si je, nebo ne — podruhé se už nezeptají.',
+  [bark('first-door')]:
+    'Vrátný: Dnes večer jen jedny dveře, na začátek. Nic jste nepřeskočili — teprve jste se přihlásili k recepci.',
   [bark('gate-single-door')]:
     'Vrátný: Na tomhle úseku chodby zbývají jedny dveře. Ostatní už máte za sebou — zavřené, nebo minuté, což je svým způsobem taky zavření. Tyhle jsou prostě ty, co ještě zůstávají otevřené.',
   [bark('first-choice-explainer')]:

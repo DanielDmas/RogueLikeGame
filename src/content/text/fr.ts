@@ -214,6 +214,7 @@ registerAll('v2', 'fr', {
   [actIntroKey(4)]: 'La brume se dissipe. Au-delà, sans équivoque, le matin. Trois portes restent, puis le seuil. Tout, à partir d’ici, compte double — bien que le Placeur dirait que cela a toujours été le cas. Même si près de la fin, un choix inattentif peut encore coûter un cœur.',
 
   [usherBarkKey('understory-hint')]: 'Le Placeur : Cette deuxième porte ne figure pas sur ma carte. Autrefois, si. Prenez-la ou non ; elle ne se proposera pas deux fois.',
+  [usherBarkKey('first-door')]: 'Le Placeur : Une seule porte, pour commencer. Vous n’avez rien laissé de côté — il n’y avait nulle part ailleurs où être, pas encore.',
   [usherBarkKey('gate-single-door')]: 'Le Placeur : Pour ce passage, une seule porte demeure. Les autres sont déjà derrière vous, choisies ou laissées de côté — ce qui, à sa façon, fut aussi un choix. Celle-ci est simplement le seul chemin encore ouvert.',
   [usherBarkKey('first-choice-explainer')]: 'Le Placeur : Plusieurs portes, et seules certaines seront les vôtres cette fois — le reste demeure fermé, pour l’instant. Chacune dissimule une situation différente, non un score différent. Choisissez celle dont vous êtes vraiment prêt à endurer la question.',
   [usherBarkKey('second-run')]: 'Le Placeur : Vous êtes revenu. Le levier est là où vous l’avez laissé ; ici, nous ne réarrangeons rien — la permanence est le seul luxe que s’accorde cet établissement.',

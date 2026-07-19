@@ -44,6 +44,7 @@ const USHER_BARK_IDS = [
   'generic6',
   'generic7',
   'gate-single-door',
+  'first-door',
   'first-choice-explainer',
   'first-heart-loss',
   'remembered-room',

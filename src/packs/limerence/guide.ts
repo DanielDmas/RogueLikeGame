@@ -28,6 +28,16 @@ export function limerenceDoorBark(s: RunState, runsCompleted: number, doorCount 
     );
   }
 
+  // Game-experience review (2026-07-19, `15-game-experience-review.md` E2):
+  // mirrors ANAMNESIS's content/usher.ts fix — the prologue's threshold is
+  // also doorCount 1, but nothing has been skipped to reach it.
+  if (doorCount === 1 && s.visited.length === 0) {
+    return t(
+      bark('first-door'),
+      'Porter: Only one door tonight, to start. Nothing’s been skipped — you’ve only just checked in.',
+    );
+  }
+
   if (doorCount === 1 && s.visited.length > 0) {
     return t(
       bark('gate-single-door'),

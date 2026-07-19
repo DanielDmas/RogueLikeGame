@@ -3,6 +3,7 @@ import { installFocusTrap } from './focusTrap';
 import { t } from '../engine/text/resolver';
 import { uiKey } from '../engine/text/keys';
 import { shouldTriggerRecovery } from '../engine/recovery';
+import { rememberFullscreenForReload } from './fullscreen';
 
 /** One calm, in-fiction panel shown on an otherwise-unrecoverable failure.
  * The profile is always persisted at the last checkpoint (the whole point
@@ -16,7 +17,15 @@ function showRecoveryOverlay(ui: HTMLElement): void {
   panel.append(body);
   const back = el('button', 'title-btn', t(uiKey('recoveryReturn'), 'Return to the title'));
   back.style.marginTop = '26px';
-  back.addEventListener('click', () => location.reload());
+  // Game-experience review (2026-07-19, `15-game-experience-review.md` E7):
+  // this was the one reload in the app that didn't go through the
+  // fullscreen-preserving path every other reload uses (see flow.ts's own
+  // `reloadPage()`) — recovering from a crash silently kicked the player
+  // out of fullscreen.
+  back.addEventListener('click', () => {
+    rememberFullscreenForReload();
+    location.reload();
+  });
   panel.append(back);
   o.appendChild(panel);
   ui.appendChild(o);

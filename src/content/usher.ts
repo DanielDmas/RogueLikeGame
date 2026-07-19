@@ -15,10 +15,22 @@ export function usherDoorBark(s: RunState, runsCompleted: number, doorCount = 2,
     );
   }
 
+  // Game-experience review (2026-07-19, `15-game-experience-review.md` E2):
+  // the prologue's threshold is also doorCount 1, but nothing has been
+  // "skipped" to get here — it used to fall through to the generic pool's
+  // "Choose a door" line instead, which directly contradicts the door-help
+  // text ("this is the only way forward") shown beside it. A dedicated
+  // first-door line, distinct from gate-single-door's "already behind you"
+  // framing, closes that contradiction.
+  if (doorCount === 1 && s.visited.length === 0) {
+    return t(
+      usherBarkKey('first-door'),
+      'Usher: Only one door, to begin. Nothing has been skipped — there was nowhere else yet for you to be.',
+    );
+  }
+
   // A single remaining door is a gate, not a choice — explain why, rather
-  // than letting it read as an arbitrary shrinking of options. (The very
-  // first door of the run — the prologue's threshold — is also doorCount
-  // 1, but nothing has been "skipped" yet, so it's excluded here.)
+  // than letting it read as an arbitrary shrinking of options.
   if (doorCount === 1 && s.visited.length > 0) {
     return t(
       usherBarkKey('gate-single-door'),

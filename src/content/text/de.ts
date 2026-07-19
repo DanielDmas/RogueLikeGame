@@ -214,6 +214,7 @@ registerAll('v2', 'de', {
   [actIntroKey(4)]: 'Der Nebel lichtet sich. Dahinter, unverkennbar, Morgen. Drei Türen bleiben, und dann die Schwelle. Alles von hier an zählt doppelt — obwohl der Platzanweiser sagen würde, das sei es immer gewesen. Selbst so nah am Ende kann eine unbedachte Entscheidung noch ein Herz kosten.',
 
   [usherBarkKey('understory-hint')]: 'Platzanweiser: Diese zweite Tür steht nicht auf meiner Karte. Einst tat sie es. Nehmen Sie sie oder nicht; ein zweites Mal wird sie nicht angeboten.',
+  [usherBarkKey('first-door')]: 'Platzanweiser: Nur eine Tür, zum Anfang. Sie haben nichts übersprungen — anderswo konnten Sie ohnehin noch nicht sein.',
   [usherBarkKey('gate-single-door')]: 'Platzanweiser: Für diesen Abschnitt bleibt nur eine Tür. Die anderen liegen schon hinter Ihnen, gewählt oder ausgelassen — was auf seine Weise ebenfalls eine Wahl war. Diese hier ist schlicht der einzige noch offene Weg.',
   [usherBarkKey('first-choice-explainer')]: 'Platzanweiser: Mehrere Türen, und nur manche werden diesmal Ihre sein — der Rest bleibt vorerst verschlossen. Jede verbirgt eine andere Situation, nicht einen anderen Punktestand. Wählen Sie die, deren Frage Sie wirklich bereit sind auszuhalten.',
   [usherBarkKey('second-run')]: 'Platzanweiser: Sie sind zurückgekehrt. Der Hebel steht dort, wo Sie ihn zurückließen; hier ordnen wir nichts um — Beständigkeit ist der einzige Luxus, den sich diese Einrichtung erlaubt.',

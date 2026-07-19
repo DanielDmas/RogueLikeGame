@@ -211,6 +211,7 @@ registerAll('v2', 'cs', {
   [actIntroKey(4)]: 'Mlha řídne. Za ní, nezaměnitelně, ráno. Zbývají troje dveře, a pak práh. Vše od teď platí dvojnásob — ačkoli by Uvaděč řekl, že tomu tak vždy bylo. I tak blízko konci vás neopatrná volba může stát srdce.',
 
   [usherBarkKey('understory-hint')]: 'Uvaděč: Tyhle druhé dveře nejsou na mé mapě. Kdysi byly. Vezměte je, nebo ne; podruhé se už nenabídnou.',
+  [usherBarkKey('first-door')]: 'Uvaděč: Jen jedny dveře, na začátek. Nic jste nepřeskočili — jinde jste zatím ani být nemohli.',
   [usherBarkKey('gate-single-door')]: 'Uvaděč: Pro tento úsek zbývají jedny dveře. Ostatní už máte za sebou, vybrané nebo vynechané — což byla svým způsobem také volba. Tyto jsou prostě jediná cesta, která zůstává otevřená.',
   [usherBarkKey('first-choice-explainer')]: 'Uvaděč: Několik dveří, a jen některé budou tentokrát vaše — zbytek zůstává zavřený, prozatím. Každé skrývá jinou situaci, ne jiné skóre. Vyberte ty, jejichž otázku jste ochotni skutečně unést.',
   [usherBarkKey('second-run')]: 'Uvaděč: Vrátili jste se. Páka je tam, kde jste ji nechali; tady nic nepřerovnáváme — stálost je jediný luxus, který si toto zařízení dovolí.',
