@@ -48,6 +48,7 @@ const USHER_BARK_IDS = [
   'first-choice-explainer',
   'first-heart-loss',
   'remembered-room',
+  'resumed-mid-room',
   'examined-act1',
   'examined-act2',
   'examined-act3',

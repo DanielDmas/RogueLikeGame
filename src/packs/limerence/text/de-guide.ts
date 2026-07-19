@@ -119,6 +119,7 @@ registerAll('v2', 'de', {
   [bark('first-heart-loss')]:
     'Portier: Da — ein Maß Vertrauen, ausgegeben. Spür das. Die Rezeption führt nur ein ehrliches Kontobuch, nicht mehr. Dir bleiben noch {hearts}. Kein Countdown bis zum Auschecken; einfach das, was diese Tür gekostet hat.',
   [bark('remembered-room')]: 'Portier: Dieses Zimmer erinnert sich auch an dich.',
+  [bark('resumed-mid-room')]: 'Portier: Aus diesem Zimmer bist du mitten im Gespräch gegangen. Es wartet noch auf dich.',
 });
 
 // ---------- Onboarding advisory / safety copy (spec 10) ----------

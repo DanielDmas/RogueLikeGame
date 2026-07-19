@@ -28,6 +28,7 @@ import {
   limerenceActIntroText,
   LIMERENCE_FIRST_HEART_LOSS_BARK_FALLBACK,
   LIMERENCE_REMEMBERED_ROOM_BARK_FALLBACK,
+  LIMERENCE_RESUMED_MID_ROOM_BARK_FALLBACK,
 } from './guide';
 import { t } from '../../engine/text/resolver';
 import { endingEpitaphKey, axisTriptychKey } from '../../engine/text/keys';
@@ -198,6 +199,7 @@ export const limerencePack: ContentPack = {
     figure: porterFigure,
     firstHeartLossBarkFallback: LIMERENCE_FIRST_HEART_LOSS_BARK_FALLBACK,
     rememberedRoomBarkFallback: LIMERENCE_REMEMBERED_ROOM_BARK_FALLBACK,
+    resumedMidRoomBarkFallback: LIMERENCE_RESUMED_MID_ROOM_BARK_FALLBACK,
   },
 
   skin: {

@@ -97,6 +97,7 @@ export const anamnesisPack: ContentPack = {
     firstHeartLossBarkFallback:
       'Usher: There — a heart, spent. Feel that. It is the facility keeping an honest ledger, nothing more. You have {hearts} left. Not a countdown to failure; simply what that choice cost.',
     rememberedRoomBarkFallback: 'You remember this room.',
+    resumedMidRoomBarkFallback: 'Usher: You left this room mid-thought. It has waited. Go on.',
   },
 
   skin: {

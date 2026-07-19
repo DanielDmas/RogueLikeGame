@@ -120,6 +120,7 @@ registerAll('v2', 'fr', {
   [bark('first-heart-loss')]:
     'Le Portier : Là — un cœur, dépensé. Ressens-le. La réception ne tient qu’un registre honnête, rien de plus. Il t’en reste {hearts}. Ce n’est pas un compte à rebours avant le départ ; simplement ce que cette porte a coûté.',
   [bark('remembered-room')]: 'Le Portier : Cette chambre se souvient de toi aussi.',
+  [bark('resumed-mid-room')]: 'Le Portier : Tu as quitté cette chambre en pleine conversation. Elle t’attend toujours.',
 });
 
 // ---------- Onboarding advisory / safety copy (spec 10) ----------

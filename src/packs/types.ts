@@ -100,9 +100,18 @@ export interface ContentPack {
      * Template string; `{hearts}` is substituted with the count remaining,
      * same token mechanism as every other beat. */
     firstHeartLossBarkFallback: string;
-    /** Shown once, at the top of a room resumed mid-stage after a
-     * quit-and-reload (spec: `RunState.currentStage` mid-room). */
+    /** Shown once, freshly re-entering a room the player already witnessed
+     * in an *earlier run* (`profile.codexUnlocked`) — not the same-run
+     * resume case below; distinct despite the similar name. */
     rememberedRoomBarkFallback: string;
+    /** Game-experience review (2026-07-19, `15-game-experience-review.md`
+     * E1): shown once, only when a quit-and-reload resumes *mid-room*
+     * partway through the current run's own stage sequence
+     * (`RunState.currentStage > 0`) — the one case where the player is
+     * otherwise dropped cold into a scene with no acknowledgement they're
+     * picking a thread back up, since the skipped earlier stages leave no
+     * other trace on screen. */
+    resumedMidRoomBarkFallback: string;
   };
 
   skin: {

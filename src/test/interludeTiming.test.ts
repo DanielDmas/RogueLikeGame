@@ -31,7 +31,7 @@ describe('the end-of-act interlude holds long enough to read, and fades with the
   });
 
   it('clearInterlude() is called after fade(false) resolves in syncTheme, not before', () => {
-    const startIdx = flowSrc.indexOf('private async syncTheme()');
+    const startIdx = flowSrc.indexOf('private async syncTheme(resuming = false)');
     expect(startIdx, 'syncTheme() not found').toBeGreaterThan(-1);
     const endIdx = flowSrc.indexOf('\n  private async runLoop', startIdx);
     const body = flowSrc.slice(startIdx, endIdx);

@@ -105,6 +105,15 @@ export class Game {
    * pitch (spec 07 §Q5.3) for a given door id. */
   private currentDoorSpecs: DoorSpec[] = [];
   private inGame = false;
+  /** Game-experience review (2026-07-19, `15-game-experience-review.md`
+   * E1): set true exactly when `this.state` was just loaded from a saved
+   * `profile.run` (the 'continue' title action, or the UAT `jump()`
+   * autocontinue path — both are a genuine save-then-reload, not a normal
+   * in-session room transition). Consumed once by the very first
+   * `runLoop()` iteration's `syncTheme()`/`enterRoom()` calls, then reset —
+   * every later act transition or room entry in the same session is a
+   * fresh, non-resumed one and must not suppress its own intro/aside. */
+  private resumedFromSave = false;
   /** T9 — "One Door" mode: a single standalone room dealt from the title
    * screen, no run state carried forward. Gates enterRoom's permanent,
    * whole-run-scoped profile side effects (keepsakes, the lifetime
@@ -536,6 +545,7 @@ export class Game {
       sessionStorage.removeItem(this.uatAutocontinueKey);
       this.setSceneTheme(0);
       this.state = this.profile.run;
+      this.resumedFromSave = true;
       this.director.setPaused(false);
       this.inGame = true;
       this.runStartNotes = this.profile.codexUnlocked.length;
@@ -593,6 +603,7 @@ export class Game {
         }
         if (action === 'continue' && this.profile.run && isResumableRun(this.profile.run, this.registry)) {
           this.state = this.profile.run;
+          this.resumedFromSave = true;
         } else {
           if (action === 'continue' && this.profile.run) {
             // A saved run whose currentRoom/visited no longer resolve in this
@@ -641,7 +652,12 @@ export class Game {
     document.body.dataset.act = String(id);
   }
 
-  private async syncTheme() {
+  /** `resuming` (game-experience review E1, 2026-07-19): true only for the
+   * single call that follows a genuine mid-room save resume — suppresses
+   * the act-intro paragraph and Socratic aside (already heard earlier this
+   * same run, before the reload) while keeping the interlude card, which
+   * still earns its keep as a quiet "here's where you are" re-establishment. */
+  private async syncTheme(resuming = false) {
     const theme = themeForAct(this.state.act);
     if (theme !== this.currentTheme) {
       await this.fade(true);
@@ -669,6 +685,7 @@ export class Game {
       // veil, as designed, then resets it for the next transition.
       await this.fade(false);
       if (showingInterlude) this.clearInterlude();
+      if (resuming) return;
       const intro = this.pack.guide.actIntroText(this.state.act);
       if (intro && this.state.act > 0) {
         await this.text.playBeats([intro], this.state, { title: this.actNameFor(this.state.act) }, { tokens: this.tokens() });
@@ -697,12 +714,22 @@ export class Game {
       // resume a run that was saved mid-room
       const pending = this.state.currentRoom;
       if (pending) {
-        await this.syncTheme();
+        // Game-experience review E1 (2026-07-19): only a genuine mid-room
+        // resume (this branch) suppresses the act intro/aside replay — the
+        // between-doors resume case just below is a natural moment to hear
+        // the act's own re-establishment again, right before picking a new
+        // room, so it is deliberately left alone. Consumed once: this
+        // branch runs at most once per resumed run (currentRoom is cleared
+        // the moment the room completes).
+        const resuming = this.resumedFromSave;
+        this.resumedFromSave = false;
+        await this.syncTheme(resuming);
         this.hud.setAct(this.actNameFor(this.state.act));
         this.hud.update(this.state.hearts, this.state.lucidity);
-        await this.enterRoom(this.registry.get(pending));
+        await this.enterRoom(this.registry.get(pending), resuming);
         continue;
       }
+      this.resumedFromSave = false;
 
       const doors = offeredDoors(this.state, this.registry, this.pack.graph);
       if (doors.length === 0) return this.playEnding(this.pack.endingRules.evaluate(this.state));
@@ -755,7 +782,10 @@ export class Game {
     }
   }
 
-  private async enterRoom(room: Room): Promise<void> {
+  /** `resuming` (game-experience review E1, 2026-07-19): true only when
+   * this call follows a genuine mid-room save resume — see the recap bark
+   * below, `syncTheme`'s matching param, and `resumedFromSave`'s comment. */
+  private async enterRoom(room: Room, resuming = false): Promise<void> {
     // The hidden seventh ending's eligibility (spec 03): profile data is only
     // in scope here, so it's recomputed fresh each time the final door is
     // reached — a codex/keepsake milestone hit mid-run counts immediately,
@@ -791,6 +821,20 @@ export class Game {
     if (remembered && startStage === 0) {
       await this.text.playBeats(
         [t(usherBarkKey('remembered-room', this.pack.meta.id), this.pack.guide.rememberedRoomBarkFallback)],
+        this.state,
+        { title, type: room.type, icon },
+        { tokens },
+      );
+    } else if (resuming && startStage > 0) {
+      // Game-experience review E1 (2026-07-19): the one case with no other
+      // on-screen trace that this is a resume — startStage > 0 means the
+      // for-loop below is about to skip straight past every earlier stage
+      // of this room without replaying them (correct: re-running their
+      // beats would re-apply already-applied effects), so without this the
+      // player is otherwise dropped mid-scene with zero acknowledgement
+      // they're picking a thread back up rather than freshly arriving.
+      await this.text.playBeats(
+        [t(usherBarkKey('resumed-mid-room', this.pack.meta.id), this.pack.guide.resumedMidRoomBarkFallback)],
         this.state,
         { title, type: room.type, icon },
         { tokens },

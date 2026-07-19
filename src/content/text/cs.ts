@@ -234,6 +234,7 @@ registerAll('v2', 'cs', {
   [usherBarkKey('generic6')]: 'Uvaděč: Přečtěte si nápovědu, než se rozhodnete. Není to ozdoba — je to jediný poctivý náhled, který dostanete.',
   [usherBarkKey('generic7')]: 'Uvaděč: Dveře už znají vaše jméno, {name}. Zajímá je jen zbytek vás.',
   [usherBarkKey('remembered-room')]: 'Toto místo si pamatujete.',
+  [usherBarkKey('resumed-mid-room')]: 'Uvaděč: Tuto místnost jste opustili uprostřed myšlenky. Počkala. Pokračujte.',
   [usherBarkKey('examined-act1')]: 'Uvaděč: Zvolili byste totéž před svědky? Bylo by to lepší — nebo jen hezčí?',
   [usherBarkKey('examined-act2')]: 'Uvaděč: Když má stroj pravdu, záleží na tom proč?',
   [usherBarkKey('examined-act3')]: 'Uvaděč: Které z vašich dnešních důvodů byly opravdu vaše, a které jen zkoušky nazpaměť?',

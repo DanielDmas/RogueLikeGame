@@ -115,3 +115,6 @@ export const LIMERENCE_FIRST_HEART_LOSS_BARK_FALLBACK =
   'Porter: There — a measure of Trust, spent. Feel that. The desk keeps an honest ledger, nothing more. You have {hearts} left. Not a countdown to checkout; simply what that door cost.';
 
 export const LIMERENCE_REMEMBERED_ROOM_BARK_FALLBACK = 'Porter: This room remembers you too.';
+
+export const LIMERENCE_RESUMED_MID_ROOM_BARK_FALLBACK =
+  "Porter: You stepped away mid-conversation. It's still waiting on you.";

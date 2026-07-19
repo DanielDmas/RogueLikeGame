@@ -109,6 +109,14 @@ describe('guide bark/act-intro text keys are pack-scoped — LIMERENCE deliberat
     expect(limerencePack.guide.firstHeartLossBarkFallback).not.toContain('the facility');
     expect(limerencePack.guide.rememberedRoomBarkFallback).toContain('Porter');
   });
+
+  it('guide.resumedMidRoomBarkFallback (game-experience review E1, 2026-07-19) is pack-specific and voice-correct', () => {
+    expect(limerencePack.guide.resumedMidRoomBarkFallback).not.toEqual(anamnesisPack.guide.resumedMidRoomBarkFallback);
+    expect(anamnesisPack.guide.resumedMidRoomBarkFallback).toContain('Usher');
+    expect(limerencePack.guide.resumedMidRoomBarkFallback).toContain('Porter');
+    expect(limerencePack.guide.resumedMidRoomBarkFallback).not.toContain('Usher');
+    expect(anamnesisPack.guide.resumedMidRoomBarkFallback).not.toContain('Porter');
+  });
 });
 
 /**

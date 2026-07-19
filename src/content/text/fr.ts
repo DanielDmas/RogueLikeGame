@@ -237,6 +237,7 @@ registerAll('v2', 'fr', {
   [usherBarkKey('generic6')]: 'Le Placeur : Lisez l’indice avant de décider. Ce n’est pas un ornement — c’est le seul aperçu honnête que vous obtiendrez.',
   [usherBarkKey('generic7')]: 'Le Placeur : Les portes connaissent déjà votre nom, {name}. Ce qui les intrigue, c’est le reste de vous.',
   [usherBarkKey('remembered-room')]: 'Vous vous souvenez de ce lieu.',
+  [usherBarkKey('resumed-mid-room')]: 'Le Placeur : Vous avez quitté cette pièce en pleine pensée. Elle a attendu. Continuez.',
   [usherBarkKey('examined-act1')]: 'Le Placeur : Feriez-vous le même choix devant témoins ? Cela aurait-il été meilleur — ou simplement plus joli ?',
   [usherBarkKey('examined-act2')]: 'Le Placeur : Quand une machine a raison, la raison pour laquelle elle a raison compte-t-elle ?',
   [usherBarkKey('examined-act3')]: 'Le Placeur : Lesquelles de vos raisons, ce soir, étaient vraiment les vôtres, et lesquelles n’étaient que des leçons récitées ?',

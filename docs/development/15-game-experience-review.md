@@ -111,18 +111,39 @@ Ordered by player impact. E-numbers are the tracking ids for a future
 coding session.
 
 **E1 — mid-room resume replays the whole floor intro, then drops the
-player mid-scene cold.** On reload, `currentTheme` starts at `-1`, so the
-first `syncTheme()` re-runs the interlude, the full act-intro paragraph,
-and (if opted in) the Socratic aside (`flow.ts:633-673`) — even when the
-player is resuming *mid-room*. `enterRoom` then resumes at the saved stage
-(`flow.ts:772,781`) with no recap of the beats already read in that room.
-The two halves compound: a long speech they've already heard, then a scene
-they've half-forgotten with no "where you were." Candidate fix: suppress
-the act intro + aside when resuming into a pending room (the interlude
-alone is arguably *good* re-establishment), and prepend a one-line
-remembered-style recap (room title card already exists) — or resume at the
-stage's first beat with instant-text replay of already-seen beats, which
-`playBeats`' `maxSeen` machinery already supports in-session.
+player mid-scene cold. ✅ FIXED (2026-07-19).** On reload, `currentTheme`
+started at `-1`, so the first `syncTheme()` re-ran the interlude, the full
+act-intro paragraph, and (if opted in) the Socratic aside — even when the
+player was resuming *mid-room*, having already heard all of it earlier the
+same run. `enterRoom` then resumed at the saved stage with no recap of
+what happened before the reload — worse, because every room in both packs
+has exactly one stage, a resume that lands after the room's single choice
+was applied (`currentStage` bumped to 1, `>= room.stages.length`) skipped
+the *entire* remaining stage loop, silently eating the outcome beats and
+dropping the player straight onto the field note.
+
+Fixed: `Game` now tracks a `resumedFromSave` flag, set only when `state`
+is loaded from a saved `profile.run` (the "continue" title action or the
+UAT `jump()` autocontinue path), consumed exactly once by `runLoop`'s
+mid-room (`pending`) branch. `syncTheme(resuming)` keeps the interlude
+(still a good "here's where you are" re-establishment) but returns before
+the act-intro paragraph and Socratic aside when resuming — they were
+already heard before the reload. `enterRoom(room, resuming)` shows a new,
+translated "resumed-mid-room" bark (mutually exclusive with the existing
+cross-run "remembered-room" bark) whenever `resuming && startStage > 0` —
+exactly the window where the stage loop is about to skip straight to the
+field note with no other on-screen trace that this was a resume, not a
+fresh arrival. Between-doors resumes (no pending room) are left alone —
+hearing the act's own re-establishment again right before picking a new
+door is a natural moment, not a redundant one.
+
+New pack-guide field `resumedMidRoomBarkFallback`, translated in both
+packs × cs/de/fa/fr (8 files), voice-checked against cross-pack leaks.
+Covered by `src/test/resumedMidRoom.test.ts` (13 source-shape tests) and
+live-verified with a new committed UAT script,
+`tests/uat/42-mid-room-resume-recap.mjs` — a real jump-into-room →
+click-a-choice → reload → continue repro confirming the Act I intro text
+never reappears and the recap bark shows before the field note.
 
 **E2 — the prologue's single door says "Choose a door. Every one of them
 is yours."** The single-door gate bark is gated on `visited.length > 0`
@@ -245,7 +266,7 @@ separately once its own translation + test work was complete.
 2. ✅ E2 prologue bark predicate (one line), E7 recovery reload (two lines),
    A1 triptych reduced-motion rule (one rule).
 3. ✅ E3 double-corruption notice.
-4. E1 resume experience (intro suppression + recap) — the largest item,
+4. ✅ E1 resume experience (intro suppression + recap) — the largest item,
    worth its own focused pass with UAT coverage of quit/resume.
 5. E4 end-screen options, E5 keepsake visibility — small UI additions,
    translated ×5 languages, so batch them together with R1 care.

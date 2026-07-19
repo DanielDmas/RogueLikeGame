@@ -237,6 +237,7 @@ registerAll('v2', 'de', {
   [usherBarkKey('generic6')]: 'Platzanweiser: Lesen Sie den Hinweis, bevor Sie sich entscheiden. Er ist keine Verzierung — er ist die einzige ehrliche Vorschau, die Sie bekommen.',
   [usherBarkKey('generic7')]: 'Platzanweiser: Die Türen kennen Ihren Namen schon, {name}. Was sie neugierig macht, ist der Rest von Ihnen.',
   [usherBarkKey('remembered-room')]: 'An diesen Ort erinnern Sie sich.',
+  [usherBarkKey('resumed-mid-room')]: 'Platzanweiser: Diesen Raum haben Sie mitten im Gedanken verlassen. Er hat gewartet. Fahren Sie fort.',
   [usherBarkKey('examined-act1')]: 'Platzanweiser: Würden Sie dasselbe vor Zeugen wählen? Wäre das besser gewesen — oder nur hübscher?',
   [usherBarkKey('examined-act2')]: 'Platzanweiser: Wenn eine Maschine recht hat, spielt es dann eine Rolle, warum?',
   [usherBarkKey('examined-act3')]: 'Platzanweiser: Welche Ihrer heutigen Gründe waren wirklich Ihre eigenen, und welche nur auswendig Gelerntes?',

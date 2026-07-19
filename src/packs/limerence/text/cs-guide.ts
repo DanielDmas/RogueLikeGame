@@ -95,6 +95,7 @@ registerAll('v2', 'cs', {
   [bark('first-heart-loss')]:
     'Vrátný: Tady — jedna míra Důvěry, vydaná. Cítíte to. Recepce vede jen poctivou účetní knihu, nic víc. Zbývá vám jich {hearts}. Není to odpočet do odhlášení; je to prostě to, co ty dveře stály.',
   [bark('remembered-room')]: 'Vrátný: Tahle místnost si vás taky pamatuje.',
+  [bark('resumed-mid-room')]: 'Vrátný: Z tohohle pokoje jste odešli uprostřed rozhovoru. Pořád na vás čeká.',
 });
 
 // ---------- Onboarding advisory / safety copy (spec 10) ----------
