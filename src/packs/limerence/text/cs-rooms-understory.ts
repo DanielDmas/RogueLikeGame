@@ -58,7 +58,7 @@ registerAll('v2', 'cs', {
   [roomChoiceTextKey('the-registry', 'disown-it')]: '„To už dneska nezní jako já.“ Nechte kartičku nepodepsanou.',
   [roomChoiceHintKey('the-registry', 'disown-it')]: 'Nechte ten odstup být skutečný, ne jen pohodlný',
   [roomChoiceOutcomeKey('the-registry', 'disown-it', 0)]:
-    'Necháte kartičku přesně tak, jak jste ji našli, a odstoupíte od regálu, tak, jak byste odstoupili od cizince, který si náhodou obléká váš kabát.',
+    'Necháte kartičku přesně tak, jak jste ji našli, a odstoupíte od regálu, tak, jak byste odstoupili od cizince, který má náhodou úplně stejný kabát jako vy.',
   [roomChoiceOutcomeKey('the-registry', 'disown-it', 1)]:
     'Vrátný: „Složka se nehádá. Jen uchovává, co se stalo — ať už ta ruka, co to udělala, pořád odpovídá na vaše jméno, nebo ne.“',
   [roomChoiceTextKey('the-registry', 'refile-unjudged')]: 'Zavřete víko jemně, uprostřed věty, bez komentáře, ať tak, nebo onak.',
@@ -102,13 +102,13 @@ registerAll('v2', 'cs', {
   // outcome 0 is a function beat — registered below via register().
   [roomChoiceOutcomeKey('the-doors-not-opened', 'enter-late', 1)]:
     'Ať se tu mělo stát cokoli, už se to stalo, nebo nestalo, nebo ta otázka prostě vypršela tak, jako neotevřená pošta časem přestane být naléhavá. Je to menší, než jak jste si to vystavěli. Většina nežitých věcí je.',
-  [roomChoiceTextKey('the-doors-not-opened', 'close-it')]: 'Zavřete je doopravdy až doteď. Některé dveře je upřímně lepší nechat dveřmi.',
+  [roomChoiceTextKey('the-doors-not-opened', 'close-it')]: 'Zavřete je doopravdy až do konce. Některé dveře je upřímně lepší nechat dveřmi.',
   [roomChoiceHintKey('the-doors-not-opened', 'close-it')]: 'Respektujte, že už je to minulost',
   [roomChoiceOutcomeKey('the-doors-not-opened', 'close-it', 0)]:
     'Přivřete je, jemně, tak, jak byste zavřeli dveře do místnosti, kde někdo konečně, doopravdy spí.',
   [roomChoiceOutcomeKey('the-doors-not-opened', 'close-it', 1)]:
     'Dá se říct, že správný instinkt. Ne každé neotevřené dveře byly litování čekající na svou chvíli.',
-  [roomChoiceTextKey('the-doors-not-opened', 'ask-why-now')]: '„Proč ses zase otevřely, zrovna teď?“ Zeptejte se přímo těch dveří.',
+  [roomChoiceTextKey('the-doors-not-opened', 'ask-why-now')]: '„Proč jste se zase otevřely, zrovna teď?“ Zeptejte se přímo těch dveří.',
   [roomChoiceHintKey('the-doors-not-opened', 'ask-why-now')]: 'Vyslechněte tu nabídku, ne jen tu místnost',
   [roomChoiceOutcomeKey('the-doors-not-opened', 'ask-why-now', 0)]:
     'Přesně vzato žádná odpověď — dveře, i tady, nejsou od přírody sdílné — ale panty jsou nedávno naolejované. Někdo chtěl, aby se tyhle dveře dnes v noci daly snadno pohnout, konkrétně.',

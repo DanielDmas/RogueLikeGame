@@ -71,7 +71,7 @@ registerAll('v2', 'cs', {
   [roomBeatKey('the-kitchen-table', 0, 4)]:
     'Čtyři budoucnosti sedí u stolu jako hosté, které nikdo nezval. Děti spí nahoře — jejich váha v domě se projevuje jako akustika: každé slovo tady si samo, automaticky, hlídá, jak nahlas si může dovolit znít.',
   [roomBeatKey('the-kitchen-table', 0, 5)]:
-    'Vrátný (jen na okamžik, v zrcadle na chodbě): „Rána na nejvyšším patře jsou jediná část hotelu, do které nemůžu vstoupit. Recepce jen potvrzuje: ten stůl je nosný. Stavte na něm, nebo ho vyklidněte. Unese obojí.“',
+    'Vrátný (jen na okamžik, v zrcadle na chodbě): „Rána na nejvyšším patře jsou jediná část hotelu, do které nemůžu vstoupit. Recepce jen potvrzuje: ten stůl je nosný. Stavte na něm, nebo ho vykliďte. Unese obojí.“',
   [roomChoiceTextKey('the-kitchen-table', 'stay-for-them')]: 'Zůstaňte, kvůli dětem. Řekněte si to nahlas, navzájem.',
   [roomChoiceHintKey('the-kitchen-table', 'stay-for-them')]: 'Pakt, pojmenovaný na rovinu',
   // outcome 0 is a function beat — registered below via register().
@@ -126,7 +126,7 @@ register(roomChoiceOutcomeKey('the-kitchen-table', 'stay-for-them', 0), 'v2', 'c
 register(roomChoiceOutcomeKey('the-kitchen-table', 'say-the-unsayable', 0), 'v2', 'cs', (s: RunState) =>
   hasFlag(s, 'already-gone')
     ? '„Věděl jsem to, a rozhodl jsem se nevědět“ — řečeno jako první, protože to byla pravda jako první. Nejriskantnější dveře v místnosti, otevřené tím, kdo už předtím potichu odešel.'
-    : '„Byl jsem osamělý roky předtím, než se kohokoli kdokoli dotkl“ — řečeno, konečně, nahlas, u tohohle stolu, tomu člověku, o kterém to celou dobu bylo.',
+    : '„Byl jsem osamělý roky předtím, než se kdokoli kohokoli dotkl“ — řečeno, konečně, nahlas, u tohohle stolu, tomu člověku, o kterém to celou dobu bylo.',
 );
 
 // ---------- The Unsent ----------
@@ -144,7 +144,7 @@ registerAll('v2', 'cs', {
   [roomChoiceOutcomeKey('the-unsent', 'to-the-one-you-hurt', 1)]:
     'Druhá verze je náprava bez připojené žádosti. Těžší se píše. Nějak lehčí se posílá.',
   [roomChoiceTextKey('the-unsent', 'to-the-one-who-hurt-you')]: 'Tomu, kdo ublížil vám.',
-  [roomChoiceHintKey('the-unsent', 'to-the-one-who-hurt-you')]: 'Ne odpuštění — propuštění',
+  [roomChoiceHintKey('the-unsent', 'to-the-one-who-hurt-you')]: 'Ne odpuštění — osvobození',
   [roomChoiceOutcomeKey('the-unsent', 'to-the-one-who-hurt-you', 0)]:
     'Ne dopis odpuštění — místnost na tomhle rozlišení pečlivě trvá, a nakonec na něm trváte i vy.',
   [roomChoiceOutcomeKey('the-unsent', 'to-the-one-who-hurt-you', 1)]:
@@ -250,7 +250,7 @@ registerAll('v2', 'cs', {
   [roomBeatKey('the-morning-desk', 1, 0)]:
     'Mřížka — nebo cokoli to bylo, pult, zrcadlo, člověk — se usadí, a dveře haly se rozevřou do světla, které nepatří hotelu.',
   [roomBeatKey('the-morning-desk', 1, 1)]:
-    'Venku je ráno. Doopravdy: někde doprava, někde konvice, něčí obyčejná, obrovská starost, tři kroky odsud.',
+    'Venku je ráno. Doopravdy: někde auta, někde konvice, něčí obyčejná, obrovská starost, tři kroky odsud.',
   [roomBeatKey('the-morning-desk', 1, 2)]:
     'Vrátný: „Konečná. Nebo začátek — záleží, kterým směrem to čtete. Práh vás odvede zpátky, k hluku, k obličejům, k nedokončeným hádkám, ke všemu. Většina hostů si ho vybere. Je to dobré dveře. Dobře se o ně starám.“',
   [roomBeatKey('the-morning-desk', 1, 3)]:
