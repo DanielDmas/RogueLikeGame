@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { easeInOutCubic } from '../scene/director';
 import { usherFigure } from '../scene/themes';
@@ -71,5 +72,28 @@ describe('usherFigure — visibility upgrade (Phase F3) and idle life (Phase F4)
     tick(5);
     const y1 = head.rotation.y;
     expect(y1).not.toBe(y0);
+  });
+});
+
+describe('Usher walk-in truncation (game-experience review A2, 2026-07-19)', () => {
+  // director.ts's approach-walk tween used to run longer than the camera
+  // dolly, so the dolly's `done` callback fired mid-stride and overwrote it
+  // with a walk-home target — the Usher visibly reversed direction for most
+  // of a second before the veil went opaque. director.ts needs a real
+  // WebGL/canvas context to drive the render loop live, so — matching this
+  // repo's convention for such pacing bugs (interludeTiming.test.ts,
+  // recovery.test.ts) — this asserts the fix's shape directly against the
+  // source: the approach walk must never outlast the dolly it's timed
+  // against.
+  const src = readFileSync(new URL('../scene/director.ts', import.meta.url), 'utf8');
+
+  it('USHER_WALK_SECONDS is at or under CAMERA_DOLLY_SECONDS', () => {
+    const walkMatch = src.match(/const USHER_WALK_SECONDS = ([\d.]+);/);
+    const dollyMatch = src.match(/const CAMERA_DOLLY_SECONDS = ([\d.]+);/);
+    expect(walkMatch, 'USHER_WALK_SECONDS constant not found').not.toBeNull();
+    expect(dollyMatch, 'CAMERA_DOLLY_SECONDS constant not found').not.toBeNull();
+    const walkSeconds = Number(walkMatch![1]);
+    const dollySeconds = Number(dollyMatch![1]);
+    expect(walkSeconds).toBeLessThanOrEqual(dollySeconds);
   });
 });

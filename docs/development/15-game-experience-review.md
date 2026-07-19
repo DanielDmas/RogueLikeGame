@@ -94,16 +94,21 @@ LIMERENCE scan effect). Fix: add `.reduced-motion .triptych .line
 { animation-duration: 0.2s; animation-delay: 0s; }` (delays must be
 zeroed too, or the stagger survives).
 
-**A2 — the Usher's walk-in is cut off mid-stride, visibly.** During a
-door crossing, `walkThrough` starts a 2.5s Usher walk toward the chosen
-door (`USHER_WALK_SECONDS`, `director.ts:102,577`) but the camera dolly
-completes at 2.0s (`CAMERA_DOLLY_SECONDS`, `director.ts:104`), and the
-dolly's `done` callback (`director.ts:590-598`) immediately overwrites the
-walk with the walk-home tween from wherever the Usher currently stands —
-at ~80% of its approach. The `fade(true)` that follows takes 720ms, so the
-player watches the guide reverse direction mid-stride for most of a second
-before black. Cosmetic; options: walk duration ≤ dolly duration, or defer
-the walk-home until the veil is opaque.
+**A2 — the Usher's walk-in is cut off mid-stride, visibly. ✅ FIXED
+(2026-07-19).** During a door crossing, `walkThrough` started a 2.5s Usher
+walk toward the chosen door (`USHER_WALK_SECONDS`, `director.ts:102,577`)
+but the camera dolly completed at 2.0s (`CAMERA_DOLLY_SECONDS`,
+`director.ts:104`), and the dolly's `done` callback (`director.ts:590-598`)
+immediately overwrote the walk with the walk-home tween from wherever the
+Usher currently stood — at ~80% of its approach. The `fade(true)` that
+follows takes 720ms, so the player watched the guide reverse direction
+mid-stride for most of a second before black. Fixed by the first of the
+review's own two options: `USHER_WALK_SECONDS` lowered to 1.8s, comfortably
+under the 2.0s dolly, so the approach walk always finishes — with a beat to
+spare — before the dolly's `done` callback ever fires and starts the
+walk-home tween. Guarded by a new source-shape test in
+`usherMotion.test.ts` asserting `USHER_WALK_SECONDS <= CAMERA_DOLLY_SECONDS`
+so the two constants can't silently drift apart again.
 
 ## 3. Player-experience blank spots (a second, independently-run sweep)
 
@@ -270,5 +275,5 @@ separately once its own translation + test work was complete.
    worth its own focused pass with UAT coverage of quit/resume.
 5. E4 end-screen options, E5 keepsake visibility — small UI additions,
    translated ×5 languages, so batch them together with R1 care.
-6. A2 Usher walk truncation — cosmetic, lowest priority.
+6. ✅ A2 Usher walk truncation — cosmetic, lowest priority.
 7. E6 onboarding stack — design decision first (owner), then implement.

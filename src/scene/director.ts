@@ -98,8 +98,13 @@ export function easeInOutCubic(t: number): number {
   return c < 0.5 ? 4 * c * c * c : 1 - Math.pow(-2 * c + 2, 3) / 2;
 }
 
-/** How long the Usher takes to walk to a chosen door (and back) — a deliberate, readable pace, not a teleport. */
-const USHER_WALK_SECONDS = 2.5;
+/** How long the Usher takes to walk to a chosen door (and back) — a deliberate, readable pace, not a teleport.
+ * Game-experience review A2 (2026-07-19, `15-game-experience-review.md`): kept comfortably under
+ * `CAMERA_DOLLY_SECONDS` — the approach walk used to run 2.5s against a 2.0s dolly, so the dolly's
+ * `done` callback fired mid-stride and overwrote the tween with a walk-home target, visibly reversing
+ * the Usher's direction for most of a second before the veil went opaque. Finishing the approach with
+ * a beat to spare lets it actually complete before the walk-home tween ever starts. */
+const USHER_WALK_SECONDS = 1.8;
 /** How long the camera dolly takes to cross a chosen threshold. */
 const CAMERA_DOLLY_SECONDS = 2.0;
 /** Amplitude of the Usher's walking bob, in scene units. */
