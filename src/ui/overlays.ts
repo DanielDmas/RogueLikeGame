@@ -1247,9 +1247,14 @@ export interface EndScreenData {
   /** T4: a few named doors this run never opened, as their one-line
    * teasers — already translated. Empty renders nothing extra. */
   doorsNeverOpened?: string[];
+  /** Game-experience review E5 (2026-07-19): the keepsakes this run was
+   * carried into with (`RunState.keepsakesHeld` at run start), already
+   * resolved to their translated display names — the only place a player
+   * is ever told what they walked in holding. Empty renders nothing extra. */
+  keepsakesCarried?: string[];
 }
 
-export function showEndScreen(ui: HTMLElement, data: EndScreenData): Promise<'again' | 'codex' | 'title'> {
+export function showEndScreen(ui: HTMLElement, data: EndScreenData): Promise<'again' | 'codex' | 'title' | 'settings' | 'vestibule'> {
   return new Promise((resolve) => {
     const o = overlay(ui);
     const inner = el('div', 'codex-panel');
@@ -1306,8 +1311,19 @@ export function showEndScreen(ui: HTMLElement, data: EndScreenData): Promise<'ag
       inner.append(block);
     }
 
+    // Game-experience review E5 (2026-07-19): keepsakes were earned and
+    // carried silently by design — quiet is right, but "invisible" was not
+    // the same thing. This is the one place a player learns what they
+    // walked in holding.
+    if (data.keepsakesCarried && data.keepsakesCarried.length > 0) {
+      const block = el('div', 'morning-report-block');
+      block.append(el('h4', undefined, t(uiKey('keepsakesCarriedHeader'), 'you carried')));
+      for (const line of data.keepsakesCarried) block.append(el('div', 'morning-report-line', line));
+      inner.append(block);
+    }
+
     const menu = el('div', 'title-menu');
-    const mk = (label: string, action: 'again' | 'codex' | 'title', small = false) => {
+    const mk = (label: string, action: 'again' | 'codex' | 'title' | 'settings' | 'vestibule', small = false) => {
       const b = el('button', `title-btn${small ? ' small' : ''}`, label);
       b.addEventListener('click', () => {
         o.remove();
@@ -1317,6 +1333,11 @@ export function showEndScreen(ui: HTMLElement, data: EndScreenData): Promise<'ag
     };
     mk(t(uiKey('walkAgain'), 'Walk again — the rooms rearrange for no one, but you have changed'), 'again');
     mk(t(uiKey('fieldNotes'), 'Field Notes'), 'codex', true);
+    // Game-experience review E4 (2026-07-19): Settings and Vestibule were
+    // both natural post-run desires (adjust display before the next run;
+    // switch games) that the end screen used to bounce through Title for.
+    mk(t(uiKey('settings'), 'Settings'), 'settings', true);
+    if (!import.meta.env.DEV) mk(t(uiKey('vestibuleButton'), 'The Vestibule — choose a game'), 'vestibule', true);
     mk(t(uiKey('title'), 'Title'), 'title', true);
     inner.append(menu);
     o.appendChild(inner);

@@ -48,6 +48,17 @@ export function showProfileResetToast(ui: HTMLElement, reducedMotion = false, sp
   showToast(ui, text, reducedMotion, speedMultiplier, 4200);
 }
 
+/** Game-experience review (2026-07-19, `15-game-experience-review.md` E5):
+ * shown once, right after a keepsake-spending choice resolves — the only
+ * other in-run trace was the ✧ mark's hover tooltip on the choice card
+ * itself, which the player has just clicked past and can no longer see, so
+ * nothing ever confirmed what spending it actually did. `name` is the
+ * keepsake's already-resolved, already-translated display name. */
+export function showKeepsakeSpentToast(ui: HTMLElement, name: string, reducedMotion = false, speedMultiplier = 1): void {
+  const text = `✧ ${t(uiKey('keepsakeSpentToast'), 'Spent')}: ${name}`;
+  showToast(ui, text, reducedMotion, speedMultiplier, 2200);
+}
+
 /** 6.2: shown when a save write itself fails (e.g. `QuotaExceededError` in a
  * full/private-browsing storage quota) — so the failure is visible instead of
  * silently poisoning the persist chain. Held as long as the restore notice

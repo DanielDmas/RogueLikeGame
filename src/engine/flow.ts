@@ -15,7 +15,7 @@ import { TextPanel } from '../ui/textPanel';
 import { ChoicePanel } from '../ui/choices';
 import { ReflectionPanel } from '../ui/reflection';
 import { showFieldNote } from '../ui/fieldNote';
-import { showSavedToast, showSaveFailedToast } from '../ui/toast';
+import { showSavedToast, showSaveFailedToast, showKeepsakeSpentToast } from '../ui/toast';
 import {
   showAbout,
   showCredits,
@@ -58,6 +58,7 @@ import {
   usherBarkKey,
   actNameKey,
   ledgerLastMessageKey,
+  keepsakeKey,
 } from './text/keys';
 import { applyLocaleToDocument } from '../ui/locale';
 import { isFullscreen, rememberFullscreenForReload, shouldOpenPauseOnEscape, toggleFullscreen } from '../ui/fullscreen';
@@ -904,8 +905,15 @@ export class Game {
         for (const keepsakeId of keepsakesEarnedByFlags(newFlags, this.pack.keepsakeTriggers)) {
           if (!this.profile.keepsakes.includes(keepsakeId)) this.profile.keepsakes.push(keepsakeId);
         }
-        if (choice.keepsakeId && !this.profile.keepsakeChoicesTaken.includes(choice.id)) {
-          this.profile.keepsakeChoicesTaken.push(choice.id);
+        if (choice.keepsakeId) {
+          if (!this.profile.keepsakeChoicesTaken.includes(choice.id)) this.profile.keepsakeChoicesTaken.push(choice.id);
+          // Game-experience review E5 (2026-07-19): the ✧ mark's hover
+          // tooltip was the only in-run signal a keepsake had been spent —
+          // and the player has just clicked past the card that showed it,
+          // so nothing confirmed what actually happened. A quiet toast,
+          // same pattern as the save/restore notices.
+          const def = this.pack.keepsakes.find((k) => k.id === choice.keepsakeId);
+          if (def) showKeepsakeSpentToast(this.ui, t(keepsakeKey(def.id, 'name'), def.name), this.profile.settings.reducedMotion);
         }
       }
       this.state.transcript.push({
@@ -1141,6 +1149,14 @@ export class Game {
       .slice(0, 3)
       .map((r) => t(roomTeaserKey(r.id), r.teaser));
 
+    // Game-experience review E5 (2026-07-19): the keepsakes this run began
+    // with (RunState.keepsakesHeld, stamped at newRun() from the profile
+    // and never mutated mid-run — see keepsakesFromProfile's own comment).
+    const keepsakesCarried = (this.state.keepsakesHeld ?? [])
+      .map((id) => this.pack.keepsakes.find((k) => k.id === id))
+      .filter((def): def is (typeof this.pack.keepsakes)[number] => Boolean(def))
+      .map((def) => t(keepsakeKey(def.id, 'name'), def.name));
+
     for (;;) {
       const action = await showEndScreen(this.ui, {
         ending,
@@ -1153,10 +1169,27 @@ export class Game {
         epiphanies: this.pack.epiphanies,
         pivotalChoices,
         doorsNeverOpened,
+        keepsakesCarried,
       });
       if (action === 'codex') {
         await showCodex(this.ui, this.profile, this.pack);
         continue;
+      }
+      // Game-experience review E4 (2026-07-19): Settings and Vestibule were
+      // both natural post-run desires the end screen used to bounce
+      // through Title for — mirrors openPause()'s own settings/vestibule
+      // handling.
+      if (action === 'settings') {
+        this.profile.settings = await showSettings(this.ui, this.profile.settings, this.settingsActions());
+        this.applySettings();
+        writeSharedDisplaySettings(this.profile.settings);
+        await this.persist(true);
+        continue;
+      }
+      if (action === 'vestibule') {
+        await this.persist();
+        this.navigateToVestibule();
+        return;
       }
       if (action === 'again') {
         // "Walk again" is a genuinely fresh run exactly like start()'s 'new'

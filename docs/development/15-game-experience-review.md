@@ -174,20 +174,38 @@ in `saveIntegrity.test.ts` (both-corrupt, primary-corrupt-no-backup,
 fresh-boot-not-flagged, clean-load-not-flagged, flag-clears-on-next-clean-
 load).
 
-**E4 — the end screen offers only Walk again / Field Notes / Title**
-(`overlays.ts:1318-1320`). No Settings, no Register/Ledger, no Vestibule
-switch — all natural post-run desires, all currently a bounce through
-Title. Minimum worthwhile addition: Settings and Vestibule.
+**E4 — the end screen offers only Walk again / Field Notes / Title. ✅
+FIXED (2026-07-19).** No Settings, no Register/Ledger, no Vestibule
+switch — all natural post-run desires, all previously a bounce through
+Title. Fixed with the minimum worthwhile addition the finding itself
+proposed: `showEndScreen`'s action set grew `'settings' | 'vestibule'`
+(mirroring `openPause()`'s own handling exactly — Settings reshows the end
+screen afterward via `continue`, Vestibule persists and navigates away,
+both reusing the existing `uiKey('settings')`/`uiKey('vestibuleButton')`
+strings already translated ×5 languages elsewhere). Vestibule stays
+dev-gated (`!import.meta.env.DEV`), same as every other Vestibule button
+in the app. Live-verified: `tests/uat/44-end-screen-settings-vestibule.mjs`
+reaches a real end screen, opens Settings from it, and confirms closing
+Settings returns to the same end screen rather than losing it.
 
-**E5 — keepsakes are invisible as a held resource.** Earned silently by
-design (`flow.ts:838-844`), carried only into the next run
-(`flow.ts:261-263`), and the only in-run surface is the `✧` mark on a
-choice card at the moment of spending (`choices.ts:82-89`) — nothing ever
-tells the player they're *carrying* one, and nothing confirms what
-spending it did. The Shelf lists earned keepsakes but not "with you this
-run" (`overlays.ts:980-997`). Charter-compatible fixes: a quiet line in
-the run-start (or Morning Report) surface — "you carry: the ticket stub" —
-and a one-line outcome acknowledgement after a keepsake choice resolves.
+**E5 — keepsakes are invisible as a held resource. ✅ FIXED
+(2026-07-19).** Earned silently by design (`flow.ts:838-844`), carried
+only into the next run (`flow.ts:261-263`), and the only in-run surface
+was the `✧` mark on a choice card at the moment of spending
+(`choices.ts:82-89`) — nothing ever told the player they were *carrying*
+one, and nothing confirmed what spending it did. Fixed with both of the
+finding's own Charter-compatible suggestions: (1) the end screen's
+Morning Report block now lists "you carried" — the keepsakes
+`RunState.keepsakesHeld` was stamped with at run start, resolved to their
+translated display names; (2) a new quiet `showKeepsakeSpentToast()`
+("✧ Spent: {name}") fires the instant a keepsake-spending choice resolves,
+the same toast pattern already used for save/restore notices. New
+`uiKey('keepsakesCarriedHeader')`/`uiKey('keepsakeSpentToast')` strings,
+translated ×4 languages with register matched to the existing
+`keepsakeChoiceTooltip` neighbor. Live-verified: `tests/uat/
+43-keepsake-spent-toast.mjs` (seeds a keepsake, spends it, reads the real
+toast text) and the "you carried" half of `44-end-screen-settings-
+vestibule.mjs`.
 
 **E6 — three modal panels stack before a first-time player's first beat**
 (About → Persona → Examined Path, `flow.ts:574-601`), and the Examined
@@ -273,7 +291,7 @@ separately once its own translation + test work was complete.
 3. ✅ E3 double-corruption notice.
 4. ✅ E1 resume experience (intro suppression + recap) — the largest item,
    worth its own focused pass with UAT coverage of quit/resume.
-5. E4 end-screen options, E5 keepsake visibility — small UI additions,
+5. ✅ E4 end-screen options, E5 keepsake visibility — small UI additions,
    translated ×5 languages, so batch them together with R1 care.
 6. ✅ A2 Usher walk truncation — cosmetic, lowest priority.
 7. E6 onboarding stack — design decision first (owner), then implement.
