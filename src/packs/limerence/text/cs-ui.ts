@@ -31,7 +31,7 @@ registerAll('v2', 'cs', {
   [heartsTooltipKey('limerence')]:
     'Vaše Důvěra — vaše schopnost ji ještě někomu dát. Několik obzvlášť nákladných voleb ji stojí přímo jednu, stejně jako když vaše Jasnost zcela dojde. Ztráta všech tří není obrazovka prohry — je to konec.',
   [heartsAriaLabelKey('limerence')]: 'Důvěra',
-  [lucidityTooltipKey('limerence')]: 'Jasnost — upřímnost, s jakou se díváte sami na sebe.',
+  [lucidityTooltipKey('limerence')]: 'Jasnost — jak upřímně jste ochotni se dívat sami na sebe.',
   [personaAboutLabelKey('limerence')]: 'O vás (nepovinné — nikomu se to neukáže, jen to procítí Vrátný)',
   [personaSubKey('limerence')]:
     'Čistě pro potřeby Vrátného — nic to nemění na pokojích, jen na tom, jak k vám promlouvají.',

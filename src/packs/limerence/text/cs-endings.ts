@@ -110,7 +110,7 @@ registerAll('v2', 'cs', {
   [endingBeatKey('the-porter', 0)]:
     'Předání proběhne potichu, během toho, co se zdá jako jedna dlouhá noc a nakonec se ukáže být podstatně delší.',
   [endingBeatKey('the-porter', 1)]:
-    'Naučíte se povahy křídla — které dveře v zimě vzpříčí, která patra jsou chladnější, než přiznává termostat, kteří hosté potřebují ticho a kteří nechanou rozsvícenou lampičku na stole.',
+    'Naučíte se povahy křídla — které dveře se v zimě vzpříčí, která patra jsou chladnější, než přiznává termostat, kteří hosté potřebují ticho a kteří potřebují nechat lampičku na stole rozsvícenou.',
   [endingBeatKey('the-porter', 2)]:
     'Disciplína, jakmile ji pochopíte, se snadno vysloví a těžko praktikuje: smíte rozsvítit chodbu. Nikdy nesmíte pojmenovat dveře. Každý host si musí sám najít cestu k tomu, co je za nimi.',
   [endingBeatKey('the-porter', 3)]:

@@ -20,7 +20,7 @@ registerAll('v2', 'cs', {
   [epiphanyKey('doors-you-avoid')]: 'Každou nápovědu nad dveřmi jste si přečetli dvakrát. Už dávno víte, kterým dveřím se vyhýbáte.',
   [epiphanyKey('apologizes-with-logistics')]: 'Omlouváte se logistikou.',
   [epiphanyKey('sentence-never-said')]:
-    'Nikdo v tomhle hotelu vás nikdy neslyšel říct tu větu, kterou jste nechali říct za sebe místnost.',
+    'Nikdo v tomhle hotelu vás nikdy neslyšel říct tu větu, kterou jste za sebe nechali říct místnost.',
   [epiphanyKey('walked-away-once')]: 'Jednou jste odešli. Je to ve spisu. Přečtěte si to, až bude chodba dlouhá.',
   [epiphanyKey('legible-not-finished')]: 'Váš rukopis je čitelný. To není totéž jako dokončený.',
 });
