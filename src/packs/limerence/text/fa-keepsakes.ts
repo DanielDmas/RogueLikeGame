@@ -10,7 +10,7 @@ registerAll('v2', 'fa', {
   [keepsakeKey('the-cheap-ring', 'name')]: 'حلقه‌ی ارزان',
   [keepsakeKey('the-cheap-ring', 'origin')]: 'برنده‌شده در یک مهمانی، در ازای سی ثانیه مسخره‌شدن',
   [keepsakeKey('the-unsent-letter', 'name')]: 'نامه‌ی نفرستاده',
-  [keepsakeKey('the-unsent-letter', 'origin')]: 'اعترافی که تنها با خودش حمل شد، هیچ‌وقت فرستاده نشد، هیچ‌وقت نرسید',
+  [keepsakeKey('the-unsent-letter', 'origin')]: 'اعترافی که به‌تنهایی حمل شد، هیچ‌وقت فرستاده نشد، هیچ‌وقت نرسید',
   [keepsakeKey('the-keycard', 'name')]: 'کلیدکارت',
   [keepsakeKey('the-keycard', 'origin')]: 'اتاقِ هتلی که در پایانِ یک کنفرانس بازش نکردید',
   [keepsakeKey('the-sim', 'name')]: 'سیم‌کارت',
