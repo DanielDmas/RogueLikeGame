@@ -108,6 +108,8 @@ describe('backup + restore-on-corruption (Milestone 5, Phase R §R8)', () => {
 
     expect(profile.runsCompleted).toBe(7);
     expect(store.wasRestoredFromBackup()).toBe(true);
+    // Recovery worked — this is not the silent-wipe path (E3).
+    expect(store.wasReset()).toBe(false);
   });
 
   it('falls back to defaults, quietly, when both the primary and the backup are corrupt', async () => {
@@ -133,6 +135,52 @@ describe('backup + restore-on-corruption (Milestone 5, Phase R §R8)', () => {
     const profile = await store.load(PROFILE_ID);
     expect(profile).toEqual(defaultProfile());
     expect(store.wasRestoredFromBackup()).toBe(false);
+  });
+});
+
+describe('double-corruption reset signal (game-experience review E3, 2026-07-19)', () => {
+  it('sets wasReset() when both the primary save and its backup are corrupt', async () => {
+    storage.setItem(KEY, '{not json at all');
+    storage.setItem(BACKUP_KEY, '{also not json');
+
+    const store = new LocalSaveStore();
+    await store.load(PROFILE_ID);
+
+    expect(store.wasReset()).toBe(true);
+  });
+
+  it('sets wasReset() when the primary save is corrupt and there is no backup at all', async () => {
+    storage.setItem(KEY, '{not json at all');
+
+    const store = new LocalSaveStore();
+    await store.load(PROFILE_ID);
+
+    expect(store.wasReset()).toBe(true);
+  });
+
+  it('does not set wasReset() on a brand-new profile with no save present', async () => {
+    const store = new LocalSaveStore();
+    await store.load(PROFILE_ID);
+    expect(store.wasReset()).toBe(false);
+  });
+
+  it('does not set wasReset() when the primary payload loads cleanly', async () => {
+    storage.setItem(KEY, JSON.stringify(defaultProfile()));
+    const store = new LocalSaveStore();
+    await store.load(PROFILE_ID);
+    expect(store.wasReset()).toBe(false);
+  });
+
+  it('a fresh load() clears a previous wasReset() flag', async () => {
+    storage.setItem(KEY, '{not json at all');
+    const store = new LocalSaveStore();
+    await store.load(PROFILE_ID);
+    expect(store.wasReset()).toBe(true);
+
+    storage.setItem(KEY, JSON.stringify(defaultProfile()));
+    storage.removeItem(BACKUP_KEY);
+    await store.load(PROFILE_ID);
+    expect(store.wasReset()).toBe(false);
   });
 });
 

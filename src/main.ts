@@ -13,7 +13,7 @@ import { setLocale } from './engine/text/resolver';
 import type { ContentPack } from './packs/types';
 import { applyLocaleToDocument } from './ui/locale';
 import { installRecoveryHandlers } from './ui/recovery';
-import { showRestoredFromBackupToast } from './ui/toast';
+import { showRestoredFromBackupToast, showProfileResetToast } from './ui/toast';
 import { resumeFullscreenAfterReload } from './ui/fullscreen';
 import { withSharedDisplaySettings } from './engine/sharedDisplaySettings';
 
@@ -59,6 +59,7 @@ async function boot() {
   setLocale(profile.settings.language, profile.settings.textVersion);
   applyLocaleToDocument(profile.settings.language);
   if (store.wasRestoredFromBackup()) showRestoredFromBackupToast(ui, profile.settings.reducedMotion);
+  else if (store.wasReset()) showProfileResetToast(ui, profile.settings.reducedMotion);
   const uat = parseUatFlag(location.search);
   const game = new Game(canvas, ui, profile, store, pack, uat);
   await game.start();

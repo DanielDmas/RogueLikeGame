@@ -132,13 +132,21 @@ correctly says "this is the only way forward" (`choices.ts:152`). The
 game's first interactive moment contradicts itself. One-line predicate
 fix.
 
-**E3 — a doubly-corrupt save silently wipes progress.** If both the
-primary save and its `:backup` fail to parse, `localSave.ts:33-45` returns
-`defaultProfile()` with no signal; the restored-from-backup toast only
-covers the single-corruption path (`main.ts:61`). A returning player sees
-a blank "Begin" title and zero notes with no explanation. Fix: a
-dedicated "your save could not be read" notice on the double-failure path
-(the recovery-overlay pattern already exists for crashes).
+**E3 — a doubly-corrupt save silently wipes progress. ✅ FIXED
+(2026-07-19).** If both the primary save and its `:backup` fail to parse,
+`localSave.ts:33-45` returns `defaultProfile()` with no signal; the
+restored-from-backup toast only covers the single-corruption path
+(`main.ts:61`). A returning player saw a blank "Begin" title and zero
+notes with no explanation. Fixed: `LocalSaveStore` now tracks a
+`wasReset()` flag, set only on the true double-failure fallback path (not
+on first-ever boot, not on a successful backup restore); `main.ts` shows
+a dedicated `showProfileResetToast()` ("Your save could not be read, even
+from its backup, and had to be reset...") when it fires, translated in
+all 4 languages (cs/de/fa/fr) as pack-neutral UI chrome alongside the
+existing `restoredFromBackup`/`saveFailed` keys. Covered by 5 new tests
+in `saveIntegrity.test.ts` (both-corrupt, primary-corrupt-no-backup,
+fresh-boot-not-flagged, clean-load-not-flagged, flag-clears-on-next-clean-
+load).
 
 **E4 — the end screen offers only Walk again / Field Notes / Title**
 (`overlays.ts:1318-1320`). No Settings, no Register/Ledger, no Vestibule
@@ -227,11 +235,16 @@ class.
 
 ## 7. Recommended order for the fixing session
 
-1. §1 interlude hold + clear-after-fade (the asked-about item; smallest
+**Progress (2026-07-19):** items 1-3 below are done and pushed. Item 1
+landed in commit `12b2b7d` alongside item 2 (batched together, all small
+diffs touching the same "one-run session" pass); item 3 (E3) landed
+separately once its own translation + test work was complete.
+
+1. ✅ §1 interlude hold + clear-after-fade (the asked-about item; smallest
    diff, biggest per-run visibility) + the §6 pacing-constant guard test.
-2. E2 prologue bark predicate (one line), E7 recovery reload (two lines),
+2. ✅ E2 prologue bark predicate (one line), E7 recovery reload (two lines),
    A1 triptych reduced-motion rule (one rule).
-3. E3 double-corruption notice.
+3. ✅ E3 double-corruption notice.
 4. E1 resume experience (intro suppression + recap) — the largest item,
    worth its own focused pass with UAT coverage of quit/resume.
 5. E4 end-screen options, E5 keepsake visibility — small UI additions,

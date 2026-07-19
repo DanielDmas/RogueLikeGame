@@ -68,6 +68,7 @@ registerAll('v2', 'fr', {
   [uiKey('recoveryReturn')]: 'Retour à l’écran-titre',
   [uiKey('restoredFromBackup')]: 'Votre dernière sauvegarde n’a pas pu être chargée — restaurée depuis la sauvegarde précédente. Rien ne devrait manquer.',
   [uiKey('saveFailed')]: 'Votre progression n’a pas pu être enregistrée — l’espace de stockage est peut-être plein.',
+  [uiKey('profileReset')]: 'Votre sauvegarde n’a pas pu être lue, même depuis sa copie de secours, et a dû être réinitialisée. C’est un nouveau départ — rien n’a pu être récupéré.',
   [uiKey('exportProfile')]: 'Exporter le profil',
   [uiKey('exportProfileDesc')]: 'Télécharge tout votre profil sous forme de fichier — une sauvegarde personnelle, ou de quoi envoyer si vous avez un jour besoin d’aide.',
   [uiKey('exportProfileButton')]: 'Télécharger',

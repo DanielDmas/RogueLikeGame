@@ -68,6 +68,7 @@ registerAll('v2', 'de', {
   [uiKey('recoveryReturn')]: 'Zurück zum Titelbildschirm',
   [uiKey('restoredFromBackup')]: 'Ihr letzter Speicherstand konnte nicht geladen werden — aus der vorherigen Sicherung wiederhergestellt. Es sollte nichts fehlen.',
   [uiKey('saveFailed')]: 'Ihr Fortschritt konnte nicht gespeichert werden — der Speicherplatz ist möglicherweise voll.',
+  [uiKey('profileReset')]: 'Ihr Speicherstand konnte auch aus der Sicherung nicht gelesen werden und musste zurückgesetzt werden. Dies ist ein Neuanfang — nichts konnte wiederhergestellt werden.',
   [uiKey('exportProfile')]: 'Profil exportieren',
   [uiKey('exportProfileDesc')]: 'Lädt Ihr gesamtes Profil als Datei herunter — eine persönliche Sicherung, oder etwas, das Sie versenden können, falls Sie einmal Hilfe brauchen.',
   [uiKey('exportProfileButton')]: 'Herunterladen',

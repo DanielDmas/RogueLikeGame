@@ -32,6 +32,22 @@ export function showRestoredFromBackupToast(ui: HTMLElement, reducedMotion = fal
   showToast(ui, text, reducedMotion, speedMultiplier, 3200);
 }
 
+/** Game-experience review (2026-07-19, `15-game-experience-review.md` E3):
+ * shown once, on boot, when a save genuinely existed but neither it nor its
+ * `:backup` could be recovered — the profile had to be reset to defaults.
+ * Distinct from `showRestoredFromBackupToast` (which means recovery
+ * *worked*): this is the one path that actually loses the player's
+ * progress, so returning to a blank "Begin" title with no explanation at
+ * all would read as a silent, mysterious wipe. Held longest of the three
+ * save-related toasts since it's the most consequential to actually read. */
+export function showProfileResetToast(ui: HTMLElement, reducedMotion = false, speedMultiplier = 1): void {
+  const text = t(
+    uiKey('profileReset'),
+    'Your save could not be read, even from its backup, and had to be reset. This is a fresh start — nothing could be recovered.',
+  );
+  showToast(ui, text, reducedMotion, speedMultiplier, 4200);
+}
+
 /** 6.2: shown when a save write itself fails (e.g. `QuotaExceededError` in a
  * full/private-browsing storage quota) — so the failure is visible instead of
  * silently poisoning the persist chain. Held as long as the restore notice

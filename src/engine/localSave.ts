@@ -4,6 +4,14 @@ const BACKUP_SUFFIX = ':backup';
 
 export class LocalSaveStore implements SaveStore {
   private restoredFromBackup = false;
+  /** Game-experience review (2026-07-19, `15-game-experience-review.md`
+   * E3): true only immediately after a `load()` where a save genuinely
+   * existed but neither it nor its `:backup` could be recovered — the
+   * player falls back to `defaultProfile()` with no signal at all
+   * otherwise, reading as a mysteriously blank profile instead of an
+   * explained one. Never set for a brand-new player (no `raw` at all is
+   * the ordinary first-boot state, not a failure). */
+  private profileWasReset = false;
   private keyPrefix: string;
 
   /** `packId` namespaces storage so two packs (ANAMNESIS, LIMERENCE) never
@@ -15,6 +23,7 @@ export class LocalSaveStore implements SaveStore {
 
   async load(profileId: string): Promise<Profile> {
     this.restoredFromBackup = false;
+    this.profileWasReset = false;
     const key = this.keyPrefix + profileId;
     const backupKey = key + BACKUP_SUFFIX;
     const raw = localStorage.getItem(key);
@@ -42,6 +51,10 @@ export class LocalSaveStore implements SaveStore {
           // The backup is corrupt too — nothing left to recover from.
         }
       }
+      // A save genuinely existed (raw was non-empty) but neither it nor its
+      // backup could be recovered — this is the one path that actually
+      // loses the player's progress, so it must not be silent.
+      this.profileWasReset = true;
       return defaultProfile();
     }
   }
@@ -51,6 +64,13 @@ export class LocalSaveStore implements SaveStore {
    * (main.ts) uses this to show one quiet, one-time notice. */
   wasRestoredFromBackup(): boolean {
     return this.restoredFromBackup;
+  }
+
+  /** True only immediately after a `load()` where recovery was impossible
+   * (both the primary save and its backup failed) and the profile had to
+   * be reset to defaults — see `profileWasReset`'s own comment. */
+  wasReset(): boolean {
+    return this.profileWasReset;
   }
 
   async save(profileId: string, profile: Profile): Promise<void> {
