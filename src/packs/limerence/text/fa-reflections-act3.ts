@@ -12,10 +12,10 @@ registerAll('v2', 'fa', {
   // ---------- The Colleague ----------
   [reflectionKey('the-colleague', 'the-balcony', 'consequence')]:
     'یک شب در یک کنفرانس، آنچه را که آن اختصارِ مشترک به آینده منتقل می‌کند عوض می‌کند، فارغ از اینکه بعداً چطور دسته‌بندی‌اش کنید.',
-  [reflectionKey('the-colleague', 'the-balcony', 'duty')]: 'این دری بود که بدونِ حضورِ دانا برای رضایت‌دادن به هزینه‌اش برای رابطه، باز شد.',
+  [reflectionKey('the-colleague', 'the-balcony', 'duty')]: 'این دری بود که دانا در آن اتاق نبود تا به هزینه‌ای که برای رابطه داشت رضایت بدهد.',
   [reflectionKey('the-colleague', 'the-balcony', 'virtue')]: 'توجه کنید توجیه‌ها چقدر سریع رسیدند — اشتها در لباسِ اجتناب‌ناپذیری.',
   [reflectionKey('the-colleague', 'the-balcony', 'care')]:
-    'دانا، که دویست کیلومتر آن‌طرف‌تر خواب بود، هیچ حرفی در تصمیمی نداشت که شکلِ چیزی را که به خانه برمی‌گردد عوض می‌کند.',
+    'دانا، که دویست کیلومتر آن‌طرف‌تر خواب بود، هیچ حرفی در تصمیمی نداشت که شکلِ آنچه او در بازگشت به خانه با آن روبه‌رو می‌شود را عوض می‌کند.',
   [reflectionKey('the-colleague', 'walk-away', 'consequence')]:
     'ترک‌کردن، گرمیِ آن عصر را هزینه می‌کند و از هزینه‌ای اجتناب می‌کند که وگرنه ماه‌ها انباشته می‌شد.',
   [reflectionKey('the-colleague', 'walk-away', 'duty')]: 'این به توافقی وفادار ماند که دانا در آن اتاق نبود تا اجرایش کند.',
@@ -39,7 +39,7 @@ registerAll('v2', 'fa', {
   [reflectionKey('the-metamour', 'enforce-via-dana', 'consequence')]:
     'هدایتِ مرز از طریقِ دانا از نظرِ ساختاری درست است و نتیجه‌اش نامعلوم — اتاق وانمود نمی‌کند که واگذاری همان کنترل است.',
   [reflectionKey('the-metamour', 'enforce-via-dana', 'duty')]:
-    'این احترام می‌گذارد به این حقیقت که رابطه با پترا مالِ دانا برای مدیریت‌کردن است، نه شما برای مستقیم کنترل‌کردنش.',
+    'این احترام می‌گذارد به این حقیقت که مدیریتِ رابطه با پترا برعهده‌ی داناست، نه اینکه شما مستقیم کنترلش کنید.',
   [reflectionKey('the-metamour', 'enforce-via-dana', 'virtue')]: 'توجه کنید که آیا این صبر است، یا راهی برای اجتناب از یک مکالمه‌ی سخت‌تر برای خودتان.',
   [reflectionKey('the-metamour', 'enforce-via-dana', 'care')]: 'پترا این مرز را به هرحال دست‌دوم تجربه می‌کند، که شکل می‌دهد به اینکه چطور روی او فرود می‌آید.',
   [reflectionKey('the-metamour', 'talk-to-petra', 'consequence')]:
@@ -69,13 +69,13 @@ registerAll('v2', 'fa', {
   [reflectionKey('the-veto', 'comply', 'care')]: 'سام تمامِ هزینه‌ی قانونی را جذب می‌کند که هیچ‌وقت در نوشتنش حرفی نداشت.',
   [reflectionKey('the-veto', 'fight-the-rule', 'consequence')]:
     'زیرِ سوال‌بردنِ قانون، ثباتِ رابطه را به خطر می‌اندازد تا امتحان کند آیا خودِ قانون اصلاً منصفانه بوده یا نه.',
-  [reflectionKey('the-veto', 'fight-the-rule', 'duty')]: 'حرفی در این بدهکار بودید که آیا قانونی که می‌توانست رابطه‌تان با سام را تمام کند، هنوز قانونِ درستی است یا نه.',
+  [reflectionKey('the-veto', 'fight-the-rule', 'duty')]: 'سزاوارِ داشتنِ حرفی در این بودید که آیا قانونی که می‌توانست رابطه‌تان با سام را تمام کند، هنوز قانونِ درستی است یا نه.',
   [reflectionKey('the-veto', 'fight-the-rule', 'virtue')]:
     'این صداقتِ سخت‌تر است — به‌خطرانداختنِ یک تعارضِ واقعی برای آزمودنِ یک ساختار، به‌جای صرفاً تسلیم‌شدن به آن.',
   [reflectionKey('the-veto', 'fight-the-rule', 'care')]: 'این دانا را مجبور می‌کند ترس را با درگیرشدن روبه‌رو کند، به‌جای اینکه یک خروجِ آسان و یک‌طرفه دستش داده شود.',
   [reflectionKey('the-veto', 'examine-the-veto', 'consequence')]:
     'فهمیدنِ منشأِ قانون، تصمیمِ امشب را حل نمی‌کند، اما هرچه بعداً انتخاب کنید را صادقانه‌تر می‌کند.',
-  [reflectionKey('the-veto', 'examine-the-veto', 'duty')]: 'این با قانون مثل چیزی رفتار می‌کند که بررسیِ واقعی را بدهکار است، نه اطاعتِ کور یا سرپیچیِ کور.',
+  [reflectionKey('the-veto', 'examine-the-veto', 'duty')]: 'این با قانون مثل چیزی رفتار می‌کند که سزاوارِ بررسیِ واقعی است، نه اطاعتِ کور یا سرپیچیِ کور.',
   [reflectionKey('the-veto', 'examine-the-veto', 'virtue')]: 'این صداقتِ فکری است که به تاریخِ رابطه‌ی خودتان اعمال شده، نه فقط به استدلال‌های انتزاعی.',
   [reflectionKey('the-veto', 'examine-the-veto', 'care')]: 'این تصمیمی را که سه نفر را متاثر می‌کند کند می‌کند، به نفعِ واقعاً فهمیدنش اول.',
   [reflectionKey('the-veto', 'counter-veto', 'consequence')]:
@@ -105,14 +105,14 @@ registerAll('v2', 'fa', {
   [reflectionKey('the-drift', 'accept-quiet-as-love', 'care')]: 'این به دانا شریکی می‌دهد که به آنچه واقعاً اینجاست ارزش می‌گذارد، گفته‌شده نه فقط فرض‌شده.',
   [reflectionKey('the-drift', 'notice-youve-left', 'consequence')]:
     'اذعان‌کردن به اینکه از قبل رفته‌اید، امشب هیچ‌چیزی را عوض نمی‌کند، اما هر انتخابِ آینده را صادقانه‌تر می‌کند.',
-  [reflectionKey('the-drift', 'notice-youve-left', 'duty')]: 'دانا حقیقتِ اینکه واقعاً کجا ایستاده‌اید را سرانجام بدهکار است، حتی اگر این اتاق امشب مجبورش نکند.',
+  [reflectionKey('the-drift', 'notice-youve-left', 'duty')]: 'دانا سرانجام سزاوارِ دانستنِ حقیقتِ اینکه واقعاً کجا ایستاده‌اید است، حتی اگر این اتاق امشب مجبورتان نکند.',
   [reflectionKey('the-drift', 'notice-youve-left', 'virtue')]: 'این خودشناسیِ ناراحت‌کننده‌ای است که بدون جاخوردن از آن، به‌دست آمده.',
   [reflectionKey('the-drift', 'notice-youve-left', 'care')]: 'این تشخیصی خصوصی است که بااین‌حال به کسی مربوط می‌شود که هنوز به او گفته نشده.',
 
   // ---------- The Second Account ----------
   [reflectionKey('the-second-account', 'delete-it', 'consequence')]:
     'پاک‌کردنش هزینه‌ی پنهان و ادامه‌داری را از رابطه حذف می‌کند، به قیمتِ یک ترک‌کردنِ واقعی، هرچند جزئی.',
-  [reflectionKey('the-second-account', 'delete-it', 'duty')]: 'دانا شریکی را بدهکار بود که توجهش را بی‌سروصدا به حسابی تقسیم نکند که او نمی‌داند وجود دارد.',
+  [reflectionKey('the-second-account', 'delete-it', 'duty')]: 'دانا سزاوارِ شریکی بود که توجهش را بی‌سروصدا به حسابی تقسیم نکند که او نمی‌داند وجود دارد.',
   [reflectionKey('the-second-account', 'delete-it', 'virtue')]: 'این خودتصحیحیِ قاطع است، انتخاب‌شده پیش از گیرافتادن، نه بعدش.',
   [reflectionKey('the-second-account', 'delete-it', 'care')]: 'این توجهی را که آن حساب برداشت می‌کرد، به کسی برمی‌گرداند که بی‌سروصدا از او دریغ می‌شد.',
   [reflectionKey('the-second-account', 'keep-and-name-it', 'consequence')]:
@@ -124,7 +124,7 @@ registerAll('v2', 'fa', {
   [reflectionKey('the-second-account', 'keep-and-name-it', 'care')]: 'سهمِ دانا در این معادله، با انتخابی که فقط وجدانِ خودتان را حل می‌کند، بی‌پاسخ می‌ماند.',
   [reflectionKey('the-second-account', 'show-dana', 'consequence')]:
     'افشای کامل، اطلاعاتِ واقعی‌ای را که رابطه بر آن بنا شده به دانا می‌دهد، به هزینه‌ی احساسیِ واقعی و فوری.',
-  [reflectionKey('the-second-account', 'show-dana', 'duty')]: 'دانا این را مستقیم، از شما، بدهکار بود، نه اینکه کشفش کند یا هیچ‌وقت نفهمد.',
+  [reflectionKey('the-second-account', 'show-dana', 'duty')]: 'دانا سزاوارِ شنیدنِ این، مستقیم از شما، بود، نه اینکه کشفش کند یا هیچ‌وقت نفهمد.',
   [reflectionKey('the-second-account', 'show-dana', 'virtue')]: 'این صداقت در آشکارترین و ناراحت‌کننده‌ترین حالتش است، که بااین‌حال انتخاب شده.',
   [reflectionKey('the-second-account', 'show-dana', 'care')]: 'این با دانا مثلِ کسی رفتار می‌کند که توانِ روبه‌روشدن با حقیقت را دارد، نه کسی که باید از آن محافظت شود.',
   [reflectionKey('the-second-account', 'defend-the-category', 'consequence')]:
@@ -159,7 +159,7 @@ registerAll('v2', 'fa', {
   [reflectionKey('the-discovery', 'steady-then-ask', 'consequence')]:
     'این تاخیر بیست دقیقه ندانستن برایتان هزینه دارد و مکالمه‌ای می‌خرد که هیچ‌کدامتان مجبور نیستید بعداً پسش بگیرید.',
   [reflectionKey('the-discovery', 'steady-then-ask', 'duty')]:
-    'دانا یک سوالِ مستقیم را بدهکار بود، نه حکمی سیل‌آسا یا پرونده‌ای که مخفیانه ساخته شده — این وظیفه‌ی ساده‌تر است، ادا شده.',
+    'دانا سزاوارِ یک سوالِ مستقیم بود، نه حکمی سیل‌آسا یا پرونده‌ای که مخفیانه ساخته شده — این وظیفه‌ی ساده‌تر است، ادا شده.',
   [reflectionKey('the-discovery', 'steady-then-ask', 'virtue')]:
     'انتخابِ آرام‌کردنِ خودتان پیش از یک مکالمه‌ی سخت، انضباط است، نه فرار — زیرِ فشار انجامش تلاشِ واقعی می‌خواهد.',
   [reflectionKey('the-discovery', 'steady-then-ask', 'care')]: 'هرچه حقیقت باشد، از دانا یک‌بار، صریح، توسط کسی که توانِ واقعاً شنیدنِ جواب را دارد، پرسیده می‌شود.',
@@ -195,7 +195,7 @@ registerAll('v2', 'fa', {
 
   // ---------- The Therapist (stage 0) ----------
   [reflectionKey('the-therapist', 'criticism', 'consequence')]: 'شناختنِ این الگو، نمونه‌های گذشته‌اش را پاک نمی‌کند، اما هزینه‌ی نمونه‌ی بعدی را عوض می‌کند.',
-  [reflectionKey('the-therapist', 'criticism', 'duty')]: 'دانا شکایت‌هایی درباره‌ی رفتارِ مشخص را بدهکار است، نه احکامی درباره‌ی شخصیت.',
+  [reflectionKey('the-therapist', 'criticism', 'duty')]: 'دانا سزاوارِ شکایت‌هایی درباره‌ی رفتارِ مشخص است، نه احکامی درباره‌ی شخصیت.',
   [reflectionKey('the-therapist', 'criticism', 'virtue')]: 'این نیاز داشت الگوی نچسبِ خودتان را تماشا کنید، بدونِ اینکه فوراً توجیهش کنید.',
   [reflectionKey('the-therapist', 'criticism', 'care')]: 'این همان سوارکاری است که مستقیم‌ترین فرسایش را روی کسی که دریافتش می‌کند وارد می‌کند، جلسه بعد از جلسه.',
   [reflectionKey('the-therapist', 'contempt', 'consequence')]:
@@ -205,12 +205,12 @@ registerAll('v2', 'fa', {
   [reflectionKey('the-therapist', 'contempt', 'care')]:
     'این همان سوارکاری است که پژوهش آن را خورنده‌ترین برای کسی که دریافتش می‌کند نام می‌برد — همانی که بیشترین هزینه را برای دانا دارد.',
   [reflectionKey('the-therapist', 'defensiveness', 'consequence')]: 'پذیرفتنِ مسئولیتِ جزئی، غرور هزینه دارد و کاهشِ تنشی نامتناسب‌بزرگ تولید می‌کند.',
-  [reflectionKey('the-therapist', 'defensiveness', 'duty')]: 'دانا اذعان به سهمِ خودتان را بدهکار است، نه ردیه‌ای بر سهمِ او.',
+  [reflectionKey('the-therapist', 'defensiveness', 'duty')]: 'دانا سزاوارِ اذعان به سهمِ خودتان است، نه ردیه‌ای بر سهمِ او.',
   [reflectionKey('the-therapist', 'defensiveness', 'virtue')]: 'این نیاز داشت یک واکنشِ غریزی را کنار بگذارید — میلِ ضدحمله به‌جای دریافت‌کردن.',
   [reflectionKey('the-therapist', 'defensiveness', 'care')]: 'این همان الگویی است که مستقیم‌ترین مانع را برای شنیده‌شدنِ واقعیِ دانا ایجاد می‌کند.',
   [reflectionKey('the-therapist', 'stonewalling', 'consequence')]:
     'شناختنِ الگوی خاموشی، جلوی اتفاق‌افتادنش را نمی‌گیرد، اما یک مکثِ اعلام‌شده را به‌عنوانِ جایگزین در دسترس می‌گذارد.',
-  [reflectionKey('the-therapist', 'stonewalling', 'duty')]: 'دانا یک مکثِ گفته‌شده را بدهکار است، نه یک عقب‌نشینیِ خاموش و بی‌توضیح.',
+  [reflectionKey('the-therapist', 'stonewalling', 'duty')]: 'دانا سزاوارِ یک مکثِ گفته‌شده است، نه یک عقب‌نشینیِ خاموش و بی‌توضیح.',
   [reflectionKey('the-therapist', 'stonewalling', 'virtue')]: 'این نیاز داشت یک سازوکارِ دفاعی را نام ببرید که معمولاً زیرِ آگاهیِ خودآگاه عمل می‌کند.',
   [reflectionKey('the-therapist', 'stonewalling', 'care')]: 'برگشتن، به‌اندازه‌ی رفتن برای دانا اهمیت دارد — اتاق روی هر دو نیمه‌ی این مهارت اصرار دارد.',
 

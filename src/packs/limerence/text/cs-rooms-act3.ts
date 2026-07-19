@@ -76,7 +76,7 @@ registerAll('v2', 'cs', {
   [roomBeatKey('the-colleague', 0, 4)]:
     'Dana spí dvě stě kilometrů odsud. Nic se nestalo. Chodba drží jeden celý úder ticha, ve kterém není nic než dech.',
   [roomBeatKey('the-colleague', 0, 5)]:
-    'Vrátný (tentokrát ze služebních dveří): „Doma nemusí být nic špatně, aby byly dveře možné. To je nejlíp zdokumentovaná věta v celé téhle budově.“',
+    'Vrátný (tentokrát ze služebních dveří): „Doma nemusí být nic špatného, aby byly dveře možné. To je nejlíp zdokumentovaná věta v celé téhle budově.“',
   [roomChoiceTextKey('the-colleague', 'the-balcony')]: 'Ještě jednu skleničku. Její pokoj.',
   [roomChoiceHintKey('the-colleague', 'the-balcony')]: 'Nechte tu zkratku dovést vás, kam vede',
   [roomChoiceOutcomeKey('the-colleague', 'the-balcony', 0)]:
@@ -127,7 +127,7 @@ registerAll('v2', 'cs', {
   [roomChoiceTextKey('the-metamour', 'enforce-via-dana')]: 'Předejte to Dana: „tvůj druhý vztah, tvoje hranice, tvoje držet.“',
   [roomChoiceHintKey('the-metamour', 'enforce-via-dana')]: 'Nasměrujte to přes toho, čí vztah to je',
   [roomChoiceOutcomeKey('the-metamour', 'enforce-via-dana', 0)]:
-    'Strukturálně správné a citově pomalé. Dana je viditelně chycen mezi dvěma lidmi, kteří oba mají rozumné argumenty.',
+    'Strukturálně to sedí, ale citově se to vleče. Dana je viditelně chycen mezi dvěma lidmi, kteří oba mají rozumné argumenty.',
   [roomChoiceTextKey('the-metamour', 'talk-to-petra')]: 'Káva s Petrou. Jen vy dva. Pojmenujte to napřímo.',
   [roomChoiceHintKey('the-metamour', 'talk-to-petra')]: 'Veďte rozhovor, který skoro nikdo nikdy nevede',
   [roomChoiceOutcomeKey('the-metamour', 'talk-to-petra', 0)]:
@@ -179,7 +179,7 @@ registerAll('v2', 'cs', {
   [roomChoiceOutcomeKey('the-veto', 'comply', 1)]:
     'Manželství pravidel zachováno. Úleva Dana, opravdová. A uvnitř ní, viditelné jen vám: přesně to, co si to pravidlo právě koupilo, a přesně to, co to stálo.',
   [roomChoiceTextKey('the-veto', 'fight-the-rule')]:
-    'Odmítněte to veto, ne Dana: „přepracujme to pravidlo, nebo se nezlomí to pravidlo.“',
+    'Odmítněte to veto, ne Dana: „přepracujme to pravidlo, jinak se nezlomí ono, ale my.“',
   [roomChoiceHintKey('the-veto', 'fight-the-rule')]: 'Zpochybněte mechanismus, ne člověka',
   [roomChoiceOutcomeKey('the-veto', 'fight-the-rule', 0)]:
     'Ústavní krize dvoučlenného státu, vylíčená v bolestných detailech: co nahradí veto — vznesené obavy, časově ohraničená zpomalení, ale žádný jednostranný vypínač.',
