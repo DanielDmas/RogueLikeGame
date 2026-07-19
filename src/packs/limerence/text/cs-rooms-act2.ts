@@ -51,7 +51,7 @@ registerAll('v2', 'cs', {
   [roomBeatKey('the-distance', 0, 4)]:
     'Dnešní večerní hovor s Jules je naplánovaný, obyčejný, na obrazovce už otevřený. Máte třicet vteřin na rozhodnutí, co si do něj přinesete.',
   [roomBeatKey('the-distance', 0, 5)]:
-    'Vrátný: Hosté zakládají slovo „skoro“ buď pod doznání, nebo pod inventuru. To, kam ho založí, rozhodne, čím se stane.',
+    'Vrátný: Hosté řadí slovo „skoro“ buď mezi doznání, nebo mezi inventuru. To, kam ho zařadí, rozhodne, čím se stane.',
   [roomChoiceTextKey('the-distance', 'confess-the-near-miss')]: 'Řekněte Jules přesně, co se skoro stalo.',
   [roomChoiceHintKey('the-distance', 'confess-the-near-miss')]: 'Vylíčit celou tu vteřinu, beze škrtů',
   [roomChoiceOutcomeKey('the-distance', 'confess-the-near-miss', 0)]:
@@ -136,7 +136,7 @@ registerAll('v2', 'cs', {
   [roomBeatKey('the-rebound', 0, 3)]:
     'Jules se vetře dovnitř — jeden úder, mimovolný, nezvaný — uprostřed věty, uprostřed Miry, a zmizí stejně rychle, jak se objevil.',
   [roomBeatKey('the-rebound', 0, 4)]:
-    'Mira nahlas řekne, co pro ni tohle je, naprosto upřímně, naprosto nechráněná. Nic nepředstírá. Právě to to dělá horším.',
+    'Mira nahlas řekne, co pro ni tohle je, naprosto upřímně, naprosto bezbranná. Nic nepředstírá. Právě to to dělá horším.',
   [roomBeatKey('the-rebound', 0, 5)]:
     'Vrátný: Room service hlásí jednoho hosta, který objednává pro dva, a jednoho hosta, který jí u téhož stolu sám. Stává se to častěji, než byste čekali.',
   [roomChoiceTextKey('the-rebound', 'tell-her-what-this-is')]: 'Vyslovte tu větu o anestezii, nahlas, dnes večer.',
@@ -148,7 +148,7 @@ registerAll('v2', 'cs', {
   [roomChoiceTextKey('the-rebound', 'let-her-believe')]: 'Neříkejte nic. Zůstaňte vřelí.',
   [roomChoiceHintKey('the-rebound', 'let-her-believe')]: 'Nechat příběh, ať se napíše sám',
   [roomChoiceOutcomeKey('the-rebound', 'let-her-believe', 0)]:
-    'Měsíce uplynou v jediném zadrženém nádechu. Pak: její „miluju tě“, které přijde uprostřed obyčejného úterý, naprosto nechráněné.',
+    'Měsíce uplynou v jediném zadrženém nádechu. Pak: její „miluju tě“, které přijde uprostřed obyčejného úterý, naprosto bezbranné.',
   [roomChoiceOutcomeKey('the-rebound', 'let-her-believe', 1)]:
     'Místnost zamrzne na vašem nádechu a tam záměrně sestřihne. Ten dluh vždycky nesl úrok; tohle je jen chvíle, kdy dorazí výpis.',
   [roomChoiceTextKey('the-rebound', 'end-it')]: 'Ukončete to, dřív, než ji to bude stát víc.',
@@ -190,7 +190,7 @@ registerAll('v2', 'cs', {
   [roomChoiceOutcomeKey('the-unicorn', 'obey-the-rules', 0)]:
     'Tři dobré měsíce, stlačené do dvou úderů — vřelé, snadné, přesně podle nabídky.',
   [roomChoiceOutcomeKey('the-unicorn', 'obey-the-rules', 1)]:
-    'Pak přijde pravidlo, které jste nikdy neviděli, uplatněné zpětně dvěma lidmi, kteří ten sborník pravidel sepsali. Zjistíte, že má opravný list, který dostávají jen oni.',
+    'Pak přijde pravidlo, které jste nikdy neviděli, uplatněné zpětně dvěma lidmi, kteří ta pravidla sami sepsali. Zjistíte, že má opravný list, který dostávají jen oni.',
   [roomChoiceTextKey('the-unicorn', 'renegotiate')]: '„Přepište pravidla se mnou v místnosti, nebo nepodepisuju.“',
   [roomChoiceHintKey('the-unicorn', 'renegotiate')]: 'Trvat na tom, být stranou dohody',
   [roomChoiceOutcomeKey('the-unicorn', 'renegotiate', 0)]: 'Skutečná zkouška toho, jestli „rovnocenné“ bylo vůbec někdy míněno doopravdy.',
@@ -242,7 +242,7 @@ registerAll('v2', 'cs', {
   [roomChoiceHintKey('just-friends', 'nothing-to-tell')]: 'Chránit kategorii, ne jen tajemství',
   [roomChoiceOutcomeKey('just-friends', 'nothing-to-tell', 0)]: 'Složka houstne o jeden večer na každý úder, každý zvlášť obhajitelný.',
   [roomChoiceOutcomeKey('just-friends', 'nothing-to-tell', 1)]:
-    'Místnost končí na viditelně vyloženém počtu podle Glass: okno teď hledí na Alenu. Zeď teď hledí na Jules. Nikdo si tohle nevybral v jediném konkrétním dni — a přesně takhle se to dělá.',
+    'Místnost to uzavírá tím, že se Glassové aritmetika stane viditelnou: okno teď hledí na Alenu. Zeď teď hledí na Jules. Nikdo si tohle nevybral v jediném konkrétním dni — a přesně takhle se to dělá.',
   [roomChoiceTextKey('just-friends', 'test-the-evening')]: 'Zorganizujte s Alenou jeden večer, který by mohl dopadnout tak i tak.',
   [roomChoiceHintKey('just-friends', 'test-the-evening')]: 'Schválně to nechat popiratelné',
   [roomChoiceOutcomeKey('just-friends', 'test-the-evening', 0)]: 'Ten večer, v reálném čase, otevřeně — místnost nezjemňuje, co to je, jen kde to končí.',
@@ -309,7 +309,7 @@ registerAll('v2', 'cs', {
 
   // ---------- The Confession ----------
   [roomBeatKey('the-confession', 0, 0)]:
-    'Let domů, rozepsaný po položkách způsobem, jakým teď místnost rozepisuje všechno: palubní vstupenka, místo u okna, zkoušky věty, kterou jste ještě nevyslovili.',
+    'Let domů, rozepsaný po položkách způsobem, jakým teď místnost rozepisuje všechno: palubní lístek, místo u okna, zkoušky věty, kterou jste ještě nevyslovili.',
   [roomBeatKey('the-confession', 0, 1)]:
     'Přídavná jména se sama, nezvaně, řadí do pořadí: jednou. Opilý. Pryč. Bezvýznamné. Každé z nich pravdivé, a dohromady žádné z nich úplně nepokrývá, co se stalo na té konferenci.',
   [roomBeatKey('the-confession', 0, 2)]:
@@ -355,7 +355,7 @@ registerAll('v2', 'cs', {
   [roomBeatKey('the-other-side-of-the-door', 0, 1)]:
     'Samotné odpoledne, otevřené a vřelé — místnost nepředstírá, že je to prázdné nebo čistě transakční. Ať je to cokoli dalšího, je to zároveň i skutečné, pro vás oba, v místnosti, kde se to odehrává.',
   [roomBeatKey('the-other-side-of-the-door', 0, 2)]:
-    'Pravidla, která jste se naučili, aniž by vás je kdy někdo učil: nikdy nevolat po šesté. Žádný parfém, který by cítit ještě u výtahu. Celé nepsané osnovy, vstřebané prostě tím, že jste je žili.',
+    'Pravidla, která jste se naučili, aniž by vás je kdy někdo učil: nikdy nevolat po šesté. Žádný parfém, který by bylo cítit ještě u výtahu. Celé nepsané osnovy, vstřebané prostě tím, že jste je žili.',
   [roomBeatKey('the-other-side-of-the-door', 0, 3)]:
     '„Já jsem žádné sliby nedával,“ říkáte, a místnost vás žádá, abyste tu větu doopravdy prozkoumali, ne ji jen opakovali — je pravdivá, a sama o sobě nikdy nic nevyřešila.',
   [roomBeatKey('the-other-side-of-the-door', 0, 4)]:
@@ -406,7 +406,7 @@ register(roomBeatKey('the-scoreboard', 0, 1), 'v2', 'cs', (s: RunState) =>
 );
 registerAll('v2', 'cs', {
   [roomBeatKey('the-scoreboard', 0, 2)]:
-    'Hala se přeskupí, židle do řad, recepce v lavici pro svědky — svolané slyšení. Vrátný vezme do ruky stolní lampu jako kladívko, kterým nikdy doopravdy nebyla.',
+    'Hala se přeskupí, židle do řad, recepce v soudcovskou lavici — svolané slyšení. Vrátný vezme do ruky stolní lampu jako kladívko, kterým nikdy doopravdy nebyla.',
   [roomBeatKey('the-scoreboard', 0, 3)]:
     'Obžalovaný, přečtený do protokolu: všechno, co Jules kdy s kýmkoli udělal, ještě předtím, než jste se vůbec potkali.',
   [roomBeatKey('the-scoreboard', 0, 4)]:

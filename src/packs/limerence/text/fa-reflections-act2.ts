@@ -132,7 +132,7 @@ registerAll('v2', 'fa', {
   [reflectionKey('just-friends', 'nothing-to-tell', 'consequence')]:
     'بسته نگه‌داشتنِ پوشه، از یک مکالمه‌ی سخت اجتناب می‌کند، اما بی‌سروصدا چیزی را که یک مکالمه‌ی آینده باید پوشش بدهد، انباشته می‌کند.',
   [reflectionKey('just-friends', 'nothing-to-tell', 'duty')]:
-    'دسته‌بندیِ دوستیِ تحمل‌کننده‌ی وزن به‌عنوانِ «چیزی برای گفتن نیست»، تصمیمی است که درباره‌ی جولز گرفته می‌شود، بدونِ جولز.',
+    'دسته‌بندیِ یک دوستیِ باربر به‌عنوانِ «چیزی برای گفتن نیست»، تصمیمی است که درباره‌ی جولز گرفته می‌شود، بدونِ جولز.',
   [reflectionKey('just-friends', 'nothing-to-tell', 'virtue')]: 'توجه کنید هر عصرِ تنها چقدر کوچک‌تر از آن حس می‌شد که ارزشِ گفتن داشته باشد، و همه‌ی این‌ها به چه چیزی جمع می‌بندد.',
   [reflectionKey('just-friends', 'nothing-to-tell', 'care')]: 'همان اطلاعاتی که آلنا بی‌سروصدا انباشته می‌کند، از جولز دریغ می‌شود — این عدمِ تعادل، همان آسیبِ واقعی است.',
   [reflectionKey('just-friends', 'test-the-evening', 'consequence')]:
@@ -247,7 +247,7 @@ registerAll('v2', 'fa', {
     'بررسیِ دوگانگیِ معیارِ خودتان هیچ‌کدام از دو عدد را عوض نمی‌کند، اما عوض می‌کند این ناهماهنگی اجازه دارد چقدر از این رابطه هزینه بگیرد.',
   [reflectionKey('the-scoreboard', 'testify-against-yourself', 'duty')]:
     'انصاف نیازمندِ اعمالِ همان معیاری است بر خودتان که بر جولز اعمال می‌کنید — این انتخاب دقیقاً همین کار را می‌کند.',
-  [reflectionKey('the-scoreboard', 'testify-against-yourself', 'virtue')]: 'این خودبررسیِ واقعی و ناراحت‌کننده است، اعمال‌شده دقیقاً جایی که کمترین چاپلوسی را دارد.',
+  [reflectionKey('the-scoreboard', 'testify-against-yourself', 'virtue')]: 'این خودبررسیِ واقعی و ناراحت‌کننده است، اعمال‌شده دقیقاً جایی که کمتر از همه به نفعِ خودتان است.',
   [reflectionKey('the-scoreboard', 'testify-against-yourself', 'care')]:
     'این کار جولز را از بارِ معیاری معاف می‌کند که خودتان حاضر نبودید خودتان را ملزم به آن بدانید.',
   [reflectionKey('the-scoreboard', 'ask-what-verdict-frees', 'consequence')]:
