@@ -73,7 +73,7 @@ registerAll('v2', 'cs', {
   [reflectionKey('the-password', 'give-it', 'consequence')]:
     'Bezprostřední výsledek — klidnější týden — je skutečný; ten dlouhodobější, zvyk sebecenzury, je skutečný taky, a místnost vám ukáže oba.',
   [reflectionKey('the-password', 'give-it', 'duty')]:
-    'S klíčem daným ze strachu, ne ze svobody, ta část vás, co váhala, ve skutečnosti nikdy nesouhlasila.',
+    'S klíčem daným ze strachu, ne ze svobody, nikdy doopravdy nesouhlasila ta část vás, která váhala.',
   [reflectionKey('the-password', 'give-it', 'virtue')]:
     'Všimněte si, kým se stáváte, když každou zprávu píšete s tichým čtenářem na mysli.',
   [reflectionKey('the-password', 'give-it', 'care')]:
@@ -121,7 +121,7 @@ registerAll('v2', 'cs', {
   [reflectionKey('the-party', 'refuse', 'consequence')]:
     'Odmítnutí vás dnes stojí trochu společenský kredit a zítra vás nestojí vůbec nic.',
   [reflectionKey('the-party', 'refuse', 'duty')]:
-    'Dodrželi jste slib, o který nikdo výslovně nežádal, ale zjevně ho dlužíte.',
+    'Dodrželi jste slib, o který nikdo výslovně nežádal, ale zjevně jste ho dlužili.',
   [reflectionKey('the-party', 'refuse', 'virtue')]:
     'Tohle je charakter, který se ukáže přesně ve chvíli, kdy je to nejméně pohodlné a kdy to nejméně vidí ten, pro koho to je.',
   [reflectionKey('the-party', 'refuse', 'care')]:
@@ -162,7 +162,7 @@ registerAll('v2', 'cs', {
   [reflectionKey('the-forward', 'confront-publicly', 'consequence')]:
     'Veřejná konfrontace možná zpomalí šíření, ale zároveň znásobí pozornost přesně na to, čemu se snažíte zabránit.',
   [reflectionKey('the-forward', 'confront-publicly', 'duty')]:
-    'Pojmenovat provinění situace vyžaduje — ale na metodě záleží stejně jako na úmyslu.',
+    'Pojmenovat provinění je to, co si ta situace žádala — ale na metodě záleží stejně jako na úmyslu.',
   [reflectionKey('the-forward', 'confront-publicly', 'virtue')]:
     'Tohle je spravedlivý hněv, který něco dělá — a to automaticky neznamená, že dělá tu správnou věc.',
   [reflectionKey('the-forward', 'confront-publicly', 'care')]:
@@ -188,7 +188,7 @@ registerAll('v2', 'cs', {
   [reflectionKey('the-best-friends-girl', 'tell-tom', 'consequence')]:
     'Říct to Tomovi, místo abyste podle toho jednali nebo to řekli Nadie, udrží tu škodu v jediném vztahu, který je stavěný ji unést.',
   [reflectionKey('the-best-friends-girl', 'tell-tom', 'duty')]:
-    'Tohle je věrnost, ke které skutečné přátelství je — nepříjemné přiznání, nabídnuté, ne odhalené.',
+    'Tohle je věrnost, kvůli které přátelství vůbec existuje — nepříjemné přiznání, nabídnuté, ne odhalené.',
   [reflectionKey('the-best-friends-girl', 'tell-tom', 'virtue')]:
     'Tohle si žádalo víc nervů než mlčení nebo přiznání Nadie — stojí za to si toho o sobě všimnout.',
   [reflectionKey('the-best-friends-girl', 'tell-tom', 'care')]:

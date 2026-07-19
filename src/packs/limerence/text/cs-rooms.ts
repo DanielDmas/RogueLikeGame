@@ -31,7 +31,7 @@ registerAll('v2', 'cs', {
   [roomBeatKey('the-front-desk', 0, 2)]:
     'Kniha hostů je otevřená na dnešní stránce. Váš podpis už tam je, vaším vlastním písmem, s datem zítřka.',
   [roomBeatKey('the-front-desk', 0, 3)]:
-    'Vrátný: Jste mezi jedním úderem srdce a druhým. Většina hostů je, když si toho poprvé všimne.',
+    'Vrátný: Jste mezi jedním úderem srdce a druhým. Tam bývá většina hostů, když si toho poprvé všimne.',
   [roomBeatKey('the-front-desk', 0, 4)]:
     'Vrátný: Pravidla, taková, jaká jsou — patra, dveře, místnosti, které si pamatují, co se v nich stalo. Některými projdete jako vy sami. Jinými jako ten, kdo je uvnitř, ve chvíli, kdy se dveře otevřou.',
   [roomBeatKey('the-front-desk', 0, 5)]:
@@ -81,7 +81,7 @@ registerAll('v2', 'cs', {
   [roomChoiceHintKey('the-read-receipt', 'bait')]: 'Zinscenovat si důkaz',
   [roomChoiceOutcomeKey('the-read-receipt', 'bait', 0)]: 'Funguje to. Odepíše do minuty.',
   [roomChoiceOutcomeKey('the-read-receipt', 'bait', 1)]:
-    'A naučíte se jedinou věc, kterou vás taková zkouška vůbec může naučit: že funguje. Ne, co stála.',
+    'A naučíte se jedinou věc, kterou vás taková zkouška vůbec může naučit: že funguje. Ne to, co vás stála.',
   [roomChoiceTextKey('the-read-receipt', 'ask-tomorrow')]: 'Zeptejte se jí zítra přímo, nahlas, tváří v tvář.',
   [roomChoiceHintKey('the-read-receipt', 'ask-tomorrow')]: 'Počkat na denní světlo a opravdovou odpověď',
   [roomChoiceOutcomeKey('the-read-receipt', 'ask-tomorrow', 0)]:
@@ -148,9 +148,9 @@ registerAll('v2', 'cs', {
 // ---------- Act I: The Password ----------
 registerAll('v2', 'cs', {
   [roomBeatKey('the-password', 0, 0)]:
-    'Sára pláče, po hrozném týdnu: její minulý přítel ji podváděl, a pokud ji milujete, dáte jí heslo od telefonu.',
+    'Sára pláče, po hrozném týdnu: její minulý přítel ji podváděl, a kdybyste ji milovali, dali byste jí heslo od telefonu.',
   [roomBeatKey('the-password', 0, 1)]:
-    'Podává se to — upřímně, zevnitř jejího strachu — jako blízkost. Část vás ten rámec cítí a táhne se k němu; to, že to chcete dát, z vás nedělá hlupáka.',
+    'Podává se to — upřímně, zevnitř jejího strachu — jako blízkost. Něco ve vás ten rámec láká; a to, že to chcete dát, z vás nedělá hlupáka.',
   [roomBeatKey('the-password', 0, 2)]:
     'A jiná část vás pod tou touhou zaznamenává něco, co zní přesně jako otáčející se zámek.',
   [roomBeatKey('the-password', 0, 3)]:
@@ -218,7 +218,7 @@ registerAll('v2', 'cs', {
   [roomChoiceOutcomeKey('the-party', 'refuse', 1)]:
     'Pak párty jede dál, protože párty prostě jedou dál. Někdo, koho jste si nevšimli, si všiml vás.',
   [roomChoiceTextKey('the-party', 'leave')]: 'Prostě z párty odejděte.',
-  [roomChoiceHintKey('the-party', 'leave')]: 'Sundat se z té montážní linky',
+  [roomChoiceHintKey('the-party', 'leave')]: 'Vystoupit z té montážní linky',
   [roomChoiceOutcomeKey('the-party', 'leave', 0)]: 'Studený vzduch venku, jako celý, nespěchající okamžik.',
   [roomChoiceOutcomeKey('the-party', 'leave', 1)]:
     'Nic se nestalo — a zjistíte, že „nic se nestalo“ může být věc, kterou jste udělali, a ne jen věc, které jste se vyhnuli.',
@@ -282,7 +282,7 @@ registerAll('v2', 'cs', {
   [roomBeatKey('the-best-friends-girl', 0, 3)]:
     '[zastávka autobusu, minulé úterý — její rukáv se otřel o váš, úplnou náhodou, přehráváno pořád dokola, ve smyčce bez vypínače]',
   [roomBeatKey('the-best-friends-girl', 0, 4)]:
-    'Aritmetika znamení: byl to pohled, nebo jen náhodou padlé oko? Místnost vás nechá tu matematiku spočítat a pak vám ji poctivě opraví — ta matematika je nespolehlivá, a stejně ji počítáte dál.',
+    'Aritmetika znamení: byl to pohled, nebo jen letmý pohled, který na vás náhodou padl? Místnost vás nechá tu matematiku spočítat a pak vám ji poctivě opraví — ta matematika je nespolehlivá, a stejně ji počítáte dál.',
   [roomBeatKey('the-best-friends-girl', 0, 5)]:
     'Vrátný: Stav, ve kterém jste, má klinický název, zdokumentovaný průběh a žádný volant. Vaše chování ale volant má.',
   [roomChoiceTextKey('the-best-friends-girl', 'confess-to-her')]: 'Řekněte to Nadie.',
@@ -377,7 +377,7 @@ register(roomBeatKey('the-summer-ends', 0, 3), 'v2', 'cs', (s: RunState) =>
     ? 'Vzpomenete si na heslo, na ten měsíc, než jste přestali cenzurovat zprávy dopředu. Ať teď slíbíte cokoli, už víte, co stojí slíbit něco ze strachu, ne z jistoty.'
     : s.flags.includes('it-didnt-count')
       ? 'Vzpomenete si na tu párty — na tu větu, kterou jste si postavili a nikdy jí neřekli. Ať teď slíbíte cokoli, kus té roční váhy pojede s vámi, ať už o tom ví, nebo ne.'
-      : 'To, co jste si oba přáli, jednou, na samém začátku roku, se cítí zároveň blíž i dál než tři týdny.',
+      : 'To, co jste si oba přáli, jednou, na samém začátku roku, vám teď připadá zároveň blíž i dál, než je tři týdny.',
 );
 
 // ---------- Act I: The Rumor (gate) ----------
@@ -389,7 +389,7 @@ registerAll('v2', 'cs', {
   [roomBeatKey('the-rumor', 0, 2)]:
     'To, co s vámi to nevědění dělá, hodinu po hodině, je vlastní malá případová studie, a vy jste zároveň jejím předmětem i jediným svědkem.',
   [roomBeatKey('the-rumor', 0, 3)]:
-    'Její zpráva leží na displeji nezodpovězená: „co se děje?“ Přečetli jste si ji jedenáctkrát a odpověděli jste na ni nula.',
+    'Její zpráva leží na displeji nezodpovězená: „co se děje?“ Přečetli jste si ji jedenáctkrát a odpověděli jste na ni nulakrát.',
   [roomBeatKey('the-rumor', 0, 4)]:
     'Nabízejí se tři možné podoby, a žádná z nich není pohodlná: zeptat se jí přímo, obezřetně se poptat kolem ní, nebo nastražit past a sledovat, co do ní vleze.',
   [roomBeatKey('the-rumor', 0, 5)]:

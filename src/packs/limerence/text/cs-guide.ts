@@ -129,7 +129,7 @@ registerAll('v2', 'cs', {
   [uiKey('aboutMechanics')]:
     '<b>Jak to funguje.</b> Nic tady se nehodnotí jako správné nebo špatné. Každá volba tiše posouvá tři skryté sklony — hlavu proti srdci, mé proti našemu, sevření proti otevření — a právě ty, ne bodovací tabulka, určují, které dveře se otevřou, jak hotel vypadá a zní, a ke kterému konci nakonec dojdete. Tři srdce jsou vaše Důvěra — hrstka obzvlášť nákladných voleb jednu stojí přímo, a ztráta všech tří není obrazovka prohry; je to opravdový konec, a tak je i napsán. Každé dveře jsou jiný pokoj, a v jednom pobytu jimi nemůžete projít všemi — další hra vám ukáže zbytek.',
   [uiKey('aboutThemes')]:
-    '<b>Témata.</b> nevěra, žárlivost, násilné ovládání partnera, sdílení intimních fotografií bez souhlasu (nikdy nezobrazené), rozpad vztahu a konsenzuální nemonogamie.',
+    '<b>Témata.</b> nevěra, žárlivost, donucovací kontrola, sdílení intimních fotografií bez souhlasu (nikdy nezobrazené), rozpad vztahu a konsenzuální nemonogamie.',
   [uiKey('aboutMinorsNote')]: 'Postavy v Přízemí (Dějství I) mají 15–18 let a jejich příběhové linky neobsahují žádný sexuální obsah.',
   [uiKey('aboutFictionNote')]: 'Tohle je fikce, ne terapie ani rada.',
   [uiKey('aboutHelpLine')]:
