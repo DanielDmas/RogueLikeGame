@@ -215,7 +215,8 @@ they've seen either. Candidate: defer the Examined offer to after the
 first significant choice of a first-ever run (its own natural teaching
 moment), or fold it into the end of the persona panel. Design tension
 acknowledged: all three panels are individually justified; it is the stack
-that's heavy.
+that's heavy. **OWNER DECIDED (2026-07-20): defer the Examined Path
+offer.** Full implementation plan in §8 below — planned, not yet coded.
 
 **E7 — the crash-recovery overlay's reload drops fullscreen.**
 `recovery.ts:19` calls `location.reload()` directly instead of the
@@ -294,4 +295,107 @@ separately once its own translation + test work was complete.
 5. ✅ E4 end-screen options, E5 keepsake visibility — small UI additions,
    translated ×5 languages, so batch them together with R1 care.
 6. ✅ A2 Usher walk truncation — cosmetic, lowest priority.
-7. E6 onboarding stack — design decision first (owner), then implement.
+7. E6 onboarding stack — ✅ design decision made (owner, 2026-07-20:
+   defer the Examined Path offer); implementation planned in §8, not yet
+   coded. This is the review's one remaining open coding item.
+
+## 8. E6 implementation plan (owner decision 2026-07-20: defer the offer)
+
+The owner chose the review's first candidate: keep About + Persona at the
+start of a first-ever run (both quick, both genuinely needed before
+play), and move the Examined Path offer to right after the first
+significant choice — its own natural teaching moment, once the player
+has actually seen what a "significant choice" looks like. This section
+is the ready-to-implement design; every fact below was verified against
+the code on 2026-07-20.
+
+**Design.**
+
+1. **Arm the deferral only on a genuinely first-ever run.** In `start()`'s
+   `'new'` branch: when `profile.runsCompleted === 0`, skip
+   `showExaminedPathOffer` entirely and build the run with
+   `examined: false` plus a new `examinedOfferPending: true` flag.
+   Returning players (`runsCompleted > 0`) and the end screen's "Walk
+   again" path keep the offer at run start, completely unchanged — the
+   stack was only ever heavy on a true first run, because About and
+   Persona only auto-show then.
+2. **Persist the pending flag on `RunState`** (`examinedOfferPending?:
+   boolean`, optional/additive — same no-version-bump precedent as
+   `keepsakesHeld`; old saves hydrate it as undefined and are unaffected,
+   since any pre-change save already had its offer at run start). An
+   instance field would lose the deferral on quit-and-resume: either the
+   player would silently never be offered (flag lost), or a
+   re-arm-on-continue heuristic would re-nag a player who already
+   declined. The persisted flag gives exactly-once semantics across
+   reloads for free.
+3. **Fire at the first reflections-bearing choice.** In `enterRoom`,
+   after a choice's outcome beats finish and *before* the existing
+   `shouldShowReflections` check: if `state.examinedOfferPending &&
+   choice.reflections?.length && !this.oneDoorMode` — clear the flag,
+   `text.hide()`, show the existing `showExaminedPathOffer` overlay
+   (reused verbatim, zero new translated strings), write
+   `settings.examinedPathDefault`, set `state.examined` from the answer,
+   persist. Because the block sits before `shouldShowReflections`, an
+   accepted offer pays off *immediately*: the very choice that prompted
+   it shows its reflection card — the clerk the overlay describes appears
+   the moment the player says yes.
+4. **"First significant choice" = first choice with reflections** — the
+   Examined Path's own definition of significance (`shouldShowReflections`
+   gates on `choice.reflections`). Verified: neither pack's prologue
+   choices carry reflections, and Act I coverage is deliberately partial
+   (ANAMNESIS ~21 of 31 choices, LIMERENCE ~29 of 33), so the offer fires
+   in the player's first Act I room or, rarely, a later one — acceptable;
+   it fires at the first moment it can demonstrate itself.
+5. **Accepted trade-off — the Act I Socratic aside is skipped on that
+   first run.** `shouldShowSocraticAside` needs `state.examined`, which is
+   still false at the act 0→1 transition where the Act I aside fires;
+   Acts II–IV asides show normally after a mid-Act-I opt-in. Inherent in
+   any deferral past the act intro; record it in the code comment so it
+   reads as a decision, not a bug.
+6. **One Door mode never arms the flag** (its `newRun()` call doesn't set
+   it) — plus the explicit `!this.oneDoorMode` guard in the firing
+   condition, matching the existing consolidated-gate convention there.
+
+**Test/verification work, itemized.**
+
+- New `src/test/examinedDeferral.test.ts`: (a) `newRun` propagates the new
+  field; (b) hydration of an old save without the field; (c) source-shape
+  checks — the first-run `'new'` branch does not call
+  `showExaminedPathOffer`, and `enterRoom`'s deferred-offer block sits
+  before the `shouldShowReflections` check (same convention as
+  `resumedMidRoom.test.ts`).
+- `tests/uat/01-title-onboarding.mjs`: currently asserts the offer DOES
+  appear on a fresh run (line 35) — invert to assert it does *not*
+  appear before the prologue.
+- `tests/uat/19/20-*-door-choice-flow.mjs`: both click "Walk plainly"
+  during onboarding (lines 28/27) — remove that step; the flow reaches
+  the prologue door one modal sooner.
+- New UAT script (or an extension of 19): first-ever run → first
+  reflections-bearing choice → offer appears → accept → the same
+  choice's reflection card renders with all 4 traditions.
+- `tests/uat/03-examined-path.mjs` is unaffected — verified: it patches
+  `run.examined` directly in localStorage rather than clicking the offer.
+
+**Effort:** small-medium — one `flow.ts` pass, one optional schema field,
+three UAT script edits, one new test file, no new translations.
+
+## 9. Post-fix-session sweep (2026-07-20) — new observations
+
+**N1 — end-screen data goes stale across the new Settings button (minor,
+introduced by E4).** Everything `showEndScreen` renders — the translated
+ending title/epitaph (`flow.ts:1065-1068`), recap, pivotal choices,
+doors-never-opened, keepsakes-carried, triptych — is computed once,
+*before* the `for (;;)` action loop. E4's Settings button re-enters that
+loop, so a player who switches language from the end screen returns to an
+end screen still in the previous language until the next reload. Fix
+plan: extract the data assembly into a small closure called on each loop
+iteration (cheap — everything it reads is loop-invariant state), or fold
+the recomputation into the `'settings'` branch. Cosmetic; batch it with
+the E6 implementation pass rather than shipping alone.
+
+**N2 — toast collisions: checked, clean.** The new keepsake-spent toast
+(choice resolution) cannot realistically overlap the checkpoint "Progress
+saved" toast (door chosen / room completed / settings saved) — the
+moments are separated by click-gated outcome beats; the post-choice
+persist is the silent variant (`persist()` without `showToast`). No
+action.
