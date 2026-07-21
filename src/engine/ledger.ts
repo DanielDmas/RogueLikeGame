@@ -10,8 +10,31 @@ import type { Profile } from './saveStore';
 import { endingsTotal } from './endings';
 import type { RoomRegistry } from './storyEngine';
 import { t } from './text/resolver';
-import { epiphanyKey, roomTitleKey, uiKey } from './text/keys';
+import { epiphanyKey, roomChoiceTextKey, roomTitleKey, uiKey } from './text/keys';
 import type { EpiphanyDef } from '../packs/types';
+
+/** Game-experience review S1 (2026-07-20, `16-full-review-2026-07-20.md`
+ * §8): `profile.lastMessage` is always the raw ENGLISH source text of
+ * whatever choice the player made in the hook room (flow.ts records it
+ * from `choice.text`, before any `t()` call) — every display surface used
+ * to render that raw string verbatim, so a non-English player saw their
+ * own sentence echoed back in English forever, on every one of the three
+ * places it's shown (this Ledger row, the codex card + its synthetic
+ * note, the end screen's Morning Report). `lastMessageChoiceId` (stored
+ * alongside, at the same moment) lets this resolve through the normal
+ * translation path instead, at *display* time, so a language switch is
+ * honored too. `lastMessageId` is the active pack's own
+ * `hooks.lastMessageId` (the hook room's id) — defaults to ANAMNESIS's,
+ * same engine-default/pack-override pattern as every other pack-scoped
+ * default in this module. Degrades to the raw English string (today's
+ * exact behavior) whenever there's no choice id to resolve from — a
+ * legacy save recorded before this field existed, or an imported profile
+ * missing it. */
+export function resolveLastMessage(profile: Profile, lastMessageId = 'last-message'): string | null {
+  if (!profile.lastMessage) return null;
+  if (!profile.lastMessageChoiceId) return profile.lastMessage;
+  return t(roomChoiceTextKey(lastMessageId, profile.lastMessageChoiceId), profile.lastMessage);
+}
 
 /** The understory rooms are filtered from the codex (and, by the same rule,
  * the Ledger's room count) until first walked — they shouldn't hint at their
@@ -84,6 +107,11 @@ export function ledgerStats(
    * Defaults to ANAMNESIS's own translated fallback so every pre-existing
    * call site (and test) is unaffected. */
   lastMessageLabel: string = t(uiKey('ledgerLastMessage'), 'Your last message'),
+  /** S1: the active pack's own `hooks.lastMessageId`, so `resolveLastMessage`
+   * resolves the translation key against the right hook room. Defaults to
+   * ANAMNESIS's own id, same engine-default/pack-override pattern as
+   * `understorySequence`/`endingsTotalFn` above. */
+  lastMessageId = 'last-message',
 ): LedgerRow[] {
   const rows: LedgerRow[] = [];
   rows.push({ id: 'runs', label: t(uiKey('ledgerRuns'), 'Runs completed'), value: String(profile.runsCompleted) });
@@ -130,7 +158,7 @@ export function ledgerStats(
   }
 
   if (profile.lastMessage) {
-    rows.push({ id: 'last-message', label: lastMessageLabel, value: `“${profile.lastMessage}”` });
+    rows.push({ id: 'last-message', label: lastMessageLabel, value: `“${resolveLastMessage(profile, lastMessageId)}”` });
   }
 
   return rows;

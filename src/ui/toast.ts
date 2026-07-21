@@ -7,7 +7,16 @@ function showToast(ui: HTMLElement, text: string, reducedMotion: boolean, speedM
   ui.appendChild(toast);
   const showDelay = (reducedMotion ? 0 : 20) * speedMultiplier;
   setTimeout(() => toast.classList.add('show'), showDelay);
-  const hold = (reducedMotion ? holdMs * 0.5 : holdMs) * speedMultiplier;
+  // Game-experience review R1 (2026-07-20, `16-full-review-2026-07-20.md`
+  // §3): `holdMs` is reading time, not motion — halving it under reduced
+  // motion was the exact backwards logic the §1 interlude-timing fix
+  // called out ("shortening reading time under reduced motion would be
+  // backwards"), just sitting unnoticed in this neighboring file. Worst
+  // case before this fix: the E3 profile-reset toast (the single most
+  // consequential notice in the game) showed for 2100ms instead of its
+  // intended 4200ms to exactly the players who asked for a calmer pace.
+  // Only the fade/show delays are genuine motion and stay shortened.
+  const hold = holdMs * speedMultiplier;
   const fadeMs = (reducedMotion ? 120 : 420) * speedMultiplier;
   setTimeout(() => {
     toast.classList.remove('show');

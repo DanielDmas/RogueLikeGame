@@ -399,3 +399,9 @@ saved" toast (door chosen / room completed / settings saved) — the
 moments are separated by click-gated outcome beats; the post-choice
 persist is the silent variant (`persist()` without `showToast`). No
 action.
+
+**Status (2026-07-21): both §8's E6 plan and N1 above are ✅ FIXED**,
+implemented exactly as scoped here, alongside the rest of that day's
+review batch (R1-R4, S1-S4, H1-H3) — see
+`16-full-review-2026-07-20.md` §11 for the full fixed-batch writeup,
+test coverage, and live UAT verification.

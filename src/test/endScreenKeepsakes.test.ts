@@ -64,12 +64,21 @@ describe('E5 — keepsake held-resource visibility', () => {
   });
 
   it('playEnding computes keepsakesCarried from RunState.keepsakesHeld and passes it to showEndScreen', () => {
-    const idx = flowSrc.indexOf('const keepsakesCarried = (this.state.keepsakesHeld ?? [])');
-    expect(idx, 'keepsakesCarried computation not found').toBeGreaterThan(-1);
-    const showIdx = flowSrc.indexOf('await showEndScreen(this.ui, {', idx);
+    // N1 (2026-07-20, `16-full-review-2026-07-20.md` §3) moved this from a
+    // once-computed `const` before the loop into `buildEndScreenData()`, a
+    // closure re-invoked on every end-screen loop iteration — so a language
+    // switch via the end screen's own Settings action no longer leaves
+    // stale-language text on screen. The keepsakesCarried computation
+    // itself is unchanged; only its home moved.
+    const closureIdx = flowSrc.indexOf('const buildEndScreenData = () => (');
+    expect(closureIdx, 'buildEndScreenData closure not found').toBeGreaterThan(-1);
+    const closureEnd = flowSrc.indexOf('\n    for (;;) {', closureIdx);
+    const closureBody = flowSrc.slice(closureIdx, closureEnd > closureIdx ? closureEnd : flowSrc.length);
+    expect(closureBody).toContain('keepsakesCarried: (this.state.keepsakesHeld ?? [])');
+    const showIdx = flowSrc.indexOf('await showEndScreen(this.ui, {', closureEnd);
     const showEnd = flowSrc.indexOf('});', showIdx);
     const call = flowSrc.slice(showIdx, showEnd);
-    expect(call).toContain('keepsakesCarried,');
+    expect(call).toContain('...buildEndScreenData(),');
   });
 
   it('EndScreenData declares keepsakesCarried and showEndScreen renders a "you carried" block', () => {

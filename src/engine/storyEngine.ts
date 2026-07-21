@@ -45,8 +45,12 @@ export function makeRegistry(rooms: Room[]): RoomRegistry {
   };
 }
 
-/** Deterministic pseudo-shuffle key so offered doors survive a reload. */
-function hashKey(input: string, salt: number): number {
+/** Deterministic pseudo-shuffle key so offered doors survive a reload.
+ * Exported (game-experience review R4, 2026-07-20) for `flow.ts`'s end-
+ * screen "doors you never opened" list, which needed the exact same
+ * salted-shuffle behavior — a run-scoped, reload-stable ordering — rather
+ * than a second, drifting reimplementation of the same hash. */
+export function hashKey(input: string, salt: number): number {
   let h = 2166136261 ^ salt;
   for (let i = 0; i < input.length; i++) {
     h ^= input.charCodeAt(i);

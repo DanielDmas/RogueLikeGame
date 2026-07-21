@@ -1,6 +1,7 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it, beforeEach } from 'vitest';
 import { defaultProfile } from '../engine/saveStore';
-import { readSharedDisplaySettings, writeSharedDisplaySettings, withSharedDisplaySettings } from '../engine/sharedDisplaySettings';
+import { clearSharedDisplaySettings, readSharedDisplaySettings, writeSharedDisplaySettings, withSharedDisplaySettings } from '../engine/sharedDisplaySettings';
 
 /** Minimal in-memory localStorage — this suite runs under vitest's `node`
  * environment (no DOM), mirroring the pattern in saveRoundTrip.test.ts. */
@@ -85,5 +86,41 @@ describe('sharedDisplaySettings — the four fields ANAMNESIS and LIMERENCE mirr
     const shared = readSharedDisplaySettings();
     expect(shared?.quality).toBe('high');
     expect(shared?.fpsCap).toBe(60);
+  });
+});
+
+describe('clearSharedDisplaySettings (game-experience review R2, 2026-07-20)', () => {
+  it('removes a previously-written shared record entirely', () => {
+    writeSharedDisplaySettings({ ...defaultProfile().settings, quality: 'high', fpsCap: 60 });
+    expect(readSharedDisplaySettings()).not.toBeNull();
+    clearSharedDisplaySettings();
+    expect(readSharedDisplaySettings()).toBeNull();
+  });
+
+  it('is a safe no-op when nothing was ever shared', () => {
+    expect(() => clearSharedDisplaySettings()).not.toThrow();
+    expect(readSharedDisplaySettings()).toBeNull();
+  });
+
+  it('after clearing, withSharedDisplaySettings falls back to the pack\'s own settings again', () => {
+    writeSharedDisplaySettings({ ...defaultProfile().settings, quality: 'high', renderScale: 'sharp', uiZoom: 1.2, fpsCap: 60 });
+    clearSharedDisplaySettings();
+    const packOwnSettings = defaultProfile().settings;
+    expect(withSharedDisplaySettings(packOwnSettings)).toEqual(packOwnSettings);
+  });
+});
+
+describe('flow.ts wires clearSharedDisplaySettings into resetProgress (source shape)', () => {
+  it("resetProgress() calls clearSharedDisplaySettings() before reloading", () => {
+    const flowSrc = readFileSync(new URL('../engine/flow.ts', import.meta.url), 'utf8');
+    const startIdx = flowSrc.indexOf('private async resetProgress()');
+    expect(startIdx, 'resetProgress() not found').toBeGreaterThan(-1);
+    const endIdx = flowSrc.indexOf('\n  }', startIdx);
+    const body = flowSrc.slice(startIdx, endIdx);
+    const clearIdx = body.indexOf('clearSharedDisplaySettings();');
+    const reloadIdx = body.indexOf('this.reloadPage();');
+    expect(clearIdx, 'clearSharedDisplaySettings() not called in resetProgress').toBeGreaterThan(-1);
+    expect(reloadIdx, 'reloadPage() not called in resetProgress').toBeGreaterThan(-1);
+    expect(clearIdx).toBeLessThan(reloadIdx);
   });
 });

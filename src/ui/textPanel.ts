@@ -117,6 +117,12 @@ export class TextPanel {
     const dotEls = texts.map((_, i) => {
       const d = el('div', 'beat-dot');
       d.setAttribute('role', 'button');
+      // H2: without a tabindex, a `role="button"` <div> is never reachable
+      // by Tab at all — the reread-jump affordance existed only for mouse
+      // users. Fixed value is fine; `waitAdvance`'s own click-target guard
+      // (`j > maxSeen`) already stops a jump to an unread beat regardless
+      // of how the dot was activated.
+      d.setAttribute('tabindex', '0');
       d.setAttribute('aria-label', t(uiKey('rereadJumpTo'), 'Reread beat {n}').replace('{n}', String(i + 1)));
       dots.appendChild(d);
       return d;
@@ -195,11 +201,15 @@ export class TextPanel {
   ): Promise<{ type: 'forward' } | { type: 'back' } | { type: 'jump'; index: number }> {
     return new Promise((resolve) => {
       const dotHandlers: ((e: Event) => void)[] = [];
+      const dotKeyHandlers: ((e: KeyboardEvent) => void)[] = [];
       const cleanup = () => {
         panel.removeEventListener('click', onForwardClick);
         removeEventListener('keydown', onKey);
         backBtn.removeEventListener('click', onBack);
-        dotEls.forEach((d, j) => d.removeEventListener('click', dotHandlers[j]));
+        dotEls.forEach((d, j) => {
+          d.removeEventListener('click', dotHandlers[j]);
+          d.removeEventListener('keydown', dotKeyHandlers[j]);
+        });
       };
       /** Typing-in-progress swallows the first interaction (skip to full text) — same guard for forward, back, and jump. */
       const guarded = (act: () => void) => {
@@ -228,6 +238,16 @@ export class TextPanel {
         // A pause menu / codex / settings / field note is open on top —
         // don't silently advance the room hidden underneath it.
         if (document.querySelector('.overlay, .field-note')) return;
+        // Game-experience review H2 (2026-07-20, `16-full-review-2026-07-20.md`
+        // §10): a focused interactive child of this panel (the Back button,
+        // the Explain "?" button, or a beat-progress dot) must handle its
+        // own Enter/Space activation. Without this guard, this window-level
+        // listener also fired on the same keypress — e.g. pressing Enter on
+        // a focused dot both jumped to that beat *and* advanced forward,
+        // same double-activation bug fieldNote.ts's `readMore` guard exists
+        // to prevent.
+        const active = document.activeElement;
+        if (active && active !== document.body && panel.contains(active)) return;
         if (e.key === ' ' || e.key === 'Enter') {
           e.preventDefault();
           onForwardClick();
@@ -245,8 +265,20 @@ export class TextPanel {
             resolve({ type: 'jump', index: j });
           });
         };
+        // `role="button"` on a <div> — unlike a native <button>, Enter/Space
+        // don't auto-synthesize a click, so keyboard activation needs its
+        // own explicit handler (H2, same finding as the onKey guard above).
+        const keyHandler = (e: KeyboardEvent) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            e.stopPropagation();
+            handler(e);
+          }
+        };
         dotHandlers[j] = handler;
+        dotKeyHandlers[j] = keyHandler;
         d.addEventListener('click', handler);
+        d.addEventListener('keydown', keyHandler);
       });
       panel.addEventListener('click', onForwardClick);
       addEventListener('keydown', onKey);
@@ -272,6 +304,13 @@ export class TextPanel {
   showBark(text: string, tokens?: Record<string, string>) {
     const panel = el('div', 'text-panel fade-in');
     const p = el('p', 'beat usher', tokens ? applyTokens(text, tokens) : text);
+    // Game-experience review R3 (2026-07-20, `16-full-review-2026-07-20.md`
+    // §3): every beat played through playBeats announces via aria-live
+    // (see the `beatEl` above) — the guide's door-row one-liners, shown
+    // through this method instead, had no live region at all, so a
+    // screen-reader player never heard the Usher/Porter speak at the door
+    // row, the single most character-rich recurring surface in the game.
+    p.setAttribute('aria-live', 'polite');
     panel.appendChild(p);
     this.replacePanel(panel);
   }

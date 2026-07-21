@@ -18,6 +18,20 @@ describe('applyLocaleToDocument sets documentElement.lang (Fable review, M5)', (
   });
 });
 
+describe('showBark announces via aria-live, same as every playBeats beat (game-experience review R3, 2026-07-20)', () => {
+  it('the bark paragraph gets aria-live="polite" before it is mounted', () => {
+    const src = readFileSync(new URL('../ui/textPanel.ts', import.meta.url), 'utf8');
+    const startIdx = src.indexOf('showBark(text: string');
+    const endIdx = src.indexOf('\n  }', startIdx);
+    const body = src.slice(startIdx, endIdx);
+    expect(body, 'showBark not found').not.toBe('');
+    const ariaIdx = body.indexOf("p.setAttribute('aria-live', 'polite')");
+    const appendIdx = body.indexOf('panel.appendChild(p)');
+    expect(ariaIdx, 'aria-live not set on the bark paragraph').toBeGreaterThan(-1);
+    expect(ariaIdx).toBeLessThan(appendIdx);
+  });
+});
+
 describe("TextPanel's typewriter suppresses aria-live during typing (Fable review, M5)", () => {
   it('removes aria-live before the per-character loop and restores it only once, on the final full text', () => {
     const src = readFileSync(new URL('../ui/textPanel.ts', import.meta.url), 'utf8');

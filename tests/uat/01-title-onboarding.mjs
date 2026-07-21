@@ -30,10 +30,13 @@ await withPage(async (page) => {
   await page.getByText('Skip', { exact: false }).click();
   await page.waitForTimeout(400);
 
-  // Examined Path offer: two equal-weight buttons, take "Walk plainly".
+  // Game-experience review E6 (2026-07-20): on a genuinely first-ever run,
+  // the Examined Path offer no longer stacks as a third onboarding modal —
+  // it's deferred to the first reflections-bearing choice (see
+  // 43-examined-deferred-offer.mjs for that live repro). The player should
+  // land straight on the prologue's door offer here.
   const walkPlainly = page.getByText('Walk plainly', { exact: false });
-  assert((await walkPlainly.count()) > 0, 'Examined Path offer should appear on a fresh run');
-  await walkPlainly.click();
+  assert((await walkPlainly.count()) === 0, 'Examined Path offer must NOT appear before the prologue on a first-ever run (deferred, E6)');
 
   // Now actually in-game, standing at the prologue's door offer. The scene
   // transition's duration can vary slightly, so poll rather than fix-wait.

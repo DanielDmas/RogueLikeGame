@@ -62,3 +62,14 @@ export function withSharedDisplaySettings(settings: Settings): Settings {
   const shared = readSharedDisplaySettings();
   return shared ? { ...settings, ...shared } : settings;
 }
+
+/** Game-experience review R2 (2026-07-20, `16-full-review-2026-07-20.md`
+ * §3): "Reset all progress" wiped the profile back to `defaultProfile()`
+ * but left this cross-pack key untouched, so `main.ts`'s unconditional
+ * boot-time overlay silently brought quality/renderScale/uiZoom/fpsCap
+ * back — even though the Settings description promises total erasure, in
+ * all five languages. Call from `resetProgress` alongside the profile wipe. */
+export function clearSharedDisplaySettings(): void {
+  if (typeof localStorage === 'undefined') return;
+  localStorage.removeItem(SHARED_KEY);
+}

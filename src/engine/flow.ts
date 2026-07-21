@@ -3,8 +3,8 @@ import type { ContentPack } from '../packs/types';
 import { keepsakesEarnedByFlags } from '../content/keepsakes';
 import { applyEffects, newRun } from './gameState';
 import { shouldShowReflections, shouldShowSocraticAside } from './reflections';
-import { evaluateEpiphanies, isHiddenFromCodex } from './ledger';
-import { backfillVisitedForJump, completeRoom, isResumableRun, makeRegistry, offeredDoors, type RoomRegistry } from './storyEngine';
+import { evaluateEpiphanies, isHiddenFromCodex, resolveLastMessage } from './ledger';
+import { backfillVisitedForJump, completeRoom, hashKey, isResumableRun, makeRegistry, offeredDoors, type RoomRegistry } from './storyEngine';
 import { oneDoorPool, pickOneDoorRoom } from './oneDoor';
 import { defaultProfile, hydrateProfile, type Profile, type SaveStore } from './saveStore';
 import { SceneDirector } from '../scene/director';
@@ -62,7 +62,7 @@ import {
 } from './text/keys';
 import { applyLocaleToDocument } from '../ui/locale';
 import { isFullscreen, rememberFullscreenForReload, shouldOpenPauseOnEscape, toggleFullscreen } from '../ui/fullscreen';
-import { writeSharedDisplaySettings } from './sharedDisplaySettings';
+import { writeSharedDisplaySettings, clearSharedDisplaySettings } from './sharedDisplaySettings';
 import { applyUiZoom } from '../ui/zoom';
 import { installUatHandle, isJumpableRoom, speedMultiplierFor, type UatHandle } from './uatMode';
 
@@ -216,7 +216,28 @@ export class Game {
       }
       if (e.key === 'f' || e.key === 'F') void toggleFullscreen();
     });
-    addEventListener('pointerdown', () => sound.primeOnGesture(), { once: true });
+    // Game-experience review H1 (2026-07-20, `16-full-review-2026-07-20.md`
+    // §10): a pointerdown-only listener never fires for a keyboard-only
+    // player (Tab + Enter/Space through the whole title flow) — the
+    // AudioContext's required user-gesture unlock never happened, so they
+    // got a silent game with no visible cause. Same triple-listener +
+    // shared one-shot-guard pattern as `fullscreen.ts`'s
+    // `resumeFullscreenAfterReload` (click/keydown/pointerdown all count as
+    // gestures; only the first to fire actually primes).
+    {
+      let primed = false;
+      const prime = () => {
+        if (primed) return;
+        primed = true;
+        removeEventListener('click', prime, true);
+        removeEventListener('keydown', prime, true);
+        removeEventListener('pointerdown', prime, true);
+        sound.primeOnGesture();
+      };
+      addEventListener('click', prime, { capture: true });
+      addEventListener('keydown', prime, { capture: true });
+      addEventListener('pointerdown', prime, { capture: true });
+    }
 
     this.applySettings();
 
@@ -429,6 +450,13 @@ export class Game {
   /** Wipes the whole profile back to defaults and starts over from a clean title screen. */
   private async resetProgress() {
     await this.chainSave(defaultProfile());
+    // Game-experience review R2 (2026-07-20, `16-full-review-2026-07-20.md`
+    // §3): the Settings description promises this wipes "everything —
+    // field notes, endings, settings, your current run" in all five
+    // languages, but the cross-pack sharedDisplaySettings key survived and
+    // main.ts's boot-time overlay silently brought quality/renderScale/
+    // uiZoom/fpsCap back on the very next load — a wipe that wasn't total.
+    clearSharedDisplaySettings();
     this.reloadPage();
   }
 
@@ -466,7 +494,12 @@ export class Game {
 
   private settingsActions(): SettingsActions {
     return {
-      hasRun: this.inGame || Boolean(this.profile.run && !this.profile.run.finished),
+      // Game-experience review H3 (2026-07-20, `16-full-review-2026-07-20.md`
+      // §10): `this.inGame` stays true up through the end screen, so without
+      // the `!this.state.finished` guard, the end screen's own Settings
+      // panel offered a "Reset current run" for a run that had already
+      // ended — a misleading action on a run there was nothing left to reset.
+      hasRun: (this.inGame && !this.state.finished) || Boolean(this.profile.run && !this.profile.run.finished),
       onResetRun: () => void this.resetRun(),
       onResetProgress: () => void this.resetProgress(),
       onExportProfile: () => this.exportProfile(),
@@ -486,7 +519,7 @@ export class Game {
     this.stageBottom.classList.add('overlay-hidden');
     const action = await showPauseMenu(this.ui);
     if (action === 'codex') await showCodex(this.ui, this.profile, this.pack);
-    if (action === 'ledger') await showLedger(this.ui, this.profile, this.registry, this.pack.graph.understorySequence, this.pack.epiphanies, this.pack.endingRules.endingsTotal, this.pack.keepsakes.length, this.lastMessageLabel());
+    if (action === 'ledger') await showLedger(this.ui, this.profile, this.registry, this.pack.graph.understorySequence, this.pack.epiphanies, this.pack.endingRules.endingsTotal, this.pack.keepsakes.length, this.lastMessageLabel(), this.pack.hooks.lastMessageId);
     if (action === 'register') await showHotelRegister(this.ui, this.profile, this.pack);
     if (action === 'persona') {
       this.profile.persona = await showPersona(this.ui, this.profile.persona, this.pack.meta.id, this.pack.guide.name);
@@ -565,7 +598,7 @@ export class Game {
       if (action === 'codex') {
         await showCodex(this.ui, this.profile, this.pack);
       } else if (action === 'ledger') {
-        await showLedger(this.ui, this.profile, this.registry, this.pack.graph.understorySequence, this.pack.epiphanies, this.pack.endingRules.endingsTotal, this.pack.keepsakes.length, this.lastMessageLabel());
+        await showLedger(this.ui, this.profile, this.registry, this.pack.graph.understorySequence, this.pack.epiphanies, this.pack.endingRules.endingsTotal, this.pack.keepsakes.length, this.lastMessageLabel(), this.pack.hooks.lastMessageId);
       } else if (action === 'register') {
         await showHotelRegister(this.ui, this.profile, this.pack);
       } else if (action === 'oneDoor') {
@@ -617,10 +650,23 @@ export class Game {
           }
           // Examined Path (spec 05): offered only on a genuinely fresh run,
           // never on 'continue' — the mode is immutable once a run starts.
-          const examined = await showExaminedPathOffer(this.ui, this.profile.settings.examinedPathDefault);
-          this.profile.settings = { ...this.profile.settings, examinedPathDefault: examined };
-          await this.persist();
-          this.state = newRun(undefined, this.priorFromProfile(), this.keepsakesFromProfile(), examined);
+          // Game-experience review E6 (2026-07-20, `15-game-experience-
+          // review.md` §8, owner decision): on a genuinely first-ever run
+          // (no completed runs yet — About and Persona are also only
+          // auto-shown then, which is what made the onboarding stack
+          // heavy), the offer is deferred past both of those to the first
+          // reflections-bearing choice instead — see enterRoom's own
+          // comment for where it actually fires. Every returning player,
+          // and a "Walk again" replay (which builds its run the same way
+          // this branch always has), still sees the offer here, unchanged.
+          if (this.profile.runsCompleted === 0) {
+            this.state = newRun(undefined, this.priorFromProfile(), this.keepsakesFromProfile(), false, true);
+          } else {
+            const examined = await showExaminedPathOffer(this.ui, this.profile.settings.examinedPathDefault);
+            this.profile.settings = { ...this.profile.settings, examinedPathDefault: examined };
+            await this.persist();
+            this.state = newRun(undefined, this.priorFromProfile(), this.keepsakesFromProfile(), examined);
+          }
         }
         break;
       }
@@ -926,6 +972,7 @@ export class Game {
       this.hud.update(this.state.hearts, this.state.lucidity);
       if (room.id === this.pack.hooks.lastMessageId) {
         this.profile.lastMessage = choice.text.replace(/^[“"']|[”"']$/g, '');
+        this.profile.lastMessageChoiceId = choice.id;
       }
       // Bump currentStage before any persist below (including the
       // first-heart-loss explainer's own persist right after this) — a
@@ -958,6 +1005,25 @@ export class Game {
         keyOf: (bi) => roomChoiceOutcomeKey(room.id, choice.id, bi),
         tokens,
       });
+      // Game-experience review E6 (2026-07-20, `15-game-experience-
+      // review.md` §8): the deferred Examined Path offer fires here — the
+      // first choice with reflections attached, the Examined Path's own
+      // definition of "significant" (shouldShowReflections below gates on
+      // the same field). Sits before that check so an accepted offer pays
+      // off immediately: this exact choice's own reflection card renders
+      // right after, the clerk the panel describes appearing the moment
+      // the player says yes. Trade-off, accepted: the Act I Socratic
+      // aside (which fires at the act 0->1 transition, before this block
+      // can ever run) is skipped on this one first-ever run — every later
+      // act's aside shows normally once `examined` is set here.
+      if (this.state.examinedOfferPending && choice.reflections?.length && !this.oneDoorMode) {
+        this.state = { ...this.state, examinedOfferPending: false };
+        this.text.hide();
+        const examined = await showExaminedPathOffer(this.ui, this.profile.settings.examinedPathDefault);
+        this.profile.settings = { ...this.profile.settings, examinedPathDefault: examined };
+        this.state = { ...this.state, examined };
+        await this.persist();
+      }
       // Examined Path (spec 05): plural, non-judging readings of the choice
       // just made — after the outcome has fully landed, never before. A
       // no-op for every player who hasn't opted in (shouldShowReflections
@@ -1122,54 +1188,71 @@ export class Game {
     this.profile.epiphanies.push(...newEpiphanies);
     await this.persist();
 
-    const recap = this.state.visited
-      .map((id) => this.registry.get(id))
-      .map((room) => ({
-        title: t(roomTitleKey(room.id), room.title),
-        thesis:
-          room.id === this.pack.hooks.lastMessageId && this.profile.lastMessage
-            ? `“${this.profile.lastMessage}”`
-            : t(roomNoteTitleKey(room.id), room.fieldNote?.title ?? ''),
-      }));
-
-    // T4 "Morning Report": the run's pivotal choices, quoted back — the
-    // ones that actually moved an axis or cost/spared a heart, in the order
-    // taken, capped at 4 so the screen stays a glance, not a transcript dump.
-    const pivotalChoices = this.state.transcript
-      .filter((entry) => (entry.effects?.axes && Object.values(entry.effects.axes).some((v) => v)) || entry.effects?.hearts)
-      .slice(0, 4)
-      .map((entry) => t(roomChoiceTextKey(entry.roomId, entry.choiceId), entry.choiceText));
-
-    // T4: a few named doors this run never opened — teasers only, the same
-    // one-line hook shown on an unvisited door card, never a spoiler. Capped
-    // at 3 and drawn only from rooms the codex doesn't already hide (spec 06
-    // §5 — the Understory shouldn't advertise itself here either).
-    const doorsNeverOpened = this.pack.rooms
-      .filter((r) => !this.state.visited.includes(r.id) && !isHiddenFromCodex(r.id, this.profile, this.pack.graph.understorySequence))
-      .slice(0, 3)
-      .map((r) => t(roomTeaserKey(r.id), r.teaser));
-
-    // Game-experience review E5 (2026-07-19): the keepsakes this run began
-    // with (RunState.keepsakesHeld, stamped at newRun() from the profile
-    // and never mutated mid-run — see keepsakesFromProfile's own comment).
-    const keepsakesCarried = (this.state.keepsakesHeld ?? [])
-      .map((id) => this.pack.keepsakes.find((k) => k.id === id))
-      .filter((def): def is (typeof this.pack.keepsakes)[number] => Boolean(def))
-      .map((def) => t(keepsakeKey(def.id, 'name'), def.name));
+    // Game-experience review N1 (2026-07-20, `16-full-review-2026-07-20.md`
+    // §3): every translated piece of the end screen used to be built once,
+    // before the action loop below — E4's new Settings button re-enters
+    // that loop, so a player who switched language from the end screen
+    // returned to an end screen still showing the *previous* language
+    // until the next reload. Rebuilt as a closure, called fresh on every
+    // loop iteration (cheap — everything it reads is loop-invariant run
+    // state, just re-resolved through whatever `t()` currently resolves to).
+    const buildEndScreenData = () => ({
+      ending: {
+        ...raw,
+        title: t(endingTitleKey(endingId), raw.title),
+        epitaph: t(endingEpitaphKey(endingId), raw.epitaph),
+      },
+      triptych: this.pack.endingRules.axisTriptych(this.state),
+      recap: this.state.visited
+        .map((id) => this.registry.get(id))
+        .map((room) => ({
+          title: t(roomTitleKey(room.id), room.title),
+          thesis:
+            room.id === this.pack.hooks.lastMessageId && this.profile.lastMessage
+              ? `“${resolveLastMessage(this.profile, this.pack.hooks.lastMessageId)}”`
+              : t(roomNoteTitleKey(room.id), room.fieldNote?.title ?? ''),
+        })),
+      // T4 "Morning Report": the run's pivotal choices, quoted back — the
+      // ones that actually moved an axis or cost/spared a heart, in the
+      // order taken, capped at 4 so the screen stays a glance, not a
+      // transcript dump.
+      pivotalChoices: this.state.transcript
+        .filter((entry) => (entry.effects?.axes && Object.values(entry.effects.axes).some((v) => v)) || entry.effects?.hearts)
+        .slice(0, 4)
+        .map((entry) => t(roomChoiceTextKey(entry.roomId, entry.choiceId), entry.choiceText)),
+      // T4: a few named doors this run never opened — teasers only, the
+      // same one-line hook shown on an unvisited door card, never a
+      // spoiler. Capped at 3 and drawn only from rooms the codex doesn't
+      // already hide (spec 06 §5 — the Understory shouldn't advertise
+      // itself here either). Game-experience review R4 (2026-07-20,
+      // `16-full-review-2026-07-20.md` §3): salted by this run's own
+      // `doorSeed` (same pattern `offeredDoors` already uses to shuffle
+      // door offers) rather than left in room-declaration order — the
+      // unsalted version showed near-identical teasers on almost every
+      // run, since the earliest-declared unvisited rooms nearly always won.
+      doorsNeverOpened: [...this.pack.rooms]
+        .filter((r) => !this.state.visited.includes(r.id) && !isHiddenFromCodex(r.id, this.profile, this.pack.graph.understorySequence))
+        .sort((a, b) => hashKey(a.id, this.state.doorSeed ?? 0) - hashKey(b.id, this.state.doorSeed ?? 0))
+        .slice(0, 3)
+        .map((r) => t(roomTeaserKey(r.id), r.teaser)),
+      // Game-experience review E5 (2026-07-19): the keepsakes this run
+      // began with (RunState.keepsakesHeld, stamped at newRun() from the
+      // profile and never mutated mid-run — see keepsakesFromProfile's
+      // own comment).
+      keepsakesCarried: (this.state.keepsakesHeld ?? [])
+        .map((id) => this.pack.keepsakes.find((k) => k.id === id))
+        .filter((def): def is (typeof this.pack.keepsakes)[number] => Boolean(def))
+        .map((def) => t(keepsakeKey(def.id, 'name'), def.name)),
+    });
 
     for (;;) {
       const action = await showEndScreen(this.ui, {
-        ending,
-        triptych: this.pack.endingRules.axisTriptych(this.state),
-        recap,
+        ...buildEndScreenData(),
         lucidity: this.state.lucidity,
         hearts: Math.max(0, this.state.hearts),
         newNotes: this.profile.codexUnlocked.length - this.runStartNotes,
         newEpiphanies,
         epiphanies: this.pack.epiphanies,
-        pivotalChoices,
-        doorsNeverOpened,
-        keepsakesCarried,
       });
       if (action === 'codex') {
         await showCodex(this.ui, this.profile, this.pack);

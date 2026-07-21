@@ -1,9 +1,9 @@
 // UAT 20 — LIMERENCE real door-to-outcome flow, driven by actual clicks
 // (not jump()). Mirrors script 19's exact onboarding path (Begin -> auto-
-// About -> persona skip -> Examined Path offer -> the prologue's own
-// door) under `?pack=limerence`, then clicks into the first real room and
-// its first choice — confirms the "clicking user" path works end to end
-// in LIMERENCE too, not just ANAMNESIS.
+// About -> persona skip -> the prologue's own door — Examined Path offer
+// deferred, per E6) under `?pack=limerence`, then clicks into the first
+// real room and its first choice — confirms the "clicking user" path
+// works end to end in LIMERENCE too, not just ANAMNESIS.
 import { withPage, gotoUat, advance, assert } from './_helpers.mjs';
 
 await withPage(async (page) => {
@@ -24,7 +24,7 @@ await withPage(async (page) => {
   await page.getByText('Skip', { exact: false }).click();
   await page.waitForTimeout(400);
 
-  await page.getByText('Walk plainly', { exact: false }).click();
+  // E6: no Examined Path offer here anymore — straight to the prologue door.
   await page.locator('.choice-card').first().waitFor({ state: 'visible', timeout: 8000 });
 
   const firstRoomCard = page.locator('.choice-card').first();

@@ -1,10 +1,11 @@
 // UAT 19 — ANAMNESIS real door-to-outcome flow, driven by actual clicks
 // (not jump()). Walks the same real onboarding sequence script 01 verifies
-// (Begin -> auto-About -> persona skip -> Examined Path offer -> the
-// prologue's own door), then goes one step further: clicks a real door in
-// the first real room, advances its outcome beats, and confirms the game
-// lands on a genuine follow-on room — the literal "clicking user" path
-// through two full rooms, not a state-injected shortcut.
+// (Begin -> auto-About -> persona skip -> the prologue's own door — the
+// Examined Path offer no longer appears here, deferred per E6), then goes
+// one step further: clicks a real door in the first real room, advances
+// its outcome beats, and confirms the game lands on a genuine follow-on
+// room — the literal "clicking user" path through two full rooms, not a
+// state-injected shortcut.
 import { withPage, gotoUat, advance, assert } from './_helpers.mjs';
 
 await withPage(async (page) => {
@@ -25,7 +26,7 @@ await withPage(async (page) => {
   await page.getByText('Skip', { exact: false }).click();
   await page.waitForTimeout(400);
 
-  await page.getByText('Walk plainly', { exact: false }).click();
+  // E6: no Examined Path offer here anymore — straight to the prologue door.
   await page.locator('.choice-card').first().waitFor({ state: 'visible', timeout: 8000 });
 
   const firstRoomCard = page.locator('.choice-card').first();

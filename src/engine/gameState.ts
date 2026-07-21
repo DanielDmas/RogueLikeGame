@@ -12,12 +12,16 @@ export const LUCIDITY_FLOOR = 5;
  * a player's first-ever run. `keepsakesHeld` mirrors `Profile.keepsakes` at
  * run start (see `RunState.keepsakesHeld`) — omit it for a keepsake-less run.
  * `examined` stamps whether this run walks the Examined Path (spec 05) —
- * decided once, at the opt-in panel, and immutable for the run's lifetime. */
+ * decided once, at the opt-in panel, and immutable for the run's lifetime.
+ * `examinedOfferPending` (E6) arms the deferred-offer path for a genuinely
+ * first-ever run — omit it (or pass false) for every other run, including
+ * a replay via "Walk again". */
 export function newRun(
   doorSeed: number = Math.floor(Math.random() * 2 ** 31),
   prior?: RunState['prior'],
   keepsakesHeld?: string[],
   examined?: boolean,
+  examinedOfferPending?: boolean,
 ): RunState {
   return {
     hearts: MAX_HEARTS,
@@ -32,6 +36,7 @@ export function newRun(
     prior,
     keepsakesHeld,
     examined,
+    examinedOfferPending,
     act: 0,
     actOptionalDone: 0,
     memoryLost: false,

@@ -66,6 +66,16 @@ export interface RunState {
    * cards, no Socratic asides — a player who never opts in sees nothing
    * different, ever. */
   examined?: boolean;
+  /** Game-experience review E6 (2026-07-20, `15-game-experience-review.md`
+   * §8): on a genuinely first-ever run (`profile.runsCompleted === 0`), the
+   * Examined Path offer is deferred past About+Persona to the first
+   * reflections-bearing choice, rather than stacking as a third modal
+   * before the player's first beat. True only for the single window
+   * between run start and that first offer; `enterRoom` clears it the
+   * moment the offer is shown (accepted or not). Undefined/false is the
+   * common case — every returning-player run, and any run replayed via
+   * "Walk again", still offers the panel at the very start, unchanged. */
+  examinedOfferPending?: boolean;
   act: ActId;
   /** optional (non-gate) rooms completed in the current act */
   actOptionalDone: number;

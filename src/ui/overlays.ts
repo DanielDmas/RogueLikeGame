@@ -1,7 +1,7 @@
 import type { Persona, Profile, Settings } from '../engine/saveStore';
 import type { Ending, FieldNote, Room } from '../engine/schema';
 import type { ContentPack, EpiphanyDef } from '../packs/types';
-import { earnedGuestStamps, epiphanyLine, epiphanyLines, isHiddenFromCodex, ledgerStats } from '../engine/ledger';
+import { earnedGuestStamps, epiphanyLine, epiphanyLines, isHiddenFromCodex, ledgerStats, resolveLastMessage } from '../engine/ledger';
 import type { RoomRegistry } from '../engine/storyEngine';
 import { clear, el } from './dom';
 import { installFocusTrap } from './focusTrap';
@@ -195,8 +195,13 @@ function sectionEl(title: string): { section: HTMLElement; body: HTMLElement } {
   return { section, body };
 }
 
-/** A destructive action needs one extra click within a few seconds to fire — no separate confirm dialog needed. */
-function confirmButton(label: string, confirmLabel: string, onConfirm: () => void): HTMLButtonElement {
+/** A destructive action needs one extra click within a few seconds to fire — no separate confirm dialog needed.
+ * `onConfirm` receives `disarm` (S4, game-experience review, 2026-07-20,
+ * `16-full-review-2026-07-20.md` §8) — most call sites (reset run/progress)
+ * reload or replace the button and never need it, but the Import button's
+ * flow can fail without navigating away at all, and without this the button
+ * stayed permanently armed ("click again to confirm") after one bad paste. */
+function confirmButton(label: string, confirmLabel: string, onConfirm: (disarm: () => void) => void): HTMLButtonElement {
   const btn = el('button', 'toggle danger', label);
   let armed = false;
   let timer: ReturnType<typeof setTimeout> | null = null;
@@ -214,7 +219,7 @@ function confirmButton(label: string, confirmLabel: string, onConfirm: () => voi
       return;
     }
     if (timer) clearTimeout(timer);
-    onConfirm();
+    onConfirm(disarm);
   });
   return btn;
 }
@@ -495,11 +500,16 @@ export function showSettings(ui: HTMLElement, settings: Settings, actions: Setti
     const importBtn = confirmButton(
       t(uiKey('importProfileButton'), 'Import'),
       t(uiKey('confirmAgain'), 'Click again to confirm'),
-      () => {
+      (disarm) => {
         const ok = actions.onImportProfile(importArea.value);
         importStatus.textContent = ok
           ? t(uiKey('importProfileSuccess'), 'Imported — reloading…')
           : t(uiKey('importProfileError'), 'That doesn’t look like a valid profile file — nothing was changed.');
+        // A successful import reloads the page immediately (see
+        // onImportProfile's caller) — disarm only matters on failure,
+        // where the panel stays open and a stuck "click again to confirm"
+        // button would otherwise require a fresh page load to reset.
+        if (!ok) disarm();
       },
     );
     importTop.append(importBtn);
@@ -753,10 +763,20 @@ export function showCredits(ui: HTMLElement, pack: ContentPack): Promise<void> {
     panel.append(body);
     const back = el('button', 'title-btn', t(uiKey('back'), 'Back'));
     back.style.marginTop = '26px';
-    back.addEventListener('click', () => {
+    const close = () => {
+      removeEventListener('keydown', onEscape);
       o.remove();
       resolve();
-    });
+    };
+    // Game-experience review S2 (2026-07-20, `16-full-review-2026-07-20.md`
+    // §8): every sibling overlay (showAbout, showRoomArticle) closes on
+    // Escape; this one only closed on a Back click, inconsistent with the
+    // pause menu's own Escape handling one level up.
+    const onEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close();
+    };
+    addEventListener('keydown', onEscape);
+    back.addEventListener('click', close);
     panel.append(back);
     o.appendChild(panel);
   });
@@ -901,6 +921,11 @@ export function showCodex(ui: HTMLElement, profile: Profile, pack: ContentPack):
     const addCard = (id: string, actLabel: string, title: string, thinkers: string, note: Room['fieldNote'], isEnding = false) => {
       const unlocked = profile.codexUnlocked.includes(id);
       const card = el('button', `codex-card${unlocked ? '' : ' locked'}${isEnding ? ' ending-card' : ''}`);
+      // Game-experience review S3 (2026-07-20, `16-full-review-2026-07-20.md`
+      // §8): a locked card has no click handler below and nothing to open —
+      // leaving it a focusable, enabled <button> meant a keyboard user
+      // tabbed through 30+ inert stops to reach the real content.
+      if (!unlocked) card.disabled = true;
       card.append(el('div', 'cx-act', actLabel));
       card.append(el('div', 'cx-title', unlocked ? title : '· · ·'));
       card.append(el('div', 'cx-thinkers', unlocked ? thinkers : notYetWalked));
@@ -938,16 +963,17 @@ export function showCodex(ui: HTMLElement, profile: Profile, pack: ContentPack):
         // Room 19's codex entry is the sentence you sent
         const unlocked = profile.codexUnlocked.includes(room.id);
         const lastMessageTitle = t(roomTitleKey(room.id), room.title);
+        const resolvedLastMessage = resolveLastMessage(profile, pack.hooks.lastMessageId);
         addCard(
           room.id,
           actNameFor(room.act),
           lastMessageTitle,
-          unlocked && profile.lastMessage ? `“${profile.lastMessage}”` : '',
-          unlocked && profile.lastMessage
+          unlocked && resolvedLastMessage ? `“${resolvedLastMessage}”` : '',
+          unlocked && resolvedLastMessage
             ? {
                 title: lastMessageTitle,
                 thinkers: t(uiKey('senderYou'), 'sender: you'),
-                body: `${t(uiKey('lastMessageBody'), 'You had one sentence, and this was it:')} ${profile.lastMessage}`,
+                body: `${t(uiKey('lastMessageBody'), 'You had one sentence, and this was it:')} ${resolvedLastMessage}`,
               }
             : undefined,
         );
@@ -1137,6 +1163,10 @@ export function showLedger(
   endingsTotalFn?: (endingsSeen: string[]) => number,
   keepsakeTotal?: number,
   lastMessageLabel?: string,
+  /** S1: the active pack's own `hooks.lastMessageId`, threaded down to
+   * `ledgerStats` so the "last message" row resolves through the
+   * translation path for the right hook room. */
+  lastMessageId?: string,
 ): Promise<void> {
   return new Promise((resolve) => {
     const o = overlay(ui);
@@ -1144,7 +1174,7 @@ export function showLedger(
     panel.append(el('h2', undefined, t(uiKey('ledger'), "Traveler's Ledger")));
 
     const stats = el('div', 'ledger-stats');
-    for (const row of ledgerStats(profile, registry, understorySequence, endingsTotalFn, keepsakeTotal, lastMessageLabel)) {
+    for (const row of ledgerStats(profile, registry, understorySequence, endingsTotalFn, keepsakeTotal, lastMessageLabel, lastMessageId)) {
       const r = el('div', 'ledger-row');
       r.append(el('span', 'ledger-label', row.label), el('span', 'ledger-value', row.value));
       stats.appendChild(r);

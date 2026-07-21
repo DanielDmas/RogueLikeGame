@@ -62,8 +62,20 @@ export interface Profile {
   codexUnlocked: string[];
   /** endings seen */
   endingsSeen: string[];
-  /** the sentence sent in Room 19, kept as its codex entry */
+  /** the sentence sent in Room 19, kept as its codex entry — always the
+   * choice's raw ENGLISH source text (never translated at write time), so
+   * it can serve as `t()`'s English fallback wherever it's displayed. */
   lastMessage: string | null;
+  /** Game-experience review S1 (2026-07-20, `16-full-review-2026-07-20.md`
+   * §8): the id of the choice `lastMessage` was recorded from — lets every
+   * display surface re-resolve the sentence through the translation
+   * resolver at *display* time (via `roomChoiceTextKey`), instead of the
+   * raw English string every surface used to render verbatim regardless of
+   * the player's language. `null` on a legacy save from before this field
+   * existed, or if `lastMessage` itself is null; `resolveLastMessage`
+   * (ledger.ts) degrades gracefully to the old English-only behavior in
+   * that case, never throwing on an unresolvable id. */
+  lastMessageChoiceId: string | null;
   runsCompleted: number;
   settings: Settings;
   persona: Persona;
@@ -118,6 +130,7 @@ export function defaultProfile(): Profile {
     codexUnlocked: [],
     endingsSeen: [],
     lastMessage: null,
+    lastMessageChoiceId: null,
     runsCompleted: 0,
     settings: {
       typewriter: true,
