@@ -200,15 +200,14 @@ export class TextPanel {
     maxSeen: number,
   ): Promise<{ type: 'forward' } | { type: 'back' } | { type: 'jump'; index: number }> {
     return new Promise((resolve) => {
-      const dotHandlers: ((e: Event) => void)[] = [];
-      const dotKeyHandlers: ((e: KeyboardEvent) => void)[] = [];
+      const dotHandlers: { click: (e: Event) => void; key: (e: KeyboardEvent) => void }[] = [];
       const cleanup = () => {
         panel.removeEventListener('click', onForwardClick);
         removeEventListener('keydown', onKey);
         backBtn.removeEventListener('click', onBack);
         dotEls.forEach((d, j) => {
-          d.removeEventListener('click', dotHandlers[j]);
-          d.removeEventListener('keydown', dotKeyHandlers[j]);
+          d.removeEventListener('click', dotHandlers[j].click);
+          d.removeEventListener('keydown', dotHandlers[j].key);
         });
       };
       /** Typing-in-progress swallows the first interaction (skip to full text) — same guard for forward, back, and jump. */
@@ -275,8 +274,7 @@ export class TextPanel {
             handler(e);
           }
         };
-        dotHandlers[j] = handler;
-        dotKeyHandlers[j] = keyHandler;
+        dotHandlers[j] = { click: handler, key: keyHandler };
         d.addEventListener('click', handler);
         d.addEventListener('keydown', keyHandler);
       });

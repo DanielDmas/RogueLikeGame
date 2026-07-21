@@ -220,23 +220,14 @@ export class Game {
     // §10): a pointerdown-only listener never fires for a keyboard-only
     // player (Tab + Enter/Space through the whole title flow) — the
     // AudioContext's required user-gesture unlock never happened, so they
-    // got a silent game with no visible cause. Same triple-listener +
-    // shared one-shot-guard pattern as `fullscreen.ts`'s
-    // `resumeFullscreenAfterReload` (click/keydown/pointerdown all count as
-    // gestures; only the first to fire actually primes).
-    {
-      let primed = false;
-      const prime = () => {
-        if (primed) return;
-        primed = true;
-        removeEventListener('click', prime, true);
-        removeEventListener('keydown', prime, true);
-        removeEventListener('pointerdown', prime, true);
-        sound.primeOnGesture();
-      };
-      addEventListener('click', prime, { capture: true });
-      addEventListener('keydown', prime, { capture: true });
-      addEventListener('pointerdown', prime, { capture: true });
+    // got a silent game with no visible cause. click/keydown/pointerdown
+    // all count as gestures; `sound.primeOnGesture()` is itself idempotent
+    // (soundEngine.ts's own `resumed` guard), so `{ once: true }` on each
+    // listener is enough — no shared armed-flag bookkeeping needed here,
+    // unlike `fullscreen.ts`'s `resumeFullscreenAfterReload`, whose
+    // `requestFullscreen()` call is not itself safe to invoke twice.
+    for (const type of ['click', 'keydown', 'pointerdown'] as const) {
+      addEventListener(type, () => sound.primeOnGesture(), { once: true, capture: true });
     }
 
     this.applySettings();

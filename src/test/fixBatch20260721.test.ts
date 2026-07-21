@@ -78,14 +78,12 @@ describe('S4 — confirmButton disarms on the Import button\'s failed-import pat
 });
 
 describe('H1 — audio priming fires on click/keydown/pointerdown, not pointerdown alone', () => {
-  it('the priming listener is a triple-registered, shared one-shot guard (mirrors fullscreen.ts)', () => {
-    const idx = flowSrc.indexOf('sound.primeOnGesture()');
-    expect(idx, 'primeOnGesture call not found').toBeGreaterThan(-1);
-    const region = flowSrc.slice(Math.max(0, idx - 1200), idx + 300);
-    expect(region).toContain("addEventListener('click', prime, { capture: true });");
-    expect(region).toContain("addEventListener('keydown', prime, { capture: true });");
-    expect(region).toContain("addEventListener('pointerdown', prime, { capture: true });");
-    expect(region).toContain('let primed = false;');
+  it('registers a one-shot priming listener for each of the three gesture types', () => {
+    const idx = flowSrc.indexOf("addEventListener(type, () => sound.primeOnGesture()");
+    expect(idx, 'primeOnGesture listener registration not found').toBeGreaterThan(-1);
+    const region = flowSrc.slice(Math.max(0, idx - 200), idx + 200);
+    expect(region).toContain("for (const type of ['click', 'keydown', 'pointerdown'] as const)");
+    expect(region).toContain("addEventListener(type, () => sound.primeOnGesture(), { once: true, capture: true });");
   });
 });
 
