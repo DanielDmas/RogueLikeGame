@@ -23,6 +23,19 @@ const TARGET_FPS = 60;
  * builder files). */
 const DIORAMA_SCALE = 1.6;
 
+/** Owner report (2026-07-21, most visible in LIMERENCE): once bigger/closer
+ * (DIORAMA_SCALE/DIORAMA_Z above) made dioramas fill more of the frame, the
+ * bottom-anchored text/choices panel started covering a meaningful slice of
+ * many vignettes — most builders anchor floor-level furniture (a bed, a
+ * table, a counter) right around their own local y=0, which is exactly the
+ * screen band the panel sits over during room-reading (the camera parks
+ * close after `walkThrough`, not at the wider corridor framing). A uniform
+ * vertical lift of the whole group, applied here rather than in each of the
+ * 60+ individual builders, raises every vignette's on-screen footprint above
+ * the panel line without touching its size — same single-tunable-constant
+ * pattern as DIORAMA_SCALE. */
+const DIORAMA_Y_LIFT = 0.6;
+
 /**
  * How far back the camera needs to sit so every door (with a safety margin)
  * stays inside the horizontal field of view, given the door count and the
@@ -405,9 +418,14 @@ export class SceneDirector {
     // vignette in proportion without touching each one's individual layout,
     // paired with DIORAMA_Z itself moving closer to camera (dioramas.ts).
     d.group.scale.setScalar(DIORAMA_SCALE);
+    // Lift after scaling: this is a translation of the whole group's world
+    // position, not a rescale, so it doesn't interact with the scale above —
+    // order doesn't matter here, but scale-then-position reads as "size it,
+    // then place it," matching how the two constants are documented.
+    d.group.position.y += DIORAMA_Y_LIFT;
     this.scene.add(d.group);
     this.dioramaFillLight = new THREE.PointLight(0xfff2dc, 4.5, 9, 1.6);
-    this.dioramaFillLight.position.set(0, 0.75, DIORAMA_Z + 1.1);
+    this.dioramaFillLight.position.set(0, 0.75 + DIORAMA_Y_LIFT, DIORAMA_Z + 1.1);
     this.scene.add(this.dioramaFillLight);
   }
 

@@ -340,9 +340,15 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
 .beat-dot.clickable:hover { opacity: 1; transform: scale(1.4); }
 
 /* F4: reread the previous beat within the same stage — hidden on the first
-   beat (nothing to go back to), instant (no typewriter) on every re-visit. */
+   beat (nothing to go back to), instant (no typewriter) on every re-visit.
+   `left: 4px` (not a negative value poking outside the panel): LIMERENCE's
+   `.text-panel` has a `clip-path` (below) that clips descendant rendering
+   to its own box, so a button positioned outside that box — as this one
+   used to be, at `left: -6px` — got its outer edge silently cut off in
+   that pack (owner report, 2026-07-21). Keeping it fully inside the box
+   renders identically, and correctly, in both packs. */
 .beat-back {
-  display: none; position: absolute; left: -6px; top: 2px; width: 26px; height: 26px;
+  display: none; position: absolute; left: 4px; top: 2px; width: 26px; height: 26px;
   border-radius: 50%; border: 1px solid var(--panel-edge); background: var(--panel);
   color: var(--ink-faint); font-size: 15px; line-height: 1; cursor: pointer;
 }

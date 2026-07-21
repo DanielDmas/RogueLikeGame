@@ -369,3 +369,59 @@ Asked directly "where should this project go next": the game is content-complete
 3. ~~**Do the small hardening batch (new items 11, 12, 14)** in one sitting~~ — **done, 2026-07-16, fifteenth session** (see the dated entry above). ~~Item 13 (bundle splitting) still deliberately does NOT belong in that batch~~ — **also done, 2026-07-16, sixteenth session, as its own separate pass with the before/after verification this note called for** (real bundle sizes measured, both packs confirmed to still load and play correctly via the dev server override and the actual `dist-web/` build artifact). Surfaced one new, smaller, genuinely separate finding while verifying it — see item 18.
 4. **Treat the Porter/Usher pattern-barks (item 4) and LIMERENCE visual rework (item 3) as genuinely separate creative sessions**, not fit into a coding-hardening pass — both are writing/design-heavy and deserve the same "own dedicated pass" respect CLAUDE.md gives translation work, for the same reason: rushed authored content or rushed visual design reads as rushed to a player in a way a bugfix never does.
 5. **Process note for future sessions**: this session's independent-review approach (dispatching a background review agent on a *different* model than the one that's been doing the implementation work, explicitly asked to find what prior passes missed rather than re-confirm what's already known) surfaced real bugs — including one in code shipped earlier the same session — that self-review across many consecutive sessions had not caught. Worth repeating periodically (e.g., every few sessions, or before any release-candidate tag) rather than only at the start of a review cycle. The codebase map (`14-codebase-map.md`) should keep being read *and updated* as part of that same discipline — it was several sessions stale (missing all game-content tables, several file-size figures 20-30% low) before this session's rewrite, which is exactly the kind of drift that makes a fresh reviewer redo work a map should have shortcut.
+
+---
+
+# Diorama occlusion + LIMERENCE back-button clip fix — 2026-07-21
+
+Owner report: "the dioramas (objects in each door) have the right size, but
+they are covered by the text/choices window... put them a bit up... do not
+make them much smaller. I noticed it in Limerence. Also make sure the back
+buttons in the doors are present." Investigated live (real door-click →
+`walkThrough` → screenshot, not just `jump()`, since `jump()`'s reload path
+resumes mid-room without ever animating the camera in and so never
+reproduces the close "parked" framing a real player actually reads beats
+from) before touching any code.
+
+**Root cause 1 — diorama occlusion.** The prior "bigger, closer" diorama
+pass (`DIORAMA_SCALE = 1.6`, `DIORAMA_Z` moved closer) made every vignette
+fill more of the frame; most builders (in both packs, but especially
+LIMERENCE's floor-level furniture — beds, tables, counters) anchor their
+local origin at or near `y = 0`, which is exactly the screen band the
+bottom-anchored, un-capped-height text/choices panel occupies. **Fix:** a
+new `DIORAMA_Y_LIFT = 0.6` constant in `scene/director.ts`, applied as
+`d.group.position.y += DIORAMA_Y_LIFT` in `setDiorama` (after the existing
+scale, before adding the group to the scene) — a pure vertical translation
+of the whole group's world position, not a rescale, so nothing shrinks.
+The diorama fill light's Y position was updated to track the same lift so
+the raised group stays lit. Single tunable constant, same pattern as
+`DIORAMA_SCALE` itself — no changes to any of the 60+ individual diorama
+builder files in either pack.
+
+**Root cause 2 — LIMERENCE back button.** `.beat-back` (the F4 "reread the
+previous beat" button) was positioned at `left: -6px`, deliberately poking
+outside `.text-panel`'s own box as a small floating tab. LIMERENCE's
+`.text-panel` has a `clip-path` (its distinctive cut-corner chrome) that
+clips *all* descendant rendering to the element's own box — so in
+LIMERENCE specifically, the button's outer edge was silently cut off by
+that clip-path; ANAMNESIS has no such clip-path on `.text-panel` and was
+unaffected. **Fix:** changed `.beat-back`'s `left` from `-6px` to `4px` —
+fully inside the box in both packs, renders identically and correctly
+everywhere. One property, no touch to the LIMERENCE clip-path itself
+(which has its own separate aesthetic rationale).
+
+**Verification.** New `dioramaPanelOcclusion.test.ts` (5 tests) locks in
+both fixes' shape at the source level (the lift constant's bounds, its
+application order in `setDiorama`, the fill light tracking it, the back
+button's non-negative left offset, the LIMERENCE clip-path rule staying
+intact). Full regression: `tsc` clean, **1142/1142 tests green** (5 new).
+Live UAT: new scripts `55-diorama-lift-and-back-button.mjs` (jump()-based —
+verifies the back button's on-screen geometry stays inside its panel box
+once visible, 2nd beat onward), `56-diorama-lift-real-walkthrough.mjs`
+(a real Begin → prologue-door-click → `walkThrough` flow — the actual
+close "parked" framing the report was about; screenshot confirmed the
+diorama's key objects sit fully above the panel with room to spare, not
+clipped), and `57-diorama-lift-anamnesis-sanity.mjs` (confirms no visual
+regression in ANAMNESIS, where the lift is shared code but the reported
+bug wasn't). All three pass; screenshots reviewed directly, not just
+asserted programmatically.
