@@ -425,3 +425,78 @@ clipped), and `57-diorama-lift-anamnesis-sanity.mjs` (confirms no visual
 regression in ANAMNESIS, where the lift is shared code but the reported
 bug wasn't). All three pass; screenshots reviewed directly, not just
 asserted programmatically.
+
+---
+
+# Act-headline duration + title-scale typesetting — 2026-07-21
+
+Owner directive: *"focus on whether the act headlines before each act are
+shown for long enough, at least 4 seconds."* Measured first, then fixed.
+
+**Measured baseline (the answer was no).** The act headline is the
+end-of-act floor-name interlude card (`.interlude`, Phase V4a), shown by
+`syncTheme()` while the veil is opaque. Its real timeline was:
+`fade(true)` 720ms (card not yet mounted) → `setInterlude()` starts a 300ms
+CSS opacity transition → `INTERLUDE_HOLD_MS` **1500ms** → `fade(false)`
+720ms (the card rides the veil out) → `clearInterlude()`. So the headline
+was on screen ~2.2s total, and — because the hold overlaps its own
+fade-in — only **~1.2s at full opacity**. Well short of the 4s bar.
+
+**Fix.** `INTERLUDE_HOLD_MS` 1500 → **4300ms**, chosen against the strict
+reading of the directive rather than the generous one: 4300 − the 300ms
+fade-in it overlaps = a full **4000ms at full opacity**, plus ~720ms more
+still-legible time riding the veil's fade-out (~5.3s total on screen).
+Unchanged: the hold is still never scaled by `reducedMotion` (reading time
+is not motion — the R1 principle), only by `speedMultiplier` so `?uat=1`
+runs don't wait on human pacing.
+
+**Second, related fix found while reading that code.** `.interlude`'s own
+source comment specs it as *"a large, centered floor-name title card"* —
+but it shipped at `font-size: 15px`, i.e. **smaller than the 17.5px `.beat`
+body text**, so it read as a caption rather than a title. Harmless when it
+flashed for a second; conspicuous now that it owns an otherwise-empty
+screen for 4+ seconds. Retypeset to `clamp(19px, 3.2vw, 38px)` with
+`line-height: 1.35` and `padding: 0 8vw`, so it scales with the viewport
+and wraps gracefully.
+
+**Verification.** New `tests/uat/58-act-headline-duration.mjs` measures the
+real `.interlude.show` lifetime with a `MutationObserver` installed via
+`addInitScript` (armed before app code, since `jump()` reloads the page and
+would destroy a later-installed observer), then divides out the known UAT
+speed multiplier: observed 1330-1379ms at 0.25x → **~5.3-5.5s on screen at
+real speed, 4000ms of it at full opacity**. Both the hold constant and the
+title-scale floor are also pinned by unit tests in
+`interludeTiming.test.ts`, which now read the 300ms fade-in and the 17.5px
+body size from the real CSS rather than duplicating them. Typesetting was
+verified by mounting the card directly (bypassing game timing, no race) at
+three widths of content — short English, a deliberately over-long Czech
+string, and Farsi RTL — all centered, wrapping correctly, zero overflow
+(`scrollWidth === clientWidth` in every case). Regression risk from the
+longer hold (every act transition now waits ~700ms more in UAT mode) was
+checked against the two scripts that actually cross act boundaries: UAT 17
+(ANAMNESIS, acts 0-5) and UAT 18 (LIMERENCE, acts 0-4 + Understory) both
+still pass. Full suite: `tsc` clean, **1144/1144 green** (2 new).
+
+**Honest notes.**
+- A screenshot of the card mid-hold could not be captured through the game's
+  own timing: `?uat=1` compresses the interlude to ~1.1s and this sandbox's
+  headless screenshot latency consistently overshot it. Stopped after one
+  repair attempt per CLAUDE.md rather than iterating. This is a harness
+  limitation, not a product one — the MutationObserver measurement is
+  stronger evidence than a screenshot would have been, and the typesetting
+  was verified visually via the direct-mount route instead.
+- **Open design question for the owner, not decided here:** the headline is
+  unskippable, so a full run now spends ~21s (4 transitions × ~5.3s) on
+  floor-name cards. That is exactly what was asked for, so it ships as
+  asked — but if it starts to read as a wait on replays, the natural
+  follow-up is click/Space-to-skip *after* a 4s minimum has elapsed, which
+  would preserve the floor for first-time players without taxing repeat
+  ones. Deliberately not built unilaterally, since a skip could undercut
+  the directive.
+- The altitude review's theoretical concern about the previous commit's
+  uniform `DIORAMA_Y_LIFT` (that non-floor-anchored dioramas might get
+  pushed out of frame) was **checked empirically and did not materialize**:
+  the highest-anchored diorama in either pack (LIMERENCE's
+  `the-second-account`, local y=0.9) renders comfortably mid-frame with
+  ample headroom. No per-diorama bounding-box lift computation added — it
+  would be complexity with no observed benefit.

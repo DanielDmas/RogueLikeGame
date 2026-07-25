@@ -70,16 +70,30 @@ const PROFILE_ID = 'traveler';
 
 const themeForAct = (act: number): 0 | 1 | 2 | 3 | 4 => (act <= 1 ? (act as 0 | 1) : (act as 2 | 3 | 4));
 
-/** Game-experience review (2026-07-19, `15-game-experience-review.md` §1):
- * the end-of-act interlude card's own CSS fade-in is 300ms, so any hold
- * shorter than that clears the card before it ever finishes appearing.
- * 1500ms gives it a full, readable beat even for longer localized floor
- * names (Czech/German run longer than English; Farsi is read RTL) — never
- * scaled by reducedMotion (a text hold is not motion; shortening reading
- * time under reduced motion would be backwards), only by speedMultiplier
- * (the existing `?uat=1` fast-test-mode scaling every other deliberate
- * pacing wait in this file already respects). */
-const INTERLUDE_HOLD_MS = 1500;
+/** How long the end-of-act floor-name card (the "act headline") holds at
+ * full opacity before the veil fades back out.
+ *
+ * Owner directive (2026-07-21): the act headline must be shown for **at
+ * least 4 seconds**. The visible timeline this constant sits in, measured
+ * against the real CSS (`styles.css`'s `.interlude` / `.veil`):
+ *
+ *   `fade(true)` 720ms  → veil opaque; the card is not mounted yet
+ *   `setInterlude()`    → card begins its own 300ms opacity transition
+ *   this hold           → card at full opacity for HOLD − 300ms
+ *   `fade(false)` 720ms → card rides the veil's fade-out, still legible
+ *   `clearInterlude()`  → reset for the next floor change
+ *
+ * So 4300ms buys a full **4000ms at full opacity** (4300 − the 300ms
+ * fade-in it overlaps), plus ~720ms more still-readable time on the way
+ * out — comfortably clearing the 4s floor under the strictest reading of
+ * it, with headroom for longer localized floor names (Czech/German run
+ * longer than English; Farsi reads RTL).
+ *
+ * Never scaled by reducedMotion — a text hold is reading time, not motion,
+ * and shortening it there would be backwards (the same principle as R1's
+ * toast-hold fix). Only `speedMultiplier` scales it, so `?uat=1` scripted
+ * runs don't wait on pacing that exists purely for a human's benefit. */
+const INTERLUDE_HOLD_MS = 4300;
 
 export class Game {
   private ui: HTMLElement;

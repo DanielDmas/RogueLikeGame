@@ -206,9 +206,16 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; bord
    change (endings, resets, the very first floor of a run). */
 .interlude {
   position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-  font-family: var(--serif); font-size: 15px; letter-spacing: 0.28em; text-transform: uppercase;
+  /* Owner directive (2026-07-21) raised the hold to 4s+, so this card now
+     owns an otherwise-empty screen for a real beat — at the original 15px it
+     read as a small label (below even the 17.5px beat text) rather than the
+     "large, centered floor-name title card" this element was specced as.
+     clamp() scales it with the viewport and stays safe for the longest
+     localized floor names, which wrap on the centered flex line below. */
+  font-family: var(--serif); font-size: clamp(19px, 3.2vw, 38px);
+  letter-spacing: 0.24em; text-transform: uppercase; line-height: 1.35;
   color: var(--gold-text); opacity: 0; transition: opacity 300ms var(--ease);
-  text-align: center; padding: 0 40px;
+  text-align: center; padding: 0 8vw;
 }
 .interlude.show { opacity: 0.85; }
 
