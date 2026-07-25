@@ -576,3 +576,122 @@ framing and hold up — this was a genuine outlier, not the first of 34
 identical problems, so no blanket re-detailing pass is proposed. If a
 future pass wants one, the cheap tell is any diorama whose whole motif is
 fewer than ~8 primitives.
+
+---
+
+# Player-perspective pass, continued: two more diorama nits + a systemic
+# Act III wash-out bug — 2026-07-25
+
+Owner directive: *"develop, continue, do a recheck, playing, but fixing
+run, figure out new tests if possible, new uats, everything... make it all
+perfect."* Direct continuation of 2026-07-21's prologue pass — the "cheap
+tell" it left as a note (any diorama whose motif is fewer than ~8
+primitives) is exactly how the next two findings surfaced.
+
+**A permanent QA tool, built first because everything else needed it.**
+`jump()` (the `?uat=1` handle's room-teleport) resumes straight into a room
+without ever calling `SceneDirector.walkThrough()` — the camera is left
+wherever it was (typically the wide corridor framing), not the close
+resting position a real door-crossing leaves it in. Every screenshot in
+2026-07-21's pass had been taken by hand-walking the real path for exactly
+this reason. Added `SceneDirector.snapCameraToRoomReading()` (+ a
+`snapCameraForScreenshot()` UAT-handle method + a `jumpAndSnap()` test
+helper) — a pure, no-animation reproduction of `walkThrough()`'s resting
+`camera.position`/`lookAt`, so any future diorama QA screenshot can jump
+straight to a room and see what a player actually sees while reading it,
+without playing there by hand. This is what made the rest of this pass
+possible at all.
+
+**Two more instances of 2026-07-21's bug class**, found the same way (a
+mesh-count heuristic to shortlist candidates, each validated by an actual
+close-camera screenshot rather than trusted blindly — several low-mesh
+dioramas turned out to be deliberately minimal and read fine, e.g.
+`boulder`'s single icosahedron):
+- **`buridans-queue`'s clock contradicted its own room text.** The beats
+  explicitly say this clock has *"hands, unlike anywhere else in this
+  place"* — a deliberate callback to the prologue's handless one — but the
+  diorama drew the same bare glowing disc. Gave it two hands. Also caught
+  a second, unrelated bug on the same object while there: its local anchor
+  height (clock at y=1.6) predated `DIORAMA_Y_LIFT` and was pushed to a
+  visible sliver at the very top of frame, overlapping the header bar —
+  lowered the whole motif (frames 0.9→0.6, clock 1.6→0.98) rather than
+  building a general bounding-box auto-fit system for one instance.
+- **`last-message`'s counter (Room 19, the S1 hook room) was one plain
+  box** standing in for "a counter worn smooth by however many elbows"
+  (the room's own field note) — read as a single oversized dark rectangle
+  with a barely-visible pen/slot. Added a lighter, warmer worn-top slab
+  distinct from the body, a front trim lip, and scaled the pen/slot up
+  proportionally.
+
+Both fixed within the existing primitives-only vocabulary, both
+regression-tested (`dioramas.test.ts`: 2 new tests for `buridans-queue`'s
+hands + no-off-frame-height, 2 new for `last-message`'s distinct
+body/top/trim colors + legible pen/slot), both verified live via
+before/after screenshots.
+
+**The significant finding: Act III's own theme was washing out every
+room's diorama, not just these two outliers.** Sweeping the remaining
+Act III rooms (`teleporter`, `debt-of-dead`, `editor`, and others) at the
+close reading-camera position showed something different from the first
+two fixes — not under-detailed geometry, but every diorama drowned in a
+flat navy-blue haze regardless of its own materials (`editor`'s amber-lit
+drawer, unmistakably `0xd4b36a` in source, rendered as blue-grey).
+
+Root cause, confirmed by computing it and then verifying the computation
+against a wide-framing (no-snap) screenshot of the same room: Act III's
+`mirrorTheme()` (`src/scene/themes.ts`) rings 8 large (1.7×1.15) semi-
+transparent "floating memory" boxes around the room at
+`x=cos(angle)*9.5, z=-12+sin(angle)*7`. A real door crossing always rests
+the reading camera at world `z = DOOR_Z + 1.2 = -4.4`, and a *middle* door
+in any 3-door room rests at `x=0` too (`doors.ts`'s spacing puts the
+middle lintel exactly on-axis) — and one of the 8 boxes (whichever index's
+angle lands on the x=0 axis) sat at exactly `(x=0, z=-5)`, only ~0.6 world
+units in front of that resting camera. Its own semi-transparent face
+filled most of the frame, washing every Act III room's bespoke diorama out
+behind it for as long as the player read that room. The wide/default
+`jump()` framing didn't show it (the box was merely far away, not
+occluding), which is why this had read as "maybe just a QA-tool artifact"
+right up until the math and the wide-vs-close comparison confirmed
+otherwise — it is a real, if door-choice-dependent, gameplay bug, and the
+close-camera tool simply reproduces its worst case unconditionally (`x=0`
+for every door, by the tool's own documented approximation) rather than
+only on a middle-door entry.
+
+**Fix:** pulled the whole ring's z-range back — base `-12 → -16`,
+amplitude `7 → 5`, so the nearest any box now gets is `z=-11`, a full
+4.6 units from the resting camera and safely behind every diorama's own
+plane (`DIORAMA_Z = -7.5`) rather than in front of it. The boxes still
+read as ambient background "memories" (the theme's intent) — they're just
+never close enough to occlude the room in front of them. New
+`src/test/themes.test.ts` asserts all 8 boxes stay behind a safe z
+threshold, so this can't silently regress.
+
+**Verified live:** re-screenshotted `editor`, `teleporter`, `debt-of-dead`,
+and `marys-room` at the close reading-camera position post-fix. All four
+now read correctly — `editor`'s amber drawer is unmistakably amber-gold,
+`teleporter`'s two circular pads are clearly legible, `debt-of-dead`'s
+chair/IV-pole/bag are all distinct, `marys-room`'s bed frame reads
+cleanly — with the memory boxes now small, background, non-intrusive
+elements at the frame edges. Zero console/page errors across the sweep.
+
+**Checked and closed, not just assumed:** whether LIMERENCE's equivalent
+floor shares this bug. It does not — LIMERENCE's Act III ("The Long-Stay
+Wing") uses the shared `corridorTheme()` fixture-kit builder
+(`packs/limerence/theme.ts`), never `mirrorTheme()`, so this bug is
+ANAMNESIS-only by construction. No action needed there.
+
+**Broader sweep, this pass:** re-ran UAT 21/22 (ANAMNESIS + LIMERENCE
+title-menu overlay sweeps) fresh — both still pass cleanly, zero
+regressions from this session's changes to `flow.ts`/`director.ts`/
+`themes.ts`/`dioramas.ts`. Screenshotted Codex, Traveler's Ledger, The
+Register, and Settings directly (not just via the pass/fail assertions)
+to read them with a player's eye — all four render correctly, are
+legible, and show no visual defects. Given the sheer volume of prior
+polish passes already logged in this document, this was a deliberately
+bounded spot-check rather than a from-scratch re-audit of every screen;
+no new findings there this round.
+
+**Verification.** `tsc --noEmit` clean. Full suite: **1154/1154 green**
+(5 new: 1 in `themes.test.ts`, 4 in `dioramas.test.ts`). Confirmed the
+session's one incidental `npx tsx` auto-install left no stray changes to
+`package.json`/`package-lock.json`.

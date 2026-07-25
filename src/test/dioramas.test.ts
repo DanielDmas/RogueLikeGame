@@ -99,6 +99,81 @@ describe('room dioramas (spec 07 §Q1) — registry, budget, disposal', () => {
     });
   });
 
+  // Same player-perspective pass surfaced a second, paired bug: the room's
+  // own beats explicitly say this clock has "hands, unlike anywhere else in
+  // this place" — a deliberate callback to waiting-room's handless one —
+  // but the diorama drew the same bare glowing disc, contradicting its own
+  // text. Also confirmed live (screenshot) that DIORAMA_Y_LIFT, added after
+  // this diorama was authored, pushed the clock to a sliver at the very top
+  // of frame.
+  describe('buridans-queue (its clock is explicitly described as having hands)', () => {
+    it('renders visible clock hands, not just a bare dial', () => {
+      const d = dioramaFor('buridans-queue', 'high');
+      expect(d).not.toBeNull();
+      let cylinders = 0;
+      let thinBoxesNearClock = 0;
+      d!.group.traverse((o) => {
+        if (o instanceof THREE.Mesh && o.geometry instanceof THREE.CylinderGeometry) cylinders++;
+        if (o instanceof THREE.Mesh && o.geometry instanceof THREE.BoxGeometry && o.position.y > 0.8) {
+          thinBoxesNearClock++;
+        }
+      });
+      expect(cylinders, 'expected exactly one clock face').toBe(1);
+      expect(thinBoxesNearClock, 'expected two hand meshes near the clock').toBeGreaterThanOrEqual(2);
+    });
+
+    it('every mesh stays within a reasonable world-space height after DIORAMA_SCALE/DIORAMA_Y_LIFT, so nothing is pushed off the top of frame', () => {
+      // Mirrors what director.ts's setDiorama actually does to a diorama's
+      // group before it's ever rendered, so this test would have caught the
+      // clock-off-screen regression directly instead of needing a live
+      // screenshot to notice it.
+      const DIORAMA_SCALE = 1.6;
+      const DIORAMA_Y_LIFT = 0.6;
+      const d = dioramaFor('buridans-queue', 'high')!;
+      d.group.scale.setScalar(DIORAMA_SCALE);
+      d.group.position.y += DIORAMA_Y_LIFT;
+      d.group.updateMatrixWorld(true);
+      const box = new THREE.Box3().setFromObject(d.group);
+      // The camera looks at (0, 1.4, -6) from close range with a 58deg
+      // vertical FOV; empirically (this diorama's own live-verified fix),
+      // world y up to ~2.5 stays comfortably on screen.
+      expect(box.max.y).toBeLessThanOrEqual(2.6);
+    });
+  });
+
+  // Same player-perspective pass surfaced a third bug in this family: Room
+  // 19's hook-room diorama — "a counter worn smooth by however many elbows"
+  // per its own field note — was a single plain box with no distinct worn
+  // surface, reading as one oversized dark rectangle at today's scale.
+  describe('last-message (a counter, not just a box)', () => {
+    it('gives the counter a distinct lighter worn-top surface, not one flat-colored slab', () => {
+      const d = dioramaFor('last-message', 'high');
+      expect(d).not.toBeNull();
+      const boxColors = new Set<number>();
+      d!.group.traverse((o) => {
+        if (o instanceof THREE.Mesh && o.geometry instanceof THREE.BoxGeometry && !Array.isArray(o.material)) {
+          boxColors.add((o.material as THREE.MeshStandardMaterial).color.getHex());
+        }
+      });
+      // counter body, worn countertop, and trim lip are each a different color.
+      expect(boxColors.size, 'expected at least 3 distinct box colors (body/top/trim)').toBeGreaterThanOrEqual(3);
+    });
+
+    it('renders a pen and a slot as their own legible objects near the counter top', () => {
+      const d = dioramaFor('last-message', 'high');
+      let cylinders = 0;
+      let raisedThinBoxes = 0;
+      d!.group.traverse((o) => {
+        if (o instanceof THREE.Mesh && o.geometry instanceof THREE.CylinderGeometry) cylinders++;
+        if (o instanceof THREE.Mesh && o.geometry instanceof THREE.BoxGeometry && o.position.y > 0.75) {
+          raisedThinBoxes++;
+        }
+      });
+      expect(cylinders, 'expected one pen mesh').toBe(1);
+      expect(raisedThinBoxes, 'expected the slot mesh above the counter top').toBeGreaterThanOrEqual(1);
+    });
+  });
+
   it('marys-room is the only diorama exposing the optional accent hook, and it toggles without throwing', () => {
     const marys = dioramaFor('marys-room', 'high');
     expect(marys?.setAccent).toBeTypeOf('function');

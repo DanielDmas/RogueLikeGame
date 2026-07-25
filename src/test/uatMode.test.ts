@@ -17,6 +17,7 @@ const stubHandle: UatHandle = {
   state: () => ({ act: 0, hearts: 3, lucidity: 0, currentRoom: null, currentStage: 0 }),
   fps: () => 0,
   jump: () => {},
+  snapCameraForScreenshot: () => {},
 };
 
 describe('parseUatFlag — ?uat=1 boot detection (Phase S1)', () => {

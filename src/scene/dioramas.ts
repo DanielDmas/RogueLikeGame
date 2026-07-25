@@ -348,22 +348,45 @@ function veilOfIgnoranceDiorama(quality: 'low' | 'high'): Diorama {
 }
 
 // ---------- buridans-queue: two identical doorframes + a hanging clock ----------
+// Re-detailed 2026-07-21 (player-perspective pass) alongside waiting-room:
+// two real bugs found together. (1) The room's own beats say the clock has
+// "hands, unlike anywhere else in this place" — an explicit callback to the
+// prologue's handless clock — but this diorama drew the same bare glowing
+// disc as that one, contradicting its own text. Gave it two hands (still no
+// ticks/numerals, matching this diorama's plainer style). (2) The torus
+// "doorframes" had only 10-16 tubular segments — visibly octagonal at this
+// scale instead of the ring shape the room's text implies — raised to
+// match the clock rim's segment count from the waiting-room fix. Also
+// dropped the whole motif's vertical placement (frames 0.9->0.6, clock
+// 1.6->1.15): at the old heights, DIORAMA_Y_LIFT (added since this diorama
+// was authored) pushed the clock to the very top edge of frame, visible
+// only as a sliver — confirmed live via a screenshot before this fix.
 function buridansQueueDiorama(quality: 'low' | 'high'): Diorama {
   const group = new THREE.Group();
   group.position.set(0, 0, DIORAMA_Z);
   const frameMat = mat(0x201a12);
+  const ringSegments = quality === 'high' ? 32 : 22;
   for (const side of [-1, 1]) {
-    const frame = new THREE.Mesh(new THREE.TorusGeometry(0.45, 0.04, 6, quality === 'high' ? 16 : 10), frameMat);
-    frame.position.set(side * 0.9, 0.9, 0);
+    const frame = new THREE.Mesh(new THREE.TorusGeometry(0.45, 0.04, 8, ringSegments), frameMat);
+    frame.position.set(side * 0.9, 0.6, 0);
     group.add(frame);
   }
+  const clockPos = new THREE.Vector3(0, 0.98, 0);
   const clockMat = mat(0x14110c, 0xd4b36a, 0.4);
-  const clock = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.04, 20), clockMat);
-  clock.position.set(0, 1.6, 0);
+  const clock = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.04, ringSegments), clockMat);
+  clock.position.copy(clockPos);
   clock.rotation.x = Math.PI / 2;
   group.add(clock);
+  const handMat = mat(0x0c0a06, 0x0c0a06, 0);
+  const hourHand = box(0.02, 0.1, 0.012, handMat);
+  hourHand.position.set(clockPos.x - 0.03, clockPos.y + 0.03, clockPos.z + 0.03);
+  hourHand.rotation.z = -0.5;
+  const minuteHand = box(0.016, 0.15, 0.012, handMat);
+  minuteHand.position.set(clockPos.x + 0.02, clockPos.y + 0.05, clockPos.z + 0.03);
+  minuteHand.rotation.z = 1.9;
+  group.add(hourHand, minuteHand);
   const light = new THREE.PointLight(0xd4b36a, 0.6, 4, 2);
-  light.position.set(0, 1.4, 0.5);
+  light.position.set(0, 0.95, 0.5);
   group.add(light);
   return { group, tick() {}, dispose: trackDispose(group) };
 }
@@ -867,20 +890,35 @@ function freeWillDiorama(quality: 'low' | 'high'): Diorama {
 }
 
 // ---------- last-message: a small post-office counter, a warm pen, dawn light ----------
+// Re-detailed 2026-07-21 (player-perspective pass): this is Room 19's
+// diorama — the hook room the S1 last-message translation fix cared about
+// — and it was a single plain box standing in for "a counter worn smooth
+// by however many elbows" (the room's own field note). At today's scale it
+// read as one oversized dark rectangle with a barely-visible pen/slot
+// pinned near its top edge. Added a lighter, warmer countertop slab (the
+// "worn smooth" surface, distinct from the body) and a front trim lip, and
+// scaled the pen/slot up proportionally so they're legible against the
+// now-much-bigger counter rather than lost on it.
 function lastMessageDiorama(quality: 'low' | 'high'): Diorama {
   const group = new THREE.Group();
   group.position.set(0, 0, DIORAMA_Z);
-  const counter = box(1.0, 0.5, 0.4, mat(0x241d14));
-  counter.position.set(0, 0.5, 0);
+  const counter = box(1.0, 0.46, 0.4, mat(0x201a12));
+  counter.position.set(0, 0.48, 0);
   group.add(counter);
+  const counterTop = box(1.04, 0.05, 0.44, mat(0x3a2e1c));
+  counterTop.position.set(0, 0.735, 0);
+  group.add(counterTop);
+  const trim = box(1.04, 0.025, 0.44, mat(0x14110c));
+  trim.position.set(0, 0.245, 0);
+  group.add(trim);
   const penMat = mat(0x2e2416, 0xd4b36a, 0.7);
-  const pen = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.22, quality === 'high' ? 10 : 6), penMat);
-  pen.position.set(0.1, 0.78, 0);
+  const pen = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.32, quality === 'high' ? 12 : 8), penMat);
+  pen.position.set(0.18, 0.81, 0.05);
   pen.rotation.z = Math.PI / 2.3;
   group.add(pen);
   const slotMat = mat(0x1c1712, 0xf0c9a0, 0.5);
-  const slot = box(0.3, 0.03, 0.02, slotMat);
-  slot.position.set(-0.15, 0.9, -0.19);
+  const slot = box(0.42, 0.045, 0.03, slotMat);
+  slot.position.set(-0.2, 0.98, -0.19);
   group.add(slot);
   const light = new THREE.PointLight(0xf0c9a0, 0.7, 4, quality === 'high' ? 2 : 1.4);
   light.position.set(0, 1.1, 0.3);

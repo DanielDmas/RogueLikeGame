@@ -69,6 +69,18 @@ export async function jump(page, roomId) {
   await page.waitForTimeout(1200);
 }
 
+/** `jump()` resumes mid-room without ever calling `walkThrough()`, so the
+ * camera is left at the wide corridor framing, not what a real player sees
+ * while reading that room. Use this instead of `jump()` when a screenshot
+ * needs to show the real room-reading framing (diorama QA, panel-overlap
+ * checks) — see `SceneDirector.snapCameraToRoomReading`'s own note for why
+ * the approximation is accurate regardless of which door was actually
+ * taken. */
+export async function jumpAndSnap(page, roomId) {
+  await jump(page, roomId);
+  await page.evaluate(() => window.__anamnesisUat.snapCameraForScreenshot());
+}
+
 /** Clicks "Continue the journey" on the title screen. */
 export async function continueJourney(page) {
   await page.getByText('CONTINUE THE JOURNEY', { exact: false }).click();

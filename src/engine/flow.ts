@@ -258,6 +258,7 @@ export class Game {
       }),
       fps: () => this.director.getFps(),
       jump: (roomId) => this.jump(roomId),
+      snapCameraForScreenshot: () => this.director.snapCameraToRoomReading(),
     });
   }
 

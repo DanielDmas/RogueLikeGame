@@ -613,10 +613,24 @@ function mirrorTheme(quality: 'low' | 'high' = 'high'): ThemeConfig {
     color: 0x10131c, emissive: 0x2e3d66, emissiveIntensity: 0.7,
     roughness: 0.5, transparent: true, opacity: 0.85,
   });
+  // Player-perspective pass, 2026-07-25: a real door crossing (walkThrough())
+  // always leaves the resting camera at world z=DOOR_Z+1.2=-4.4, looking
+  // toward (0, 1.4, -6) — and a middle door in any 3-door room rests at x=0
+  // too (doors.ts's spacing puts the middle door's lintel exactly on-axis).
+  // The ring used to swing as close as z=-12+7=-5, so the one box whose
+  // angle put it on the x=0 axis (i=2 below) sat almost pressed against that
+  // resting camera (only ~0.6 world units away, its 1.7x1.15 face filling
+  // most of the frame), washing every Act III room's own diorama out behind
+  // its semi-transparent navy glow for as long as the player read that
+  // room — confirmed live via a close-camera screenshot of `editor`.
+  // Pulling the ring's whole z-range back (base -12->-16, amplitude 7->5,
+  // so the nearest any box gets is z=-11) keeps them a readable background
+  // element behind every diorama (DIORAMA_Z=-7.5) without ever entering the
+  // foreground reading zone in front of the camera.
   for (let i = 0; i < 8; i++) {
     const d = new THREE.Mesh(new THREE.BoxGeometry(1.7, 1.15, 0.1), dioMat);
     const angle = (i / 8) * Math.PI * 2;
-    d.position.set(Math.cos(angle) * 9.5, 2.2 + Math.sin(i * 1.7) * 1.4, -12 + Math.sin(angle) * 7);
+    d.position.set(Math.cos(angle) * 9.5, 2.2 + Math.sin(i * 1.7) * 1.4, -16 + Math.sin(angle) * 5);
     d.rotation.y = -angle + Math.PI / 2;
     dioramas.push(d);
     group.add(d);

@@ -42,6 +42,15 @@ export interface UatHandle {
   state(): UatStateSnapshot;
   fps(): number;
   jump(roomId: string): void;
+  /** QA-only: after `jump()` resumes mid-room (no real door crossing, so the
+   * camera never dollies in), snaps the camera to the same resting position
+   * a real `walkThrough()` would leave it in — see
+   * `SceneDirector.snapCameraToRoomReading`'s own note for why this
+   * approximation is accurate regardless of which door was actually taken.
+   * Lets a screenshot taken right after `jump()` show the diorama framing a
+   * real player actually reads beats against, instead of the wide corridor
+   * framing `jump()` otherwise leaves on screen. */
+  snapCameraForScreenshot(): void;
 }
 
 /** Assigns the debug handle onto `target` (in practice `window`) iff `uat` is

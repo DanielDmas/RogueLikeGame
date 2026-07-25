@@ -435,6 +435,25 @@ export class SceneDirector {
     this.diorama?.setAccent?.(on);
   }
 
+  /** QA/UAT-only: places the camera at the exact resting position/orientation
+   * `walkThrough()` leaves it in after a real door crossing, without playing
+   * the crossing itself. `jump()` (uatMode.ts) resumes straight into a room
+   * without ever calling `walkThrough` — the camera is left wherever it was
+   * (typically the wide corridor framing) — so a screenshot taken right
+   * after `jump()` does not show what a real player actually sees while
+   * reading that room. `walkThrough`'s dolly only ever translates
+   * `camera.position` (never touches orientation — see `dollyTween`'s update
+   * in the render loop), and its target x always comes from the specific
+   * door's lintel; since every diorama builder centers its own group at
+   * local x=0 (dioramas.ts), x=0 here reproduces the same framing any
+   * door's crossing would leave the diorama in, regardless of which one was
+   * actually taken. Never called from real gameplay — see `jump`'s own
+   * "UAT-only" note for the parallel convention. */
+  snapCameraToRoomReading(): void {
+    this.camera.position.set(0, 1.6, DOOR_Z + 1.2);
+    this.camera.lookAt(0, 1.4, -6);
+  }
+
   private clearDiorama() {
     if (this.diorama) {
       this.scene.remove(this.diorama.group);
