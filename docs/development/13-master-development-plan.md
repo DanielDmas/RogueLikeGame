@@ -120,13 +120,13 @@ New tests: 2 new cases in `dynamicBeats.test.ts` (photograph/court-of-usher echo
 
 ## TIER 2 — Older deferred items from `UPGRADE_PLAN.md` (open, lower priority)
 
-**6. End-of-act interlude screen** — scoped out during Milestone 4's enjoyment pass; never revisited. One quiet screen between acts (act name, a beat of ambience) — genuinely optional polish, not a gap in anything promised.
+**6. End-of-act interlude screen — ✅ SHIPPED (Phase V4a, 2026-07-16; hold/typeset hardened 2026-07-21). Stale entry, corrected 2026-07-26.** This item's own text ("scoped out... never revisited") was true when originally written but was never struck once Phase V4a actually built it — a floor-name title card shown inside the existing fade-veil during a real act transition, holding 4s+ at full opacity and typeset at title scale. See the dated "V4a" and "Act-headline duration" entries elsewhere in this document for the full history, including a real invisible-card bug Phase V4a's own live verification caught and fixed. The richer original sketch (a Porter line, a palette bleed) was deliberately not built — see "B7" below — and remains real, optional, future scope if ever revisited; the card itself is done.
 
 **7. Door hover feedback beyond the shipped pulse. ✅ SHIPPED (2026-07-15, sixth session).** `doors.ts` already had a breathing glow pulse, a per-door pitched hover tone, and a DOM tooltip; added the two enhancements this item's writeup named. Light-spill: a hovered door's point light and floor pool now breathe brighter in lockstep with its slab glow (`hoverLightSpill`, pure, unit-tested — same `t * 2.2` envelope as the existing `hoverPulseIntensity`, scaled to each light's own base intensity, bounded `[base, base*1.4]`, holds at the peak under reduced motion). Creak: `sound.hover(index)` now layers a very short, quiet filtered-noise creak (`doorCreak`, reusing the ambient-room-accent's impulse-noise technique but far shorter/quieter) under the existing pentatonic hover tone, pitched in a distinct low "wood" register (`doorCreakFrequency`, pure, unit-tested, always below `hoverPitch` at every door index so the two layers never beat against each other). Both fire from the single already-existing hover-transition call site (`mouseenter`/`focus`/raycast), so no new plumbing. 6 new unit tests; live-verified via Playwright (hover/unhover a real door card, zero console errors). `tsc` clean, 886/886 tests green.
 
 **8. Deferred verification debt: full Playwright matrix. ✅ MOSTLY CLOSED (2026-07-15, seventh/eighth sessions).** Dynamic scenery end-to-end, a full playthrough sweep, and a transition-garble check were already covered before this pass (scripts 03-09). This pass added 18 more scripts (15-33), split per the re-scoped approach this item originally called for (small, focused, ≤3-minute scripts rather than one long run): settings round-trip, one-room-per-act sweeps, real-click onboarding-through-first-choice flows (no `jump()` shortcuts), every title-menu overlay, the heart-death-to-ending path in both packs, keyboard-only play, One Door mode, the vestibule landing page, live in-HUD language switching, a second troll test (LIMERENCE), overlay focus-trapping, and an undirected "clicking user" pass — plus, from the live bug this same session surfaced, a script that reads real computed CSS opacity rather than just clicking (33). `tests/uat/run-all.mjs` now batch-runs the whole 32-script suite and writes timestamped, comparable, **committed** (not gitignored) results per run to `tests/uat/results/` — directly closing this item's "results comparable over time" gap too. Full batch result: 31/32 passed, then 32/32 after a follow-up fix (below). **Correction:** `11-i18n-matrix.mjs`'s failure was initially assessed as environment flakiness (a 10s `.settings-panel` selector timeout) pending a standalone retry; the retry failed identically, proving it was a real, reproducible regression — **in the test, not the game.** Root cause: the script selected the Settings button and the language toggle by fixed DOM position (`nth(3)`, `nth(1)`), and the title menu (Register, One Door added this session) and Settings panel (Frame rate, Voice version toggles added this session) have both grown since those indices were written, silently shifting Settings to index 5 and the language toggle to index 2 — the script was clicking "One Door" and "Render resolution" instead. Fixed at the root: added stable `data-uat="settings-button"`/`data-uat="language-toggle"` hooks in `overlays.ts` (translation- and position-independent) and updated the script to select through them; verified passing standalone. This is a durable fix, not a patch — any future title-menu/Settings-panel addition can no longer silently break this class of selector. **Still genuinely open:** a true EN/CS/FA 3-language full-playthrough matrix (this pass added a language-*switch* check, live in both packs, but not a repeated full playthrough in each of the 3 languages) — folds naturally into item 2's cs/fa translation-quality pass rather than being its own thing.
 
-**9. Ambient corridor life — the two remaining sub-effects. One of two now shipped (2026-07-15, tenth session).** Item T7 originally shipped ("a far door closing," commit `375b9f3`) scoped conservatively to the one safest effect, with "the Porter passing" and "a phone lighting in the distance" left open pending the animation-path engineering they'd need.
+**9. Ambient corridor life — ✅ all three sub-effects now shipped. Stale entry, corrected 2026-07-26.** This entry's own text ("two remaining... left open pending the animation-path engineering they'd need") was accurate when written but was never struck once both landed: "the Porter passing" shipped as the T7 continuation (`director.ts`'s `triggerAmbientPass`, its own independent timer so it never interrupts a real door-walk); "a phone lighting in the distance" shipped as **V4b** (`corridorTheme`'s own `tick()`, a rare 60-180s jittered rise-and-fall on a LIMERENCE accent-colored decorative door, self-contained — no director wiring needed). Both live-verified (UAT 52) with zero console errors. Nothing left open in this item.
 
 **"The guide passing" ✅ SHIPPED.** Reused the exact walk/bob rig `walkThrough` already drives for a real door-selection: while a door row is idle-showing (no active tween, same gating as the door flicker), the guide occasionally walks a short distance in from its usual spot and back — a background life event, not a prompt to act (no lantern retarget, no presence boost, unrelated to any door). Rarer than the door flicker by design (90-180s vs 60-120s jitter, independent timer — a whole-figure walk is a bigger event than one door dimming) via a new pure `nextGuidePassDelay`, unit-tested the same way as `nextAmbientDelay`. The walk-out/walk-back chaining reuses the existing `usherWalk` tween state with one small addition — an optional `onComplete` callback fired when a leg finishes, so the ambient pass needs no new state machine beyond what door-selection walks already have. If a player clicks a door mid-pass, the real walk simply overwrites the ambient one (same safe overwrite behavior `usherWalk` already had). Genuinely pack-neutral (the guide-figure rig is already fully shared/parameterized between ANAMNESIS's Usher and LIMERENCE's Porter), so this shipped for both packs at once, not LIMERENCE-only. 3 new unit tests (range, floor/ceiling, "always rarer than the flicker"); `tsc` clean, 890/890 tests green; live-verified with a 45-second idle stress test in the browser (well under the door-pass's own 90s minimum interval, confirming the new timer/state logic runs stably in the hot render loop with zero console errors, even though the rare event itself wasn't expected to visibly fire in that window — same "unit-test the timing, live-verify the stability" split T7's original door flicker used).
 
@@ -150,7 +150,11 @@ New tests: 2 new cases in `dynamicBeats.test.ts` (photograph/court-of-usher echo
 
 ---
 
-**18. "Engine default = ANAMNESIS content" default-parameter leak class (surfaced verifying item 13, 2026-07-16).** Several shared engine files fall back to ANAMNESIS's own data/vocabulary as the default value of a parameter every real call site is supposed to override explicitly: `storyEngine.ts`'s `DEFAULT_GRAPH` (pulls in `content/graph.ts`'s room-id pool arrays), `ui/hud.ts`'s `DEFAULT_HEARTS_ARIA_LABEL`/`DEFAULT_HEARTS_TOOLTIP` ("grip on reality" — confirmed present in a built LIMERENCE bundle via grep, three times, though never actually displayed since LIMERENCE always supplies its own), `ui/textPanel.ts`'s `SPEAKER_PREFIXES` (`'Usher:'` etc.), and per the Fable review's own broader note, also `choices.ts`'s `KEEPSAKES` default, `ledger.ts`'s `UNDERSTORY_SEQUENCE` default, `gameState.ts`'s `ACT_POOLS` default. This is the exact shape that already produced three separate real bugs across the project's history (`heartsAriaLabelKey`/`understoryNameKey`'s original fix, item 21's LIMERENCE UI-chrome gap, H4's epitaph-translation drift) — a call site that forgets to pass its own pack's value silently falls back to ANAMNESIS's, rather than failing loudly. Impact today is confirmed small (a handful of never-displayed fallback strings leaking into the other pack's bundle, not full content) but the *pattern* is the recurring root cause, not any one instance of it. Real fix: make these parameters required wherever a pack is genuinely always available at the call site (converting the whole class into compile errors instead of silent leaks, per the Fable review's own suggestion) — a refactor across ~6 files and their existing call sites/tests, deliberately not attempted as a drive-by alongside item 13's bundling fix.
+**18. "Engine default = ANAMNESIS content" default-parameter leak class — ✅ CLOSED via lint, not refactor (2026-07-26).** Several shared engine files fall back to ANAMNESIS's own data/vocabulary as the default value of a parameter every real call site is supposed to override explicitly: `storyEngine.ts`'s `DEFAULT_GRAPH`, `ledger.ts`'s `UNDERSTORY_SEQUENCE`, `gameState.ts`'s `ACT_POOLS`, `ui/choices.ts`'s `KEEPSAKES`, `ui/textPanel.ts`'s `SPEAKER_PREFIXES`. This is the shape that already produced three separate real bugs across the project's history — a call site that forgets to pass its own pack's value silently falls back to ANAMNESIS's, rather than failing loudly.
+
+Audited every live call site (not assumed) before deciding how to close it: **every one already passes its pack's own value explicitly** — confirmed across `flow.ts`, `overlays.ts`, and both packs' content trees. The "required parameter" fix this item originally named was evaluated and **rejected as the wrong fix**, for a reason only visible after the audit: `gameState.ts`'s `pickUnchosenRooms(prior, pools = ACT_POOLS)` is called with no second argument ~15 times from *inside ANAMNESIS's own content files* — and that is correct, not a bug, because that code genuinely is ANAMNESIS's own data. Making the parameter required would force touching ~70 call sites (15 real + dozens of test fixtures) to convert a pattern that isn't broken today into one that's merely more verbose, and would have been actively wrong for exactly the call sites that rely on it correctly.
+
+**What actually ships:** `src/test/engineDefaultLeakLint.test.ts`, in the same mechanical-source-scan style as this repo's existing `animationSettleLint.test.ts`/`uiKeyCoverage.test.ts`. It doesn't touch a single call site — it scans `flow.ts`, `overlays.ts`, and LIMERENCE's own content files and asserts every call to the six flagged functions carries the substring proving it passed a real pack-scoped value (`this.pack.graph`, `this.pack.keepsakes`, `LIMERENCE_ACT_POOLS`, etc.) rather than silently falling through to the default. This converts the actual remaining risk — a *future* edit that forgets to thread the pack through, or copy-pastes ANAMNESIS content into LIMERENCE without updating which pool constant it uses — into a fast, specific, immediate test failure, which is the practical equivalent of the "compile error instead of silent leak" this item originally asked for, without the disproportionate churn. Mutation-tested: dropping `this.pack.graph` from a real `offeredDoors()` call, and dropping `LIMERENCE_ACT_POOLS` from a real LIMERENCE call site, each failed exactly the one expected test; both reverted and reconfirmed green. `tsc` clean, full suite 1237/1237 (6 new).
 
 ---
 
@@ -837,3 +841,94 @@ Converting those ~6 modules' defaults to required parameters is a real
 refactor across their call sites and tests, and doing it as a drive-by
 alongside a content feature is exactly how the original leaks got in. Left for
 its own pass; the new module demonstrates the target shape.
+
+---
+
+# Plan-review pass: stale-entry audit, extended troll testing, item 18 closed — 2026-07-26
+
+Owner directive: *"review what you can. see if we are missing something from
+all the plans and do it or suggest me what to do. Finish all you can. do
+extended troll testing."* Approach: read every item in this document not
+already marked shipped, verified each against the actual current code rather
+than trusting the doc's own prose, and acted on what that verification found.
+
+**Two "open" items turned out to already be shipped — the doc had just never
+been updated to say so.** Both are corrected in place above rather than left
+to mislead the next read of this file:
+- **Item 6 (end-of-act interlude screen)** was written before Phase V4a
+  (2026-07-16) built it, and never struck afterward. Shipped, hardened since.
+- **Item 9 (ambient corridor life's two remaining sub-effects)** — both "the
+  Porter passing" and "a phone lighting in the distance" turned out to already
+  be shipped too, as the T7 continuation and **V4b** respectively; the entry
+  had simply never been marked done. All three of item 9's original
+  sub-effects are now complete.
+
+This matters as a finding in its own right, not just as housekeeping: a
+"review the plan" pass that trusts the plan's own status markers without
+checking the code will keep re-surfacing already-finished work as if it were
+still open. Worth remembering for the next audit of this document.
+
+**Item 18 (the "engine default = ANAMNESIS content" leak class) — closed, but
+not the way its own text originally proposed.** Re-verified every one of the
+~6 flagged functions' real call sites (not just the ones checked in the prior
+session) across `flow.ts`, `overlays.ts`, and both packs' content trees.
+Confirmed again: every real call site already passes its pack's own value
+explicitly. The "make these parameters required" fix this item had named as
+the ideal solution was evaluated concretely and **rejected** — `gameState.ts`'s
+`pickUnchosenRooms(prior, pools = ACT_POOLS)` is called with no second
+argument from ~15 sites *inside ANAMNESIS's own content files*, and that is
+correct there, not a bug, because that code genuinely is ANAMNESIS's own data.
+Making the parameter required would force touching ~70 call sites to convert
+a working pattern into a more verbose one, and would be actively wrong for
+the very call sites that rely on the default correctly.
+
+Shipped instead: `src/test/engineDefaultLeakLint.test.ts`, a mechanical
+source-scan test in the same style as this repo's existing
+`animationSettleLint.test.ts`/`uiKeyCoverage.test.ts` — it asserts every call
+to the six flagged functions in the shared engine/UI layer and in LIMERENCE's
+content carries the substring proving it passed a real pack-scoped value,
+without touching a single existing call site. This converts the actual
+remaining risk (a *future* edit forgetting to thread the pack through, or a
+copy-paste from ANAMNESIS content into LIMERENCE without updating which pool
+constant it uses) into an immediate, specific test failure — the practical
+equivalent of "compile error instead of silent leak" without the
+disproportionate refactor. Mutation-tested: dropping `this.pack.graph` from a
+real `offeredDoors()` call and dropping `LIMERENCE_ACT_POOLS` from a real
+LIMERENCE call site each failed exactly the one expected test; both reverted
+and reconfirmed green.
+
+**Extended troll testing — a real, self-described gap closed.** Existing
+scripts 10 and 30 both say so in their own header comments: they chaos-test
+only the title screen. New `tests/uat/60-troll-in-game-anamnesis.mjs` and
+`61-troll-in-game-limerence.mjs` jump straight into a room and spend their
+budget hammering surfaces the title screen doesn't have at all: the
+door-walkthrough camera dolly (undelayed canvas clicks racing digit-key
+choice picks), the HUD's always-present Menu/language/text-panel controls
+mid-room, viewport resizes mid-3D-transition, and — the one interaction the
+title-screen troll tests structurally cannot exercise — repeated `jump()`
+calls that each interrupt whatever the previous one left in flight. Beyond
+"zero errors during chaos," each script also verifies **recoverability**: a
+cold reload after the chaos must land on real rendered content, not a blank
+page or the crash-recovery overlay, since a bug could silently corrupt
+persisted state without ever throwing during the chaos itself. Both scripts
+run clean (0 errors, ~50-58 actions each) and were re-run to confirm they
+aren't flaky. Existing troll test 10 re-run and still passes, confirming no
+regression from this session's changes (all of which were additive —
+docs and new test/UAT files only, no runtime source touched).
+
+**Verification.** `tsc` clean. Full suite **1237/1237 green** (6 new, all in
+`engineDefaultLeakLint.test.ts`). No runtime source files were modified this
+pass — every change is either a documentation correction or a new,
+independently-verified test/UAT file.
+
+**What's left, honestly.** Only two items in this document remain genuinely
+open and actionable, and neither was attempted unilaterally this pass for a
+stated reason: **item 1** (voice narration + music files) is blocked purely on
+the owner supplying/recording audio — the architecture is dormant and ready.
+**Item 3** (LIMERENCE visual-language rework — bespoke per-floor geometry
+reading as "a relationship at its breaking point," not a recolored ANAMNESIS
+corridor) is a real, substantial creative undertaking that a prior session
+explicitly deferred as post-1.0 polish; picking it up unilaterally would
+reopen a decision that was reasoned and recorded, not silently fix a gap.
+Tier 3 (commercial certification, mobile, a third pack) remains correctly
+inactionable — each is contingent on a decision only the owner can make.
