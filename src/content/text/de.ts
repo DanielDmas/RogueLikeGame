@@ -221,6 +221,24 @@ registerAll('v2', 'de', {
   [usherBarkKey('gate-single-door')]: 'Platzanweiser: Für diesen Abschnitt bleibt nur eine Tür. Die anderen liegen schon hinter Ihnen, gewählt oder ausgelassen — was auf seine Weise ebenfalls eine Wahl war. Diese hier ist schlicht der einzige noch offene Weg.',
   [usherBarkKey('first-choice-explainer')]: 'Platzanweiser: Mehrere Türen, und nur manche werden diesmal Ihre sein — der Rest bleibt vorerst verschlossen. Jede verbirgt eine andere Situation, nicht einen anderen Punktestand. Wählen Sie die, deren Frage Sie wirklich bereit sind auszuhalten.',
   [usherBarkKey('second-run')]: 'Platzanweiser: Sie sind zurückgekehrt. Der Hebel steht dort, wo Sie ihn zurückließen; hier ordnen wir nichts um — Beständigkeit ist der einzige Luxus, den sich diese Einrichtung erlaubt.',
+
+  // Cross-run recognition (master plan Tier 1 item 4) — spoken instead of
+  // 'second-run' when the traveler's history has a shape. Formal "Sie"
+  // throughout, matching every other Platzanweiser line; he observes and never
+  // grades. Established vocabulary kept: "Das Untergeschoss" for the
+  // Understory, "ausgeben" for spending an Andenken (see keepsakeSpentToast).
+  [usherBarkKey('pattern-same-ending-again')]:
+    'Platzanweiser: Sie sind mehr als einmal zurückgekehrt und jedes Mal durch dieselbe Tür hinausgegangen. Ich bemerke dazu nichts. Ich stelle lediglich fest, dass die anderen Türen ebenfalls gewartet haben — und sie sind auf eine Weise geduldig, die ich nicht bin.',
+  [usherBarkKey('pattern-never-spent-a-heart')]:
+    'Platzanweiser: Sie sind mehr als einmal durch dieses Haus gegangen und haben nicht ein einziges Herz zurückgelassen. Das ist seltener, als Sie annehmen. Ob es heißt, dass Sie gut gewählt haben oder nur eng, sagt das Hauptbuch nicht — es zählt bloß.',
+  [usherBarkKey('pattern-holds-unspent-keepsakes')]:
+    'Platzanweiser: Sie tragen noch, was Sie bei einem früheren Besuch aufgenommen haben. Tragen ist unbefristet erlaubt. Ich erwähne es nur, weil ein aufbewahrtes Ding ein nicht ausgegebenes Ding ist — und manche Türen hier öffnen sich allein dem, der ausgibt.',
+  [usherBarkKey('pattern-never-descended')]:
+    'Platzanweiser: Vom letzten Stockwerk führt eine Treppe hinab, die Sie nie genommen haben. Verborgen ist sie nicht, nicht eigentlich. Sie lässt sich nur leicht übergehen, wenn der Morgen schon zu sehen ist.',
+  [usherBarkKey('pattern-walked-most-rooms')]:
+    'Platzanweiser: Sie waren in nahezu jedem Raum, den dieses Haus besitzt. Ich habe aufgehört, die Hinweise für Sie herzurichten; Sie lesen sie, wie man ein bekanntes Schild liest. Übrig bleiben die wenigen, gegen die Sie sich immer wieder entscheiden.',
+  [usherBarkKey('pattern-returns-to-one-room')]:
+    'Platzanweiser: Es gibt einen Raum, in den Sie immer wieder zurückkehren. Ich habe nicht gefragt, warum, und ich werde es nicht. Aber der Raum hat begonnen, Sie zu erwarten — und Räume, die jemanden erwarten, verhalten sich anders.',
   [usherBarkKey('reason-low')]: 'Platzanweiser: Sie wiegen jeden Raum wie ein Hauptbuch. Die Räume haben es bemerkt und ihre Fußnoten entsprechend angepasst.',
   [usherBarkKey('reason-high')]: 'Platzanweiser: Sie fühlen hier alles, ganz offen. Der Korridor ist deswegen wärmer. Das ist keine Redewendung.',
   [usherBarkKey('self-low')]: 'Platzanweiser: Sie haben sich unversehrt gehalten. Ein vernünftiger Instinkt. Fragen Sie sich gelegentlich, wozu dieses Bewahren eigentlich dient.',

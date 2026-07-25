@@ -221,6 +221,25 @@ registerAll('v2', 'fr', {
   [usherBarkKey('gate-single-door')]: 'Le Placeur : Pour ce passage, une seule porte demeure. Les autres sont déjà derrière vous, choisies ou laissées de côté — ce qui, à sa façon, fut aussi un choix. Celle-ci est simplement le seul chemin encore ouvert.',
   [usherBarkKey('first-choice-explainer')]: 'Le Placeur : Plusieurs portes, et seules certaines seront les vôtres cette fois — le reste demeure fermé, pour l’instant. Chacune dissimule une situation différente, non un score différent. Choisissez celle dont vous êtes vraiment prêt à endurer la question.',
   [usherBarkKey('second-run')]: 'Le Placeur : Vous êtes revenu. Le levier est là où vous l’avez laissé ; ici, nous ne réarrangeons rien — la permanence est le seul luxe que s’accorde cet établissement.',
+
+  // Cross-run recognition (master plan Tier 1 item 4) — spoken instead of
+  // 'second-run' when the traveler's history has a shape. Formal "vous"
+  // throughout (deliberately unlike LIMERENCE's Portier, who uses "tu"), and
+  // French spaced colons/semicolons as in every other Placeur line. He
+  // observes; he never grades. Established vocabulary: "Le sous-sol" for the
+  // Understory, "dépenser" for spending a souvenir (see keepsakeSpentToast).
+  [usherBarkKey('pattern-same-ending-again')]:
+    'Le Placeur : Vous êtes revenu plus d’une fois, et chaque fois vous êtes sorti par la même porte. Je n’en fais aucune remarque. Je note seulement que les autres portes ont attendu elles aussi — et elles sont patientes d’une manière dont je ne le suis pas.',
+  [usherBarkKey('pattern-never-spent-a-heart')]:
+    'Le Placeur : Vous avez traversé cet endroit plus d’une fois sans y laisser un seul cœur. C’est plus rare que vous ne le croyez. Si cela veut dire que vous avez bien choisi ou seulement étroitement, le grand livre ne le dit pas — il ne fait que compter.',
+  [usherBarkKey('pattern-holds-unspent-keepsakes')]:
+    'Le Placeur : Vous portez encore ce que vous avez ramassé lors d’une visite précédente. Le porter est permis indéfiniment. Je le mentionne seulement parce qu’une chose gardée est une chose non dépensée — et certaines portes d’ici ne s’ouvrent qu’à celui qui dépense.',
+  [usherBarkKey('pattern-never-descended')]:
+    'Le Placeur : Du dernier étage descend un escalier que vous n’avez jamais pris. Il n’est pas caché, pas exactement. Il est simplement facile à dépasser quand le matin est déjà visible.',
+  [usherBarkKey('pattern-walked-most-rooms')]:
+    'Le Placeur : Vous avez été dans presque chaque pièce que possède cet endroit. J’ai cessé de préparer les indices pour vous ; vous les lisez comme on lit un panneau familier. Il ne reste que les quelques-unes que vous continuez de ne pas choisir.',
+  [usherBarkKey('pattern-returns-to-one-room')]:
+    'Le Placeur : Il y a une pièce où vous revenez sans cesse. Je n’ai pas demandé pourquoi, et je ne le ferai pas. Mais la pièce a commencé à vous attendre — et les pièces qui attendent quelqu’un ne se comportent pas de la même façon.',
   [usherBarkKey('reason-low')]: 'Le Placeur : Vous pesez chaque pièce comme un grand livre comptable. Les pièces l’ont remarqué, et ont ajusté leurs notes de bas de page en conséquence.',
   [usherBarkKey('reason-high')]: 'Le Placeur : Vous sentez tout, ici, ouvertement. Le couloir en est plus chaud. Ce n’est pas une figure de style.',
   [usherBarkKey('self-low')]: 'Le Placeur : Vous vous êtes gardé intact. Un instinct raisonnable. Demandez-vous, de temps en temps, à quoi sert cette préservation.',

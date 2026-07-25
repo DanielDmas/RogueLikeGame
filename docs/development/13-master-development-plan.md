@@ -106,7 +106,7 @@ These change what the finished product *is* for a player.
 
 **3. LIMERENCE visual-language rework.** Owner's ask on record: make scenery/animations read as "a relationship at its breaking point," not a recolored ANAMNESIS corridor; livelier/more colorful light mode (considered: inverted door/environment palette in light mode; more visual elements generally). Scoping notes: per-floor palettes exist (`packs/limerence/theme.ts`), `theme-light` CSS vars exist; the *geometry* (`corridorTheme()` and friends) is still ANAMNESIS's, reused wholesale — a genuine rework needs LIMERENCE's own scene-builder functions per floor. The creative bible's signature images (migrating wall/window, two phones on one bed) are the target vocabulary. Post-1.0 polish by prior decision; high impact when done.
 
-**4. Porter/Usher pattern-barks.** The guide visibly *knows you* across runs (third run never opening an Act II door; always-verify-first players get called on it). Profile already tracks the data. Needs newly authored narrative content × both packs × 5 languages — slow, writerly work; do not rush (same CLAUDE.md caution as item 2).
+**4. Porter/Usher pattern-barks — ✅ SHIPPED (2026-07-25).** The guide visibly *knows you* across runs. See the dated entry "Cross-run guide recognition" at the end of this document for the full design, the six patterns, the pacing decision, and what was deliberately left out.
 
 **5. Choice-aftermath flashes — ✅ SHIPPED for ANAMNESIS (2026-07-15, twelfth session); real finding: LIMERENCE already had this device, ANAMNESIS didn't.** Investigating this item before writing new content turned up something worth recording: the mechanism this item describes — a later beat's text conditionally referencing an earlier room's specific choice via `choseIn()`/flags — was **not actually missing from the game**. LIMERENCE already uses it densely (12 cross-room echoes found via `grep -rn "flags.includes("` across its Act I-III rooms, e.g. `the-ex` naming "that Sara, the one you trapped" if the player set `the-rumor`'s trap flag four rooms and one act earlier; `the-scoreboard` recognizing a repeat of `tested-almost`/`ran-the-test`). ANAMNESIS had **zero** cross-room echoes outside the single final-gate recap (`door-that-asks`, which already reviews the Junction and Photograph choices as a whole-run summary) — every other room's `choseIn()` usage found in ANAMNESIS was *within* the same room (e.g. Junction's own lever→bridge stages), never reaching across rooms the way LIMERENCE's does. So the real, well-scoped task was pack parity, not new-mechanism invention.
 
@@ -695,3 +695,145 @@ no new findings there this round.
 (5 new: 1 in `themes.test.ts`, 4 in `dioramas.test.ts`). Confirmed the
 session's one incidental `npx tsx` auto-install left no stray changes to
 `package.json`/`package-lock.json`.
+
+---
+
+# Cross-run guide recognition ("pattern-barks") — 2026-07-25
+
+Closes **Tier 1 item 4**, the highest-value open item that wasn't blocked on
+something external (item 1 needs audio files the owner hasn't recorded; item 3
+is a whole visual rework; items 2 and 5 are already done). Owner directive:
+*"upgrade the game. test all. review code."*
+
+**What it does.** A returning player's first real door row no longer gets the
+generic *"You have returned. The lever is where you left it…"*. If their
+history has a *shape*, the guide says that instead — the Usher observing that
+you have left by the same door every time, or that you have walked the place
+more than once and never once left a heart behind. Six such observations
+exist, per pack, in five languages.
+
+**Detection is engine, prose is content.** New `src/engine/patterns.ts` owns
+only the *facts*: `activePatterns(inputs)` returns which of six
+`PlayerPatternId`s are currently true, and `patternForRun(active,
+runsCompleted)` picks the single one to voice. Both pure. Each pack's own
+`guide.ts` decides how its guide says it, keyed by those ids — so the same
+fact reads as the Usher's dry archival note or the Porter's night-desk
+remark, never as one translated into the other.
+
+The six: `same-ending-again`, `never-spent-a-heart`,
+`holds-unspent-keepsakes`, `never-descended`, `walked-most-rooms`,
+`returns-to-one-room`. All are derived from `Profile`'s already-existing
+Ledger-only counters; no new persisted state, no schema bump.
+
+**Three constraints written into the module's header, as binding on future
+additions:**
+- **Observation, never scoring.** The Experience Charter forbids grades. A
+  pattern is *"you have never spent a heart"* — never *"you are playing too
+  cautiously"*. Every line was written to be recognisable without being
+  praise or reproach; that mattered more here than anywhere else in the game,
+  because a bark that reads as a score would undercut the whole premise.
+- **Cross-run only.** Anything visible inside a single run (axes, hearts,
+  lucidity) is already covered by the existing axis-reactive barks. A pattern
+  earns its place only by seeing what one run cannot.
+- **Read-only, never gameplay-affecting.** These read Ledger-only fields and
+  return ids for narration. No pattern may gate a room, choice, or ending —
+  that would silently convert documented Ledger-only counters into gameplay
+  predicates.
+
+**Pacing — the main design decision.** Recognition fires in exactly one place:
+the returning-player branch that already existed, replacing its generic line.
+Not added to the mid-run candidate rotation, and not layered on top. Reasons:
+recognition lands hardest as an opening line; one per returning run can never
+crowd out the axis-reactive lines; and a guide that comments on your history
+repeatedly within a single run stops reading as *remembering* and starts
+reading as *monitoring*, which is a different and much worse character. Across
+runs, `patternForRun` rotates by `runsCompleted`, so a player who fits several
+patterns hears a different one recognised each time rather than the same line
+forever. The mandatory door explainers (single-door gate, first door,
+understory fork) still outrank recognition — those exist to prevent real
+confusion and must not be displaced by an aside; there is a test for it.
+
+**A deliberate departure, and why.** Every input to `activePatterns` is a
+**required** parameter. The older engine modules (`storyEngine`'s
+`DEFAULT_GRAPH`, `ledger`'s `UNDERSTORY_SEQUENCE`, `gameState`'s `ACT_POOLS`)
+default to ANAMNESIS's own content, which is exactly the shape that produced
+several real cross-pack leaks over this project's history — tracked here as
+item 18. New engine code does not extend the pattern: a caller that forgets to
+supply its pack's numbers gets a compile error, not ANAMNESIS's data. This
+matters concretely for `hasUnderstory`: a pack without an Understory must
+never be told it failed to find one, and that is enforced by the type, not by
+a comment.
+
+**Checked, not assumed:** "One Door" vignettes increment
+`roomVisits`/`codexUnlocked` but not `runsCompleted`/`heartsLost` (verified in
+`flow.ts`, both behind `!this.oneDoorMode`). So `walked-most-rooms` and
+`returns-to-one-room` legitimately count rooms met in One Door mode — the
+guide saying "you have been in nearly every room" stays true however you got
+there — while `never-spent-a-heart` compares two counters that both exclude
+it, so vignette play can't make it accidentally true. Both behaviours are
+wanted; the asymmetry is now documented in the module rather than left as an
+accident of which counter was handy.
+
+**Translation (CLAUDE.md R1, context-first).** 6 lines × 2 packs × 4 languages
+= 48 translations, each written against the surrounding barks rather than
+word-for-word from English. Register was verified per file before writing, and
+it is *not* uniform: ANAMNESIS's French Placeur uses formal **vous** while
+LIMERENCE's Portier uses intimate **tu** with the inclusive forms that file
+already used; LIMERENCE's German Portier uses **du** while ANAMNESIS's
+Platzanweiser uses **Sie**. Each pack's established vocabulary was reused
+rather than reinvented (Podzemí/Archiv, srdce/Důvěra, Upomínka/Andenken,
+"vydat"/"ausgeben"/"dépenser" for spending a keepsake). One trap caught while
+writing: the natural French word for the ledger a measure of Confiance comes
+from is *registre*, but LIMERENCE already uses **Le Registre** as the proper
+name of its Records Office floor — so that line says *ton compte* instead,
+keeping the stat and the place from reading as the same thing.
+
+**Verification.** `tsc` clean; full suite **1231/1231 green** (77 new, in
+`playerPatterns.test.ts`) covering detection thresholds, each predicate's
+discrimination in both directions, ordering, rotation determinism,
+out-of-range safety, per-pack voice, explainer precedence, and translation
+coverage with per-language cross-pack guide-word leak checks (R4).
+
+The new tests were **mutation-tested rather than trusted for passing on the
+first run**: deleting one Czech translation key failed exactly the one
+expected translation test, and breaking `flow.ts`'s wiring (passing `null`
+instead of the derived pattern) failed exactly the one expected wiring test.
+Both were restored and re-confirmed green.
+
+Live-verified via new `tests/uat/59-guide-pattern-barks.mjs`: seeds a profile
+tuned so exactly one pattern is active (a looser fixture would make the
+asserted line depend on `runsCompleted` and be flaky), plays the prologue
+forward to the Act I door row, and asserts the recognition line actually
+renders — plus a **control** case where a patternless returning profile still
+gets the generic line, which is what proves the assertion is caused by the
+seeded pattern rather than by the branch having replaced that line
+unconditionally. Also asserts the Czech render carries the right guide-word
+and no LIMERENCE vocabulary. Zero console errors. Screenshotted at real panel
+width to confirm it reads well in the guide's gold-italic voice above the
+doors. Existing UAT 19 and 20 (both packs' door-choice flows) re-run and pass.
+
+**Code review, same pass — findings and non-findings, honestly.** Scanned for
+listener/timer leaks and floating promises. The raw
+`addEventListener`-vs-`removeEventListener` counts look alarming in
+`overlays.ts` (51 vs 10) and elsewhere, but every excess is either
+element-scoped (garbage-collected with the node when the panel is torn down)
+or attached once to an app-lifetime singleton: `Hud` is constructed exactly
+once, and `SceneDirector`'s three listeners are one window `resize` plus two
+on the canvas. No timer leaks (every `setInterval` has a matching clear). **No
+new bugs found** — which is the honest result after this many prior hardening
+passes, not a claim that none exist. Two improvements were made to this
+pass's own new code as a result of the review: the One Door asymmetry above
+was investigated and documented rather than assumed, and
+`recognizedPattern()` now short-circuits on `runsCompleted` before doing the
+room-registry scan, since it runs on every door row of every run and the
+large majority of those belong to players with no history at all.
+
+**Item 18 re-checked and left open, deliberately.** Its premise was verified
+concretely rather than taken from the note: `pickUnchosenRooms`' ANAMNESIS
+default is *not* live-buggy — LIMERENCE's understory room and all four of its
+translation files genuinely pass `LIMERENCE_ACT_POOLS` at every call site. So
+item 18 remains what it says it is: a latent-shape risk, not a present defect.
+Converting those ~6 modules' defaults to required parameters is a real
+refactor across their call sites and tests, and doing it as a drive-by
+alongside a content feature is exactly how the original leaks got in. Left for
+its own pass; the new module demonstrates the target shape.

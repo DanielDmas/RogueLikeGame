@@ -13,6 +13,7 @@
 // — unscoped defaults and shared UI-chrome keys are still a real leak class
 // (see `engine/text/keys.ts`'s scoped-key pattern) independent of bundling.
 import type { ActId, Ending, Room, RunState, Axis, Reflection } from '../engine/schema';
+import type { PlayerPatternId } from '../engine/patterns';
 import type { Diorama } from '../scene/dioramas';
 import type { ThemeConfig, ThemeId, MoodType, MoodTint, GuideFigure } from '../scene/themes';
 import type { DoorStyle } from '../scene/doors';
@@ -91,7 +92,20 @@ export interface ContentPack {
      * pack-scoped string in that same session's fixes. */
     name: string;
     speakerPrefixes: string[];
-    doorBark(s: RunState, runsCompleted: number, doorCount?: number, atUnderstoryFork?: boolean): string;
+    /** `pattern` (master plan Tier 1 item 4) is the one cross-run observation
+     * `engine/patterns.ts` selected for this visit, or `null` when the player
+     * has no history worth remarking on yet. A pack is free to ignore it — the
+     * parameter is optional precisely so a future pack can opt out of
+     * cross-run recognition entirely rather than being forced to author six
+     * more lines — but both shipped packs speak it in place of their generic
+     * returning-player wink. */
+    doorBark(
+      s: RunState,
+      runsCompleted: number,
+      doorCount?: number,
+      atUnderstoryFork?: boolean,
+      pattern?: PlayerPatternId | null,
+    ): string;
     actIntroText(act: number): string | undefined;
     examinedActBarkFallback: Record<1 | 2 | 3 | 4, string>;
     figure(): GuideFigure;

@@ -14,13 +14,78 @@
 // helper), and a LIMERENCE player in Czech/Farsi/German/French would see the
 // Usher's lines instead of the Porter's.
 import type { RunState } from '../../engine/schema';
+import type { PlayerPatternId } from '../../engine/patterns';
 import { t } from '../../engine/text/resolver';
 import { usherBarkKey, actIntroKey } from '../../engine/text/keys';
 
 const PACK_ID = 'limerence';
 const bark = (id: string) => usherBarkKey(id, PACK_ID);
 
-export function limerenceDoorBark(s: RunState, runsCompleted: number, doorCount = 2, atUnderstoryFork = false): string {
+/** Cross-run recognition lines (master plan Tier 1 item 4) — the Porter's own
+ * answer to `content/usher.ts`'s `usherPatternBark`. Same six facts,
+ * deliberately not the same sentences: the Usher is a functionary of an
+ * archive and notices things about the *place*; the Porter works a night desk
+ * and notices things about the *guest*. He is warmer than the Usher and more
+ * fatalistic, and his vocabulary is the hotel's — checking in, the ledger,
+ * room numbers, the small hours — never ANAMNESIS's corridors and travelers.
+ *
+ * Like the Usher's, these observe and never score: a returning guest is never
+ * praised or warned, only recognised. `keepsakes` are Trust-costing mementos
+ * in this pack's fiction too, so the unspent-keepsake line reads them as
+ * things carried between nights rather than inventory. */
+function limerencePatternBark(pattern: PlayerPatternId): string {
+  switch (pattern) {
+    case 'same-ending-again':
+      return t(
+        bark('pattern-same-ending-again'),
+        'Porter: You’ve stayed with us a few times now, and checked out the same way every time. I don’t read anything into it. I only notice that the other exits are still there, and none of them are in a hurry.',
+      );
+    case 'never-spent-a-heart':
+      return t(
+        bark('pattern-never-spent-a-heart'),
+        'Porter: More than one night here, and not one measure of Trust gone from your ledger. Most guests can’t say that. I won’t tell you whether it means you were careful or only quiet.',
+      );
+    case 'holds-unspent-keepsakes':
+      return t(
+        bark('pattern-holds-unspent-keepsakes'),
+        'Porter: You’re still carrying something from an earlier stay. No one will ask you to put it down. But a thing kept is a thing not spent, and one or two doors here only open for a guest willing to spend it.',
+      );
+    case 'never-descended':
+      return t(
+        bark('pattern-never-descended'),
+        'Porter: There’s a way down from behind the desk that you’ve never taken. It isn’t locked. It’s just easy to walk past, once you can already see the morning.',
+      );
+    case 'walked-most-rooms':
+      return t(
+        bark('pattern-walked-most-rooms'),
+        'Porter: You’ve been in nearly every room this hotel keeps. You read the hints the way staff read them now. What’s left is the handful you keep deciding against.',
+      );
+    case 'returns-to-one-room':
+      return t(
+        bark('pattern-returns-to-one-room'),
+        'Porter: There’s one room you keep asking for. I haven’t asked why and I won’t. But it’s started leaving the light on, and rooms that expect a guest don’t behave like empty ones.',
+      );
+  }
+}
+
+export const LIMERENCE_PATTERN_BARK_IDS = [
+  'pattern-same-ending-again',
+  'pattern-never-spent-a-heart',
+  'pattern-holds-unspent-keepsakes',
+  'pattern-never-descended',
+  'pattern-walked-most-rooms',
+  'pattern-returns-to-one-room',
+] as const;
+
+export function limerenceDoorBark(
+  s: RunState,
+  runsCompleted: number,
+  doorCount = 2,
+  atUnderstoryFork = false,
+  /** See `content/usher.ts`'s own note — the pattern selected for this visit,
+   * or `null` when the guest has no history worth remarking on yet. */
+  pattern: PlayerPatternId | null = null,
+): string {
   if (atUnderstoryFork) {
     return t(
       bark('understory-hint'),
@@ -52,7 +117,12 @@ export function limerenceDoorBark(s: RunState, runsCompleted: number, doorCount 
     );
   }
 
+  // Mirrors ANAMNESIS's own placement exactly (see content/usher.ts): a
+  // returning guest whose history has a shape gets that noticed instead of the
+  // generic "you've checked in again", and only here — one recognition per
+  // returning night, at the desk, before any door is chosen.
   if (runsCompleted > 0 && s.visited.length <= 1) {
+    if (pattern) return limerencePatternBark(pattern);
     return t(
       bark('second-run'),
       'Porter: You’ve checked in again. The desk remembers the room number, even on nights you’d rather it didn’t.',

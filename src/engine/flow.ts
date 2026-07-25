@@ -3,7 +3,8 @@ import type { ContentPack } from '../packs/types';
 import { keepsakesEarnedByFlags } from '../content/keepsakes';
 import { applyEffects, newRun } from './gameState';
 import { shouldShowReflections, shouldShowSocraticAside } from './reflections';
-import { evaluateEpiphanies, isHiddenFromCodex, resolveLastMessage } from './ledger';
+import { evaluateEpiphanies, isHiddenFromCodex, resolveLastMessage, visibleRoomCount } from './ledger';
+import { activePatterns, patternForRun, MIN_RUNS_FOR_PATTERN, type PlayerPatternId } from './patterns';
 import { backfillVisitedForJump, completeRoom, hashKey, isResumableRun, makeRegistry, offeredDoors, type RoomRegistry } from './storyEngine';
 import { oneDoorPool, pickOneDoorRoom } from './oneDoor';
 import { defaultProfile, hydrateProfile, type Profile, type SaveStore } from './saveStore';
@@ -685,6 +686,39 @@ export class Game {
     await this.runLoop();
   }
 
+  /** The one cross-run observation the guide may voice on this visit, or
+   * `null` (master plan Tier 1 item 4). Reads the profile's Ledger-only
+   * counters and *never* writes — `engine/patterns.ts` owns the detection
+   * rules and the "observe, never score" constraint; this only supplies the
+   * active pack's own numbers, since a pack with no Understory must not be
+   * told it never found one, and room totals differ per pack.
+   *
+   * `visibleRoomCount`'s `total` is deliberately reused rather than
+   * `pack.rooms.length`: it excludes understory rooms the player hasn't found
+   * yet, so "walked most of the rooms" is measured against the place as the
+   * player currently knows it, exactly like the Ledger's own "Rooms
+   * witnessed" row. */
+  private recognizedPattern(): PlayerPatternId | null {
+    // Cheap guard before the room-registry scan below: this runs on every door
+    // row of every run, and the overwhelming majority of those belong to
+    // players with no cross-run history at all, for whom `activePatterns`
+    // would return `[]` regardless of what the scan found.
+    if (this.profile.runsCompleted < MIN_RUNS_FOR_PATTERN) return null;
+    const { total } = visibleRoomCount(this.profile, this.registry, this.pack.graph.understorySequence);
+    const active = activePatterns({
+      runsCompleted: this.profile.runsCompleted,
+      endingsSeen: this.profile.endingsSeen,
+      heartsLost: this.profile.heartsLost,
+      understoryDescents: this.profile.understoryDescents,
+      roomVisits: this.profile.roomVisits,
+      keepsakes: this.profile.keepsakes,
+      keepsakeChoicesTaken: this.profile.keepsakeChoicesTaken,
+      roomsTotal: total,
+      hasUnderstory: this.pack.graph.understorySequence.length > 0,
+    });
+    return patternForRun(active, this.profile.runsCompleted);
+  }
+
   /** Resolves a door id to its on-screen index (spec 07 §Q5.3's per-door
    * hover pitch) against the currently-shown door row; -1 (→ the base 880 Hz
    * tone) if the row has changed since. */
@@ -809,7 +843,16 @@ export class Game {
       sound.setRoomAccent(null);
       this.director.showDoors(specs);
       const atUnderstoryFork = doors.some((d) => d.id === this.pack.graph.understorySequence[0]);
-      this.text.showBark(this.pack.guide.doorBark(this.state, this.profile.runsCompleted, doors.length, atUnderstoryFork), this.tokens());
+      this.text.showBark(
+        this.pack.guide.doorBark(
+          this.state,
+          this.profile.runsCompleted,
+          doors.length,
+          atUnderstoryFork,
+          this.recognizedPattern(),
+        ),
+        this.tokens(),
+      );
       const picker = this.choices.pickDoor(specs, (id) => {
         this.director.highlightDoor(id);
         if (id) sound.hover(this.doorIndex(id));

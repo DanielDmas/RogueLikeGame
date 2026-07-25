@@ -64,6 +64,29 @@ registerAll('v2', 'fr', {
     'Le Portier : Plusieurs portes, et seules certaines te reviennent ce soir. Chacune contient une nuit différente qui tourne mal, pas un score différent. Choisis celle dont tu peux vraiment habiter la question.',
   [bark('second-run')]:
     'Le Portier : Tu t’es réenregistré·e. La réception se souvient du numéro de chambre, même les nuits où tu préférerais qu’elle l’oublie.',
+
+  // Cross-run recognition (master plan Tier 1 item 4) — spoken instead of
+  // 'second-run' when the returning guest's history has a shape. Intimate "tu"
+  // and the inclusive forms this file already uses (deliberately unlike
+  // ANAMNESIS's Placeur, who says "vous"). "Confiance", not hearts.
+  //
+  // One vocabulary trap avoided here: the obvious word for the ledger a
+  // measure of Confiance is drawn from would be "registre", but this pack
+  // already uses "Le Registre" as the *proper name* of its Records Office
+  // floor (understoryNameKey in fr-ui.ts) — so "ton compte" is used instead,
+  // to keep the stat and the place from reading as the same thing.
+  [bark('pattern-same-ending-again')]:
+    'Le Portier : Tu es resté·e chez nous plusieurs fois, et tu es reparti·e de la même manière chaque fois. Je n’en tire rien. Je remarque seulement que les autres sorties sont toujours là, et qu’aucune n’est pressée.',
+  [bark('pattern-never-spent-a-heart')]:
+    'Le Portier : Plus d’une nuit ici, et pas une seule mesure de Confiance disparue de ton compte. La plupart des client·es ne peuvent pas en dire autant. Je ne te dirai pas si cela veut dire que tu étais prudent·e ou seulement silencieux·se.',
+  [bark('pattern-holds-unspent-keepsakes')]:
+    'Le Portier : Tu portes encore quelque chose d’un séjour précédent. Personne ne te demandera de le poser. Mais ce qu’on garde n’est pas dépensé — et une ou deux portes ici ne s’ouvrent qu’à un·e client·e prêt·e à le dépenser.',
+  [bark('pattern-never-descended')]:
+    'Le Portier : Derrière la réception, un passage descend, que tu n’as jamais pris. Il n’est pas fermé. Il est seulement facile à dépasser, quand on voit déjà le matin.',
+  [bark('pattern-walked-most-rooms')]:
+    'Le Portier : Tu as été dans presque chaque chambre que tient cet hôtel. Tu lis les indices comme le personnel les lit, maintenant. Il ne reste que la poignée que tu continues d’écarter.',
+  [bark('pattern-returns-to-one-room')]:
+    'Le Portier : Il y a une chambre que tu redemandes sans cesse. Je n’ai pas demandé pourquoi, et je ne le ferai pas. Mais elle a commencé à laisser la lumière allumée — et les chambres qui attendent quelqu’un ne se comportent pas comme les chambres vides.',
   [bark('reason-low')]: 'Le Portier : Tu pèses chaque chambre avant d’y entrer. Les chambres ont commencé à te peser en retour.',
   [bark('reason-high')]:
     'Le Portier : Tu ressens chaque chambre ici à plein volume. Le couloir se réchauffe pour des invités comme toi. Ce n’est pas un compliment. Ce n’est pas non plus un avertissement.',

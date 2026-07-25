@@ -39,6 +39,25 @@ registerAll('v2', 'cs', {
     'Vrátný: Několik dveří, a jen některé jsou dnes v noci vaše. Za každými se skrývá jiná noc, která se zvrtla, ne jiné skóre. Vyberte tu, jejíž otázku dokážete opravdu unést.',
   [bark('second-run')]:
     'Vrátný: Zase jste se ubytovali. Recepce si pamatuje číslo pokoje, i v noci, kdy byste si přáli, aby nepamatovala.',
+
+  // Cross-run recognition (master plan Tier 1 item 4) — spoken instead of
+  // 'second-run' when the returning guest's history has a shape. Deliberately
+  // NOT a translation of ANAMNESIS's Uvaděč lines: same six facts, the
+  // Porter's own hotel diction (recepce, ubytovat se, odhlásit se, noc). This
+  // pack's own vocabulary only — "Důvěra" not "srdce", "Archiv" not
+  // "Podzemí" — so nothing of the Usher's register leaks in here.
+  [bark('pattern-same-ending-again')]:
+    'Vrátný: Byli jste u nás už několikrát a odhlásili se pokaždé stejně. Nic si z toho nevyvozuji. Jen si všímám, že ostatní východy tu pořád jsou — a žádný z nich nikam nespěchá.',
+  [bark('pattern-never-spent-a-heart')]:
+    'Vrátný: Víc než jedna noc tady, a z vaší knihy nezmizela ani jedna míra Důvěry. To o sobě většina hostů říct nemůže. Neřeknu vám, jestli to znamená, že jste byli opatrní, nebo jen tiší.',
+  [bark('pattern-holds-unspent-keepsakes')]:
+    'Vrátný: Pořád u sebe nesete něco z dřívějšího pobytu. Nikdo vás nebude nutit to odložit. Ale co je uschované, není vydané — a jedny nebo dvoje dveře se tu otevřou jen hostu, který je ochoten vydat.',
+  [bark('pattern-never-descended')]:
+    'Vrátný: Za recepcí vede cesta dolů, kterou jste nikdy nevzali. Není zamčená. Jen se snadno mine, když už člověk vidí ráno.',
+  [bark('pattern-walked-most-rooms')]:
+    'Vrátný: Byli jste skoro v každém pokoji, který tenhle hotel drží. Nápovědy už čtete tak, jak je čte personál. Zbývá jich několik — ty, proti kterým se pořád rozhodujete.',
+  [bark('pattern-returns-to-one-room')]:
+    'Vrátný: Je jeden pokoj, o který si pořád říkáte. Neptal jsem se proč a nebudu. Ale začal v něm zůstávat rozsvícený — a pokoje, které někoho čekají, se nechovají jako prázdné.',
   [bark('reason-low')]: 'Vrátný: Každou místnost si předem zvážíte, než do ní vstoupíte. Místnosti si teď začaly vážit vás.',
   [bark('reason-high')]:
     'Vrátný: Každou místnost tu cítíte naplno. Chodba je pro hosty jako vy o něco teplejší. Není to kompliment. Není to ale ani varování.',

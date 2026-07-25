@@ -63,6 +63,24 @@ registerAll('v2', 'de', {
     'Portier: Mehrere Türen, und nur manche gehören dir heute Nacht. Jede birgt eine andere Nacht, die schiefgeht, nicht eine andere Punktzahl. Wähl die, deren Frage du wirklich aushalten kannst.',
   [bark('second-run')]:
     'Portier: Du hast dich wieder eingecheckt. Die Rezeption erinnert sich an die Zimmernummer, auch in Nächten, in denen du es dir anders wünschst.',
+
+  // Cross-run recognition (master plan Tier 1 item 4) — spoken instead of
+  // 'second-run' when the returning guest's history has a shape. Informal "du"
+  // throughout, as in every other Portier line (deliberately unlike
+  // ANAMNESIS's Platzanweiser, who says "Sie"). This pack's vocabulary only:
+  // "Vertrauen", the hotel's Rezeption/auschecken/Nacht — never the Usher's.
+  [bark('pattern-same-ending-again')]:
+    'Portier: Du warst schon ein paar Nächte bei uns und hast jedes Mal auf dieselbe Weise ausgecheckt. Ich lese nichts hinein. Mir fällt nur auf, dass die anderen Ausgänge noch da sind — und keiner von ihnen hat es eilig.',
+  [bark('pattern-never-spent-a-heart')]:
+    'Portier: Mehr als eine Nacht hier, und kein einziges Maß Vertrauen aus deinem Buch verschwunden. Das können die meisten Gäste nicht sagen. Ich sage dir nicht, ob es heißt, dass du vorsichtig warst oder nur still.',
+  [bark('pattern-holds-unspent-keepsakes')]:
+    'Portier: Du trägst noch etwas von einem früheren Aufenthalt bei dir. Niemand wird dich bitten, es hinzulegen. Aber was aufbewahrt wird, ist nicht ausgegeben — und ein, zwei Türen hier öffnen sich nur einem Gast, der bereit ist, es auszugeben.',
+  [bark('pattern-never-descended')]:
+    'Portier: Hinter der Rezeption führt ein Weg nach unten, den du nie genommen hast. Er ist nicht verschlossen. Er lässt sich nur leicht übergehen, wenn man den Morgen schon sehen kann.',
+  [bark('pattern-walked-most-rooms')]:
+    'Portier: Du warst in fast jedem Zimmer, das dieses Hotel führt. Du liest die Hinweise inzwischen, wie das Personal sie liest. Übrig bleibt die Handvoll, gegen die du dich immer wieder entscheidest.',
+  [bark('pattern-returns-to-one-room')]:
+    'Portier: Es gibt ein Zimmer, nach dem du immer wieder fragst. Ich habe nicht gefragt, warum, und ich werde es nicht. Aber es lässt inzwischen das Licht an — und Zimmer, die einen Gast erwarten, verhalten sich nicht wie leere.',
   [bark('reason-low')]: 'Portier: Du wägst jedes Zimmer ab, bevor du es betrittst. Die Zimmer haben angefangen, dich zurückzuwägen.',
   [bark('reason-high')]:
     'Portier: Du fühlst hier jedes Zimmer in voller Lautstärke. Der Flur läuft wärmer für Gäste wie dich. Das ist kein Kompliment. Es ist aber auch keine Warnung.',

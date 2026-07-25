@@ -1,13 +1,83 @@
 import type { RunState } from '../engine/schema';
+import type { PlayerPatternId } from '../engine/patterns';
 import { t } from '../engine/text/resolver';
 import { usherBarkKey, actIntroKey } from '../engine/text/keys';
+
+/** Cross-run recognition lines (master plan Tier 1 item 4). One per
+ * `PlayerPatternId`; `engine/patterns.ts` decides *which* fact is true, this
+ * decides how the Usher says it. Spoken in place of the generic `second-run`
+ * wink on a returning traveler's first door — the moment recognition lands
+ * hardest — so each is written to work as an opening line, not a mid-corridor
+ * aside.
+ *
+ * Register notes, since these must sit beside the existing barks without
+ * sounding like a different character: the Usher observes, never scores (the
+ * Experience Charter forbids grades, and a line that reads as praise or
+ * reproach would be a worse bug here than a mistranslation). He is a
+ * functionary of the place who has watched a great many travelers and is
+ * mildly, professionally interested in this one. He never flatters and never
+ * warns. */
+function usherPatternBark(pattern: PlayerPatternId): string {
+  switch (pattern) {
+    case 'same-ending-again':
+      return t(
+        usherBarkKey('pattern-same-ending-again'),
+        'Usher: You have come back more than once, and left by the same door every time. I make no remark on it. I only note that the other doors have also been waiting, and they are patient in a way I am not.',
+      );
+    case 'never-spent-a-heart':
+      return t(
+        usherBarkKey('pattern-never-spent-a-heart'),
+        'Usher: You have walked this place more than once and never once left a heart behind. That is rarer than you would think. Whether it means you chose well or chose narrowly, the ledger does not say — it only counts.',
+      );
+    case 'holds-unspent-keepsakes':
+      return t(
+        usherBarkKey('pattern-holds-unspent-keepsakes'),
+        'Usher: You are still carrying what you picked up on an earlier visit. Carrying is permitted indefinitely. I mention it only because a thing kept is a thing not yet used, and some doors here open only for the second kind.',
+      );
+    case 'never-descended':
+      return t(
+        usherBarkKey('pattern-never-descended'),
+        'Usher: There is a stairway down from the last floor that you have not taken. It is not hidden, exactly. It is simply easy to walk past when morning is already visible.',
+      );
+    case 'walked-most-rooms':
+      return t(
+        usherBarkKey('pattern-walked-most-rooms'),
+        'Usher: You have been in nearly every room this place has. I have stopped preparing the hints for you; you read them the way one reads a familiar sign. What is left is the few you keep not choosing.',
+      );
+    case 'returns-to-one-room':
+      return t(
+        usherBarkKey('pattern-returns-to-one-room'),
+        'Usher: There is one room you keep coming back to. I have not asked why, and I will not. But the room has begun to expect you, and rooms that expect people behave differently.',
+      );
+  }
+}
+
+export const USHER_PATTERN_BARK_IDS = [
+  'pattern-same-ending-again',
+  'pattern-never-spent-a-heart',
+  'pattern-holds-unspent-keepsakes',
+  'pattern-never-descended',
+  'pattern-walked-most-rooms',
+  'pattern-returns-to-one-room',
+] as const;
 
 /** One-line Usher commentary shown at the door-choosing moment. `atUnderstoryFork`
  * is true exactly once per eligible run — the single moment the Act IV
  * understory staircase is offered alongside `boulder` (see `offeredDoors`'s
  * act-4 branch) — and takes priority over every other bark, since it never
  * recurs. */
-export function usherDoorBark(s: RunState, runsCompleted: number, doorCount = 2, atUnderstoryFork = false): string {
+export function usherDoorBark(
+  s: RunState,
+  runsCompleted: number,
+  doorCount = 2,
+  atUnderstoryFork = false,
+  /** Cross-run recognition (master plan Tier 1 item 4): the one pattern
+   * `engine/patterns.ts` selected for this visit, or `null`/omitted when the
+   * player has no history worth remarking on yet (every first-time player, and
+   * any caller that doesn't supply it). Consumed only in the returning-
+   * traveler branch below. */
+  pattern: PlayerPatternId | null = null,
+): string {
   if (atUnderstoryFork) {
     return t(
       usherBarkKey('understory-hint'),
@@ -47,8 +117,15 @@ export function usherDoorBark(s: RunState, runsCompleted: number, doorCount = 2,
     );
   }
 
-  // Second-run winks take priority once per act
+  // Second-run winks take priority once per act. When the traveler's history
+  // has a shape the Usher is allowed to notice (Tier 1 item 4), he says that
+  // instead of the generic "you have returned" — same beat, same moment, but
+  // addressed to *this* traveler. Deliberately only here: recognition lands
+  // hardest as an opening line, and confining it to one bark per returning run
+  // means it can never crowd out the axis-reactive lines or start to feel like
+  // the guide is monitoring rather than remembering.
   if (runsCompleted > 0 && s.visited.length <= 1) {
+    if (pattern) return usherPatternBark(pattern);
     return t(usherBarkKey('second-run'), 'Usher: You have returned. The lever is where you left it; we rearrange nothing here — permanence is the one luxury the facility affords.');
   }
 

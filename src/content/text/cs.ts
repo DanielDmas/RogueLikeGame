@@ -218,6 +218,27 @@ registerAll('v2', 'cs', {
   [usherBarkKey('gate-single-door')]: 'Uvaděč: Pro tento úsek zbývají jedny dveře. Ostatní už máte za sebou, vybrané nebo vynechané — což byla svým způsobem také volba. Tyto jsou prostě jediná cesta, která zůstává otevřená.',
   [usherBarkKey('first-choice-explainer')]: 'Uvaděč: Několik dveří, a jen některé budou tentokrát vaše — zbytek zůstává zavřený, prozatím. Každé skrývá jinou situaci, ne jiné skóre. Vyberte ty, jejichž otázku jste ochotni skutečně unést.',
   [usherBarkKey('second-run')]: 'Uvaděč: Vrátili jste se. Páka je tam, kde jste ji nechali; tady nic nepřerovnáváme — stálost je jediný luxus, který si toto zařízení dovolí.',
+
+  // Cross-run recognition (master plan Tier 1 item 4) — spoken instead of
+  // 'second-run' when the traveler's history has a shape. Register matched to
+  // the surrounding Uvaděč lines: formal plural, dry, observing without ever
+  // praising or reproaching (the Experience Charter forbids grades, so a line
+  // that read as approval would be a worse error here than an awkward phrase).
+  // Vocabulary held to what this pack has already established: "účetní kniha"
+  // for the ledger (see reason-low), "Podzemí" for the Understory,
+  // "vydat/vydaný" for spending a keepsake (see keepsakeSpentToast).
+  [usherBarkKey('pattern-same-ending-again')]:
+    'Uvaděč: Vrátili jste se víc než jednou a pokaždé jste odešli stejnými dveřmi. Nijak to nekomentuji. Jen podotýkám, že ostatní dveře čekaly také — a mají trpělivost, jakou já nemám.',
+  [usherBarkKey('pattern-never-spent-a-heart')]:
+    'Uvaděč: Prošli jste tímto místem víc než jednou a ani jednou tu nezůstalo srdce. To je vzácnější, než byste čekali. Jestli to znamená, že jste volili dobře, nebo jen úzce, účetní kniha neříká — ta jen počítá.',
+  [usherBarkKey('pattern-holds-unspent-keepsakes')]:
+    'Uvaděč: Stále nesete, co jste si odnesli z dřívější návštěvy. Nosit to smíte jak dlouho chcete. Zmiňuji to jen proto, že uschovaná věc není vydaná věc — a některé dveře se tu otevřou jen tomu, kdo vydá.',
+  [usherBarkKey('pattern-never-descended')]:
+    'Uvaděč: Z posledního podlaží vede schodiště dolů, které jste nikdy nevzali. Není, přesně řečeno, skryté. Jen se snadno mine, když už je vidět ráno.',
+  [usherBarkKey('pattern-walked-most-rooms')]:
+    'Uvaděč: Byli jste téměř v každé místnosti, kterou toto místo má. Přestal jsem pro vás chystat nápovědy; čtete je, jak se čte známá cedule. Zbývá jen těch několik, které si stále nevybíráte.',
+  [usherBarkKey('pattern-returns-to-one-room')]:
+    'Uvaděč: Je tu jedna místnost, do které se stále vracíte. Neptal jsem se proč a nebudu. Ale ta místnost vás začala očekávat — a místnosti, které někoho očekávají, se chovají jinak.',
   [usherBarkKey('reason-low')]: 'Uvaděč: Vážíte každou místnost jako účetní knihu. Místnosti si toho všimly a podle toho upravily poznámky pod čarou.',
   [usherBarkKey('reason-high')]: 'Uvaděč: Cítíte tu všechno, otevřeně. Chodba je kvůli tomu teplejší. To není obrazné vyjádření.',
   [usherBarkKey('self-low')]: 'Uvaděč: Udržel jste se vcelku. Rozumný instinkt. Občas se zeptejte, k čemu to udržování vlastně je.',
