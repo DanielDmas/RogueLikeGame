@@ -1,4 +1,4 @@
-import type { RunState, TranscriptEntry } from './schema';
+import { isStructurallyValidRun, type RunState, type TranscriptEntry } from './schema';
 import type { Lang } from './text/resolver';
 
 export interface Settings {
@@ -218,13 +218,96 @@ export function migrateSettings(raw: LegacySettings | undefined, base: Settings)
  * migrations, never load-bearing on its own. Storage-agnostic (pure JSON
  * shape logic) so both `LocalSaveStore.load()` and profile import (R9)
  * share exactly one merge path instead of two that could drift apart. */
+/** Coerces one persisted field to the shape the rest of the engine assumes,
+ * falling back to the default when the stored value can't be used.
+ *
+ * These exist because `hydrateProfile` used to be a bare spread merge
+ * (`{...base, ...parsed}`), which trusted every value in the save file. An
+ * adversarial-save troll pass (2026-07-26) found that hostile-but-valid JSON
+ * crashed the game in 10 different ways — `{"codexUnlocked": null}` reaching a
+ * `.length`, `{"endingsSeen": null}` reaching a `.map`, `{"persona": null}`
+ * reaching `.name`, and so on. Each was a one-line `.map`/`.length`/`.name`
+ * away from a blank page.
+ *
+ * Coercion (not rejection) is the right treatment for profile-level fields:
+ * unlike a run, a profile can't be discarded — the player always needs one —
+ * and losing a corrupt `roomVisits` tally costs nothing but a Ledger stat,
+ * whereas refusing to load would cost the player their whole history. */
+const strArrayOr = (v: unknown, fallback: string[]): string[] =>
+  Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : fallback;
+
+const recordOr = (v: unknown, fallback: Record<string, number>): Record<string, number> => {
+  if (typeof v !== 'object' || v === null || Array.isArray(v)) return fallback;
+  const out: Record<string, number> = {};
+  for (const [k, n] of Object.entries(v as Record<string, unknown>)) {
+    if (typeof n === 'number' && Number.isFinite(n)) out[k] = n;
+  }
+  return out;
+};
+
+/** Counters are displayed and arithmetic'd, never used as indices — a
+ * negative or NaN value can't crash anything, but it renders as nonsense
+ * ("Runs completed: NaN"), so it's clamped rather than merely type-checked. */
+const countOr = (v: unknown, fallback: number): number =>
+  typeof v === 'number' && Number.isFinite(v) && v >= 0 ? Math.floor(v) : fallback;
+
+const stringOrNull = (v: unknown): string | null => (typeof v === 'string' ? v : null);
+
+const boolOr = (v: unknown, fallback: boolean): boolean => (typeof v === 'boolean' ? v : fallback);
+
 export function hydrateProfile(parsed: Partial<Omit<Profile, 'settings'>> & { settings?: LegacySettings }): Profile {
   const base = defaultProfile();
+  const raw = (parsed ?? {}) as Record<string, unknown>;
   return {
     ...base,
     ...parsed,
+    // A structurally broken run is discarded here rather than repaired — see
+    // `isStructurallyValidRun`'s own note for why, and note this is
+    // deliberately *shape-only*: whether its room ids exist in the active
+    // pack is a separate, pack-dependent question `isResumableRun` still
+    // answers at the Continue gate (a valid run for one pack is still an
+    // invalid run for the other, and only that check can tell).
+    run: raw.run == null || isStructurallyValidRun(raw.run) ? ((raw.run as RunState | null) ?? null) : null,
+    codexUnlocked: strArrayOr(raw.codexUnlocked, base.codexUnlocked),
+    endingsSeen: strArrayOr(raw.endingsSeen, base.endingsSeen),
+    keepsakes: strArrayOr(raw.keepsakes, base.keepsakes),
+    keepsakeChoicesTaken: strArrayOr(raw.keepsakeChoicesTaken, base.keepsakeChoicesTaken),
+    epiphanies: strArrayOr(raw.epiphanies, base.epiphanies),
+    choiceHistory: strArrayOr(raw.choiceHistory, base.choiceHistory),
+    roomVisits: recordOr(raw.roomVisits, base.roomVisits),
+    lastMessage: stringOrNull(raw.lastMessage),
+    lastMessageChoiceId: stringOrNull(raw.lastMessageChoiceId),
+    // `lastRunTranscript`/`lastRunEndingId` are genuinely optional (absent
+    // before the player's first completed run, and on legacy saves), and
+    // `defaultProfile()` deliberately omits them rather than storing a null.
+    // So they're sanitized only when actually present — materializing them as
+    // `null` on every load would change the profile's shape for every
+    // first-time player, which two existing save-round-trip tests correctly
+    // caught when an earlier draft of this hardening did exactly that.
+    ...(raw.lastRunTranscript !== undefined
+      ? { lastRunTranscript: Array.isArray(raw.lastRunTranscript) ? parsed.lastRunTranscript : undefined }
+      : {}),
+    ...(raw.lastRunEndingId !== undefined ? { lastRunEndingId: stringOrNull(raw.lastRunEndingId) } : {}),
+    runsCompleted: countOr(raw.runsCompleted, base.runsCompleted),
+    heartsLost: countOr(raw.heartsLost, base.heartsLost),
+    understoryDescents: countOr(raw.understoryDescents, base.understoryDescents),
+    examinedRuns: countOr(raw.examinedRuns, base.examinedRuns),
+    hasSeenHeartLoss: boolOr(raw.hasSeenHeartLoss, base.hasSeenHeartLoss),
+    persona:
+      typeof raw.persona === 'object' && raw.persona !== null && !Array.isArray(raw.persona)
+        ? {
+            ...base.persona,
+            ...(parsed.persona as Persona),
+            name: typeof (raw.persona as Record<string, unknown>).name === 'string'
+              ? (raw.persona as Persona).name
+              : base.persona.name,
+            blurb: typeof (raw.persona as Record<string, unknown>).blurb === 'string'
+              ? (raw.persona as Persona).blurb
+              : base.persona.blurb,
+          }
+        : base.persona,
     settings: migrateSettings(parsed.settings, base.settings),
-    hasSeenAbout: shouldGrandfatherHasSeenAbout(parsed) ? true : (parsed.hasSeenAbout ?? base.hasSeenAbout),
+    hasSeenAbout: shouldGrandfatherHasSeenAbout(parsed) ? true : boolOr(raw.hasSeenAbout, base.hasSeenAbout),
     schemaVersion: PROFILE_SCHEMA_VERSION,
   };
 }

@@ -1,4 +1,4 @@
-import type { ActId, Room, RunState } from './schema';
+import { isStructurallyValidRun, type ActId, type Room, type RunState } from './schema';
 import {
   ACT4_SEQUENCE as ANAMNESIS_ACT4_SEQUENCE,
   ACT_POOLS as ANAMNESIS_ACT_POOLS,
@@ -156,6 +156,14 @@ export function backfillVisitedForJump(visited: string[], roomId: string, graph:
  * they never chose).
  */
 export function isResumableRun(run: RunState, registry: RoomRegistry): boolean {
+  // Shape first, ids second. `hydrateProfile` already discards a structurally
+  // broken run, so in the real load path this guard is redundant — but it is
+  // kept because this function is also the thing that *used* to crash on
+  // `{"visited": null}` (`.every` of null), and a validator whose own
+  // contract is "tell me whether this run is usable" must never itself throw
+  // on the answer being "no". Defence in depth at a genuine trust boundary,
+  // not a redundant check.
+  if (!isStructurallyValidRun(run)) return false;
   if (run.currentRoom != null && !registry.has(run.currentRoom)) return false;
   return run.visited.every((id) => registry.has(id));
 }

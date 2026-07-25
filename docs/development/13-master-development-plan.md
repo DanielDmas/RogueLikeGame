@@ -932,3 +932,94 @@ explicitly deferred as post-1.0 polish; picking it up unilaterally would
 reopen a decision that was reasoned and recorded, not silently fix a gap.
 Tier 3 (commercial certification, mobile, a third pack) remains correctly
 inactionable — each is contingent on a decision only the owner can make.
+
+---
+
+# Adversarial-save troll pass: 10 real crashes found and fixed — 2026-07-26
+
+Owner directive: *"do an extended troll testing, design it and correct what you
+find."* The previous pass's troll scripts (60/61) chaos-test *interaction* —
+clicks, keys, resizes racing animations. This one attacks a different and,
+it turned out, far more productive surface: **the save payload**, which is the
+one genuinely untrusted input this game has. `localStorage` is editable by
+anyone with devtools, and profiles are importable as files.
+
+**The gap in the existing defence.** Malformed *JSON* was already handled —
+`localSave.ts` falls back to its backup, and a prior audit verified that. But
+**valid JSON carrying hostile values was a separate, unguarded surface**:
+`hydrateProfile` was a bare `{...base, ...parsed}` spread that trusted every
+field it was handed. The prior review's own note ("malformed JSON safely
+rejected") was true and, read as coverage of this class, misleading — which is
+precisely why this was worth probing empirically rather than reasoning about.
+
+**Method.** Built 29 hand-designed payloads, each varying exactly one field
+from a known-good baseline so a failure names the responsible field rather
+than "some bad save". Seeded each into a real, already-hydrated profile,
+reloaded, clicked Continue, and recorded page/console errors, blank pages, XSS
+execution, and prototype pollution. **10 of 29 crashed the running game.**
+
+Representative failures, each a one-line dereference away from a blank page:
+- `{"act": 99}` (also `-1`, `null`, `"two"`) → `doorsForAct`'s
+  `graph.actPools[act].map(...)` on an undefined pool. Worth noting
+  `themeForAct` is a bare cast with no clamping, so nothing upstream caught it.
+- `{"visited": null}` → `isResumableRun`'s `.every` — i.e. **the validator
+  added by item 11 to prevent unresumable-run crashes was itself crashing** on
+  a malformed run.
+- `{"run": []}` / `{"run": "x"}` → same `.every`, one level up.
+- `{"endingsSeen": null}` → `.map`; `{"codexUnlocked": null}` → `.length`;
+  `{"persona": null}` → `.name`.
+
+**Two negatives confirmed empirically rather than assumed**, both of which
+prior audits had asserted on inspection alone: a persona name of
+`<img src=x onerror=...>` does **not** execute (every user string renders
+through `ui/dom.ts`'s `el()`, which uses `textContent`), and a hostile
+`__proto__` key does **not** pollute `Object.prototype` (object spread defines
+rather than sets, so it never invokes the setter). Both are now pinned by
+tests so a future refactor — e.g. `el()` gaining an `innerHTML` path, or
+`hydrateProfile` moving to `Object.assign`, which *does* invoke setters —
+can't silently reopen them.
+
+**The fix, at one boundary rather than 10 call sites.** The tempting patch is
+a guard at each crash site; that would have left the next unguarded consumer
+just as exposed. Instead the untrusted data is sanitized once, where it
+enters:
+- **New `isStructurallyValidRun(run)`** in `schema.ts` — pure, shape-only, no
+  pack knowledge (that module deliberately has zero imports, so `saveStore`
+  can call it with no dependency cycle). Registry-level validation ("do these
+  ids exist in *this* pack?") stays in `isResumableRun`, layered on top.
+- **`hydrateProfile` now sanitizes every field**, with a deliberate split by
+  kind: a broken **run is discarded** (a corrupt run is unplayable, and
+  repairing it means inventing a state the player never played — the same
+  reasoning item 11 already settled), while a broken **profile field is
+  coerced to its default** (the player always needs a profile, and losing a
+  Ledger tally is far cheaper than refusing to load their whole history).
+- **`isResumableRun` now shape-checks first**, so the function whose entire
+  contract is "tell me whether this run is usable" can never itself throw on
+  the answer being "no".
+
+**One self-inflicted regression, caught by the existing suite and worth
+recording.** The first draft wrote `lastRunEndingId: null` and
+`lastRunTranscript: undefined` unconditionally — materializing two genuinely
+*optional* fields that `defaultProfile()` deliberately omits. Two existing
+save-round-trip tests failed immediately on the changed profile shape. Fixed
+by sanitizing those two only when actually present. Exactly the outcome a good
+regression suite is for, and a reminder that "harden everything uniformly" can
+itself be a behaviour change.
+
+**Verification.** `tsc` clean; full suite **1259/1259 green** (22 new in
+`hostileSaves.test.ts`). Mutation-tested rather than trusted for passing:
+deleting the act-range check failed 3 expected tests, and weakening the array
+coercion failed 1 — both restored and reconfirmed. The probe was re-run after
+the fix: **0 of 29 payloads produce a problem**, down from 10, using the
+identical assertions — which is the empirical before/after proof that the new
+UAT script has teeth, so no separate mutation of it was needed. Live UAT 60
+(in-game chaos), 02 (save/reload/continue) and 39 (fullscreen resume across
+reload) all re-run and pass, confirming the load-path changes didn't regress
+normal play.
+
+Shipped as permanent coverage: `tests/uat/62-troll-hostile-saves.mjs` replays
+all 29 payloads in a real browser and asserts no errors, no blank page, no
+XSS, no prototype pollution. It exists *alongside* the unit tests rather than
+instead of them because the `act=99` crash happened three layers below
+`hydrateProfile`, in the 3D scene build — no pure-function test would have
+reached it.

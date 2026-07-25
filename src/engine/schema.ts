@@ -84,6 +84,64 @@ export interface RunState {
   endingId: string | null;
 }
 
+/** Is this value structurally usable as a `RunState`?
+ *
+ * The save file is the one place genuinely untrusted data enters the engine:
+ * `localStorage` is editable by anyone with devtools, and profiles can be
+ * exported/imported as files. `JSON.parse` failure is already handled
+ * (`localSave.ts` falls back to its backup), but **valid JSON carrying hostile
+ * values is a separate attack surface** — and it was unguarded until an
+ * adversarial-save troll pass (2026-07-26) crashed the game with 10 different
+ * payloads, e.g. `{"act": 99}` reaching `doorsForAct`'s
+ * `graph.actPools[act].map(...)` on an undefined pool, or `{"visited": null}`
+ * reaching `isResumableRun`'s `.every`.
+ *
+ * This checks *shape only* — no room ids, no pack knowledge, so it lives here
+ * beside `RunState` itself (this module deliberately has zero imports) and is
+ * callable from `hydrateProfile` without a dependency cycle. Registry-level
+ * validation ("do these room ids exist in the active pack?") stays in
+ * `storyEngine.ts`'s `isResumableRun`, which layers on top of this.
+ *
+ * A run that fails this is **discarded, never repaired** — the same decision
+ * (and reasoning) as `isResumableRun`: repairing would mean inventing a
+ * plausible substitute act/heart count and silently dropping the player into
+ * a state they never played, which is both harder to reason about and worse
+ * for the player than a clean fresh run.
+ *
+ * Optional fields (`currentStage`, `doorSeed`, `prior`, `descended`, …) are
+ * deliberately *not* required here — every one of them is documented as
+ * absent on older saves, and rejecting a legitimate legacy save would be a
+ * far worse bug than tolerating a missing optional field. */
+export function isStructurallyValidRun(run: unknown): run is RunState {
+  if (typeof run !== 'object' || run === null || Array.isArray(run)) return false;
+  const r = run as Record<string, unknown>;
+
+  const finite = (v: unknown): boolean => typeof v === 'number' && Number.isFinite(v);
+  const strArray = (v: unknown): boolean => Array.isArray(v) && v.every((x) => typeof x === 'string');
+
+  // `act` indexes pack data structures directly (actPools, gates,
+  // optionalPerAct) — an out-of-range value is the single most damaging
+  // hostile field, so it's checked against ActId's real domain.
+  if (!Number.isInteger(r.act) || (r.act as number) < 0 || (r.act as number) > 4) return false;
+
+  if (!finite(r.hearts) || !finite(r.lucidity) || !finite(r.actOptionalDone)) return false;
+
+  if (!strArray(r.visited) || !strArray(r.flags)) return false;
+  if (!Array.isArray(r.transcript)) return false;
+
+  if (typeof r.axes !== 'object' || r.axes === null || Array.isArray(r.axes)) return false;
+  const axes = r.axes as Record<string, unknown>;
+  for (const axis of ['reasonFeeling', 'selfOthers', 'controlAcceptance']) {
+    if (!finite(axes[axis])) return false;
+  }
+
+  if (r.currentRoom !== null && typeof r.currentRoom !== 'string') return false;
+  if (r.endingId !== null && typeof r.endingId !== 'string') return false;
+  if (typeof r.finished !== 'boolean') return false;
+
+  return true;
+}
+
 export interface Effects {
   lucidity?: number;
   /** negative to lose hearts */
