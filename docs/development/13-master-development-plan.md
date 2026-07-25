@@ -500,3 +500,79 @@ still pass. Full suite: `tsc` clean, **1144/1144 green** (2 new).
   `the-second-account`, local y=0.9) renders comfortably mid-frame with
   ample headroom. No per-diorama bounding-box lift computation added — it
   would be complexity with no observed benefit.
+
+---
+
+# Player-perspective pass: the prologue diorama — 2026-07-21
+
+Owner directive: *"check it from the position of the user / player and
+enhance everything you find."* Approach: actually walked the real
+first-time-player path in a browser (title → auto-About → persona skip →
+prologue beats → prologue door → first room → choice → outcome → field
+note), screenshotting each beat and **reading** them rather than reading
+more source. Zero console/page errors across the whole path.
+
+**The one significant finding, and it is the worst-placed one possible.**
+The `waiting-room` diorama — the prologue's, i.e. the first and closest
+diorama every single player sees — rendered as untextured placeholder
+geometry: a featureless ~520px grey slab (the bench, 40% of screen width)
+and a pale blue-grey monolith with a white disc on it (the window panes and
+clock). It did not read as "a bench, a handless clock, a recursive window";
+it read as unfinished.
+
+**Why it had gone unnoticed.** It was authored when dioramas sat at
+`DIORAMA_Z = -10` with no scale multiplier — small and distant, where five
+bare primitives are exactly right. Since then `DIORAMA_SCALE = 1.6` and
+`DIORAMA_Z = -7.5` landed (the owner's "bigger/closer" request), the
+post-`walkThrough` camera parks ~3.1 units from the diorama rather than the
+corridor framing's ~15, and this session's `DIORAMA_Y_LIFT` raised it clear
+of the text panel — so those primitives are now seen roughly **5x** their
+intended screen size, with nothing to reward the magnification. The lift
+did not create the problem; it finished revealing it.
+
+**Fix — detail added, nothing shrunk** (respecting the standing "do not
+make them much smaller" directive), all within the existing
+primitives-only vocabulary (flat colour/emissive `MeshStandardMaterial`,
+one light, no textures):
+- **Bench** is now slatted — 4 seat slats with gaps, 3 backrest slats, two
+  legs — instead of one solid box. The gaps are what make it read as
+  waiting-room furniture at this size. Same footprint as before.
+- **Clock** is now a real dial: dark rim, dim face, 12 tick marks, and
+  deliberately **no hands**. This matters more than it sounds: the room's
+  own field note says *"The clock has no hands because recollection does not
+  happen in time."* The authored text was pointing at a detail the player
+  could not previously perceive — it was an indistinct pale blob. Now the
+  visual and the prose reinforce each other, and the missing hands become
+  the intended unsettling focal point rather than looking like a modelling
+  omission. Also moved off the window (they overlapped into one cluttered
+  shape) onto the wall above the bench, so bench/clock/window compose as a
+  room.
+- **Window** gained a frame and a mullion cross so it reads as a window,
+  and its emissive was cut hard (0.35/0.5 → 0.12/0.18) — against the shared
+  front-fill light `setDiorama` adds, the old values blew the panes out to
+  flat white.
+- **Its own point light** softened 0.55 → 0.38, since that shared fill
+  light now does most of the work and the two were double-lighting the same
+  surfaces.
+- **Cylinder segments raised on `quality: 'low'`** (12 → 20) and tick count
+  no longer quality-gated. `low` is the *default for new profiles*, i.e.
+  what most players actually see, and a 12-sided cylinder read as a visible
+  polygon at this size. Two small cylinders' segments are negligible next
+  to the per-theme particle fields.
+
+**Verification.** Re-walked the same player path and compared screenshots
+before/after: the bench now reads as slats, the clock as a handless dial,
+the window as four panes. `dioramas.test.ts` gained 5 tests pinning the
+properties that made it work rather than exact geometry (mesh count in
+25-40 at both qualities — well above the 5 primitives it was, still under
+the existing ceiling; no material's `emissiveIntensity` above 0.3, so
+nothing creeps back to light-source brightness; exactly two cylinders,
+i.e. rim + face and no hands). Full suite `tsc` clean, **1149/1149 green**
+(5 new). UAT 17 (act sweep, includes `waiting-room`) and UAT 49 (the
+ANAMNESIS diorama screenshot sweep) both still pass.
+
+**Noted, not acted on:** the other dioramas were spot-checked at the close
+framing and hold up — this was a genuine outlier, not the first of 34
+identical problems, so no blanket re-detailing pass is proposed. If a
+future pass wants one, the cheap tell is any diorama whose whole motif is
+fewer than ~8 primitives.

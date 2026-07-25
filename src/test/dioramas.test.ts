@@ -48,6 +48,57 @@ describe('room dioramas (spec 07 §Q1) — registry, budget, disposal', () => {
     });
   }
 
+  // Player-perspective pass, 2026-07-21: the prologue diorama is the first
+  // one every player ever sees, and at today's diorama scale/framing its
+  // original five primitives read as untextured grey blocks — a solid bench
+  // slab and a pale emissive disc where the room's own field note promises
+  // "the clock has no hands". Re-detailed rather than shrunk (the owner's
+  // standing "bigger, don't shrink them" directive). These assert the
+  // properties that made it work, not exact geometry, so future art tweaks
+  // stay free.
+  describe('waiting-room (the prologue diorama, seen first and closest)', () => {
+    for (const quality of ['low', 'high'] as const) {
+      it(`carries real silhouette detail at ${quality} quality, not a handful of bare slabs`, () => {
+        const d = dioramaFor('waiting-room', quality);
+        expect(d).not.toBeNull();
+        const { meshes } = budget(d!.group);
+        // Slatted bench + rimmed clock face + 12 ticks + framed/mullioned
+        // window. Well above the 5 primitives it used to be, still under the
+        // 40-mesh ceiling asserted above.
+        expect(meshes).toBeGreaterThanOrEqual(25);
+        expect(meshes).toBeLessThanOrEqual(40);
+      });
+
+      it(`keeps every surface reading as a lit material, not a light source, at ${quality} quality`, () => {
+        const d = dioramaFor('waiting-room', quality);
+        const intensities: number[] = [];
+        d!.group.traverse((o) => {
+          if (o instanceof THREE.Mesh && !Array.isArray(o.material)) {
+            const m = o.material as THREE.MeshStandardMaterial;
+            if (typeof m.emissiveIntensity === 'number') intensities.push(m.emissiveIntensity);
+          }
+        });
+        expect(intensities.length).toBeGreaterThan(0);
+        // The window panes were 0.35/0.5 and blew out to flat white against
+        // the shared front-fill light setDiorama adds; nothing here should
+        // climb back to that range.
+        expect(Math.max(...intensities)).toBeLessThanOrEqual(0.3);
+      });
+    }
+
+    it('renders its clock as a dial with no hands — the detail its own field note calls out', () => {
+      // The face/rim are the only cylinders in the group; a hand would be a
+      // thin long box crossing the face centre. Assert the dial parts exist
+      // and that nothing spans the face like a hand would.
+      const d = dioramaFor('waiting-room', 'high');
+      let cylinders = 0;
+      d!.group.traverse((o) => {
+        if (o instanceof THREE.Mesh && o.geometry instanceof THREE.CylinderGeometry) cylinders++;
+      });
+      expect(cylinders, 'expected a clock rim and face').toBe(2);
+    });
+  });
+
   it('marys-room is the only diorama exposing the optional accent hook, and it toggles without throwing', () => {
     const marys = dioramaFor('marys-room', 'high');
     expect(marys?.setAccent).toBeTypeOf('function');

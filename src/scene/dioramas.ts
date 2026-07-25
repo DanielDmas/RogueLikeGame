@@ -499,30 +499,105 @@ function understoryDiorama(accentColor: number, quality: 'low' | 'high'): Dioram
 }
 
 // ---------- waiting-room (prologue): a bench, a handless clock, a recursive window ----------
+// Re-detailed 2026-07-21 after a player-perspective pass: this is the first
+// diorama every player ever sees, and it was authored back when dioramas sat
+// at z = -10 with no scale multiplier — small and distant. At today's
+// DIORAMA_SCALE/DIORAMA_Z (plus the director's lift clearing the text panel)
+// its primitives are seen roughly 5x larger, where a solid bench slab read as
+// an untextured grey block and a pale emissive disc read as a white blob
+// rather than a clock. Same vocabulary as every other diorama here (flat
+// colour/emissive primitives, one light) — just given the silhouette detail
+// the larger on-screen size now demands, rather than being shrunk back down.
 function waitingRoomDiorama(quality: 'low' | 'high'): Diorama {
   const group = new THREE.Group();
   group.position.set(0, 0.4, DIORAMA_Z);
+
+  // Bench: slatted, not a solid slab — the gaps are what make it read as
+  // waiting-room furniture at this size. Same overall footprint as before.
   const benchMat = mat(0x22262b);
-  const seat = box(1.3, 0.07, 0.35, benchMat);
-  seat.position.set(-0.4, 0, 0);
-  const back = box(1.3, 0.42, 0.05, benchMat);
-  back.position.set(-0.4, 0.24, -0.16);
-  group.add(seat, back);
-  const clockMat = mat(0x1c1f24, 0xd8dde3, 0.35);
-  const clock = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.17, 0.03, quality === 'high' ? 20 : 12), clockMat);
-  clock.position.set(0.7, 0.7, -0.25);
-  clock.rotation.x = Math.PI / 2;
-  group.add(clock);
+  const benchX = -0.4;
+  for (let i = 0; i < 4; i++) {
+    const slat = box(1.3, 0.045, 0.06, benchMat);
+    slat.position.set(benchX, 0, -0.135 + i * 0.09);
+    group.add(slat);
+  }
+  for (let i = 0; i < 3; i++) {
+    const slat = box(1.3, 0.075, 0.035, benchMat);
+    slat.position.set(benchX, 0.13 + i * 0.12, -0.16);
+    group.add(slat);
+  }
+  for (const side of [-1, 1]) {
+    const leg = box(0.055, 0.34, 0.28, benchMat);
+    leg.position.set(benchX + side * 0.6, -0.19, -0.02);
+    group.add(leg);
+  }
+
+  // The handless clock: a real dial — dark rim, dim face, tick marks, and
+  // deliberately no hands. Read small it was just "a clock"; read large the
+  // missing hands become the point (the room has no time in it), so the
+  // detail earns the scale instead of fighting it. Emissive dialled well
+  // down from the original 0.35 — a lit dial, not a light source.
+  // Hung on the back wall above the bench, not over the window — at this
+  // scale the two overlapped into one cluttered shape. Bench below, clock
+  // above it, window off to the right reads as an actual room.
+  const clockPos = new THREE.Vector3(-0.35, 0.74, -0.3);
+  // Segment counts stay generous even on `quality: 'low'` (which is the
+  // default for new profiles, so it is what most players actually see): a
+  // 12-sided cylinder read as a visible polygon at this size, and a couple
+  // of dozen segments on two small cylinders is a negligible cost next to
+  // the per-theme particle fields.
+  const rimSegments = quality === 'high' ? 28 : 20;
+  const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.185, 0.185, 0.04, rimSegments), mat(0x171a1e));
+  rim.position.copy(clockPos);
+  rim.rotation.x = Math.PI / 2;
+  const face = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.15, 0.15, 0.02, rimSegments),
+    mat(0x1c1f24, 0xd8dde3, 0.16),
+  );
+  face.position.set(clockPos.x, clockPos.y, clockPos.z + 0.02);
+  face.rotation.x = Math.PI / 2;
+  group.add(rim, face);
+  const tickMat = mat(0x2a2e33, 0xd8dde3, 0.3);
+  const tickCount = 12;
+  for (let i = 0; i < tickCount; i++) {
+    const a = (i / tickCount) * Math.PI * 2;
+    const tick = box(0.014, 0.03, 0.012, tickMat);
+    tick.position.set(clockPos.x + Math.cos(a) * 0.122, clockPos.y + Math.sin(a) * 0.122, clockPos.z + 0.03);
+    tick.rotation.z = a;
+    group.add(tick);
+  }
+
   // A window behind which is more window — two overlapping pale panes at
   // different depths, the second slightly smaller (the recursion never
-  // quite resolves, the way the room's own prose describes it).
-  const windowMat = mat(0x2a2e33, 0xc7d6e8, 0.35);
-  const paneA = box(0.5, 0.7, 0.02, windowMat);
+  // quite resolves, the way the room's own prose describes it). Framed and
+  // mullioned so it reads as a window rather than a glowing rectangle, with
+  // the emissive cut hard (0.35/0.5 -> 0.12/0.18) for the same reason.
+  const paneA = box(0.5, 0.7, 0.02, mat(0x2a2e33, 0xc7d6e8, 0.12));
   paneA.position.set(0.75, 0.55, -0.5);
-  const paneB = box(0.38, 0.55, 0.02, mat(0x2a2e33, 0xc7d6e8, 0.5));
+  const paneB = box(0.38, 0.55, 0.02, mat(0x2a2e33, 0xc7d6e8, 0.18));
   paneB.position.set(0.75, 0.55, -0.65);
   group.add(paneA, paneB);
-  const light = new THREE.PointLight(0xc7d6e8, 0.55, 4, quality === 'high' ? 2 : 1.4);
+  const frameMat = mat(0x191c20);
+  for (const [w, h, dx, dy] of [
+    [0.56, 0.03, 0, 0.365],
+    [0.56, 0.03, 0, -0.365],
+    [0.03, 0.73, -0.265, 0],
+    [0.03, 0.73, 0.265, 0],
+  ] as const) {
+    const bar = box(w, h, 0.035, frameMat);
+    bar.position.set(0.75 + dx, 0.55 + dy, -0.49);
+    group.add(bar);
+  }
+  const mullionV = box(0.018, 0.7, 0.03, frameMat);
+  mullionV.position.set(0.75, 0.55, -0.485);
+  const mullionH = box(0.5, 0.018, 0.03, frameMat);
+  mullionH.position.set(0.75, 0.55, -0.485);
+  group.add(mullionV, mullionH);
+
+  // One light, softened (0.55 -> 0.38): the shared front-fill light that
+  // `setDiorama` now adds for every diorama does most of the work, so the
+  // original value double-lit these surfaces into flat pale grey.
+  const light = new THREE.PointLight(0xc7d6e8, 0.38, 4, quality === 'high' ? 2 : 1.4);
   light.position.set(0.7, 0.8, 0);
   group.add(light);
   return { group, tick() {}, dispose: trackDispose(group) };
