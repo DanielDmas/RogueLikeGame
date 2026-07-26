@@ -1023,3 +1023,102 @@ XSS, no prototype pollution. It exists *alongside* the unit tests rather than
 instead of them because the `act=99` crash happened three layers below
 `hydrateProfile`, in the 3D scene build — no pure-function test would have
 reached it.
+
+---
+
+# Third troll pass: a real crash in RunState.prior, found by designing around a gap in the last pass's own methodology — 2026-07-27
+
+Owner directive: *"write more random, troll tests and simply think of ways to
+find bugs. do it and if found, correct them."* Four new surfaces investigated;
+three came back clean (real, useful negatives), one turned up a genuine,
+live-reproduced crash.
+
+**Investigated and confirmed clean (no code changes needed):**
+- **The live UI import path** (paste-into-textarea + click-Import, not
+  localStorage injection) — 18 payloads including empty/whitespace/non-object
+  JSON, a 5000-level-deep nested object, a 5MB string, and a nested
+  `__proto__` key. All clean, because `importProfile()` routes through the
+  same `hydrateProfile()` the previous pass hardened — this is a real
+  confirmation that the fix generalizes across both untrusted-input entry
+  points, not just the one it was built against.
+- **Hearts/lucidity arithmetic under legitimate repeated play** — both are
+  properly clamped (`applyEffects` in `gameState.ts`); lucidity has no upper
+  cap, but the HUD's own glow calculation already clamps for display and no
+  realistic ~15-room run can push it anywhere that matters. Checked and
+  ruled out, not left unchecked.
+- **Real-typed Unicode in the persona editor** (zalgo combining marks, ZWJ
+  emoji sequences, an RTL override character, mixed bidi) via actual
+  `page.keyboard.type()`, not injection — zero crashes, and the RTL-override
+  screenshot confirms the bidi reversal stays contained to its own string,
+  never bleeding into surrounding UI. One methodology note worth recording:
+  the first screenshot attempt showed a garbled "MIRADESCAVE" — investigated
+  and found to be a bug in the *test script* (a missing `.fill('')` before
+  typing let the typed text append after a pre-filled preset default), not
+  the app. Fixed the script and re-confirmed clean. Worth naming as a general
+  discipline: an unexpected troll-test result should be root-caused before
+  being reported as either a pass or a finding — it can turn out to be the
+  test's own bug either way.
+- **Rapid overlapping Settings data-panel actions** (Reset current run, Reset
+  all progress, Export, Import — all sharing `confirmButton`'s two-click
+  arm/confirm/4s-disarm pattern) fired in random order/timing for 30s,
+  including double-confirming two different actions in the same window.
+  Clean — `chainSave`'s existing promise-chain serialization holds under
+  real timing pressure, not just in principle.
+
+**The real find, and why the first probe attempt missed it.** Investigated
+whether `RunState.prior` (deliberately *not* checked by `isStructurallyValidRun`
+— it's optional/legacy Ledger-adjacent data) could carry a hostile value
+through to a crash. The first live probe seeded a hostile `prior.transcript`
+into `profile.run` and used `jump()` to enter `the-archive` — and saw the room
+freeze on its first beat with **zero errors**, which read at first as either a
+clean result or a silent soft-lock. Investigating *why* surfaced a real
+methodology gap: **`jump()` never carries a saved run's `prior` through at
+all** — it always re-derives `prior` fresh via `priorFromProfile()`
+(`Profile.lastRunTranscript`, already sanitized by the previous pass's
+hardening), because `jump()`'s `base` state comes from `newRun()`, not from
+`this.profile.run`, whenever the player isn't already mid-run. Only a
+genuinely **resumed** run (the ordinary Continue button, which sets
+`this.state = this.profile.run` verbatim once `isResumableRun` passes) carries
+a saved run's own `prior` through unmodified.
+
+Rebuilt the probe around Continue instead, and it reproduced immediately:
+`PAGEERROR: transcript.find is not a function`, caught by the crash-recovery
+overlay rather than the room ever rendering. Root cause: `TextPanel.playBeats`
+eagerly resolves **every** beat in a stage via `.map()` before displaying any
+of them — including `the-archive`'s `archiveExhibitBeat`, a function-beat that
+calls `pickExhibitEntry(s.prior?.transcript ?? [])`. Since `?? []` only
+substitutes for `null`/`undefined` and not for "present but wrong type," a
+`prior.transcript` set to any non-array truthy value (a string, a number, a
+plain object) reached `.find()`/`.some()` directly. `choseInPrior` had the
+identical bug (`.some()` on the same field); `pickShadowMoments` degraded
+without crashing but produced silently wrong results (indexing into a string
+character-by-character, returning single characters instead of
+`TranscriptEntry` objects).
+
+**Fix, at the pure-function layer rather than the two call sites that happened
+to be reachable today.** New `asTranscript()` in `gameState.ts` treats
+anything that isn't a real array as an empty transcript; applied inside
+`pickExhibitEntry`, `choseInPrior`, and `pickShadowMoments` themselves (not
+just at their current callers), so the guarantee holds regardless of which
+room or future content calls them. `pickExhibitEntry`'s parameter type
+loosened from `TranscriptEntry[]` to `unknown` deliberately — it sits directly
+downstream of save-file content, so its own signature was making a promise its
+runtime behavior didn't keep. `prior.runs`/`prior.endingId` were audited too
+and found genuinely safe: both flow only into arithmetic comparisons and
+template-literal string interpolation, which coerce any type without
+throwing.
+
+**Verification.** `tsc` clean; full suite **1262/1262 green** (3 new, in
+`state.test.ts`, extending the existing `pickShadowMoments`/`choseInPrior`/
+`pickExhibitEntry` describe blocks rather than a new file). Mutation-tested:
+reverting `asTranscript` to a pass-through failed exactly the 5 expected
+tests (the 3 new hostile-input tests plus 2 pre-existing `undefined`-prior
+tests, confirming the fix didn't accidentally change correct behavior either).
+Live-reproduced before the fix (`PAGEERROR: transcript.find is not a
+function` via the real Continue button) and re-confirmed clean after (room
+renders normally, zero errors, no recovery overlay). New
+`tests/uat/65-troll-prior-transcript.mjs` covers all 3 prior-reading rooms
+(`the-archive`, `the-echo`, `the-cave`) × 4 hostile transcript shapes via the
+real Continue flow, ~56s wall-clock. Re-ran scripts 03 and 63 (touching
+adjacent `gameState.ts`/Settings-panel surfaces) to confirm no regression from
+touching a shared engine file.

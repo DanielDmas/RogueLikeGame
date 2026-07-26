@@ -96,6 +96,21 @@ describe('pickShadowMoments — the-cave\'s shadow-play selection (Milestone 5, 
     const picked = pickShadowMoments({ runs: 1, endingId: null, transcript });
     expect(picked).toEqual([transcript[0], transcript[7], transcript[14]]);
   });
+
+  // Troll pass, 2026-07-27: `RunState.prior` is deliberately not checked by
+  // `isStructurallyValidRun` (it's optional/legacy Ledger-adjacent data), so
+  // `prior.transcript` can reach here as anything a corrupted or hand-edited
+  // save contains — not just a real array. `?? []` only substitutes for
+  // null/undefined, not for "present but wrong type", so this was a real gap
+  // until `asTranscript` closed it.
+  it('degrades to an empty array rather than crashing when transcript is a non-array truthy value', () => {
+    for (const hostile of ['not-an-array', 42, {}, true]) {
+      expect(
+        pickShadowMoments({ runs: 1, endingId: null, transcript: hostile as never }),
+        `transcript=${JSON.stringify(hostile)}`,
+      ).toEqual([]);
+    }
+  });
 });
 
 describe('choseInPrior — choseIn against a previous run\'s snapshot (Milestone 5, Phase L)', () => {
@@ -109,11 +124,40 @@ describe('choseInPrior — choseIn against a previous run\'s snapshot (Milestone
     expect(choseInPrior(prior, 'junction', 'no-push')).toBe(false);
     expect(choseInPrior(prior, 'ship', 'push')).toBe(false);
   });
+
+  // Troll pass, 2026-07-27: live-reproduced (via the real Continue button,
+  // not just seeding state directly) that a non-array prior.transcript
+  // crashed with "transcript.find is not a function" — .some() doesn't exist
+  // on a string either, and this is the exact call site that threw.
+  it('is false, not a throw, when prior.transcript is a non-array truthy value', () => {
+    for (const hostile of ['not-an-array', 42, {}, true]) {
+      const prior = { runs: 1, endingId: null, transcript: hostile as never };
+      expect(() => choseInPrior(prior, 'junction', 'push')).not.toThrow();
+      expect(choseInPrior(prior, 'junction', 'push'), `transcript=${JSON.stringify(hostile)}`).toBe(false);
+    }
+  });
 });
 
 describe('pickExhibitEntry — the-archive\'s exhibit-selection rule (Milestone 5, Phase L)', () => {
   it('returns undefined for an empty transcript', () => {
     expect(pickExhibitEntry([])).toBeUndefined();
+  });
+
+  // Troll pass, 2026-07-27: THE live-reproduced crash — a save sitting at
+  // the-archive with prior.transcript set to a non-array string, loaded via
+  // the ordinary Continue button (not jump(), which never carries the saved
+  // prior through at all — it re-derives prior fresh from
+  // Profile.lastRunTranscript, already sanitized), threw exactly here:
+  // "transcript.find is not a function", caught only by the crash-recovery
+  // overlay rather than the room rendering. This is the function whose
+  // signature this repo's own convention would have you trust
+  // (`TranscriptEntry[]`) but that turned out to matter for real, since it
+  // sits directly downstream of save-file content.
+  it('degrades to undefined rather than crashing when given a non-array truthy value', () => {
+    for (const hostile of ['not-an-array', 42, {}, true]) {
+      expect(() => pickExhibitEntry(hostile)).not.toThrow();
+      expect(pickExhibitEntry(hostile), `transcript=${JSON.stringify(hostile)}`).toBeUndefined();
+    }
   });
 
   it('a heart-costing choice always wins, even over a larger lucidity swing elsewhere', () => {

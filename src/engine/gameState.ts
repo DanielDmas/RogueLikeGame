@@ -45,13 +45,37 @@ export function newRun(
   };
 }
 
+/** Treats anything that isn't a real array as an empty transcript.
+ *
+ * `RunState.prior` is deliberately *not* checked by `isStructurallyValidRun`
+ * (schema.ts) — it's optional/legacy Ledger-adjacent data, and discarding an
+ * otherwise-playable run over a corrupted `prior` field would be a worse
+ * outcome than just treating the previous run as unknown. That means
+ * `prior.transcript` reaches every function below as literally whatever a
+ * hostile or corrupted save contains, not just `TranscriptEntry[]`.
+ *
+ * Confirmed live (troll pass, 2026-07-27) that this was a real, reachable gap,
+ * not a theoretical one: a save with `prior.transcript` set to a non-array
+ * string, sitting at `the-archive` (Act V), crashed on the ordinary Continue
+ * button with `TypeError: transcript.find is not a function` — `.find`/
+ * `.some` don't exist on a string, and `?? []` only substitutes for
+ * `null`/`undefined`, not for "wrong type but still truthy". `jump()` never
+ * exercises this path at all, since it always re-derives `prior` fresh via
+ * `priorFromProfile()` rather than trusting a saved run's own `prior`
+ * verbatim — only a resumed (Continue'd) run carries the original value
+ * through unmodified, which is exactly why a probe built around `jump()`
+ * missed it the first time. */
+function asTranscript(v: unknown): TranscriptEntry[] {
+  return Array.isArray(v) ? (v as TranscriptEntry[]) : [];
+}
+
 /** Selects up to 3 representative moments from a previous run's transcript —
  * used by `the-cave`'s shadow-play (first, middle, last choice made): a rough
  * shape of the whole run without any per-room bookkeeping. Empty if there is
  * no prior transcript (first-ever run, or a legacy save from before `prior`
  * existed) — callers must degrade gracefully rather than assume 3 entries. */
 export function pickShadowMoments(prior: RunState['prior']): TranscriptEntry[] {
-  const transcript = prior?.transcript ?? [];
+  const transcript = asTranscript(prior?.transcript);
   if (transcript.length <= 3) return transcript;
   const mid = Math.floor(transcript.length / 2);
   return [transcript[0], transcript[mid], transcript[transcript.length - 1]];
@@ -110,28 +134,35 @@ export function lastChoiceIn(state: RunState, roomId: string): string | null {
  * transcript — used by rooms that read `RunState.prior` (e.g. `the-echo`'s
  * junction callback). */
 export function choseInPrior(prior: RunState['prior'], roomId: string, choiceId: string): boolean {
-  return (prior?.transcript ?? []).some((e) => e.roomId === roomId && e.choiceId === choiceId);
+  return asTranscript(prior?.transcript).some((e) => e.roomId === roomId && e.choiceId === choiceId);
 }
 
 /** Selects the previous run's single most significant choice for `the-archive`'s
  * exhibit card: the first entry whose choice cost a heart; else the entry with
  * the largest lucidity swing; else the final entry. Undefined only when the
  * previous run's transcript is empty (legacy save with no `effects` data, or
- * a degenerate empty transcript) — callers must degrade gracefully. */
-export function pickExhibitEntry(transcript: TranscriptEntry[]): TranscriptEntry | undefined {
-  if (transcript.length === 0) return undefined;
-  const heartCost = transcript.find((e) => (e.effects?.hearts ?? 0) < 0);
+ * a degenerate empty transcript) — callers must degrade gracefully.
+ *
+ * Takes `unknown` rather than trusting its declared `TranscriptEntry[]` type:
+ * every caller extracts this from `s.prior?.transcript ?? []` first, but that
+ * `?? []` doesn't help if `prior.transcript` is present-but-wrong-typed (see
+ * `asTranscript`'s own note) — this function is directly downstream of save
+ * data, so it re-validates rather than assuming its callers already did. */
+export function pickExhibitEntry(transcript: unknown): TranscriptEntry | undefined {
+  const safe = asTranscript(transcript);
+  if (safe.length === 0) return undefined;
+  const heartCost = safe.find((e) => (e.effects?.hearts ?? 0) < 0);
   if (heartCost) return heartCost;
   let best: TranscriptEntry | undefined;
   let bestSwing = 0;
-  for (const e of transcript) {
+  for (const e of safe) {
     const swing = Math.abs(e.effects?.lucidity ?? 0);
     if (swing > bestSwing) {
       bestSwing = swing;
       best = e;
     }
   }
-  return best ?? transcript[transcript.length - 1];
+  return best ?? safe[safe.length - 1];
 }
 
 /** Deterministic pseudo-shuffle key, local to this module (mirrors
