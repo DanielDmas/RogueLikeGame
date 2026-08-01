@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { defaultProfile, hydrateProfile, type Profile } from '../engine/saveStore';
+import { defaultProfile, hydrateProfile, sanitizeSettings, type Profile, type Settings } from '../engine/saveStore';
 import { isStructurallyValidRun, type RunState } from '../engine/schema';
 import { isResumableRun, makeRegistry } from '../engine/storyEngine';
 import { allRooms } from '../content/rooms';
@@ -79,6 +79,51 @@ describe('isStructurallyValidRun — shape-only run validation', () => {
     // that are read as string ids.
     expect(isStructurallyValidRun({ ...okRun(), visited: [1, 2] })).toBe(false);
     expect(isStructurallyValidRun({ ...okRun(), flags: [{}] })).toBe(false);
+  });
+
+  // H-2 (extended review, 2026-08-01): `Array.isArray(transcript)` alone let
+  // `transcript: [null]` through — a real, array-shaped save that still
+  // crashed `choseIn` (both packs' ending evaluators) and `playEnding`'s
+  // choice-history fold / Morning Report, every one of which dereferences
+  // `.roomId`/`.effects` on each entry with no null-check of its own.
+  it('rejects a transcript whose items are not real entries', () => {
+    for (const bad of [null, 42, 'x', {}, { roomId: 'a' }, { choiceId: 'b' }]) {
+      expect(isStructurallyValidRun({ ...okRun(), transcript: [bad] }), `item=${JSON.stringify(bad)}`).toBe(false);
+    }
+    // a genuinely well-formed entry still passes
+    expect(
+      isStructurallyValidRun({ ...okRun(), transcript: [{ roomId: 'a', stageIndex: 0, choiceId: 'b', choiceText: 'x' }] }),
+    ).toBe(true);
+  });
+
+  // H-4: `currentStage`, when present, indexes `room.stages[]` directly in
+  // `enterRoom`'s very first loop iteration on Continue — confirmed live
+  // that a negative or fractional value dereferences `undefined` and
+  // crashes immediately, before this fix the validator accepted it.
+  it('rejects a present-but-hostile currentStage while still tolerating it absent', () => {
+    for (const bad of [-1, -5, 1.5, NaN, 'x', {}, [], null]) {
+      expect(isStructurallyValidRun({ ...okRun(), currentStage: bad }), `currentStage=${JSON.stringify(bad)}`).toBe(false);
+    }
+    expect(isStructurallyValidRun({ ...okRun(), currentStage: 0 })).toBe(true);
+    expect(isStructurallyValidRun({ ...okRun(), currentStage: 3 })).toBe(true);
+    const noStage = okRun() as unknown as Record<string, unknown>;
+    delete noStage.currentStage;
+    expect(isStructurallyValidRun(noStage)).toBe(true);
+  });
+
+  // H-3: `keepsakesHeld`, when present, is `.map`'d unconditionally by
+  // `playEnding`'s Morning Report block — confirmed live that a string (which
+  // every *gameplay* `.includes()` read on it coincidentally survives)
+  // crashes only when the run actually finishes, the hardest case to notice.
+  it('rejects a present-but-hostile keepsakesHeld while still tolerating it absent', () => {
+    for (const bad of ['x', 5, {}, [1, 2], [null], [{}]]) {
+      expect(isStructurallyValidRun({ ...okRun(), keepsakesHeld: bad }), `keepsakesHeld=${JSON.stringify(bad)}`).toBe(false);
+    }
+    expect(isStructurallyValidRun({ ...okRun(), keepsakesHeld: [] })).toBe(true);
+    expect(isStructurallyValidRun({ ...okRun(), keepsakesHeld: ['a', 'b'] })).toBe(true);
+    const noKeepsakes = okRun() as unknown as Record<string, unknown>;
+    delete noKeepsakes.keepsakesHeld;
+    expect(isStructurallyValidRun(noKeepsakes)).toBe(true);
   });
 
   it('rejects a missing or malformed axes record', () => {
@@ -205,9 +250,69 @@ describe('hydrateProfile — hostile profile fields are coerced, never trusted',
     expect(hydrate({ hasSeenHeartLoss: true }).hasSeenHeartLoss).toBe(true);
   });
 
+  // U-4 (extended review, 2026-08-01, resolved): `personaOffered` is a plain
+  // additive boolean, same coercion contract as `hasSeenHeartLoss` above —
+  // absent/malformed on a legacy save must default false (so a returning
+  // player who already skipped sees the editor exactly once more, then it
+  // goes quiet forever), never throw, never silently become truthy from junk.
+  it('coerces personaOffered, defaulting false on a legacy/hostile save', () => {
+    expect(hydrate({}).personaOffered).toBe(false);
+    expect(hydrate({ personaOffered: 'yes' }).personaOffered).toBe(false);
+    expect(hydrate({ personaOffered: 1 }).personaOffered).toBe(false);
+    expect(hydrate({ personaOffered: true }).personaOffered).toBe(true);
+    expect(hydrate({ personaOffered: false }).personaOffered).toBe(false);
+  });
+
   it('a wholly empty or garbage payload still yields a usable default profile', () => {
     expect(hydrate({})).toEqual(defaultProfile());
     expect(() => hydrate({ everything: 'garbage', run: [], persona: null, roomVisits: 7 })).not.toThrow();
+  });
+
+  // S-1 (extended review, 2026-08-01): unlike every other Profile field,
+  // `settings` reached the engine via a bare spread merge — a hostile
+  // musicVolume/fpsCap/etc. survived hydrateProfile unclamped. Confirmed
+  // live: `Math.max(0, Math.min(1, NaN))` is NaN (the volume clamp's own
+  // Math.min/max doesn't filter it), which crashes on the first
+  // AudioParam assignment; a non-30/60 fpsCap makes `shouldRenderFrame`'s
+  // `1000/targetFps` comparison permanently false, freezing the render
+  // loop with no error at all.
+  it('sanitizes every hostile settings field to its whitelisted domain', () => {
+    const base = defaultProfile().settings;
+    for (const field of ['musicVolume', 'sfxVolume', 'narrationVolume'] as const) {
+      for (const bad of [NaN, Infinity, -Infinity, 'loud', null, {}, [], -5, 99]) {
+        const hydrated = hydrate({ settings: { [field]: bad } }).settings[field];
+        expect(Number.isFinite(hydrated), `${field}=${String(bad)}`).toBe(true);
+        expect(hydrated).toBeGreaterThanOrEqual(0);
+        expect(hydrated).toBeLessThanOrEqual(1);
+      }
+      // legitimate in-range values pass through untouched
+      expect(hydrate({ settings: { [field]: 0.42 } }).settings[field]).toBe(0.42);
+    }
+    for (const bad of [0, NaN, -1, 15, 'fast', null, {}]) {
+      expect(hydrate({ settings: { fpsCap: bad } }).settings.fpsCap, `fpsCap=${String(bad)}`).toBe(base.fpsCap);
+    }
+    expect(hydrate({ settings: { fpsCap: 60 } }).settings.fpsCap).toBe(60);
+    for (const bad of [NaN, Infinity, 'huge', null, {}, 0.1, 5]) {
+      const zoom = hydrate({ settings: { uiZoom: bad } }).settings.uiZoom;
+      expect(Number.isFinite(zoom), `uiZoom=${String(bad)}`).toBe(true);
+      expect(zoom).toBeGreaterThanOrEqual(0.8);
+      expect(zoom).toBeLessThanOrEqual(1.3);
+    }
+    expect(hydrate({ settings: { quality: 'ultra' } }).settings.quality).toBe(base.quality);
+    expect(hydrate({ settings: { renderScale: 'blurry' } }).settings.renderScale).toBe(base.renderScale);
+    expect(hydrate({ settings: { theme: 'purple' } }).settings.theme).toBe(base.theme);
+    expect(hydrate({ settings: { textVersion: 'v3' } }).settings.textVersion).toBe(base.textVersion);
+    expect(hydrate({ settings: { language: 'xx' } }).settings.language).toBe(base.language);
+    expect(hydrate({ settings: { language: 'de' } }).settings.language).toBe('de');
+    expect(hydrate({ settings: { music: 'yes' } }).settings.music).toBe(base.music);
+  });
+
+  it('sanitizeSettings is pure and independently testable without a full profile round-trip', () => {
+    const base = defaultProfile().settings;
+    const hostile = { ...base, musicVolume: NaN, fpsCap: 999 as unknown as Settings['fpsCap'] };
+    const clean = sanitizeSettings(hostile, base);
+    expect(clean.musicVolume).toBe(base.musicVolume);
+    expect(clean.fpsCap).toBe(base.fpsCap);
   });
 
   it('does not pollute Object.prototype from a hostile __proto__ key', () => {

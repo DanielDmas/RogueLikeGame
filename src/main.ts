@@ -45,11 +45,19 @@ async function loadPack(): Promise<ContentPack> {
 
 async function boot() {
   resumeFullscreenAfterReload();
-  const pack = await loadPack();
-  pack.registerText();
+  // B-1 (extended review, 2026-08-01): installRecoveryHandlers used to run
+  // only after `loadPack()` resolved — a failed dynamic-chunk load (flaky
+  // network on GH Pages, mid-deploy asset skew) rejected before the
+  // 'unhandledrejection' handler existed, producing the silent black
+  // screen the recovery overlay exists specifically to prevent. `ui`/
+  // `canvas` are static HTML present before any script runs, so the net
+  // can go up first — before the one genuinely network-dependent await
+  // in this whole boot sequence.
   const canvas = document.getElementById('scene') as HTMLCanvasElement;
   const ui = document.getElementById('ui') as HTMLElement;
   installRecoveryHandlers(ui, canvas);
+  const pack = await loadPack();
+  pack.registerText();
   const store = new LocalSaveStore(pack.meta.id);
   const profile = await store.load('traveler');
   // Whichever pack (or the landing page's own display panel) the player

@@ -34,6 +34,9 @@ jobs:
       - name: Build both packs + assemble the rozcestník (dist-web/anamnesis, dist-web/limerence, dist-web/index.html)
         run: npm run build:web
 
+      - name: Verify no cross-pack content leaked into either production bundle
+        run: npm run verify:isolation
+
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3

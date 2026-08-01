@@ -95,8 +95,13 @@ describe('flow.ts source shape (game-experience review E6)', () => {
   });
 
   it('playOneDoor never arms examinedOfferPending (T9 stays fully unaffected)', () => {
-    const startIdx = flowSrc.indexOf('this.state = { ...newRun(), act: room.act };');
+    // E-3 (extended review, 2026-08-01) changed this call from a bare
+    // `newRun()` to thread the player's held keepsakes through — same
+    // invariant this test pins (no examinedOfferPending), updated call site.
+    const startIdx = flowSrc.indexOf(
+      'this.state = { ...newRun(undefined, undefined, this.keepsakesFromProfile()), act: room.act };',
+    );
     expect(startIdx, 'playOneDoor newRun() call not found').toBeGreaterThan(-1);
-    expect(flowSrc.slice(startIdx, startIdx + 60)).not.toContain('examinedOfferPending');
+    expect(flowSrc.slice(startIdx, startIdx + 100)).not.toContain('examinedOfferPending');
   });
 });

@@ -123,4 +123,25 @@ describe('flow.ts wires clearSharedDisplaySettings into resetProgress (source sh
     expect(reloadIdx, 'reloadPage() not called in resetProgress').toBeGreaterThan(-1);
     expect(clearIdx).toBeLessThan(reloadIdx);
   });
+
+  // S-2 (extended review, 2026-08-01): every other Settings-writing path
+  // (title/pause/HUD-gear/end-screen) calls writeSharedDisplaySettings —
+  // importProfile was the one that forgot, so a just-imported profile's
+  // display settings were silently reverted by main.ts's unconditional
+  // boot-time overlay on the very next load. `Game` itself can't be
+  // instantiated in this DOM-free suite (it owns a WebGL canvas), so this
+  // pins the fix at the source-shape level, same convention as the
+  // resetProgress check above.
+  it('importProfile() calls writeSharedDisplaySettings(hydrated.settings) before persisting', () => {
+    const flowSrc = readFileSync(new URL('../engine/flow.ts', import.meta.url), 'utf8');
+    const startIdx = flowSrc.indexOf('private importProfile(raw: string): boolean {');
+    expect(startIdx, 'importProfile() not found').toBeGreaterThan(-1);
+    const endIdx = flowSrc.indexOf('\n  }', startIdx);
+    const body = flowSrc.slice(startIdx, endIdx);
+    const writeIdx = body.indexOf('writeSharedDisplaySettings(hydrated.settings);');
+    const saveIdx = body.indexOf('void this.chainSave(hydrated)');
+    expect(writeIdx, 'writeSharedDisplaySettings(hydrated.settings) not called in importProfile').toBeGreaterThan(-1);
+    expect(saveIdx, 'chainSave(hydrated) not called in importProfile').toBeGreaterThan(-1);
+    expect(writeIdx).toBeLessThan(saveIdx);
+  });
 });

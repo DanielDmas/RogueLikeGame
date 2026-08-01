@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { manifestHasVoice, manifestPackHasAnyVoice, voiceUrl, musicUrl, EMPTY_MANIFEST, type AvManifest } from '../audio/voiceover';
+import { manifestHasVoice, manifestPackHasAnyVoice, voiceUrl, musicUrl, isValidManifest, EMPTY_MANIFEST, type AvManifest } from '../audio/voiceover';
 
 describe('F2/F3 — av-manifest.json query helpers (pure, no fetch/DOM needed)', () => {
   it('EMPTY_MANIFEST (the shipped default — no audio files exist yet) reports no voice/music anywhere', () => {
@@ -46,5 +46,38 @@ describe('F2/F3 — av-manifest.json query helpers (pure, no fetch/DOM needed)',
     expect(musicUrl(manifest, 'anamnesis', 'act0')).toBe('./music/anamnesis/act0.mp3');
     expect(musicUrl(manifest, 'anamnesis', 'act1')).toBeNull();
     expect(musicUrl(manifest, 'limerence', 'act0')).toBeNull();
+  });
+});
+
+// R2-1 (extended review, 2026-08-01): the fetched av-manifest.json used to
+// be assigned straight into `this.manifest` with no shape check — a
+// corrupt/tampered payload (`{"voice": null}`) made
+// `manifestPackHasAnyVoice`'s `manifest.voice[packId]` throw on the very
+// first Settings-panel open, since `flow.ts` calls
+// `voiceover.packHasAnyVoice()` unconditionally there. Server/build-
+// controlled in practice, not player-editable like a save, but the fix is
+// the same shape-check-before-trust discipline the save boundary uses.
+describe('isValidManifest — the shape guard for the fetched manifest (R2-1)', () => {
+  it('accepts the real shape, including the empty default', () => {
+    expect(isValidManifest(EMPTY_MANIFEST)).toBe(true);
+    expect(isValidManifest({ voice: { anamnesis: { en: {} } }, music: {} })).toBe(true);
+  });
+
+  it('rejects a manifest whose voice/music sections are missing or the wrong type', () => {
+    for (const bad of [
+      null,
+      undefined,
+      'not an object',
+      42,
+      [],
+      {},
+      { voice: null, music: {} },
+      { voice: {}, music: null },
+      { voice: 'x', music: {} },
+      { voice: [], music: {} },
+      { voice: {}, music: [] },
+    ]) {
+      expect(isValidManifest(bad), `manifest=${JSON.stringify(bad)}`).toBe(false);
+    }
   });
 });

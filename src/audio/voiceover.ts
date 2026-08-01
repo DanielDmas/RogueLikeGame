@@ -16,6 +16,20 @@ export interface AvManifest {
 
 export const EMPTY_MANIFEST: AvManifest = { voice: {}, music: {} };
 
+/** R2-1 (extended review, 2026-08-01): a corrupt/tampered `av-manifest.json`
+ * (`{"voice": null}`) previously landed in `this.manifest` unchecked —
+ * `manifestPackHasAnyVoice`'s `manifest.voice[packId]` then threw on the
+ * very first Settings-panel open (`flow.ts`'s `settingsActions()` calls
+ * `voiceover.packHasAnyVoice()` unconditionally). Server/build-controlled in
+ * practice, not player-editable like a save, but the fix is one shape check
+ * before trusting the parsed JSON — the same boundary discipline the save
+ * path already applies. Pure, so it's testable without a DOM/fetch. */
+export function isValidManifest(v: unknown): v is AvManifest {
+  if (typeof v !== 'object' || v === null) return false;
+  const m = v as Record<string, unknown>;
+  return typeof m.voice === 'object' && m.voice !== null && !Array.isArray(m.voice) && typeof m.music === 'object' && m.music !== null && !Array.isArray(m.music);
+}
+
 /** True only when this exact pack+lang+key has a narration file. Pure — testable without fetch/DOM. */
 export function manifestHasVoice(manifest: AvManifest, packId: string, lang: string, key: string): boolean {
   return Boolean(manifest.voice[packId]?.[lang]?.[key]);
@@ -64,7 +78,10 @@ class Voiceover {
     this.lang = lang;
     try {
       const res = await fetch('./av-manifest.json');
-      if (res.ok) this.manifest = await res.json();
+      if (res.ok) {
+        const parsed: unknown = await res.json();
+        if (isValidManifest(parsed)) this.manifest = parsed;
+      }
     } catch {
       // offline dev server, manifest not built yet, etc. — stays dormant.
     }

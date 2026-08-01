@@ -86,6 +86,32 @@ describe('audio — volume sliders (no AudioContext required)', () => {
     expect(engine.getSfxLevel()).toBe(1);
   });
 
+  // A-4 (extended review, 2026-08-01): `Math.max(0, Math.min(1, v))` passes
+  // NaN straight through both comparisons — confirmed live that a hostile
+  // `musicVolume: NaN` (from a save that reached this setter before
+  // `saveStore.ts`'s `sanitizeSettings`, S-1, existed) crashed on the first
+  // AudioParam assignment. Defense in depth: the setter itself now ignores
+  // a non-finite value and keeps whatever level was already in effect,
+  // rather than adopting NaN.
+  it('a non-finite volume is ignored, leaving the previous level in effect', () => {
+    const engine = new SoundEngine();
+    engine.setMusicVolume(0.55);
+    for (const bad of [NaN, Infinity, -Infinity]) {
+      engine.setMusicVolume(bad);
+      expect(engine.getMusicLevel(), `musicVolume=${bad}`).toBeCloseTo(0.55, 5);
+    }
+    engine.setSfxVolume(0.35);
+    for (const bad of [NaN, Infinity, -Infinity]) {
+      engine.setSfxVolume(bad);
+      expect(engine.getSfxLevel(), `sfxVolume=${bad}`).toBeCloseTo(0.35, 5);
+    }
+    engine.setVoiceVolume(0.25);
+    for (const bad of [NaN, Infinity, -Infinity]) {
+      engine.setVoiceVolume(bad);
+      expect(engine.getVoiceLevel(), `voiceVolume=${bad}`).toBeCloseTo(0.25, 5);
+    }
+  });
+
   it('setting volume before any AudioContext exists does not throw', () => {
     const engine = new SoundEngine();
     expect(() => {
@@ -245,5 +271,56 @@ describe('audio — LIMERENCE room accents (L5, no AudioContext required)', () =
     const body = src.slice(startIdx, endIdx);
     expect(body).toContain("this.roomAccent === 'ship'");
     expect(body).toContain("this.roomAccent === 'discovery-pulse'");
+  });
+
+  // A-1 (extended review, 2026-08-01): the hidden-tab branch cleared the
+  // 'ship' accent's creak timer but not 'discovery-pulse''s — the exact
+  // background-tab burst class 1.2.1 fixed for chords/motes, reintroduced
+  // for this one accent (the frozen-clock chain fires all at once on
+  // resume, then the visible branch above starts a *second*, never-cleared
+  // chain on top of it — the pulse audibly speeds up on every hide/show
+  // cycle in that room).
+  it('the visibilitychange HIDDEN branch clears accentPulseTimer, not just accentCreakTimer', () => {
+    const startIdx = src.indexOf("document.addEventListener('visibilitychange'");
+    const hiddenStart = src.indexOf('if (document.hidden) {', startIdx);
+    const hiddenEnd = src.indexOf('} else {', hiddenStart);
+    const hiddenBody = src.slice(hiddenStart, hiddenEnd);
+    expect(hiddenBody, 'hidden branch not found').not.toBe('');
+    expect(hiddenBody).toContain('clearTimeout(this.accentCreakTimer)');
+    expect(hiddenBody).toContain('clearTimeout(this.accentPulseTimer)');
+    expect(hiddenBody).toContain('this.accentPulseTimer = null');
+  });
+});
+
+describe('audio — F3 generative-bed bus routing + gesture-retry (extended review, 2026-08-01)', () => {
+  const src = readFileSync(new URL('../audio/soundEngine.ts', import.meta.url), 'utf8');
+
+  // A-2: motes are part of the generative bed (same as the chords and noise
+  // pad, which already route through genDuck) — connecting straight to
+  // musicGain bypassed the F3 duck, so a mote would keep chiming on top of
+  // a file-based music track once one exists. Room accents are
+  // deliberately left on musicGain directly (the room's own diegetic
+  // sound, not the ambient bed).
+  it('playMote connects through genDuck, not directly to musicGain', () => {
+    const startIdx = src.indexOf('private playMote()');
+    const endIdx = src.indexOf('\n  }', startIdx);
+    const body = src.slice(startIdx, endIdx);
+    expect(body, 'playMote not found').not.toBe('');
+    expect(body).toContain('.connect(this.genDuck!)');
+    expect(body).not.toContain('.connect(this.musicGain!)');
+  });
+
+  // A-3: `flow.ts`'s start() calls setMusicFile before any user gesture —
+  // the browser silently rejects that first play() under autoplay policy,
+  // and nothing retried it, so a manifest's boot-slot track stayed silent
+  // until the first act change. primeOnGesture is the first genuine
+  // gesture, so it's the right place to retry.
+  it('primeOnGesture retries fileMusicEl.play() if a src is set and still paused', () => {
+    const startIdx = src.indexOf('primeOnGesture() {');
+    const endIdx = src.indexOf('\n  }', startIdx);
+    const body = src.slice(startIdx, endIdx);
+    expect(body, 'primeOnGesture not found').not.toBe('');
+    expect(body).toContain('this.fileMusicEl.paused');
+    expect(body).toContain('this.fileMusicEl.play()');
   });
 });

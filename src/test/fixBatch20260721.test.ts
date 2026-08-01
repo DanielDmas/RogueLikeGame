@@ -52,11 +52,15 @@ describe('S2 — showCredits closes on Escape, matching every sibling overlay', 
 });
 
 describe('S3 — locked codex cards are disabled, not just visually dimmed', () => {
-  it('addCard sets card.disabled = true when the room is unlocked === false', () => {
+  // U-2 (extended review, 2026-08-01) widened this same guard to also cover
+  // an unlocked card with no note to show (the last-message hook room
+  // before it's ever unlocked with a real message) — same invariant
+  // (never leave a no-op card enabled), one more case included.
+  it('addCard sets card.disabled = true when the room is unlocked === false, or unlocked with no note', () => {
     const idx = overlaysSrc.indexOf('const addCard = (');
     expect(idx, 'addCard not found').toBeGreaterThan(-1);
-    const body = overlaysSrc.slice(idx, idx + 1000);
-    expect(body).toContain('if (!unlocked) card.disabled = true;');
+    const body = overlaysSrc.slice(idx, idx + 1400);
+    expect(body).toContain('if (!unlocked || !note) card.disabled = true;');
   });
 });
 

@@ -3,7 +3,7 @@ import type { Ending, FieldNote, Room } from '../engine/schema';
 import type { ContentPack, EpiphanyDef } from '../packs/types';
 import { earnedGuestStamps, epiphanyLine, epiphanyLines, isHiddenFromCodex, ledgerStats, resolveLastMessage } from '../engine/ledger';
 import type { RoomRegistry } from '../engine/storyEngine';
-import { clear, el } from './dom';
+import { el } from './dom';
 import { installFocusTrap } from './focusTrap';
 import { showFieldNote, renderEmphasis } from './fieldNote';
 import { t } from '../engine/text/resolver';
@@ -651,11 +651,13 @@ export function showPersona(ui: HTMLElement, persona: Persona, packId?: string, 
     const skip = el('button', 'title-btn small', t(uiKey('personaSkip'), 'Skip — call me traveler'));
     // Deliberate: Skip clears all persona fields — the player chose anonymity.
     skip.addEventListener('click', () => {
+      removeEventListener('keydown', onEscape);
       o.remove();
       resolve({ preset: '', name: '', blurb: '' });
     });
     const done = el('button', 'title-btn', t(uiKey('continue'), 'Continue'));
     done.addEventListener('click', () => {
+      removeEventListener('keydown', onEscape);
       o.remove();
       resolve({
         preset: selectedId,
@@ -664,6 +666,21 @@ export function showPersona(ui: HTMLElement, persona: Persona, packId?: string, 
       });
     });
     menu.append(done, skip);
+
+    // U-3 (extended review, 2026-08-01): every sibling overlay in this file
+    // closes on Escape (Settings saves the current state; About/Credits/
+    // Article/Codex/Ledger/Register all dismiss) — this was the one panel
+    // with no Escape handling at all. Resolves with the persona UNCHANGED
+    // (not Skip's clear-everything semantics) — Escape here means "leave as
+    // it was," the same meaning Settings' own Escape-saves convention gives it.
+    const onEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        removeEventListener('keydown', onEscape);
+        o.remove();
+        resolve(persona);
+      }
+    };
+    addEventListener('keydown', onEscape);
 
     panel.append(presetGrid, nameRow, aboutWrap, menu);
     o.appendChild(panel);
@@ -927,7 +944,14 @@ export function showCodex(ui: HTMLElement, profile: Profile, pack: ContentPack):
       // §8): a locked card has no click handler below and nothing to open —
       // leaving it a focusable, enabled <button> meant a keyboard user
       // tabbed through 30+ inert stops to reach the real content.
-      if (!unlocked) card.disabled = true;
+      //
+      // U-2 (extended review, 2026-08-01): S3's guard missed one case — the
+      // last-message hook room can be *unlocked* (codexUnlocked includes it)
+      // while `note` is still undefined (the player unlocked the room before
+      // ever sending a message, or a legacy save predates lastMessageChoiceId)
+      // — `!unlocked` alone left that card enabled with no click handler,
+      // the same inert-button problem S3 fixed, just reachable a different way.
+      if (!unlocked || !note) card.disabled = true;
       card.append(el('div', 'cx-act', actLabel));
       card.append(el('div', 'cx-title', unlocked ? title : '· · ·'));
       card.append(el('div', 'cx-thinkers', unlocked ? thinkers : notYetWalked));
@@ -1095,6 +1119,15 @@ export function showHotelRegister(ui: HTMLElement, profile: Profile, pack: Conte
       for (const room of visibleRooms) {
         const visited = visitedIds.has(room.id);
         const card = el('button', `register-door${visited ? ' visited' : ' unvisited'}`);
+        // U-2 (extended review, 2026-08-01): mirrors the codex's own S3 fix
+        // (2026-07-20) — a card with no click handler must not be left a
+        // focusable, enabled <button>, or a keyboard user tabs through dead
+        // stops to reach the real content. Two cases here: an unvisited
+        // door (no note to show at all — set below) and a visited room
+        // whose `fieldNote` is genuinely absent (the last-message hook
+        // room, e.g. `the-unsent`, composes its note only in the Codex's
+        // own synthetic-note path — the Register never did, so a visited
+        // last-message card built here with no handler at all).
         if (visited) {
           const icon = el('span', 'register-door-icon');
           icon.innerHTML = pack.visuals.iconFor(room.id) ?? '';
@@ -1120,8 +1153,11 @@ export function showHotelRegister(ui: HTMLElement, profile: Profile, pack: Conte
                   : undefined,
               ),
             );
+          } else {
+            card.disabled = true;
           }
         } else {
+          card.disabled = true;
           card.append(el('span', 'register-door-teaser', t(roomTeaserKey(room.id), room.teaser)));
         }
         doors.append(card);
@@ -1378,5 +1414,4 @@ export function showEndScreen(ui: HTMLElement, data: EndScreenData): Promise<'ag
 
 export function clearOverlays(ui: HTMLElement) {
   for (const node of [...ui.querySelectorAll('.overlay')]) node.remove();
-  void clear;
 }

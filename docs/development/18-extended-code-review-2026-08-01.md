@@ -761,3 +761,46 @@ Master plan cross-reference: this document is the "found bugs" record the
 2026-08-01 overhaul session asked for; the v2 overhaul plan
 (`17-v2-overhaul-plan.md`) Phase 1 should absorb Batch 3, and Phase 3
 (voice/music) must absorb Batch 2's A-2/A-3 as activation blockers.
+
+## Resolution — Batches 1-4 shipped, all four owner-decision items ruled on (2026-08-01, same-day continuation)
+
+Batches 1-4 above are all implemented, tested, and verified (see `git log`
+on `claude/vestibule-v2-overhaul` for the commit-by-commit record). The four
+items this document flagged as needing an owner call before code were ruled
+on rather than left open, following the standing "go step by step, fix
+everything needed" instruction:
+
+- **U-4 (persona Skip re-prompt):** ruled *make it sticky*. New
+  `Profile.personaOffered` flag (additive, no schema bump) — `start()` now
+  gates on "has the editor ever been shown", not "does a name exist", so
+  Skip is honored forever, same as a chosen preset. The title menu's "Who
+  are you?" button remains the way back in. See `saveStore.ts`'s
+  `personaOffered` doc comment for the full rationale.
+- **E-3 (One Door mode hides keepsake choices):** ruled *pass them through*.
+  `playOneDoor` now threads `this.keepsakesFromProfile()` into its throwaway
+  `RunState`, so a keepsake-gated bonus choice is visible exactly as it
+  would be in a real run — consistent with the Codex/Ledger's "you carry
+  them always" framing. The existing consolidated `!this.oneDoorMode` guard
+  already prevented this from granting a *new* keepsake or marking
+  `keepsakeChoicesTaken`, so no further change was needed there.
+- **E-6 (R4 comment carve-out):** ruled *amend R4*, as the finding itself
+  recommended. `13-master-development-plan.md`'s R4 now has an explicit
+  carve-out for anti-leak comments that name the other pack's guide word
+  specifically to warn against using it — the registered-string-value rule
+  is untouched and still absolute.
+- **R3-1 (`the-armored` difficulty):** ruled *document intent, don't
+  rebalance*. Rebalancing LIMERENCE's negative-selfOthers choice budget
+  would touch already-tested, already-translated (5 languages) content for
+  a difficulty curve that is thematically defensible as-is — "armored"
+  reads as the hardest ending precisely because it demands unwavering
+  self-protection at every door, not a lean toward it, and it remains
+  genuinely reachable (never 0%). Documented directly in
+  `packs/limerence/index.ts`'s evaluator, next to the `the-armored` branch,
+  so a future content editor sees the reasoning at the point of risk. The
+  `contentInvariants.test.ts` reachability sweep (Batch 4) already pins the
+  ideal-play axis bound as a regression tripwire — any future edit that
+  narrows the margin further now fails CI instead of drifting silently.
+
+Full regression after this resolution pass: `tsc --noEmit` clean,
+`npm run build:web` clean, `verify:isolation` OK, full `vitest run` green
+(see the master plan doc's next entry for the exact count).

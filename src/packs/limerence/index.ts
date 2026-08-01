@@ -159,6 +159,21 @@ export const limerencePack: ContentPack = {
       const { selfOthers, controlAcceptance } = s.axes;
       const EXTREME = 35;
       if (selfOthers >= EXTREME && controlAcceptance >= EXTREME) return 'the-giver';
+      // R3-1 (extended review, 2026-08-01, `18-extended-code-review-2026-08-01.md`
+      // §3-B): a 9,000-run Monte Carlo sweep found `the-armored` drastically
+      // harder to reach than its three sibling axis-extreme endings — a
+      // player greedily minimizing both axes together never gets there
+      // (controlAcceptance deltas dominate and selfOthers stalls short); only
+      // a selfOthers-first strategy crosses -35, and even then door-offer
+      // luck holds success to roughly a fifth of attempts. Deliberately left
+      // this way rather than padding LIMERENCE's negative-selfOthers choice
+      // budget: `the-armored` is meant to be the hardest non-hidden ending in
+      // either pack — total, unwavering self-protection at every single
+      // door, not just a leaning toward it. It is still genuinely reachable
+      // (never impossible) and `contentInvariants.test.ts`'s reachability
+      // sweep pins the ideal-play axis bound as a permanent tripwire, so any
+      // future content edit that narrows the margin further fails CI instead
+      // of silently drifting toward unreachable.
       if (selfOthers <= -EXTREME && controlAcceptance <= -EXTREME) return 'the-armored';
       return 'the-morning-after';
     },

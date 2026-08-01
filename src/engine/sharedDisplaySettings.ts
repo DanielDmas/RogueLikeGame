@@ -19,7 +19,12 @@ function isSharedDisplaySettings(v: unknown): v is SharedDisplaySettings {
   return (
     (o.quality === 'low' || o.quality === 'high') &&
     (o.renderScale === 'performance' || o.renderScale === 'standard' || o.renderScale === 'sharp') &&
-    typeof o.uiZoom === 'number' &&
+    // S-1 (extended review, 2026-08-01): a bare `typeof === 'number'` check
+    // let a NaN/Infinity `uiZoom` (from a hostile save, or the other pack's
+    // own unvalidated Settings before that boundary was hardened) through
+    // this shape guard and into `applyUiZoom`'s CSS `zoom` assignment —
+    // same range Settings' own slider enforces (80-130%).
+    typeof o.uiZoom === 'number' && Number.isFinite(o.uiZoom) && o.uiZoom >= 0.8 && o.uiZoom <= 1.3 &&
     (o.fpsCap === 30 || o.fpsCap === 60)
   );
 }

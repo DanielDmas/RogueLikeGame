@@ -64,9 +64,21 @@ export function newRun(
  * `priorFromProfile()` rather than trusting a saved run's own `prior`
  * verbatim — only a resumed (Continue'd) run carries the original value
  * through unmodified, which is exactly why a probe built around `jump()`
- * missed it the first time. */
+ * missed it the first time.
+ *
+ * Extended review (2026-08-01, H-2): an array-typed transcript can still
+ * carry hostile *items* — `transcript: [null]` passes `Array.isArray` but
+ * crashes every reader that dereferences `.roomId`/`.effects` on an entry
+ * (`choseInPrior`, `pickExhibitEntry`, `pickUnchosenRooms` below). Filtering
+ * to object-shaped entries with the two fields every reader actually
+ * dereferences (`roomId`, `choiceId`) makes this function the single place
+ * that guarantee holds, rather than five separate defensive checks. */
 function asTranscript(v: unknown): TranscriptEntry[] {
-  return Array.isArray(v) ? (v as TranscriptEntry[]) : [];
+  if (!Array.isArray(v)) return [];
+  return v.filter(
+    (e): e is TranscriptEntry =>
+      typeof e === 'object' && e !== null && typeof (e as Record<string, unknown>).roomId === 'string' && typeof (e as Record<string, unknown>).choiceId === 'string',
+  );
 }
 
 /** Selects up to 3 representative moments from a previous run's transcript —
@@ -192,7 +204,12 @@ export function pickUnchosenRooms(
   prior: RunState['prior'],
   pools: Record<1 | 2 | 3, string[]> = ACT_POOLS,
 ): { candidates: string[]; opens?: string } {
-  const entered = new Set((prior?.transcript ?? []).map((e) => e.roomId));
+  // H-1 (extended review, 2026-08-01): the sole function in this family that
+  // read `prior.transcript` directly instead of through `asTranscript` — a
+  // hostile non-array `prior.transcript` (a devtools-edited or imported
+  // save) reached `.map` here and threw, reachable via `the-unchosen`'s beat
+  // in both packs the moment `prior.runs >= 1` unlocks the understory fork.
+  const entered = new Set(asTranscript(prior?.transcript).map((e) => e.roomId));
   const pool = [...pools[1], ...pools[2], ...pools[3]];
   const unchosen = pool.filter((id) => !entered.has(id));
   if (unchosen.length === 0) return { candidates: [] };

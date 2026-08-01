@@ -197,7 +197,7 @@ None of these are scoped, named, or sequenced — they are exactly what the owne
 R1. Context-first translation for every string ever, UI chrome included — never translate a line in isolation; read the surrounding context before writing it.
 R2. UAT: ≤3 min/script, `?uat=1` always, keyboard-advance (not click-loops), ≤2 attempts per approach then do differently or skip, ask before re-running a switch-model prompt.
 R3. Agent dispatches small (per-act); check disk before redoing work — file writes survive agent death.
-R4. Never leak one pack's guide vocabulary into the other (incl. header comments) — Uvaděč/Vrátný, نگهبان/دربان, Platzanweiser/Portier, Le Placeur/Le Portier.
+R4. Never leak one pack's guide vocabulary into the other (incl. header comments) — Uvaděč/Vrátný, نگهبان/دربان, Platzanweiser/Portier, Le Placeur/Le Portier. **Carve-out (E-6, extended review, 2026-08-01):** a comment inside a pack's own translation file whose sole purpose is to *warn against* using the other pack's guide word (e.g. `limerence/text/cs-guide.ts`: `"Porter" = "Vrátný" — never "Uvaděč"`) is not a leak — it names the forbidden word specifically to prevent it from ever being typed as real content, the opposite of the failure R4 exists to stop. Verified: grep confirms zero cross-pack guide words in any *registered string value* in either direction; only these anti-leak comments name the other pack's word, and only inside comments. This carve-out applies to comments alone — registered/displayed text is still absolutely never allowed to contain the other pack's guide word, carve-out or not.
 R5. Definition of Done: spec check → `tsc` → `vitest` → live `?uat=1` verification (screenshots/DOM read, not just launched) → honest `UPGRADE_PLAN.md`/plan entry → one-phase commit → push.
 R6. Architecture rules: content imports pure predicates only; no new subsystem logic inline in `Game`; the guide reads state, never writes; persistence through `SaveStore` only; schema renames need a version bump + fixture; unseeded randomness for cosmetics only.
 R7. The Experience Charter is binding and wins conflicts: quiet UI, no grades, no dark patterns, endings are trades not verdicts.
@@ -1122,3 +1122,70 @@ renders normally, zero errors, no recovery overlay). New
 real Continue flow, ~56s wall-clock. Re-ran scripts 03 and 63 (touching
 adjacent `gameState.ts`/Settings-panel surfaces) to confirm no regression from
 touching a shared engine file.
+
+## Extended review fix batches 1-4 + owner-decision resolution — 2026-08-01 (branch `claude/vestibule-v2-overhaul`)
+
+Systematic implementation pass against `18-extended-code-review-2026-08-01.md`'s
+three review rounds, run step by step across one session per the owner's
+"build now, fix everything needed, don't rush, retest all" instruction. Full
+detail (every finding id, every code change, every test) lives in that
+document's own "Resolution" section and inline code comments; this entry is
+the plan-doc-level summary.
+
+- **Batch 1 — save/import-boundary hardening (H-1..H-4, S-1, S-2):**
+  `asTranscript()` widened to filter malformed array items, not just reject
+  non-arrays (closing the one hostile-`prior` gap the 07-19 troll pass
+  missed — `pickUnchosenRooms`); `isStructurallyValidRun` extended to check
+  transcript-item shape, `currentStage`, and `keepsakesHeld`; new
+  `sanitizeSettings()` whitelists every `Settings` field to its valid domain
+  inside `hydrateProfile`; `sharedDisplaySettings.ts`'s `uiZoom` guard
+  finiteness-checked; `importProfile()` now writes the shared-display key
+  before chaining the save.
+- **Batch 2 — audio correctness (A-1..A-4, R2-1):** the tab-hidden
+  `visibilitychange` branch now clears the accent-pulse timer (it only
+  cleared the accent-creak timer before); `playMote()` routes through
+  `genDuck` instead of `musicGain` directly, so file-based music can
+  actually silence the generative mote bed; `primeOnGesture()` retries a
+  paused file-music element; all three volume setters gained
+  `Number.isFinite` guards; `voiceover.ts` gained `isValidManifest()` so a
+  malformed `av-manifest.json` can't crash `init()`.
+- **Batch 3 — UX/boot fixes (U-1, U-2, U-3, U-6, U-7, U-8, U-9, B-1, B-2):**
+  the choice screen now focuses the first real choice card, not the reread
+  button; Register/Codex cards with no click handler (unlocked-but-noteless)
+  are disabled, not silently inert; the persona panel closes on Escape; the
+  title loop's Settings/Exit actions match the pause menu's persist
+  behavior; a secret door's numeral shows next to its star; a dead
+  `void clear;` statement removed; the crash-recovery net now installs
+  before the async pack import in `boot()`; a quota-full backup write can
+  no longer masquerade as primary-save corruption. U-5 (persona blurb
+  i18n drift) deliberately deferred — needs a `Persona` schema decision
+  with save-compatibility implications, out of scope for a mechanical batch.
+- **Batch 4 — promoted the review's exploratory sweeps into permanent
+  CI-checked tests:** `contentInvariants.test.ts` (soft-lock + beat-totality
+  probes, a scaled-down Monte Carlo playthrough harness — 120 runs/variant
+  × 3 profile shapes × 2 packs — and an ending-reachability axis-bound
+  tripwire) plus `scripts/verify-pack-isolation.mjs` (greps the real
+  production bundles for cross-pack guide vocabulary and prose, replacing
+  room-id markers that turned out to double-count the already-accepted
+  engine-default-leak coupling), wired into `package.json` as
+  `verify:isolation` and into `deploy-pages.yml` right after `build:web` so
+  a regression fails the deploy, not just a future audit.
+- **Owner-decision resolution (U-4, E-3, E-6, R3-1):** all four ruled on and
+  coded rather than left open — new `Profile.personaOffered` flag makes
+  persona Skip sticky (U-4); `playOneDoor` now threads
+  `keepsakesFromProfile()` so a One Door vignette shows keepsake-gated bonus
+  choices the same as a real run (E-3); R4 (never leak guide vocabulary)
+  gained an explicit carve-out for anti-leak comments that name the other
+  pack's guide word specifically to warn against it (E-6, see this doc's
+  R4 entry above); `the-armored`'s difficulty documented as deliberate
+  directly in `packs/limerence/index.ts`'s evaluator rather than rebalanced,
+  backed by the Batch 4 reachability tripwire (R3-1). Both real behavior
+  changes (U-4, E-3) verified live via
+  `tests/uat/66-owner-decisions-sticky-skip-and-onedoor-keepsakes.mjs` in
+  addition to source-shape unit tests.
+
+**Final verification:** `tsc --noEmit` clean; full `vitest run` **1307/1307
+green** (up from 787 at this doc's original snapshot, reflecting every
+session since); `npm run build:web` clean; `npm run verify:isolation` OK
+against the fresh production build; the two new UAT behaviors live-verified
+in a real browser.

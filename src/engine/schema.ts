@@ -111,7 +111,11 @@ export interface RunState {
  * Optional fields (`currentStage`, `doorSeed`, `prior`, `descended`, …) are
  * deliberately *not* required here — every one of them is documented as
  * absent on older saves, and rejecting a legitimate legacy save would be a
- * far worse bug than tolerating a missing optional field. */
+ * far worse bug than tolerating a missing optional field. *When present*,
+ * though, `currentStage` and `keepsakesHeld` are still checked below (H-3/
+ * H-4, extended review 2026-08-01) — "absent" and "present but hostile" are
+ * different cases, and only the first one gets the legacy-save leniency.
+ */
 export function isStructurallyValidRun(run: unknown): run is RunState {
   if (typeof run !== 'object' || run === null || Array.isArray(run)) return false;
   const r = run as Record<string, unknown>;
@@ -127,7 +131,17 @@ export function isStructurallyValidRun(run: unknown): run is RunState {
   if (!finite(r.hearts) || !finite(r.lucidity) || !finite(r.actOptionalDone)) return false;
 
   if (!strArray(r.visited) || !strArray(r.flags)) return false;
-  if (!Array.isArray(r.transcript)) return false;
+  // H-2 (extended review, 2026-08-01): `Array.isArray` alone lets
+  // `transcript: [null]` (or any non-object item) through — `choseIn`
+  // (both packs' ending evaluators) and `playEnding`'s choice-history fold
+  // and Morning Report both dereference `.roomId`/`.effects` on every
+  // entry unconditionally. A run whose live transcript carries a hostile
+  // item is discarded here, same as any other structurally-broken run —
+  // `gameState.ts`'s `asTranscript` is the matching guard for `prior`'s
+  // transcript, which (unlike this one) is never fully rejected wholesale.
+  const validTranscriptEntry = (v: unknown): boolean =>
+    typeof v === 'object' && v !== null && typeof (v as Record<string, unknown>).roomId === 'string' && typeof (v as Record<string, unknown>).choiceId === 'string';
+  if (!Array.isArray(r.transcript) || !r.transcript.every(validTranscriptEntry)) return false;
 
   if (typeof r.axes !== 'object' || r.axes === null || Array.isArray(r.axes)) return false;
   const axes = r.axes as Record<string, unknown>;
@@ -138,6 +152,17 @@ export function isStructurallyValidRun(run: unknown): run is RunState {
   if (r.currentRoom !== null && typeof r.currentRoom !== 'string') return false;
   if (r.endingId !== null && typeof r.endingId !== 'string') return false;
   if (typeof r.finished !== 'boolean') return false;
+
+  // H-4: `currentStage`, if present, indexes `room.stages[]` directly in
+  // `enterRoom`'s very first loop iteration on Continue — a negative or
+  // fractional value dereferences `undefined` and crashes immediately.
+  if (r.currentStage !== undefined && (!Number.isInteger(r.currentStage) || (r.currentStage as number) < 0)) return false;
+
+  // H-3: `keepsakesHeld`, if present, is `.map`'d unconditionally by
+  // `playEnding`'s Morning Report block — a non-array (e.g. a string, which
+  // every *gameplay* `.includes()` read coincidentally survives) crashes
+  // only when the run actually finishes.
+  if (r.keepsakesHeld !== undefined && !strArray(r.keepsakesHeld)) return false;
 
   return true;
 }

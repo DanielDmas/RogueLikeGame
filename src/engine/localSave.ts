@@ -37,7 +37,21 @@ export class LocalSaveStore implements SaveStore {
       // known-good backup on its way to falling back to it below; writing
       // `raw` here unconditionally, before hydrate even ran, used to do
       // exactly that.
-      localStorage.setItem(backupKey, raw);
+      //
+      // B-2 (extended review, 2026-08-01): this write is wrapped in its
+      // OWN try/catch, separate from the outer one — a `QuotaExceededError`
+      // here (a full or private-browsing storage quota) used to fall
+      // through to the outer catch below, which loads the *old* backup and
+      // reports "restored from backup" even though the just-parsed primary
+      // payload (`hydrated`, right here) was perfectly valid. The player
+      // was silently rolled back one save and told a recovery happened
+      // that never needed to. Best-effort: a failed backup write costs
+      // nothing but next time's recovery point, never today's load.
+      try {
+        localStorage.setItem(backupKey, raw);
+      } catch {
+        // Storage full — the backup simply doesn't update this time.
+      }
       return hydrated;
     } catch {
       const backupRaw = localStorage.getItem(backupKey);

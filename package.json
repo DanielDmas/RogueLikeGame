@@ -18,6 +18,7 @@
     "prebuild:limerence": "npm run build:manifest",
     "build:limerence": "tsc --noEmit && vite build --mode limerence --outDir dist-web/limerence",
     "build:web": "npm run build:anamnesis && npm run build:limerence && node scripts/assemble-web-dist.mjs",
+    "verify:isolation": "node scripts/verify-pack-isolation.mjs",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",

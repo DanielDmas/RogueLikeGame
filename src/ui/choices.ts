@@ -123,7 +123,14 @@ export class ChoicePanel {
           rune.innerHTML = d.icon;
           card.append(rune);
         }
-        card.append(el('span', 'num', d.secret ? '✦' : String(i + 1)));
+        // U-8 (extended review, 2026-08-01): a secret door showed only '✦',
+        // with no visible numeral — but it's still selected by its ordinary
+        // positional digit key (mount()'s keyHandler below doesn't
+        // special-case secret doors), and doorHelp's "press its number" text
+        // applies to it too. Showing the numeral alongside the star keeps
+        // the "this is the stranger door" visual cue while making the
+        // actual keyboard shortcut legible.
+        card.append(el('span', 'num', d.secret ? `✦${i + 1}` : String(i + 1)));
         const textCol = el('span', 'door-text-col');
         textCol.append(el('span', 'txt', d.hint));
         if (d.teaser) textCol.append(el('span', 'door-teaser', d.teaser));
@@ -203,7 +210,13 @@ export class ChoicePanel {
       if (n >= 1 && n <= count) onNum(n - 1);
     };
     addEventListener('keydown', this.keyHandler);
-    (wrap.querySelector('button') as HTMLButtonElement | null)?.focus();
+    // U-1 (extended review, 2026-08-01): F4's "reread the scene" button (see
+    // `pick()` above) is always the first child of `wrap` when present —
+    // `wrap.querySelector('button')` landed initial focus on it instead of
+    // the first real choice, so pressing Enter right after the choices
+    // appear replayed the beats instead of confirming anything. Door rows
+    // (`pickDoor`, no reread button) were never affected.
+    (wrap.querySelector('button.choice-card') as HTMLButtonElement | null ?? wrap.querySelector('button'))?.focus();
   }
 
   clear() {

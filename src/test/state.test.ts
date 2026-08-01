@@ -111,6 +111,14 @@ describe('pickShadowMoments — the-cave\'s shadow-play selection (Milestone 5, 
       ).toEqual([]);
     }
   });
+
+  // H-2 (extended review, 2026-08-01): array-shaped but item-hostile items
+  // are now filtered out entirely by `asTranscript`, rather than surfacing
+  // as `null`/malformed entries a caller's own null-check has to catch.
+  it('filters out null/malformed items rather than returning them', () => {
+    const picked = pickShadowMoments({ runs: 1, endingId: null, transcript: [null, entry('a', '1'), 42] as never });
+    expect(picked).toEqual([entry('a', '1')]);
+  });
 });
 
 describe('choseInPrior — choseIn against a previous run\'s snapshot (Milestone 5, Phase L)', () => {
@@ -136,6 +144,18 @@ describe('choseInPrior — choseIn against a previous run\'s snapshot (Milestone
       expect(choseInPrior(prior, 'junction', 'push'), `transcript=${JSON.stringify(hostile)}`).toBe(false);
     }
   });
+
+  // H-2 (extended review, 2026-08-01): a real array whose items themselves
+  // are hostile (`transcript: [null]`) passed `Array.isArray` and crashed on
+  // `.roomId` — one array-shape check away from the transcript.find bug
+  // this describe block is already named for.
+  it('is false, not a throw, when prior.transcript items are null/malformed', () => {
+    for (const hostile of [[null], [42], ['x'], [{}]] as const) {
+      const prior = { runs: 1, endingId: null, transcript: hostile as never };
+      expect(() => choseInPrior(prior, 'junction', 'push')).not.toThrow();
+      expect(choseInPrior(prior, 'junction', 'push'), `transcript=${JSON.stringify(hostile)}`).toBe(false);
+    }
+  });
 });
 
 describe('pickExhibitEntry — the-archive\'s exhibit-selection rule (Milestone 5, Phase L)', () => {
@@ -155,6 +175,15 @@ describe('pickExhibitEntry — the-archive\'s exhibit-selection rule (Milestone 
   // sits directly downstream of save-file content.
   it('degrades to undefined rather than crashing when given a non-array truthy value', () => {
     for (const hostile of ['not-an-array', 42, {}, true]) {
+      expect(() => pickExhibitEntry(hostile)).not.toThrow();
+      expect(pickExhibitEntry(hostile), `transcript=${JSON.stringify(hostile)}`).toBeUndefined();
+    }
+  });
+
+  // H-2 (extended review, 2026-08-01): array-shaped but item-hostile —
+  // `[null]` passes `Array.isArray` and crashed on `.effects` access.
+  it('degrades to undefined rather than crashing when given array items that are null/malformed', () => {
+    for (const hostile of [[null], [42], ['x'], [{}]] as const) {
       expect(() => pickExhibitEntry(hostile)).not.toThrow();
       expect(pickExhibitEntry(hostile), `transcript=${JSON.stringify(hostile)}`).toBeUndefined();
     }
@@ -221,5 +250,29 @@ describe('pickUnchosenRooms — the-unchosen\'s door-corridor selection (Milesto
   it('is deterministic for the same prior.runs value (repeat visits see the same candidates)', () => {
     const prior = { runs: 3, endingId: null, transcript: [] };
     expect(pickUnchosenRooms(prior)).toEqual(pickUnchosenRooms(prior));
+  });
+
+  // H-1 (extended review, 2026-08-01): this was the one function in the
+  // prior-transcript family that read `prior?.transcript ?? []` directly
+  // instead of through `asTranscript` — confirmed live to throw
+  // "((intermediate value) ?? []).map is not a function" against a hostile
+  // non-array transcript, reachable via `the-unchosen`'s beat in both packs
+  // the moment `prior.runs >= 1` unlocks the understory fork.
+  it('degrades to the full pool (nothing entered) rather than crashing when transcript is a non-array truthy value', () => {
+    for (const hostile of ['not-an-array', 42, {}, true]) {
+      const prior = { runs: 1, endingId: null, transcript: hostile as never };
+      expect(() => pickUnchosenRooms(prior)).not.toThrow();
+      expect(pickUnchosenRooms(prior).candidates.length, `transcript=${JSON.stringify(hostile)}`).toBe(3);
+    }
+  });
+
+  // H-2: an array-typed transcript can still carry hostile *items* —
+  // `[null]` passes `Array.isArray` but crashes `.roomId` access on each
+  // entry. `asTranscript` now filters non-object/missing-field items.
+  it('degrades to the full pool rather than crashing when transcript items are null/malformed', () => {
+    for (const hostile of [[null], [42], ['x'], [{}], [{ roomId: 'a' }]] as const) {
+      const prior = { runs: 1, endingId: null, transcript: hostile as never };
+      expect(() => pickUnchosenRooms(prior)).not.toThrow();
+    }
   });
 });

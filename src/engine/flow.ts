@@ -487,6 +487,14 @@ export class Game {
     }
     if (typeof parsed !== 'object' || parsed === null) return false;
     const hydrated = hydrateProfile(parsed as Partial<Profile>);
+    // S-2 (extended review, 2026-08-01): every other Settings-writing path
+    // (title/pause/HUD-gear/end-screen) calls writeSharedDisplaySettings —
+    // import was the one that forgot. Without this, main.ts's unconditional
+    // boot-time `withSharedDisplaySettings` overlay silently reverted the
+    // just-imported quality/renderScale/uiZoom/fpsCap back to whatever was
+    // set before the import, directly contradicting the Settings panel's own
+    // "Replaces your entire profile" promise.
+    writeSharedDisplaySettings(hydrated.settings);
     void this.chainSave(hydrated).then(() => this.reloadPage());
     return true;
   }
@@ -621,8 +629,19 @@ export class Game {
         this.profile.settings = await showSettings(this.ui, this.profile.settings, this.settingsActions());
         this.applySettings();
         writeSharedDisplaySettings(this.profile.settings);
-        await this.persist();
+        // U-6 (extended review, 2026-08-01): the pause menu's and the HUD
+        // gear's own settings branches both `persist(true)` — this title-
+        // screen path was the one that saved silently, an inconsistent
+        // feedback gap for the identical action.
+        await this.persist(true);
       } else if (action === 'exit') {
+        // U-7 (extended review, 2026-08-01): the pause menu's exit branch
+        // persists before closing; this title-screen path window.close()'d
+        // immediately. No player-visible loss today (every mutating title
+        // action already persists on its own before this point), but the
+        // asymmetry invites a future bug the moment any title action ever
+        // defers its own persist.
+        await this.persist();
         window.close();
       } else if (action === 'vestibule') {
         await this.persist();
@@ -638,8 +657,13 @@ export class Game {
           this.profile.hasSeenAbout = true;
           await this.persist();
         }
-        if (action === 'new' && !this.profile.persona.name) {
+        // U-4 (extended review, 2026-08-01): gate on personaOffered, not on
+        // whether a name was actually entered — Skip is a real, sticky
+        // answer, not "still undecided". See personaOffered's own doc
+        // comment (saveStore.ts) for the full rationale.
+        if (action === 'new' && !this.profile.personaOffered) {
           this.profile.persona = await showPersona(this.ui, this.profile.persona, this.pack.meta.id, this.pack.guide.name);
+          this.profile.personaOffered = true;
           await this.persist();
         }
         if (action === 'continue' && this.profile.run && isResumableRun(this.profile.run, this.registry)) {
@@ -1156,7 +1180,15 @@ export class Game {
     this.hud.setAct(this.actNameFor(room.act));
     await this.fade(false);
 
-    this.state = { ...newRun(), act: room.act };
+    // E-3 (extended review, 2026-08-01): thread the player's actually-held
+    // keepsakes through, same as every real run's newRun() call — a One
+    // Door vignette deliberately carries no `prior` (there is no run
+    // history for a single dealt room to reference), but the Codex/Ledger
+    // both frame keepsakes as "you carry them always"; silently hiding a
+    // keepsake-gated bonus choice here contradicted that. No other
+    // permanent, whole-run-scoped side effect changes — this only makes an
+    // already-earned choice visible, exactly as it would be in a real run.
+    this.state = { ...newRun(undefined, undefined, this.keepsakesFromProfile()), act: room.act };
     this.hud.update(this.state.hearts, this.state.lucidity);
     await this.enterRoom(room);
 

@@ -183,9 +183,14 @@ export class SoundEngine {
     if (this.voiceGain) this.voiceGain.gain.setTargetAtTime(this.voiceTarget(), this.now(), 0.1);
   }
 
-  /** 0–1. Only audible while narration is enabled. */
+  /** 0–1. Only audible while narration is enabled.
+   * A-4 (extended review, 2026-08-01): `Math.max(0, Math.min(1, v))` passes
+   * NaN straight through both comparisons — a NaN-guard here is defense in
+   * depth alongside `saveStore.ts`'s `sanitizeSettings` (S-1), which is now
+   * the primary boundary a hostile save's `narrationVolume` is caught at;
+   * this guard also covers any future caller of this setter directly. */
   setVoiceVolume(v: number) {
-    this.voiceVolume = Math.max(0, Math.min(1, v));
+    if (Number.isFinite(v)) this.voiceVolume = Math.max(0, Math.min(1, v));
     if (this.voiceGain) this.voiceGain.gain.setTargetAtTime(this.voiceTarget(), this.now(), 0.05);
   }
 
@@ -262,15 +267,17 @@ export class SoundEngine {
     if (this.sfxGain) this.sfxGain.gain.setTargetAtTime(this.sfxTarget(), this.now(), 0.1);
   }
 
-  /** 0–1. Only audible while music is enabled. */
+  /** 0–1. Only audible while music is enabled. A-4: NaN-guarded — see
+   * `setVoiceVolume`'s matching note. */
   setMusicVolume(v: number) {
-    this.musicVolume = Math.max(0, Math.min(1, v));
+    if (Number.isFinite(v)) this.musicVolume = Math.max(0, Math.min(1, v));
     if (this.musicGain) this.musicGain.gain.setTargetAtTime(this.musicTarget(), this.now(), 0.15);
   }
 
-  /** 0–1. Only audible while sfx is enabled. */
+  /** 0–1. Only audible while sfx is enabled. A-4: NaN-guarded — see
+   * `setVoiceVolume`'s matching note. */
   setSfxVolume(v: number) {
-    this.sfxVolume = Math.max(0, Math.min(1, v));
+    if (Number.isFinite(v)) this.sfxVolume = Math.max(0, Math.min(1, v));
     if (this.sfxGain) this.sfxGain.gain.setTargetAtTime(this.sfxTarget(), this.now(), 0.05);
   }
 
@@ -280,6 +287,18 @@ export class SoundEngine {
     this.resumed = true;
     const ctx = this.ensureCtx();
     if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+    // A-3 (extended review, 2026-08-01): `flow.ts`'s `start()` calls
+    // `setActMusic(0)` — and therefore `setMusicFile` — before any user
+    // gesture has happened, so if a pack's manifest already has a file for
+    // the boot slot (F3, dormant until real files exist), the browser's
+    // autoplay policy silently rejects that first `play()` and nothing ever
+    // retries it: the title/act-0 track would stay permanently silent until
+    // the first act *change* calls `setMusicFile` again from inside a
+    // gesture-adjacent context. This is the first genuine user gesture, so
+    // retry it here if a src was already set and is still paused.
+    if (this.fileMusicEl && this.fileMusicEl.paused && this.fileMusicEl.src) {
+      void this.fileMusicEl.play().catch(() => {});
+    }
   }
 
   private ensureCtx(): AudioContext {
@@ -316,6 +335,18 @@ export class SoundEngine {
           if (this.accentCreakTimer) {
             clearTimeout(this.accentCreakTimer);
             this.accentCreakTimer = null;
+          }
+          // A-1 (extended review, 2026-08-01): this handler cleared the
+          // 'ship' accent's creak timer but not 'discovery-pulse''s —
+          // reintroducing, for that one accent, the exact background-tab
+          // burst 1.2.1 fixed for chords/motes: the frozen-clock timer chain
+          // keeps firing while hidden, all landing at once on resume, and
+          // the visible branch below then starts a *second* chain on top of
+          // it (never cleared), so each hide/show cycle in that room
+          // audibly speeds the pulse up.
+          if (this.accentPulseTimer) {
+            clearTimeout(this.accentPulseTimer);
+            this.accentPulseTimer = null;
           }
           void this.ctx.suspend().catch(() => {});
         } else {
@@ -485,7 +516,16 @@ export class SoundEngine {
     gain.gain.setValueAtTime(0, t);
     gain.gain.linearRampToValueAtTime(0.045, t + 1.4);
     gain.gain.exponentialRampToValueAtTime(0.0006, t + 5.5);
-    osc.connect(gain).connect(this.musicGain!);
+    // A-2 (extended review, 2026-08-01): motes are part of the generative
+    // bed (same as the chords and noise pad, which already route through
+    // `genDuck`) — connecting straight to `musicGain` bypassed the duck, so
+    // once a file-based music track exists (F3, dormant today) a mote would
+    // still chime on top of it every 9-22s instead of being silenced with
+    // the rest of the generative layer. Room accents (junction/colleague-hum/
+    // ship/discovery-pulse below) are deliberately left on `musicGain`
+    // directly — they're the *room's* diegetic sound, not the ambient bed,
+    // so they should keep playing under a file-based track rather than duck.
+    osc.connect(gain).connect(this.genDuck!);
     osc.start(t);
     osc.stop(t + 5.7);
   }

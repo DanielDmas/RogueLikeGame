@@ -1,5 +1,5 @@
 import { isStructurallyValidRun, type RunState, type TranscriptEntry } from './schema';
-import type { Lang } from './text/resolver';
+import { LANGS, type Lang } from './text/resolver';
 
 export interface Settings {
   typewriter: boolean;
@@ -79,6 +79,19 @@ export interface Profile {
   runsCompleted: number;
   settings: Settings;
   persona: Persona;
+  /** Extended review U-4 (2026-08-01, `18-extended-code-review-2026-08-01.md`):
+   * true once the persona editor has been shown at the start of a fresh run,
+   * *regardless* of whether the player named themselves or hit Skip. Before
+   * this field existed, `start()` re-showed the editor on every single new
+   * run to anyone who had ever skipped (it checked `!persona.name`, which
+   * Skip deliberately leaves empty) — the one onboarding panel that ignored
+   * its own answer. Skip is now sticky: declining to name yourself is
+   * itself an answer, honored forever, same as picking a preset. The title
+   * menu's "Who are you?" button remains the way back in for anyone who
+   * changes their mind. Absent on a legacy save == not yet offered, so an
+   * existing skip-then-forever-reprompted player sees the editor exactly
+   * one more time before it goes quiet. */
+  personaOffered: boolean;
   /** Whether the player has already seen the one-time first-heart-loss explanation. */
   hasSeenHeartLoss: boolean;
   /** Whether the player has ever seen the "Before you begin" explainer
@@ -164,6 +177,7 @@ export function defaultProfile(): Profile {
         typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: light)').matches ? 'light' : 'dark',
     },
     persona: { preset: '', name: '', blurb: '' },
+    personaOffered: false,
     hasSeenHeartLoss: false,
     hasSeenAbout: false,
     keepsakes: [],
@@ -209,6 +223,50 @@ export function migrateSettings(raw: LegacySettings | undefined, base: Settings)
   const { sound, ...rest } = raw ?? {};
   const migrated = sound !== undefined ? { music: sound, sfx: sound } : {};
   return { ...base, ...migrated, ...rest };
+}
+
+/** S-1 (extended review, 2026-08-01): unlike every other `Profile` field,
+ * `settings` used to reach the engine via a bare spread merge — a hostile
+ * or corrupted save (or a hand-edited import) carrying `musicVolume: "loud"`
+ * survived to `SoundEngine.setMusicVolume`'s `Math.max(0, Math.min(1, v))`
+ * clamp unclamped (NaN passes both comparisons), assigning a non-finite
+ * value to a live `AudioParam` and crashing on the first user gesture; a
+ * hostile `fpsCap` (0, NaN, or any non-30/60 value) makes
+ * `shouldRenderFrame`'s `1000 / targetFps` comparison permanently false,
+ * silently freezing the 3D render loop forever with no error at all —
+ * harder to diagnose than a crash. Every field below is whitelisted to the
+ * exact domain its consumer assumes; anything outside it falls back to
+ * `base`'s (the caller's pre-load, or default-profile) value rather than
+ * being rejected wholesale — same coercion-not-rejection philosophy as
+ * every other profile-level field in this file, since a corrupt display
+ * setting costs nothing to fall back on, unlike discarding a whole run. */
+const finiteNum = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
+const clamp01Or = (v: unknown, fallback: number): number => (finiteNum(v) ? Math.max(0, Math.min(1, v)) : fallback);
+const zoomOr = (v: unknown, fallback: number): number => (finiteNum(v) ? Math.max(0.8, Math.min(1.3, v)) : fallback);
+const oneOf = <T>(v: unknown, allowed: readonly T[], fallback: T): T => (allowed.includes(v as T) ? (v as T) : fallback);
+
+export function sanitizeSettings(s: Settings, base: Settings): Settings {
+  return {
+    ...s,
+    typewriter: boolOr(s.typewriter, base.typewriter),
+    reducedMotion: boolOr(s.reducedMotion, base.reducedMotion),
+    highContrast: boolOr(s.highContrast, base.highContrast),
+    quality: oneOf(s.quality, ['low', 'high'], base.quality),
+    music: boolOr(s.music, base.music),
+    sfx: boolOr(s.sfx, base.sfx),
+    musicVolume: clamp01Or(s.musicVolume, base.musicVolume),
+    sfxVolume: clamp01Or(s.sfxVolume, base.sfxVolume),
+    textVersion: oneOf(s.textVersion, ['v1', 'v2'], base.textVersion),
+    language: oneOf(s.language, LANGS, base.language),
+    dynamicScenery: boolOr(s.dynamicScenery, base.dynamicScenery),
+    renderScale: oneOf(s.renderScale, ['performance', 'standard', 'sharp'], base.renderScale),
+    uiZoom: zoomOr(s.uiZoom, base.uiZoom),
+    examinedPathDefault: boolOr(s.examinedPathDefault, base.examinedPathDefault),
+    theme: oneOf(s.theme, ['dark', 'light'], base.theme),
+    fpsCap: oneOf(s.fpsCap, [30, 60], base.fpsCap),
+    narrationEnabled: boolOr(s.narrationEnabled, base.narrationEnabled),
+    narrationVolume: clamp01Or(s.narrationVolume, base.narrationVolume),
+  };
 }
 
 /** Spread-merges a parsed (possibly legacy, possibly hand-edited/imported)
@@ -293,6 +351,7 @@ export function hydrateProfile(parsed: Partial<Omit<Profile, 'settings'>> & { se
     understoryDescents: countOr(raw.understoryDescents, base.understoryDescents),
     examinedRuns: countOr(raw.examinedRuns, base.examinedRuns),
     hasSeenHeartLoss: boolOr(raw.hasSeenHeartLoss, base.hasSeenHeartLoss),
+    personaOffered: boolOr(raw.personaOffered, base.personaOffered),
     persona:
       typeof raw.persona === 'object' && raw.persona !== null && !Array.isArray(raw.persona)
         ? {
@@ -306,7 +365,7 @@ export function hydrateProfile(parsed: Partial<Omit<Profile, 'settings'>> & { se
               : base.persona.blurb,
           }
         : base.persona,
-    settings: migrateSettings(parsed.settings, base.settings),
+    settings: sanitizeSettings(migrateSettings(parsed.settings, base.settings), base.settings),
     hasSeenAbout: shouldGrandfatherHasSeenAbout(parsed) ? true : boolOr(raw.hasSeenAbout, base.hasSeenAbout),
     schemaVersion: PROFILE_SCHEMA_VERSION,
   };
