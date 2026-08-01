@@ -536,6 +536,7 @@ export function showSettings(ui: HTMLElement, settings: Settings, actions: Setti
       o.remove();
       resolve(current);
     };
+    // Deliberate: Escape saves (same as Done), not discards — settings are applied live.
     const onEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') close();
     };
@@ -648,6 +649,7 @@ export function showPersona(ui: HTMLElement, persona: Persona, packId?: string, 
 
     const menu = el('div', 'title-menu');
     const skip = el('button', 'title-btn small', t(uiKey('personaSkip'), 'Skip — call me traveler'));
+    // Deliberate: Skip clears all persona fields — the player chose anonymity.
     skip.addEventListener('click', () => {
       o.remove();
       resolve({ preset: '', name: '', blurb: '' });

@@ -41,15 +41,11 @@ console errors. If a bug surfaces, fix it.
 **Est.:** small.
 
 ### 1.2 R7 persona-whisper test pack-parameterization
-**Status:** test coverage gap — 3 of 4 ANAMNESIS touches tested in
-en/cs/fa only, not de/fr; LIMERENCE's 4 touches have zero automated
-coverage.
-**Action:** extend `src/test/i18n.test.ts`'s R7 suite to be
-pack-parameterized (both packs × all 5 languages × all 4 touches per
-pack), add the missing 4th ANAMNESIS touch (`the-archive`'s `{blurb}`
-echo).
-**Files:** `src/test/i18n.test.ts`.
-**Est.:** small.
+**Status:** ✅ ALREADY COMPLETE — verified on branch creation. The R7
+suite in `src/test/i18n.test.ts` (lines 110-187) is already fully
+pack-parameterized: both packs × all 5 languages (en/cs/fa/de/fr) × all
+4 `{name}` touches + the `{blurb}` echo (`the-archive` for ANAMNESIS,
+`the-registry` for LIMERENCE). No work needed.
 
 ### 1.3 S5 minor nits
 **(a)** Settings language row: either re-render labels on locale switch
@@ -63,12 +59,10 @@ small viewports. Add a scroll/overflow guard or a compact layout.
 **Est.:** small-medium.
 
 ### 1.4 S6 deliberate-behavior comment records
-Record in code comments the deliberate design decisions that aren't
-currently documented (Escape in Settings saves; persona Skip clears;
-three-layer overlay Escape guards). Prevents future "fixes" for
-non-bugs.
-**Files:** `src/ui/overlays.ts`, `src/ui/fieldNote.ts`.
-**Est.:** trivial.
+**Status:** ✅ COMPLETE — the three-layer overlay Escape priority was
+already documented in `overlays.ts` and `fieldNote.ts`. Added the two
+missing comments: Escape-saves-in-Settings (overlays.ts:539) and
+Skip-clears-persona (overlays.ts:651). No further work needed.
 
 ### 1.5 Sconce legibility (B7)
 The Long-Stay Wing's `sconceFixture` is present and lit (unit-tested)
@@ -99,6 +93,35 @@ lands." The fixture kit already made a third pack cheaper; do the split
 - `flow-persist.ts` — persist chain, profile mutation, save/restore
 - `flow.ts` — the `Game` class shell, wiring the three together
 
+**Detailed seam analysis (2026-08-01, verified against 1343-line file):**
+- Lines 1-68: imports (stay in flow.ts, re-exported as needed)
+- Lines 70-97: constants (`PROFILE_ID`, `themeForAct`,
+  `INTERLUDE_HOLD_MS`) — stay with the `Game` class
+- Lines 99-264: `Game` class declaration, fields, constructor — stays
+- Lines 266-294: `jump()` (UAT) — flow-run or flow.ts
+- Lines 296-365: helpers (priorFromProfile, keepsakesFromProfile,
+  applySettings, tokens, effectiveTypewriter) — stays
+- Lines 367-407: persist chain (chainSave, setActMusic, persist) → flow-persist
+- Lines 409-500: navigation/utility (reloadPage, navigateToVestibule,
+  fade, interlude, resetRun, resetProgress, export/import, lastMessageLabel,
+  settingsActions, oneDoorButtonKey) → flow-persist
+- Lines 502-579: pause menu + settings-direct → flow-title
+- Lines 582-745: `start()` title loop → flow-title
+- Lines 747-795: `syncTheme()` (act transition + interlude) → flow-run
+- Lines 797-879: `runLoop()` → flow-run
+- Lines 884-1131: `enterRoom()` → flow-run
+- Lines 1132-1175: `playOneDoor()` → flow-title
+- Lines 1177-1343: `playEnding()` → flow-run
+
+The `Game` class is the single hardest part — it's one class with
+private fields shared across all methods. The cleanest approach:
+keep `Game` as one class in `flow.ts` but extract the bodies of
+`start()`, `runLoop()`/`enterRoom()`/`playEnding()`, and the persist
+chain into standalone functions that accept a `GameContext` interface,
+called from the class methods — this breaks the file into 3-4 files
+without splitting the class itself, which would force every private
+field to become package-visible.
+
 **Files:** `src/engine/flow.ts` → split.
 **Tests:** existing suite must pass unchanged (pure refactor).
 **Est.:** medium.
@@ -109,8 +132,37 @@ Verify every `ContentPack` field has a clear, documented contract. Audit
 LIMERENCE-shaped. Ensure a hypothetical pack with a different guide name,
 different act count, different visual vocabulary, and no light-mode
 support could be plugged in without engine changes.
+
+**Preliminary audit notes (2026-08-01, reading `packs/types.ts`):**
+- `graph.actPools` is typed `Record<Exclude<ActId, 0 | 4>, string[]>` —
+  hardcodes the 3-act-pool structure (acts 1-3 with random pools, act 4
+  as a fixed sequence). A pack with 5 acts or 2 acts would need a type
+  change.
+- `graph.optionalPerAct` is typed `Record<1 | 2 | 3, number>` — same
+  3-act assumption.
+- `guide.examinedActBarkFallback` is typed `Record<1 | 2 | 3 | 4, ...>`
+  — assumes exactly 4 acts.
+- `endingRules.axisTriptych` returns exactly 3 axes — but all packs
+  have 3 axes, so this is structural.
+- Engine-default/pack-override pattern (§3 row 16) on `skin`, `audio`,
+  `visuals.doorStyle`: well-documented; all optional fields with
+  ANAMNESIS defaults. Clean.
+- `advisory?: { ... }` — optional, clean for packs that don't need it.
+- `articles`, `keepsakes`, `epiphanies` — all typed as arrays/records,
+  no hardcoded ids. Clean.
+- `hooks.finalGateId`, `hooks.lastMessageId` — pack-supplied, clean.
+
+**Conclusion:** the fixed 4-act structure is the one genuine rigidity.
+It's also the biggest: `storyEngine.ts`'s `offeredDoors()`,
+`flow.ts`'s `syncTheme()`/`runLoop()`, `schema.ts`'s `ActId` type, and
+the `graph` shape all assume exactly acts 0-4 + understory. For a third
+pack that matches this structure (likely — the game's pacing is an
+authored constant), no changes needed. For a structurally different
+pack, `ActId` becomes `number` and several engine functions generalize.
+**Recommendation:** leave as-is until a third pack's structure is known.
+
 **Files:** `src/packs/types.ts`, possibly type-only changes.
-**Est.:** small.
+**Est.:** small (if same structure) / medium (if different act count).
 
 ### 2.3 Third-pack skeleton (if the owner picks a topic)
 Create `packs/<pack-id>/` with the same skeleton structure as LIMERENCE.
@@ -145,12 +197,13 @@ public/music/landing/vestibule.mp3
 Run `node scripts/build-voice-manifest.mjs`. Done.
 
 ### 3.3 Preparation work (can do now, without files)
-- Verify the manifest script still works end-to-end with a synthetic
-  test file
-- Write a smoke test that the voice/music Settings rows appear when the
-  manifest has entries and don't appear when it's empty
-- Document the exact naming convention in a `public/voice/README.md` and
-  `public/music/README.md` for the owner's reference
+- ✅ Manifest script verified working (2026-08-01): `node scripts/
+  build-voice-manifest.mjs` produces a clean empty manifest with 0/0
+  files, correct output path.
+- ✅ `public/voice/README.md` and `public/music/README.md` already exist
+  with complete naming-convention documentation.
+- TODO: Write a smoke test that the voice/music Settings rows appear
+  when the manifest has entries and don't appear when it's empty.
 
 **Blocked on:** owner supplying/recording audio files. Zero code needed
 once files arrive.
