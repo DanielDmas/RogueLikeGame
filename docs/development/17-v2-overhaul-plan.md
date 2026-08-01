@@ -51,7 +51,21 @@ everything below**:
   re-prompt), E-3 (One Door keepsakes), and E-6 (R4 comment carve-out)
   need owner decisions before code.
 - **Batch 4:** promote the round-2 content-invariant sweep (soft-lock +
-  beat totality) into the permanent test suite.
+  beat totality) AND the round-3 runtime checks (Monte Carlo playthrough
+  invariants, ending-reachability bound, bundle-isolation grep) into the
+  permanent test suite.
+
+**Round 3 (runtime angle, same day)** simulated 9,000 complete
+playthroughs through the real engine — zero invariant violations
+(termination, no re-offers, act monotonicity, fork discipline, evaluator
+totality, downstream Ledger/epiphany/pattern helpers) — proved all 13
+endings reachable, audited all 3,257 registered text keys for token
+integrity (clean), and ran the full production build with bundle
+forensics (cross-pack isolation verified in both directions on the real
+minified output). One owner decision surfaced: **R3-1** — LIMERENCE's
+`the-armored` ending is far harder than its three axis-extreme siblings
+(~22% success under even a perfect strategy vs 87-100%); rebalance or
+document intent.
 
 See the review doc for full detail, repro, and fix shapes per finding.
 

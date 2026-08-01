@@ -609,6 +609,128 @@ game-time clock that only advances while unpaused.
 
 ---
 
+## THIRD PASS (same day) — the runtime angle: simulate, measure, build
+
+Passes 1-2 read code and executed targeted probes. Pass 3 attacked from the
+opposite direction: **treat the game as a black box and interrogate its
+actual behavior at scale** — a Monte Carlo playthrough simulator driving the
+real engine functions, a directed-play reachability prover, a full-catalog
+token audit, and a real production build with bundle forensics. All scripts
+in scratchpad, zero repo changes.
+
+### 3-A. Monte Carlo playthrough simulation — 9,000 full runs, zero invariant violations
+
+A simulator was built over the real `offeredDoors`/`completeRoom`/
+`applyEffects`/`evaluate`/`newRun` (mirroring `enterRoom`'s stage loop,
+including the final-gate eligibility stamp and the understory `descended`
+stamp), run 1,500× per pack × 3 profile variants (first-run / returning /
+maxed with all keepsakes + full codex), seeded and reproducible. Checked on
+every single run:
+
+- **Termination** — no run exceeded 80 door-steps (no graph dead ends, no
+  loops). Actual lengths: ANAMNESIS 7–15 rooms first-run (exactly the
+  README's "15 of 30+3" claim), 7–18 returning (understory); LIMERENCE
+  7–15 / 7–18.
+- **No room ever re-offered** after being visited; **act progression
+  monotonic**; **hearts never below zero**; **every `evaluate()` result a
+  real ending id**.
+- **Understory fork discipline:** offered in 99.7% of returning runs
+  (missing only where the run died before Act IV), never offered twice in
+  one run, never offered to a first-run player. Secret rooms (`the-cave`,
+  `the-usual-suite`) and understory rooms correctly unreachable on
+  first-run profiles and all reachable on returning profiles.
+- **Downstream consumers** (`evaluateEpiphanies`, `ledgerStats`,
+  `earnedGuestStamps`, `activePatterns`/`patternForRun`,
+  `oneDoorPool`/`pickOneDoorRoom`) fed each simulated run's resulting
+  profile — zero throws across all 9,000.
+
+**Result: no defects.** This is the strongest playthrough-integrity
+evidence the project has — the whole door graph, both packs, executed
+end-to-end thousands of times.
+
+### 3-B. Ending reachability — all 13 endings proven reachable; one balance finding
+
+Random play reached only 5/7 ANAMNESIS and 5/7 LIMERENCE endings, so a
+directed (greedy) player was simulated for the axis-extreme endings:
+
+| Ending | Requirement | Greedy success | Verdict |
+|---|---|---|---|
+| `open-hand` (ANAM) | both axes ≥ +35 | 391/400 | healthy |
+| `fortress` (ANAM) | both axes ≤ −35 | 400/400 | healthy |
+| `the-giver` (LIM) | both axes ≥ +35 | 385/400 | healthy |
+| `the-armored` (LIM) | both axes ≤ −35 | **0/400 joint-greedy; 90/400 selfOthers-first** | see R3-1 |
+
+**R3-1. `the-armored` is drastically harder than its three siblings ·
+NOTE (content balance, owner decision).** A player greedily minimizing both
+axes together *never* reaches it (controlAcceptance deltas dominate and
+selfOthers stalls at −26); only a strategy prioritizing selfOthers first
+crosses the −35 threshold, and even then door-offer luck holds success to
+~22%. Root cause is the choice inventory: LIMERENCE's negative-selfOthers
+budget is thin (24 choices summing −118, vs +170 positive; ANAMNESIS's
+negative side is −157) and spread so that the ideal-play bound is −66 —
+reachable, but with little slack. Its mirror `fortress` succeeds 87-100%
+under any negative strategy. Options if unintended: add/deepen a few
+negative-selfOthers deltas in LIMERENCE's Act I-III pools or gates, or
+lower LIMERENCE's threshold for that quadrant. If intended (an ending that
+demands rigid self-protection at every single door), record the intent —
+it is the hardest non-hidden ending in either pack by a wide margin, and
+its codex card sits visibly locked in front of completionists.
+Supporting data: random play lands `the-ghost` in ~52% of LIMERENCE runs
+(hearts attrition — expected and fine), `the-armored`/`the-giver` in 0%.
+
+### 3-C. Full-catalog token audit — 3,257 keys, clean
+
+Both packs' catalogs registered together (the dev-server state), every
+registered string variant scanned for `{token}` integrity, and dynamic
+(function) entries executed against a populated fake state:
+
+- **Zero unknown/typo'd tokens** — every `{…}` in every language is one of
+  the known set (name/blurb/hearts/n). No translation ever localized a
+  token name (which would render it literally on screen).
+- **Zero cross-language token-set mismatches** among translations. The only
+  two flags: `ending.return.beat5` and `act.intro.3` carry `{name}` in the
+  four v2 translations but not in **v1 English** — correct by design (the
+  persona whisper is a v2-voice feature; v1 is the preserved pre-persona
+  original). Worth one line of intent-comment somewhere: a v1-voice player
+  deliberately never gets persona whispers.
+- **Zero throws** from any function-valued registered entry.
+
+### 3-D. Production build + bundle forensics — pipeline green, isolation verified
+
+`npm run build:web` runs clean end-to-end on this branch (tsc + both packs
++ landing assembly; dist-web structure correct: rozcestník + both packs +
+av-manifest). Grepping the **real minified bundles**:
+
+- **ANAMNESIS bundle: zero LIMERENCE presence** — no guide words in any
+  language, no LIMERENCE room ids, no prose. The tree-shaking claim holds.
+- **LIMERENCE bundle: zero ANAMNESIS translations or prose** — all four
+  translated Usher guide-words absent; an ANAMNESIS ending-epitaph probe
+  and a room-teaser probe both absent, meaning `content/endings`' prose is
+  confirmed tree-shaken out (only `endingsTotal` is reachable via
+  `ledger.ts`, and Rollup drops the unused `endings` array). What does ship
+  is the documented engine-default coupling only: graph room *ids*
+  (`boulder`, `marys-room` via `DEFAULT_GRAPH`/`ACT_POOLS`), keepsake defs
+  (`choices.ts` default param), and the HUD's default tooltip strings
+  ("grip on reality" lives in `hud.ts` itself). Ids and a handful of
+  engine-default lines — no reachable-in-play foreign content.
+- Main chunks: ANAMNESIS 1.80 MB / LIMERENCE 1.65 MB minified (three.js
+  dominates; gzip ~504 kB) — consistent with the plan's recorded sizes.
+
+### Round-3 additions to the test-gap list (Part 7)
+
+11. Promote the Monte Carlo harness into the suite as a seeded, fast CI
+    invariant test (e.g. 200 runs per pack: termination, no re-offers,
+    monotonic acts, evaluate totality, downstream no-throw) — it caught
+    nothing today precisely because it should be cheap to keep it that way.
+12. A reachability guard for axis-extreme endings: assert the ideal-play
+    axis bound clears each pack's threshold with a safety margin (the
+    R3-1 data as a permanent regression tripwire for future content edits).
+13. A bundle-isolation CI grep (per pack: other pack's guide words in all
+    five languages + a room-id probe) — the claim is currently re-verified
+    only when someone thinks to; it's one grep in the build workflow.
+
+---
+
 ## Part 8 — Recommended fix batches (for a future session; nothing done now)
 
 1. **Batch 1 — save/import-boundary hardening round 4 (H-1..H-4, S-1,
@@ -626,9 +748,14 @@ game-time clock that only advances while unpaused.
    felt); U-10 (inert Text-version row in LIMERENCE) is small and
    player-visible; the rest are trivial sweeps. R2-2 (pause-snapped tweens)
    is optional cosmetics. U-4/E-3/E-6 need owner answers before code.
-4. **Batch 4 — content-invariant tests (Part 7 items 7-8):** promote the
-   round-2 sweep into the permanent suite so the soft-lock and
-   beat-totality invariants can never regress silently.
+4. **Batch 4 — content-invariant tests (Part 7 items 7-8, 11-13):**
+   promote the round-2 sweep AND the round-3 Monte Carlo/reachability/
+   bundle-isolation checks into the permanent suite so the soft-lock,
+   beat-totality, run-termination, ending-reachability, and pack-isolation
+   invariants can never regress silently.
+5. **Owner decision (R3-1):** rule on `the-armored`'s difficulty — content
+   rebalance (a few more negative-selfOthers deltas in LIMERENCE Acts
+   I-III) vs. documented intent. No code until decided.
 
 Master plan cross-reference: this document is the "found bugs" record the
 2026-08-01 overhaul session asked for; the v2 overhaul plan
