@@ -104,3 +104,30 @@ describe('S5(b) — Voiceover.play() gates on sound.isVoiceEnabled() before doin
     expect(gateIdx).toBeLessThan(urlIdx);
   });
 });
+
+// v2 overhaul plan, Phase 3.3 TODO: "write a smoke test that the voice
+// Settings rows appear when the manifest has entries and don't appear when
+// it's empty." `manifestPackHasAnyVoice`'s pure logic was already covered
+// above; the actual gap was the *rendering* conditional in showSettings
+// itself (overlays.ts), which is DOM-dependent — same source-shape
+// convention as this repo's other overlay tests. (There is no separate
+// file-music Settings row to cover: music silently swaps generative↔file
+// with no on/off preference, so only narration needs the invisible-until-
+// available treatment.)
+describe('Phase 3.3 — the Narration Settings rows are invisible until the manifest actually has voice files', () => {
+  const overlaysSrc = readFileSync(new URL('../ui/overlays.ts', import.meta.url), 'utf8');
+
+  it('showSettings gates both the narration toggle and its volume slider behind actions.narrationAvailable', () => {
+    const gateIdx = overlaysSrc.indexOf('if (actions.narrationAvailable) {');
+    expect(gateIdx, 'narrationAvailable gate not found').toBeGreaterThan(-1);
+    const blockEnd = overlaysSrc.indexOf('\n    }', gateIdx);
+    const block = overlaysSrc.slice(gateIdx, blockEnd);
+    expect(block).toContain("toggleRow(audioBody, 'narrationEnabled'");
+    expect(block).toContain("settingNarrationVolume");
+  });
+
+  it('flow.ts feeds narrationAvailable straight from voiceover.packHasAnyVoice(), the pure function tested above', () => {
+    const flowSrc = readFileSync(new URL('../engine/flow.ts', import.meta.url), 'utf8');
+    expect(flowSrc).toContain('narrationAvailable: voiceover.packHasAnyVoice()');
+  });
+});

@@ -1232,3 +1232,20 @@ source-shape test); `npm run build:web` clean; `npm run verify:isolation`
 OK; four live-browser UAT scripts run against a fresh dev server (67, 68,
 plus re-runs of 52 and 33 to catch any regression in the touched
 theme/card-visibility surfaces) — all pass.
+
+## v2 overhaul Phase 3.3 — voice/music prep work close-out — 2026-08-01 (same-day continuation)
+
+Checked Phase 3.3's remaining TODOs before moving further into the plan.
+Found the two "activation blocker" items (A-2 generative-mote bus routing,
+A-3 gesture-retry for paused file music) were **already fixed** — both
+landed in this same session's earlier Batch 2 pass, before Phase 3.3's doc
+text was written; a stale cross-reference, not a real gap. Wrote the one
+genuinely-missing item: a smoke test confirming the Narration Settings rows
+(toggle + volume slider) are gated behind `actions.narrationAvailable`
+(itself fed from the already-tested pure `voiceover.packHasAnyVoice()`),
+source-shape convention since `showSettings` is DOM-dependent. Phase 3.3 is
+now entirely done — the only remaining step for T1 (voice/music) is the
+owner supplying actual audio files (3.2), zero code work left.
+
+**Verification:** `tsc --noEmit` clean; full `vitest run` **1311/1311
+green** (2 new).

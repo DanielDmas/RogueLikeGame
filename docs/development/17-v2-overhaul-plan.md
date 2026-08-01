@@ -276,24 +276,29 @@ public/music/landing/vestibule.mp3
 ```
 Run `node scripts/build-voice-manifest.mjs`. Done.
 
-### 3.3 Preparation work (can do now, without files)
+### 3.3 Preparation work (can do now, without files) — ✅ ALL DONE
 - ✅ Manifest script verified working (2026-08-01): `node scripts/
   build-voice-manifest.mjs` produces a clean empty manifest with 0/0
   files, correct output path.
 - ✅ `public/voice/README.md` and `public/music/README.md` already exist
   with complete naming-convention documentation.
-- TODO: Write a smoke test that the voice/music Settings rows appear
-  when the manifest has entries and don't appear when it's empty.
-- **TODO (2026-08-01 review, activation blockers):** fix A-2 (generative
-  motes bypass the `genDuck` bus — they will chime over any file-based
-  track) and A-3 (the boot slot's `play()` autoplay rejection is never
-  retried on first gesture — title/act-0 file music stays silent until the
-  first act change). Both are invisible while no files exist, and both
-  break the feature the day files land. See
-  `18-extended-code-review-2026-08-01.md` Part 2.
+- ✅ Smoke test written (2026-08-01, same-day continuation,
+  `voiceover.test.ts`): confirms `showSettings` gates both the narration
+  toggle and its volume slider behind `actions.narrationAvailable`, and
+  that `flow.ts` feeds it straight from `voiceover.packHasAnyVoice()`.
+  (There's no separate file-music Settings row to cover — music silently
+  swaps generative↔file with no on/off preference, only narration needs
+  the invisible-until-available treatment.)
+- ✅ A-2/A-3 activation blockers: **already fixed** — turns out these were
+  closed in this same session's earlier Batch 2 pass (`soundEngine.ts`:
+  `playMote()` now routes through `genDuck` instead of `musicGain`
+  directly; `primeOnGesture()` now retries a paused file-music element on
+  the first real gesture). This doc entry was stale; struck.
 
-**Blocked on:** owner supplying/recording audio files. The two A-findings
-above are the remaining code work; fix them before (or with) file delivery.
+**Blocked on:** owner supplying/recording audio files. All code-side
+preparation is now complete — dropping files into `public/voice/`/
+`public/music/` and running the manifest script is the only remaining
+step (3.2).
 
 ---
 
