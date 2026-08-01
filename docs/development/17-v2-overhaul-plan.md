@@ -23,7 +23,16 @@ item is an enhancement or a new capability.
 
 ---
 
-## PHASE 0 — Extended-review fix batches (added 2026-08-01)
+## PHASE 0 — Extended-review fix batches (added 2026-08-01) — ✅ COMPLETE
+
+**Status: all four batches implemented and verified, all four owner-decision
+items ruled on and coded** (same-day continuation, 2026-08-01). See
+`13-master-development-plan.md`'s "Extended review fix batches 1-4 +
+owner-decision resolution" entry and `18-extended-code-review-2026-08-01.md`'s
+"Resolution" section for full detail. `tsc` clean, 1307/1307 tests green,
+production build + `verify:isolation` clean, both real behavior changes
+(sticky persona Skip, One Door keepsakes) live-verified. Committed
+(`efcadfb`) and pushed to `claude/vestibule-v2-overhaul`.
 
 The extended code review (`18-extended-code-review-2026-08-01.md`, two
 passes same day) found 4 confirmed hostile-save crash gaps (H-1..H-4), an
