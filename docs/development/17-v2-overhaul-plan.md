@@ -23,6 +23,26 @@ item is an enhancement or a new capability.
 
 ---
 
+## PHASE 0 — Extended-review fix batches (added 2026-08-01)
+
+The extended code review (`18-extended-code-review-2026-08-01.md`) found
+4 confirmed hostile-save crash gaps (H-1..H-4), an unvalidated Settings
+boundary (S-1), 4 audio findings (A-1..A-4 — two of which are activation
+blockers for Phase 3's voice/music work), and a set of UX/boot nits
+(U-1..U-9, B-1, B-2). **These now come before everything below**:
+
+- **Batch 1 (do first):** save-boundary hardening round 4 — H-1..H-4 +
+  S-1, with the review doc's Part-7 tests. Closes the entire known
+  hostile-save surface the three prior troll passes were chartered to close.
+- **Batch 2:** audio fixes A-1 (discovery-pulse timer, 2 lines now) and
+  A-4; A-2/A-3 fold into Phase 3 as pre-activation blockers.
+- **Batch 3:** U-1 (reread-button steals focus) and B-1 (recovery net
+  installs too late) first; remaining nits opportunistically. U-4 (persona
+  Skip re-prompt), E-3 (One Door keepsakes), and E-6 (R4 comment carve-out)
+  need owner decisions before code.
+
+See the review doc for full detail, repro, and fix shapes per finding.
+
 ## PHASE 1 — Small remaining polish batch (no new content, no translations)
 
 These are the leftover items from the review docs that were individually
@@ -204,9 +224,16 @@ Run `node scripts/build-voice-manifest.mjs`. Done.
   with complete naming-convention documentation.
 - TODO: Write a smoke test that the voice/music Settings rows appear
   when the manifest has entries and don't appear when it's empty.
+- **TODO (2026-08-01 review, activation blockers):** fix A-2 (generative
+  motes bypass the `genDuck` bus — they will chime over any file-based
+  track) and A-3 (the boot slot's `play()` autoplay rejection is never
+  retried on first gesture — title/act-0 file music stays silent until the
+  first act change). Both are invisible while no files exist, and both
+  break the feature the day files land. See
+  `18-extended-code-review-2026-08-01.md` Part 2.
 
-**Blocked on:** owner supplying/recording audio files. Zero code needed
-once files arrive.
+**Blocked on:** owner supplying/recording audio files. The two A-findings
+above are the remaining code work; fix them before (or with) file delivery.
 
 ---
 
