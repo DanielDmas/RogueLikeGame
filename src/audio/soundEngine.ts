@@ -183,6 +183,15 @@ export class SoundEngine {
     if (this.voiceGain) this.voiceGain.gain.setTargetAtTime(this.voiceTarget(), this.now(), 0.1);
   }
 
+  /** S5(b) (v2 overhaul plan, Phase 1.3): lets `Voiceover.play()` skip the
+   * fetch+decode entirely when narration is off, rather than doing the work
+   * and relying on the muted bus to hide it — a real cost only once actual
+   * voice files exist (today's empty manifest makes every play() a no-op
+   * regardless). */
+  isVoiceEnabled(): boolean {
+    return this.voiceEnabled;
+  }
+
   /** 0–1. Only audible while narration is enabled.
    * A-4 (extended review, 2026-08-01): `Math.max(0, Math.min(1, v))` passes
    * NaN straight through both comparisons — a NaN-guard here is defense in

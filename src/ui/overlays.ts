@@ -427,7 +427,25 @@ export function showSettings(ui: HTMLElement, settings: Settings, actions: Setti
       current.language = nextLang(current.language);
       langBtn.textContent = LANGUAGE_LABELS[current.language];
     });
-    textBody.append(settingRow(t(uiKey('settingLanguage'), 'Language'), t(uiKey('settingLanguageDesc'), 'Applies immediately, everywhere in the game.'), langBtn));
+    // S5(a) (v2 overhaul plan, Phase 1.3): the old copy claimed "applies
+    // immediately, everywhere" — true for the game itself (a live language
+    // switch mid-run has worked since M5), but not for this Settings panel's
+    // OWN labels, which are resolved once at panel-build time and don't
+    // re-render while it stays open (`current.language` only mutates a
+    // local draft; the active resolver locale doesn't change until Done/
+    // Escape closes the panel and the caller applies it). A player toggling
+    // the language row watched every other label in the very panel under
+    // their cursor stay in the old language — a felt, if minor,
+    // inconsistency with what the copy promised. Softened the wording to be
+    // honest rather than re-rendering the whole panel live (a much larger
+    // change for a one-line nit); the game-wide effect itself is unchanged.
+    textBody.append(
+      settingRow(
+        t(uiKey('settingLanguage'), 'Language'),
+        t(uiKey('settingLanguageDesc'), 'Applies immediately, everywhere in the game. This panel shows the new language the next time you open it.'),
+        langBtn,
+      ),
+    );
 
     const versionLabel = (v: TextVersion) =>
       v === 'v2' ? t(uiKey('versionV2'), 'Voice: v2 (new)') : t(uiKey('versionV1'), 'Voice: v1 (original)');

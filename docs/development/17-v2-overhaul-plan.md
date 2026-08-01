@@ -78,22 +78,32 @@ document intent.
 
 See the review doc for full detail, repro, and fix shapes per finding.
 
-## PHASE 1 — Small remaining polish batch (no new content, no translations)
+## PHASE 1 — Small remaining polish batch (no new content, no translations) — ✅ COMPLETE except 1.6
 
 These are the leftover items from the review docs that were individually
 too small to justify their own session during the rc.2 stabilization, but
 collectively represent real polish. Each is independently shippable.
 
+**Status (2026-08-01, same-day continuation):** 1.1-1.5 all done (1.2 and
+1.4 were already complete on branch creation; 1.1 and 1.3(c) turned out to
+be verification-only — no bug found, no code needed; 1.3(a)/(b) and 1.5
+were real small fixes). `tsc` clean, 1309/1309 tests green, production
+build + isolation check clean, all four live-browser checks pass. 1.6
+deliberately NOT started — it needs new translated content (10 strings ×
+5 languages), which this plan's own item explicitly flags as needing its
+own pass rather than a drive-by addition to a polish batch, consistent
+with CLAUDE.md's standing translation-context rule.
+
 ### 1.1 P3 heavy-toggle live re-run
-**Status:** verification debt — the Phase V graphics overhaul made the
-theme toggle heavier (full scene rebuild on `setThemeMode()`), and the
-plan explicitly said "re-run the P3 stale-paint UAT since this makes the
-toggle heavier." Never done.
-**Action:** write a focused UAT script that toggles theme mid-door-row
-with the full scene rebuild path active, asserts no stale paint / no
-console errors. If a bug surfaces, fix it.
-**Files:** `tests/uat/`, possibly `src/styles.css` if a fix is needed.
-**Est.:** small.
+**Status:** ✅ COMPLETE (2026-08-01, same-day continuation) — no bug
+found. `tests/uat/67-p3-heavy-toggle-live-rerun.mjs` toggles Light mode
+while a LIMERENCE door row's entrance animation is still in flight, then
+again as a rapid back-to-back double-toggle, driving the real full-scene
+`setThemeMode()` rebuild path under contention; asserts every card
+settles visible, the render loop stays alive (`fps()` sane), zero
+console/page errors, and doors remain genuinely clickable afterward. All
+pass — the P3 fix (`.choice-card.settled`) holds under the heavier
+rebuild cost with no new failure mode.
 
 ### 1.2 R7 persona-whisper test pack-parameterization
 **Status:** ✅ ALREADY COMPLETE — verified on branch creation. The R7
@@ -102,16 +112,27 @@ pack-parameterized: both packs × all 5 languages (en/cs/fa/de/fr) × all
 4 `{name}` touches + the `{blurb}` echo (`the-archive` for ANAMNESIS,
 `the-registry` for LIMERENCE). No work needed.
 
-### 1.3 S5 minor nits
-**(a)** Settings language row: either re-render labels on locale switch
-or soften the "applies immediately, everywhere" description.
-**(b)** `voiceover.play()` gates on the enabled flag before setting
-`src` — currently sets src + plays even when narration is disabled (the
-bus mutes it, but it's a wasted fetch once real files arrive).
-**(c)** Title menu button count monitoring — 12 buttons stack tall on
-small viewports. Add a scroll/overflow guard or a compact layout.
-**Files:** `src/ui/overlays.ts`, `src/audio/voiceover.ts`, `src/styles.css`.
-**Est.:** small-medium.
+### 1.3 S5 minor nits — ✅ COMPLETE (2026-08-01, same-day continuation)
+**(a)** Softened the language row's description rather than re-rendering
+the whole Settings panel live (a much larger change for a one-line nit)
+— it now says the panel itself catches up to the new language the next
+time it's opened, honest about the real (if minor) felt inconsistency.
+Translated into cs/de/fa/fr with the usual context-first pass, live-
+verified in both English and Czech with zero console errors.
+**(b)** New `SoundEngine.isVoiceEnabled()` getter; `Voiceover.play()`
+now checks it before touching `voiceUrl`/the audio element at all —
+narration-off now genuinely skips the work instead of relying on the
+muted bus to hide it. Covered by a behavioral test (`isVoiceEnabled`
+tracks `setVoiceEnabled`) and a source-shape test (the gate runs before
+any URL work).
+**(c)** Investigated and found already handled: `.overlay` has
+`overflow-y: auto` (styles.css), so the whole title screen scrolls as
+one unit — no code change needed. Locked in as a permanent regression
+check, `tests/uat/68-s5c-title-menu-small-viewport.mjs`, live-verified
+at 360×560 (9 buttons today; the last one starts below the fold and
+becomes fully visible and clickable after scrolling the overlay).
+**Files:** `src/ui/overlays.ts`, `src/audio/soundEngine.ts`,
+`src/audio/voiceover.ts`, `src/content/text/{cs,de,fa,fr}.ts`.
 
 ### 1.4 S6 deliberate-behavior comment records
 **Status:** ✅ COMPLETE — the three-layer overlay Escape priority was
@@ -119,12 +140,16 @@ already documented in `overlays.ts` and `fieldNote.ts`. Added the two
 missing comments: Escape-saves-in-Settings (overlays.ts:539) and
 Skip-clears-persona (overlays.ts:651). No further work needed.
 
-### 1.5 Sconce legibility (B7)
-The Long-Stay Wing's `sconceFixture` is present and lit (unit-tested)
-but visually subtle at the default camera framing. Raise height or
-intensity slightly.
+### 1.5 Sconce legibility (B7) — ✅ COMPLETE (2026-08-01, same-day continuation)
+Raised `sconceFixture`'s bulb/light height (2.4→2.7), the glow material's
+`emissiveIntensity` (1.4→2.0), and the `PointLight`'s intensity/falloff
+radius (1.3/5→1.9/6.5) — positions and fixture count unchanged. Live-
+verified via screenshot on LIMERENCE's `the-colleague` (Act III, the Long-
+Stay Wing): the nearest sconce now reads as a clear warm point of light
+against the door frame, versus barely perceptible before. Unit tests
+(`phaseVFixtureKit.test.ts`) unaffected — they assert light presence/
+quality-gating, not the tuned numeric values.
 **Files:** `src/scene/themes.ts`.
-**Est.:** trivial.
 
 ### 1.6 Richer interlude (B7, optional)
 The act-headline card currently shows only the floor name. The original

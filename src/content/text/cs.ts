@@ -37,7 +37,7 @@ registerAll('v2', 'cs', {
   [uiKey('settingMusicDesc')]: 'Tichá, proměnlivá atmosféra, která se mění s každým dějstvím.',
   [uiKey('settingSfxDesc')]: 'Zvuky dveří, otáčení stránek a drobné zvuky volby.',
   [uiKey('settingsSectionText')]: 'Text a jazyk',
-  [uiKey('settingLanguageDesc')]: 'Projeví se okamžitě, všude ve hře.',
+  [uiKey('settingLanguageDesc')]: 'Projeví se okamžitě všude ve hře. Tento panel se novým jazykem řídí až při příštím otevření.',
   [uiKey('settingTextVersionDesc')]: 'v1 je původní hlas, uchovaný jako volitelná záloha; v2 je aktuální přepis.',
   [uiKey('settingTypewriterDesc')]: 'Text se objevuje písmeno po písmenu, jako by vám ho někdo vyprávěl.',
   [uiKey('settingHighContrastDesc')]: 'Světlejší barva textu pro snazší čtení.',

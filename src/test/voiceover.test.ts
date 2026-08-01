@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { manifestHasVoice, manifestPackHasAnyVoice, voiceUrl, musicUrl, isValidManifest, EMPTY_MANIFEST, type AvManifest } from '../audio/voiceover';
 
@@ -79,5 +80,27 @@ describe('isValidManifest — the shape guard for the fetched manifest (R2-1)', 
     ]) {
       expect(isValidManifest(bad), `manifest=${JSON.stringify(bad)}`).toBe(false);
     }
+  });
+});
+
+// S5(b) (v2 overhaul plan, Phase 1.3): Voiceover.play() previously set `src`
+// and called `.play()` even with narration disabled, relying on the muted
+// bus to hide it — a wasted fetch+decode per beat once real voice files
+// exist. Voiceover's own play() method touches a real HTMLAudioElement and
+// the SoundEngine singleton, so — same source-shape convention as this
+// repo's other DOM-dependent regression tests — this locks in the gate
+// exists and runs before any URL/element work, rather than driving it live.
+describe('S5(b) — Voiceover.play() gates on sound.isVoiceEnabled() before doing any work', () => {
+  const src = readFileSync(new URL('../audio/voiceover.ts', import.meta.url), 'utf8');
+
+  it("play(key) checks sound.isVoiceEnabled() and returns before touching voiceUrl/the audio element", () => {
+    const idx = src.indexOf('play(key: string) {');
+    expect(idx, 'play() not found').toBeGreaterThan(-1);
+    const body = src.slice(idx, src.indexOf('\n  }', idx));
+    const gateIdx = body.indexOf('if (!sound.isVoiceEnabled()) return;');
+    const urlIdx = body.indexOf('voiceUrl(');
+    expect(gateIdx, 'isVoiceEnabled gate not found').toBeGreaterThan(-1);
+    expect(urlIdx, 'voiceUrl call not found').toBeGreaterThan(-1);
+    expect(gateIdx).toBeLessThan(urlIdx);
   });
 });

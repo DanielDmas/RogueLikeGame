@@ -112,6 +112,17 @@ describe('audio — volume sliders (no AudioContext required)', () => {
     }
   });
 
+  // S5(b) (v2 overhaul plan, Phase 1.3): isVoiceEnabled() is the getter
+  // Voiceover.play() consults to skip work entirely while narration is off.
+  it('isVoiceEnabled defaults true and tracks setVoiceEnabled', () => {
+    const engine = new SoundEngine();
+    expect(engine.isVoiceEnabled()).toBe(true);
+    engine.setVoiceEnabled(false);
+    expect(engine.isVoiceEnabled()).toBe(false);
+    engine.setVoiceEnabled(true);
+    expect(engine.isVoiceEnabled()).toBe(true);
+  });
+
   it('setting volume before any AudioContext exists does not throw', () => {
     const engine = new SoundEngine();
     expect(() => {

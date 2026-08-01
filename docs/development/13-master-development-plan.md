@@ -1189,3 +1189,46 @@ green** (up from 787 at this doc's original snapshot, reflecting every
 session since); `npm run build:web` clean; `npm run verify:isolation` OK
 against the fresh production build; the two new UAT behaviors live-verified
 in a real browser.
+
+## v2 overhaul Phase 1 — small polish batch — 2026-08-01 (same-day continuation)
+
+Picked up `17-v2-overhaul-plan.md`'s Phase 1 immediately after Phase 0
+closed, per the owner's "continue, commit after testing" instruction.
+
+- **1.1 (P3 heavy-toggle re-run):** verification-only — wrote
+  `tests/uat/67-p3-heavy-toggle-live-rerun.mjs`, toggling Light mode on a
+  LIMERENCE door row mid-entrance-animation and as a rapid double-toggle,
+  driving the real (post-Phase-V) full-scene `setThemeMode()` rebuild
+  under contention. No bug found: cards settle visible, render loop stays
+  alive, zero console errors, doors stay clickable.
+- **1.2, 1.4:** already complete on branch creation (no work needed,
+  re-confirmed).
+- **1.3 S5 nits:** (a) softened the Settings language row's description
+  to honestly reflect that the panel's own labels catch up on next open,
+  rather than a larger live-re-render change — translated cs/de/fa/fr,
+  live-verified in English and Czech; (b) new
+  `SoundEngine.isVoiceEnabled()` getter; `Voiceover.play()` now gates on
+  it before touching the URL/audio element at all, so narration-off
+  genuinely skips the work instead of relying on the muted bus; (c)
+  investigated the "12 buttons stack tall" concern and found `.overlay`'s
+  existing `overflow-y: auto` already handles it — no code change, just a
+  new permanent regression test
+  (`tests/uat/68-s5c-title-menu-small-viewport.mjs`) locking in that the
+  title menu is scrollable and every button stays clickable at 360×560.
+- **1.5 (sconce legibility):** raised `sconceFixture`'s bulb/light height
+  and both the glow material's and point light's intensity/falloff —
+  positions and count unchanged. Live-verified via screenshot on
+  LIMERENCE's `the-colleague` (Act III): the nearest sconce now reads as
+  a clear warm point of light against the door frame.
+- **1.6 (richer interlude):** deliberately not started — needs 10 new
+  translated strings (1 line × 2 packs × 5 languages), which both this
+  item's own text and CLAUDE.md's standing translation rule flag as
+  needing its own dedicated pass, not a drive-by addition to a polish
+  batch.
+
+**Verification:** `tsc --noEmit` clean; full `vitest run` **1309/1309
+green** (2 new: `isVoiceEnabled` behavioral test + the play()-gate
+source-shape test); `npm run build:web` clean; `npm run verify:isolation`
+OK; four live-browser UAT scripts run against a fresh dev server (67, 68,
+plus re-runs of 52 and 33 to catch any regression in the touched
+theme/card-visibility surfaces) — all pass.

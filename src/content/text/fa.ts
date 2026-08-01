@@ -38,7 +38,7 @@ registerAll('v2', 'fa', {
   [uiKey('settingMusicDesc')]: 'فضایی آرام و درحال‌تغییر که با هر پرده عوض می‌شود.',
   [uiKey('settingSfxDesc')]: 'صدای درها، ورق‌خوردن صفحه، و صداهای کوچک انتخاب.',
   [uiKey('settingsSectionText')]: 'متن و زبان',
-  [uiKey('settingLanguageDesc')]: 'بلافاصله، در همه‌جای بازی اعمال می‌شود.',
+  [uiKey('settingLanguageDesc')]: 'بلافاصله در سراسر بازی اعمال می‌شود؛ خود این پنل با باز کردن دوباره به‌روزرسانی می‌شود.',
   [uiKey('settingTextVersionDesc')]: 'نسخه‌ی ۱ لحن اصلی است که به‌عنوان نسخه‌ی پشتیبان نگه داشته شده؛ نسخه‌ی ۲ بازنویسی کنونی است.',
   [uiKey('settingTypewriterDesc')]: 'متن حرف‌به‌حرف ظاهر می‌شود، مثل روایت‌شدن یک داستان.',
   [uiKey('settingHighContrastDesc')]: 'رنگ روشن‌تر متن برای خواندن آسان‌تر.',

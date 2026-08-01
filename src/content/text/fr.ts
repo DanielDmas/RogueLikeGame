@@ -40,7 +40,7 @@ registerAll('v2', 'fr', {
   [uiKey('settingMusicDesc')]: 'Une ambiance calme et changeante, qui évolue à chaque acte.',
   [uiKey('settingSfxDesc')]: 'Bruits de portes, de pages qu’on tourne, et les petits sons du choix.',
   [uiKey('settingsSectionText')]: 'Texte et langue',
-  [uiKey('settingLanguageDesc')]: 'S’applique immédiatement, partout dans le jeu.',
+  [uiKey('settingLanguageDesc')]: 'S’applique immédiatement, partout dans le jeu. Ce panneau affichera la nouvelle langue à sa prochaine ouverture.',
   [uiKey('settingTextVersionDesc')]: 'v1 est la voix d’origine, conservée comme sauvegarde optionnelle ; v2 est la réécriture actuelle.',
   [uiKey('settingTypewriterDesc')]: 'Le texte apparaît lettre par lettre, comme si on vous racontait une histoire.',
   [uiKey('settingHighContrastDesc')]: 'Couleur de texte plus claire pour une lecture plus facile.',

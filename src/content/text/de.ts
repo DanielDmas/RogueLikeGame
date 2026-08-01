@@ -40,7 +40,7 @@ registerAll('v2', 'de', {
   [uiKey('settingMusicDesc')]: 'Eine leise, sich wandelnde Klangkulisse, die sich mit jedem Akt verändert.',
   [uiKey('settingSfxDesc')]: 'Türgeräusche, Seitenumblättern und die kleinen Klänge des Wählens.',
   [uiKey('settingsSectionText')]: 'Text & Sprache',
-  [uiKey('settingLanguageDesc')]: 'Wirkt sich sofort aus, überall im Spiel.',
+  [uiKey('settingLanguageDesc')]: 'Wirkt sich sofort überall im Spiel aus. Dieses Menü selbst zeigt die neue Sprache erst beim nächsten Öffnen.',
   [uiKey('settingTextVersionDesc')]: 'v1 ist die ursprüngliche Stimme, als wählbare Sicherung erhalten; v2 ist die aktuelle Überarbeitung.',
   [uiKey('settingTypewriterDesc')]: 'Der Text erscheint Buchstabe für Buchstabe, als würde ihn Ihnen jemand erzählen.',
   [uiKey('settingHighContrastDesc')]: 'Hellere Textfarbe für leichteres Lesen.',

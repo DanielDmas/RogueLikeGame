@@ -301,14 +301,22 @@ function sconceFixture(color: number, quality: 'low' | 'high'): Fixture {
   const group = new THREE.Group();
   if (quality !== 'high') return { group, tick() {} };
   const positions: [number, number][] = [[-1, -15], [1, -35], [-1, -55]];
-  const glowMat = new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 1.4, roughness: 0.4 });
+  // Phase 1.5 (v2 overhaul plan, "sconce legibility", B7): the original
+  // 2.4/1.4/1.3/5 values read as barely-there at the default door-reading
+  // camera framing (DOOR_Z + 1.2, well in front of even the nearest
+  // sconce) — a small, fast-decaying point of light this far down the
+  // corridor's length was easy to miss entirely. Raised height (closer to
+  // where the eye naturally meets the wall/ceiling line) and both the
+  // glow's emissive strength and the point light's own intensity/falloff
+  // radius, without moving the fixtures or changing their count/positions.
+  const glowMat = new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 2.0, roughness: 0.4 });
   const glowGeo = new THREE.SphereGeometry(0.08, 10, 8);
   for (const [side, z] of positions) {
     const bulb = new THREE.Mesh(glowGeo, glowMat);
-    bulb.position.set(side * 7.2, 2.4, z);
+    bulb.position.set(side * 7.2, 2.7, z);
     group.add(bulb);
-    const light = new THREE.PointLight(color, 1.3, 5, 2.0);
-    light.position.set(side * 7.0, 2.4, z);
+    const light = new THREE.PointLight(color, 1.9, 6.5, 2.0);
+    light.position.set(side * 7.0, 2.7, z);
     group.add(light);
   }
   return { group, tick() {} };

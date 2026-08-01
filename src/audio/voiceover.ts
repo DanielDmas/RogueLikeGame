@@ -123,6 +123,12 @@ class Voiceover {
   /** Plays the line for `key`, if one exists; otherwise a silent no-op —
    * callers never need to check `has()` first. */
   play(key: string) {
+    // S5(b) (v2 overhaul plan, Phase 1.3): gate on the enabled flag before
+    // doing any work — previously this always set `src` (and so fetched)
+    // and called `.play()` even with narration switched off, relying on
+    // the muted bus to hide it. Harmless today (the manifest is empty), but
+    // a real wasted network fetch + decode per beat once voice files exist.
+    if (!sound.isVoiceEnabled()) return;
     const url = voiceUrl(this.manifest, this.packId, this.lang, key);
     if (!url) return;
     const el = this.ensureElement();
