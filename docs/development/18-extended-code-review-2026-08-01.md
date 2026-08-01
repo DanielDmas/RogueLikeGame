@@ -476,20 +476,159 @@ saying so, since it *looks* like an oversight next to the other two axes.
 
 ---
 
+## SECOND PASS (same day) — challenge-the-first-pass sweep
+
+The owner asked whether the first pass really covered everything affecting
+playthrough, settings, and saving. It hadn't — the following surface was
+unread in round 1 and has now been reviewed end-to-end: both pack indexes
+(`packs/anamnesis/index.ts`, `packs/limerence/index.ts`,
+`limerence/endingLogic.ts`), `voiceover.ts`'s manifest/init half,
+`explanation.ts`, `reflection.ts`, `locale.ts`, `zoom.ts`, `doors.ts`'s
+dispose/flicker paths, `post.ts`, `dioramas.ts` disposal, `index.html`,
+`package.json`, `vite.config.ts`, `electron/main.cjs`,
+`scripts/assemble-web-dist.mjs`, and the translated dynamic-beat files'
+guard parity.
+
+On top of the file reads, a **content-invariant sweep was executed against
+both packs' real modules** (script in scratchpad, `npx tsx`, no repo
+changes) covering the biggest untested playthrough risk from round 1:
+
+- **Soft-lock check:** no stage in either pack has all-conditional choices
+  — `enterRoom`'s `available` filter can never produce an empty choice list,
+  so the "zero cards mounted, promise never resolves" soft-lock is
+  impossible with shipped content. (Worth pinning with a permanent content
+  test — added to Part 7.)
+- **Beat/outcome/available/secret function totality:** every function beat,
+  outcome beat, `available` predicate, and `secret` predicate in both packs
+  was invoked against a bare fresh run, an empty-transcript prior, and a
+  short real prior — zero throws.
+- **Evaluator totality:** `evaluate(hearts=0)` → `dissolved` /
+  `the-ghost`; bare-run and all nine selfOthers×controlAcceptance axis
+  combinations resolve to real, defined ending ids in both packs.
+- **Graph referential integrity:** every id in prologue/pools/gates/
+  act4Sequence/understorySequence and both `hooks` ids exists in the room
+  registry; `fogColorByTheme` covers themes 0-5; every ending has an icon;
+  every keepsake has an icon and a trigger flag; `actNamesEn` covers 0-4.
+  All clean, both packs.
+
+### New findings (round 2)
+
+**S-2. Importing a profile silently loses its display settings · MEDIUM**
+`importProfile` (`flow.ts:481-492`) hydrates, saves, and reloads — but never
+writes (or clears) the cross-pack shared display key. On the very next boot,
+`main.ts:58` unconditionally overlays `withSharedDisplaySettings`, so the
+*pre-import* quality/renderScale/uiZoom/fpsCap silently replace the imported
+profile's values — contradicting the import description's "Replaces your
+entire profile" promise (in all five languages). Every other Settings-writing
+path (title, pause, HUD gear, end screen) calls `writeSharedDisplaySettings`;
+import is the one that forgot. **Fix:** call
+`writeSharedDisplaySettings(hydrated.settings)` before the import's reload.
+(Also note: `writeSharedDisplaySettings` copies values verbatim, so S-1's
+hostile `uiZoom`/`fpsCap` propagate cross-pack through this key — one more
+reason the clamp belongs in both places.)
+
+**U-10. The "Text version" toggle is inert in LIMERENCE builds · LOW**
+Confirmed by grep: all 214 `registerAll` calls in `packs/limerence/text/`
+register `'v2'`; zero v1 entries exist anywhere in the pack. The Settings
+row still renders unconditionally and promises "v1 is the original voice,
+kept as a selectable backup" — in LIMERENCE it toggles nothing a player can
+ever perceive. **Fix:** hide the row when the active pack has no v1 catalog
+(a pack flag, or probe `registeredKeys('v1', lang)` at panel build).
+
+**R2-1. `voiceover.init` trusts the fetched manifest's shape · LOW**
+`init()` assigns `await res.json()` directly (`voiceover.ts:66-67`). A
+tampered/corrupt `av-manifest.json` of `{"voice": null}` makes
+`manifestPackHasAnyVoice` dereference `manifest.voice[packId]` on null →
+TypeError — thrown from `settingsActions()` (`flow.ts:516`), i.e. **opening
+Settings crashes**. Server/build-artifact-controlled in practice (not
+user-editable like the save), so LOW — but it's the same
+trust-the-parsed-JSON pattern the save boundary already learned to guard.
+**Fix:** one shape check before assignment (`voice`/`music` are non-null
+objects), else keep `EMPTY_MANIFEST`.
+
+**R2-2. Pausing mid-transition snaps tweens to completion · LOW (cosmetic)**
+The render loop early-returns while paused without calling
+`clock.getDelta()`, so `clock.elapsedTime` freezes; on the first resumed
+frame the delta call rolls the entire paused duration into `elapsedTime` at
+once, and every active tween (camera dolly, Usher walk, spill fade — all
+keyed on absolute `elapsedTime`) instantly completes. Observable by pressing
+Escape mid-door-crossing and resuming: the walk/dolly visibly snap. No
+deadlock (the dolly's `done` still fires; flow proceeds normally), purely
+cosmetic, rare. **Fix if ever wanted:** shift each active tween's `startT`
+forward by the pause duration on unpause, or key tweens on an accumulated
+game-time clock that only advances while unpaused.
+
+### Round-2 verified clean (adds to Part 6)
+
+- **Both pack indexes:** wiring matches the `ContentPack` contract exactly;
+  LIMERENCE's evaluator mirrors ANAMNESIS's priority order (hearts → scripted
+  final-gate choices → axis profile); `endingLogic.ts`'s hidden-ending gates
+  mirror `engine/endings.ts` correctly with LIMERENCE's own flags.
+- **`package.json`:** the voice/music READMEs' claim that the manifest step
+  is wired into every dev/build path is TRUE (`predev`, `predev:limerence`,
+  `prebuild`, `prebuild:anamnesis`, `prebuild:limerence` all run
+  `build:manifest`); `dist:win` chains through `build:web`. No drift.
+- **Translated dynamic beats** guard the short-transcript case exactly like
+  the English source (`fa-dynamic.ts:21-22`'s `if (!entry) return
+  FALLBACK[index]` — spot-verified; the round-2 sweep's zero-throw result
+  covers the registered English side for both packs).
+- **`explanation.ts`/`reflection.ts`:** overlay-guard parity with
+  TextPanel's key handling holds; the explanation card's `field-note` class
+  correctly suppresses the text panel's own advance keys underneath; the
+  double-dismiss via focused-close-button Enter is idempotent (second
+  resolve is a no-op).
+- **`locale.ts`/`zoom.ts`:** RTL/lang/dir application and the CSS `zoom`
+  choice (rescales hit-testing, unlike `transform`) are correct.
+- **`doors.ts`:** dispose walks geometry+material; the ambient flicker
+  drives slab, glow light, and floor pool from one envelope; hover exclusion
+  correct. **`post.ts`:** low-quality path is a plain render with no
+  composer (as documented); grade/bloom sizing on resize correct.
+  **`dioramas.ts`:** `trackDispose` handles array materials.
+- **`electron/main.cjs`:** contextIsolation on, nodeIntegration off,
+  single-instance lock, off-screen window-state guard, Alt+Left back-nav
+  with the Backspace-conflict rationale documented — sound.
+- **`vite.config.ts` / `assemble-web-dist.mjs`:** `base: './'`, per-pack
+  defines, landing-page + manifest + landing-music assembly all match the
+  documented deploy layout.
+- **`index.html`:** minimal and correct — though it renders a black page
+  until the pack chunk loads, which folds into B-1's "install the recovery
+  net (and ideally any loading hint) before the async import" fix.
+
+### Round-2 additions to the test-gap list (Part 7)
+
+7. A permanent content test pinning "every stage in every pack has ≥1
+   unconditional choice" (the soft-lock invariant the round-2 sweep
+   verified manually — cheap to keep green forever).
+8. A content test invoking every function beat/outcome/available/secret
+   against bare-run + empty-prior + short-prior states (the round-2 sweep,
+   promoted into the suite).
+9. An import-path test asserting the shared display key reflects the
+   imported profile's display fields after import (S-2).
+10. A LIMERENCE-build test asserting the Text version row is absent (or a
+    pack-flag unit test) once U-10 is fixed.
+
+---
+
 ## Part 8 — Recommended fix batches (for a future session; nothing done now)
 
-1. **Batch 1 — save-boundary hardening round 4 (H-1..H-4, S-1):** one
-   session. `asTranscript` item filtering + `pickUnchosenRooms` guard +
-   validator extensions (`currentStage`, `keepsakesHeld`, transcript items)
-   + `sanitizeSettings` in `hydrateProfile` + shared-display range clamps +
-   NaN-guarded volume setters. Plus the Part-7 tests, plus one new troll-UAT
-   payload each. This closes the *entire* known hostile-save surface.
-2. **Batch 2 — audio correctness (A-1..A-4):** small. A-1 is two lines;
-   A-2/A-3 are the "before T1 activation" gate — fold into Phase 3 of the
-   overhaul plan.
-3. **Batch 3 — UX polish (U-1..U-9, B-1, B-2):** U-1 and B-1 first (real,
-   felt); the rest are trivial sweeps. U-4/E-3/E-6 need owner answers before
-   code.
+1. **Batch 1 — save/import-boundary hardening round 4 (H-1..H-4, S-1,
+   S-2):** one session. `asTranscript` item filtering + `pickUnchosenRooms`
+   guard + validator extensions (`currentStage`, `keepsakesHeld`, transcript
+   items) + `sanitizeSettings` in `hydrateProfile` + shared-display range
+   clamps + NaN-guarded volume setters + the import path writing the shared
+   display key (S-2). Plus the Part-7 tests (now items 1-6 and 9), plus one
+   new troll-UAT payload each. This closes the *entire* known hostile-save
+   surface and the import-correctness gap.
+2. **Batch 2 — audio correctness (A-1..A-4, R2-1):** small. A-1 is two
+   lines; R2-1 is a one-line shape guard; A-2/A-3 are the "before T1
+   activation" gate — fold into Phase 3 of the overhaul plan.
+3. **Batch 3 — UX polish (U-1..U-10, B-1, B-2):** U-1 and B-1 first (real,
+   felt); U-10 (inert Text-version row in LIMERENCE) is small and
+   player-visible; the rest are trivial sweeps. R2-2 (pause-snapped tweens)
+   is optional cosmetics. U-4/E-3/E-6 need owner answers before code.
+4. **Batch 4 — content-invariant tests (Part 7 items 7-8):** promote the
+   round-2 sweep into the permanent suite so the soft-lock and
+   beat-totality invariants can never regress silently.
 
 Master plan cross-reference: this document is the "found bugs" record the
 2026-08-01 overhaul session asked for; the v2 overhaul plan

@@ -25,21 +25,33 @@ item is an enhancement or a new capability.
 
 ## PHASE 0 — Extended-review fix batches (added 2026-08-01)
 
-The extended code review (`18-extended-code-review-2026-08-01.md`) found
-4 confirmed hostile-save crash gaps (H-1..H-4), an unvalidated Settings
-boundary (S-1), 4 audio findings (A-1..A-4 — two of which are activation
-blockers for Phase 3's voice/music work), and a set of UX/boot nits
-(U-1..U-9, B-1, B-2). **These now come before everything below**:
+The extended code review (`18-extended-code-review-2026-08-01.md`, two
+passes same day) found 4 confirmed hostile-save crash gaps (H-1..H-4), an
+unvalidated Settings boundary (S-1), an import-correctness gap (S-2 —
+imported profiles silently lose their display settings to the stale
+cross-pack shared key), 5 audio findings (A-1..A-4, R2-1 — two of which
+are activation blockers for Phase 3's voice/music work), and a set of
+UX/boot nits (U-1..U-10, B-1, B-2). The second pass also *cleared* the
+content layer by executing both packs' rooms end-to-end: no soft-lock is
+possible (every stage keeps ≥1 unconditional choice), no beat/outcome/
+available/secret function throws, both evaluators are total, and both
+graphs are referentially intact. **These batches now come before
+everything below**:
 
-- **Batch 1 (do first):** save-boundary hardening round 4 — H-1..H-4 +
-  S-1, with the review doc's Part-7 tests. Closes the entire known
-  hostile-save surface the three prior troll passes were chartered to close.
-- **Batch 2:** audio fixes A-1 (discovery-pulse timer, 2 lines now) and
-  A-4; A-2/A-3 fold into Phase 3 as pre-activation blockers.
+- **Batch 1 (do first):** save/import-boundary hardening round 4 —
+  H-1..H-4 + S-1 + S-2, with the review doc's Part-7 tests. Closes the
+  entire known hostile-save surface the three prior troll passes were
+  chartered to close, plus the import display-settings gap.
+- **Batch 2:** audio fixes A-1 (discovery-pulse timer, 2 lines now), A-4,
+  and R2-1 (manifest shape guard); A-2/A-3 fold into Phase 3 as
+  pre-activation blockers.
 - **Batch 3:** U-1 (reread-button steals focus) and B-1 (recovery net
-  installs too late) first; remaining nits opportunistically. U-4 (persona
-  Skip re-prompt), E-3 (One Door keepsakes), and E-6 (R4 comment carve-out)
+  installs too late) first; U-10 (inert Text-version row in LIMERENCE)
+  small and visible; remaining nits opportunistically. U-4 (persona Skip
+  re-prompt), E-3 (One Door keepsakes), and E-6 (R4 comment carve-out)
   need owner decisions before code.
+- **Batch 4:** promote the round-2 content-invariant sweep (soft-lock +
+  beat totality) into the permanent test suite.
 
 See the review doc for full detail, repro, and fix shapes per finding.
 
