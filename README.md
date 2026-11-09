@@ -1,5 +1,7 @@
 # ANAMNESIS
 
+https://chatgpt.com/c/6af17890-6d60-83ed-8856-3ec2c8fe0bd6
+
 *Part of* ***The Vestibule*** *— a collection of 2.5D roguelikes about the
 rooms behind hard doors, sharing one engine. This repo also contains
 [**LIMERENCE**](#limerence), a second title about relationships at their
